@@ -1,6 +1,0 @@
-xml_source = 'http://wit-tech.ru/xml'
-xml_method = 'xmlcatalog.get'
-xml_login = 'aganzha@yandex.ru'
-xml_password = '12345'
-couchpassword = 'froward2003'
-newpassword = 'bothnia2000'
