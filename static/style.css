@@ -67,10 +67,11 @@ p {
     margin-left:0px;
 }
 #first {    
-    font-size:53px;
-    line-height:53px;
+    font-size:36px;
+    line-height:36px;
     color:#696969;
-    margin-bottom:55px;
+    margin-bottom:20px;
+    text-align:justify;
 }
 #second{
 
