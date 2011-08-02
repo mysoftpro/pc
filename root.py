@@ -35,7 +35,6 @@ class CachedStatic(File):
         contents, based on the 'range' header) to the given request.
         """
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        print "eeeeeeeeeeeeeeeeeeeeeeeee"
         self.restat(False)
 
         if self.type is None:
@@ -124,6 +123,7 @@ class Root(Resource):
         self.static = CachedStatic(static_dir)
         self.static.indexNames = ['index.html']
         self.putChild('static',self.static)
+        self.putChild('xml',XmlGetter())
         self.host_url = host_url
         self.cookies = []
         reactor.callLater(0, self.collectCookies)
@@ -151,15 +151,18 @@ class Root(Resource):
         return self
 
 from pc.secure import xml_source,xml_method, xml_login, xml_password
+from lxml import etree
+
 class XmlGetter(Resource):
     def pr(self, res):
         log.startLogging(sys.stdout)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
-        f = open('/home/aganzha/xmlrpc.txt', 'w')
+        f = open('d:\\Users\\agn\\xmlrpc.txt', 'w')
         f.write(gz.read())
         f.close()
+        
         
     def render_GET(self, request):
         proxy = Proxy(xml_source)
