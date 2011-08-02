@@ -159,9 +159,15 @@ class XmlGetter(Resource):
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
-        f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
-        f.write(gz.read())
-        f.close()
+
+        tree = etree.parse(gz)
+        root = tree.getroot()    
+        jsroot = xmlToJson(toDict(root.attrib), root)
+        # doc = xmlToJson(gz.read())
+        couch.saveDoc(jsroot, docId="catalog")
+        # f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
+        # f.write(gz.read())
+        # f.close()
         
         
     def render_GET(self, request):
@@ -189,12 +195,9 @@ def xmlToJson(catalog_ob, catalog):
             item.update({'xmltype':'item'})
             item.update({'text':el.text})
             catalog_ob['items'].append(item)
-        else:
-            print "what a hell is that?"
-            print el.attrib
     return catalog_ob
 
-      
+
 def parse():
     f = open('c:\\Users\\agn\\pc\\2011-08-02_14-00-50.126000.xml')
     tree = etree.parse(f)
