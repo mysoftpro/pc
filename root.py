@@ -184,10 +184,55 @@ class XmlGetter(Resource):
         root = tree.getroot()
         gen = xmlToDocs([toDict(root.attrib)], root)
         self.storeItem(None, gen)
+    
+
+    def compareItem(self, some, item, sio):
+        raw_doc = sio.getvalue()
+        doc = simplejson.loads(raw_doc)
+        need_store = False
+        for k,v in doc.items():
+            if k in item:
+                if doc[k] != item[k]:
+                    # TODO - treat changes here!
+                    print "ahaaaaaaaaaaaaaaaaaaaaaa!"
+                    print item
+                    need_store = True
+                    doc[k] = item[k]
+        if need_store:
+            d = couch.addAttachments(doc, raw_doc, version=True)
+            d.addCallback(lambda _doc:couch.saveDoc(_doc))
+                
+        # print "--------------------------------------"
+        # print raw_doc.encode('utf-8')
+        # print doc
+        # print item
+
+    def getItem(self, res, gen):
+        try:
+            item = gen.next()
+        except StopIteration:
+            return
+        sio = StringIO()
+        item_code = item.pop('code')
+        d = couch.openDoc(item_code, writer=sio)
+        d.addCallback(self.compareItem, item, sio)
+        d.addCallback(self.getItem, gen)
+        return d
+
         
+    def compareDocs(self, res):
+        log.startLogging(sys.stdout)
+        src = base64.decodestring(res)
+        sio = StringIO(src)
+        gz = gzip.GzipFile(fileobj=sio)
+        tree = etree.parse(gz)
+        root = tree.getroot()
+        gen = xmlToDocs([toDict(root.attrib)], root)
+        self.getItem(None, gen)
+
     def render_GET(self, request):
         proxy = Proxy(xml_source)
-        proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.storeDocs, self.pr)
+        proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.compareDocs, self.pr)
         return "ok"
 
 def toDict(attr):
@@ -228,15 +273,3 @@ def xmlToJson(catalog_ob, catalog):
             item.update({'text':el.text})
             catalog_ob['items'].append(item)
     return catalog_ob
-
-
-# def parse():
-#     f = open('c:\\Users\\agn\\pc\\2011-08-02_14-00-50.126000.xml')
-#     tree = etree.parse(f)
-#     root = tree.getroot()    
-#     jsroot = xmlToJson(toDict(root.attrib), root)
-#     f.close()
-#     f = open('c:\\Users\\agn\\pc\\2011-08-02_14-00-50.126000.json', 'w')
-#     f.write(simplejson.dumps(jsroot))
-#     f.close()
-    
