@@ -182,7 +182,7 @@ class XmlGetter(Resource):
         gz = gzip.GzipFile(fileobj=sio)
         tree = etree.parse(gz)
         root = tree.getroot()
-        gen = xmlToDocs([toDict(root.attrib)], root)
+        gen = xmlToDocs([], root)
         self.storeItem(None, gen)
     
 
@@ -194,18 +194,11 @@ class XmlGetter(Resource):
             if k in item:
                 if doc[k] != item[k]:
                     # TODO - treat changes here!
-                    print "ahaaaaaaaaaaaaaaaaaaaaaa!"
-                    print item
                     need_store = True
                     doc[k] = item[k]
         if need_store:
             d = couch.addAttachments(doc, raw_doc, version=True)
             d.addCallback(lambda _doc:couch.saveDoc(_doc))
-                
-        # print "--------------------------------------"
-        # print raw_doc.encode('utf-8')
-        # print doc
-        # print item
 
     def getItem(self, res, gen):
         try:
@@ -232,12 +225,29 @@ class XmlGetter(Resource):
 
     def render_GET(self, request):
         proxy = Proxy(xml_source)
-        proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.compareDocs, self.pr)
+        op = request.args.get('op', [None])[0]
+        if op is not None:
+            if op == 'store':
+                proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.storeDocs, self.pr)
+            elif op == 'compare':
+                proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.compareDocs, self.pr)
         return "ok"
 
 def toDict(attr):
     res = {}
     for k,v in attr.iteritems():
+        v = v.replace('>', '')
+        if v == '':
+            v = '0'
+        try:
+            if k=='stock1' or k=='ordered' or k=='reserved' or k=='inCart':
+                v = int(v)
+            if k=='price':
+                v = float(v)
+        except ValueError:
+            print "----------------------------------"
+            print k
+            print v.encode('utf-8')
         res.update({k:v})
     return res
 
