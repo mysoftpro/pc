@@ -157,7 +157,6 @@ class XmlGetter(Resource):
         log.msg(fail)
 
     def storeWholeCatalog(self, res):
-        log.startLogging(sys.stdout)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
@@ -176,7 +175,6 @@ class XmlGetter(Resource):
         d.addCallback(self.storeItem, gen)
  
     def storeDocs(self, res):
-        log.startLogging(sys.stdout)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
@@ -191,6 +189,11 @@ class XmlGetter(Resource):
         doc = simplejson.loads(raw_doc)
         need_store = False
         for k,v in doc.items():
+            _type = type(v)
+            if _type is int or _type is float or _type is str:
+                pass
+            else:
+                continue
             if k in item:
                 if doc[k] != item[k]:
                     # TODO - treat changes here!
@@ -214,13 +217,12 @@ class XmlGetter(Resource):
 
         
     def compareDocs(self, res):
-        log.startLogging(sys.stdout)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
         tree = etree.parse(gz)
         root = tree.getroot()
-        gen = xmlToDocs([toDict(root.attrib)], root)
+        gen = xmlToDocs([], root)
         self.getItem(None, gen)
 
     def render_GET(self, request):
