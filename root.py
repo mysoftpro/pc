@@ -127,6 +127,7 @@ class Root(Resource):
         self.static.indexNames = ['index.html']
         self.putChild('static',self.static)
         self.putChild('xml',XmlGetter())
+        self.putChild('model',Model())
         self.host_url = host_url
         self.cookies = []
         reactor.callLater(0, self.collectCookies)
@@ -155,13 +156,14 @@ class Root(Resource):
 
 
 class Model(Resource):
-    def render_GET(self):
-        model = request.args.get('model', [None])
+    def render_GET(self, request):
+        print "kkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        model = request.args.get('name', [None])[0]
         if model is None:
-            return 'null'
-        try:
-            model=int(model)
-        except:
-            pass
-        
+            return 'null'        
+        model = unicode(model, 'utf-8')
+        model_obs = [m for m in models if m['name'] == model]
+        if len(model) >0:
+            print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            print model_obs
         return "ok"
