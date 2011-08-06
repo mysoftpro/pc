@@ -22,7 +22,7 @@ class XmlGetter(Resource):
         gz = gzip.GzipFile(fileobj=sio)
 
         tree = etree.parse(gz)
-        root = tree.getroot()    
+        root = tree.getroot()
         jsroot = xmlToJson(toDict(root.attrib), root)
         d = couch.saveDoc(jsroot, docId="catalog")
         d.addErrback(self.pr)
@@ -44,7 +44,7 @@ class XmlGetter(Resource):
         root = tree.getroot()
         gen = xmlToDocs([], root)
         self.storeItem(None, gen)
-    
+
 
     def compareItem(self, some, item, sio):
         raw_doc = sio.getvalue()
@@ -69,12 +69,16 @@ class XmlGetter(Resource):
         sio = StringIO()
         item_code = item.pop('code')
         d = couch.openDoc(item_code, writer=sio)
-        d.addErrback(lambda x: couch.saveDoc(item, docId=item_code))
-        d.addCallback(self.compareItem, item, sio)
+        def co(res):
+            self.compareItem(res, item, sio)
+        def st(fail):
+            if 'code' in item:
+                couch.saveDoc(item, docId=item.pop('code'))                
+        d.addCallbacks(co,st)
         d.addCallback(self.getItem, gen)
         return d
 
-        
+
     def compareDocs(self, res):
         src = base64.decodestring(res)
         sio = StringIO(src)
@@ -116,14 +120,14 @@ def toDict(attr):
 
 def xmlToDocs(catalog_obs, catalog):
     for el in catalog:
-        if el.tag == 'catalog':            
+        if el.tag == 'catalog':
             new_catalog_obs = [c for c in catalog_obs]
             new_catalog_obs.append(toDict(el.attrib))
             gen = xmlToDocs(new_catalog_obs, el)
             for item in gen:
                 yield item
         elif el.tag == 'item':
-            item = toDict(el.attrib)            
+            item = toDict(el.attrib)
             item.update({'catalogs':catalog_obs})
             item.update({'text':el.text})
             yield item
@@ -144,4 +148,3 @@ def xmlToJson(catalog_ob, catalog):
             item.update({'text':el.text})
             catalog_ob['items'].append(item)
     return catalog_ob
-

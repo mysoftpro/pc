@@ -157,13 +157,11 @@ class Root(Resource):
 
 class Model(Resource):
     def render_GET(self, request):
-        print "kkkkkkkkkkkkkkkkkkkkkkkkkkk"
         model = request.args.get('name', [None])[0]
         if model is None:
             return 'null'        
         model = unicode(model, 'utf-8')
         model_obs = [m for m in models if m['name'] == model]
         if len(model) >0:
-            print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             print model_obs
         return "ok"
