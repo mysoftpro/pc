@@ -144,10 +144,10 @@ class CachedStatic(File):
 	request.finish()
 
 class Root(Resource):
-    def __init__(self, host_url):
+    def __init__(self, host_url, index_page):
 	Resource.__init__(self)
 	self.static = CachedStatic(static_dir)
-	self.static.indexNames = ['index.html']
+	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
 	self.putChild('model',Model())
