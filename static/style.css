@@ -107,72 +107,9 @@ p {
     left:400px;
     top:0px;
 }
-.large_shadow_container {
-	margin: 0 25px 0 25px;
-	padding: 0;
-	width: 950px;
-	text-align: center;
-	background: url(images/large_shadow.gif) center bottom no-repeat;
-	height:550px;
-}
-.extras {
-	width: 1000px;
 
-}
-.extras_item, .extras_item_last {
-	margin: 50px 45px 0 0;
-	padding: 0;
-	width: 300px;
-	font: 11px Arial, Helvetica, sans-serif;
-	color: #777;
-	float: left;
-}
-.extras_item_last {
-	margin: 50px 0 0 0;
-}
-.extras_item_last .image, .extras_item .image {
-	padding: 0;
-	margin: 0;
-	float: left;
-	width: 140px;
-	height: 100px;
-}
-.extras_item_last .text, .extras_item .text {
-	width: 150px;
-	float: left;
-}
-.extras_item img, .extras_item_last img {
-	margin: 0;
-	padding: 0;
-}
-.extras_item h3, .extras_item_last h3 {
-	margin: 0;
-	padding: 0;
-	font: 18px Arial, Helvetica, sans-serif;
-	color: #999;
-}
-.extras_item p, .extras_item_last p {
-	margin: 8px 0;
-	padding: 0;
-}
-.left_content {
-	margin: 0 50px 0 0;
-	padding: 0;
-	width: 360px;
-	float: left;
-}
-.right_content {
-	margin: 0;
-	padding: 0;
-	width: 360px;
-	float: left;
-}
-.date {
-	color: #444;
-}
-/**
-*  General ID's
-*/
+
+
 
 #gradient_background {
 	margin: 0;
@@ -181,6 +118,7 @@ p {
 	text-align: center;
 	background: #202020 url(gradient_background.jpg) center bottom repeat-x;
 }
+
 #container {
 	margin: 0 auto 0 auto;
 	padding: 0;
@@ -189,93 +127,21 @@ p {
 	position: relative;
 	height:480px;//480px;
 }
+
 #block-block-2 a {
 	margin: 7px 0 0 40px;
 	width: 300px;
 	height: 22px;
 	float: left;
 }
-#mens {
-	margin: 50px 0 0 0;
-	padding: 0;
-	position: relative;
-}
-#womens {
-	margin: 50px 0 0 0;
-	padding: 0;
-	position: relative;
-}
-#shoeshadow {
-	margin: 0;
-	padding: 0;
-	width: 501px;
-	background: url(images/shoeshadow.gif) center bottom no-repeat;
-	height:350px;
-	float: left;
-	position: absolute;
-	bottom: 0;
-}
-.tall #shoeshadow {
-	height: 515px;
-}
-.tall #purchase_container {
-	margin: 243px 0 0;
-}
-.tall #shoe_description {
-	margin: 224px 45px 0 0;
-}
-#secondary_shoe {
-	bottom: -4px;
-	width: 450px;
-	text-align: left;
-	position: absolute;
-	text-align: center;
-}
-#shoe_description {
-	margin: 60px 45px 0 0;
-	padding: 0;
-	width: 270px;
-	text-align: left;
-	float: right;
-}
-#purchase_container {
-	margin: 80px 0 0 0;
-	padding: 0 5px 0 12px;
-	width: 165px;
-	height: 271px;
-	text-align: left;
-	background: url(images/purchase_background.png) no-repeat;
-	overflow: hidden;
-	float: right;
-}
-#purchase_container h3 {
-	margin: 14px 0 7px;
-}
-#purchase_container label {
-	display: none;
-}
-#content {
-	margin: 30px 0 0 0;
-	padding: 0;
-}
-#side_right {
-	margin: 60px 0 0 0;
-	padding: 0;
-	width: 770px;
-	float: left;
-}
-#right_one {
-	margin: 60px 40px 0 0;
-	padding: 0;
-	width: 360px;
-	float: left;
-}
-#right_last {
-	margin: 60px 0 0 0;
-	padding: 0;
-	width: 360px;
-	float: left;
-}
+
+
+
+
+
+
+
+
 #extras {
 	margin: 0 auto 0 auto;
 	padding: 0;
@@ -284,7 +150,7 @@ p {
 	margin-top:50px;
 }
 #footer {
-	margin: 50px auto 50px auto;
+	margin: 50px auto 0px auto;
 	padding: 0;
 	width: 1000px;
 	color: #555;
@@ -319,29 +185,6 @@ ul#main_menu li a {
 	display: block;
 }
 
-fieldset {
-  margin-bottom: 1em;
-  padding: .5em;
-}
-form {
-  margin: 0;
-  padding: 0;
-}
-hr {
-  height: 1px;
-  border: 1px solid gray;
-}
-img {
-  border: 0;
-}
-table {
-  border-collapse: collapse;
-}
-th {
-  text-align: left; /* LTR */
-  padding-right: 1em; /* LTR */
-  border-bottom: 3px solid #ccc;
-}
 
 /*
 ** Markup free clearing
