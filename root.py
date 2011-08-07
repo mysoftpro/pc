@@ -15,7 +15,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import models
+from pc.models import models, index
 from pc.catalog import XmlGetter
 from string import Template
 
@@ -25,22 +25,9 @@ global_cache = {}
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
-def fillModels():
-    return {"ass":"bassa", "smass":"kalabas"}
-
-def hookIndex(content):
-    print "llllllllllllllllllllllllllllllllllllll"
-    template = Template(content)
-    rendered = template.substitute(fillModels())
-    print "bass" in rendered
-    d = defer.Deferred()
-    d.addCallback(lambda x: rendered)
-    d.callback(None)
-    return d
-
 
 static_hooks = {
-    'index.html':hookIndex
+    'index.html':index
 }
 
 
@@ -126,8 +113,6 @@ class CachedStatic(File):
 	fileForReading.close()
 
 	def _gzip(_content,_name, _time):
-	    print "gziiiiiiiiiiiiiiiiiiiip"
-            print "bass" in content
 	    not_min = "js" in _name and "min." not in _name
 	    if not_min:
 		_content = jsmin(_content)

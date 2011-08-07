@@ -363,6 +363,7 @@ th {
 * html .clear-block {
   height: 1%;
 }
+
 .clear-block {
   display: block;
 }
@@ -389,11 +390,35 @@ th {
     float:left;    
     background-repeat:no-repeat;
 }
+.label {
+    font-size:10px;
+    padding-left:3px;
+}
 
 .price{
     color:white;
     background-color:#7B9C0A;
     float:left;
-    padding:4px;
     font-weight:bold;
+}
+.name{
+    background-color:#b0b0b0;
+    font-weight:bold;
+    width:150px;
+    float:left;
+    color:black;
+}
+
+.features {
+    float:left;
+    width:200px;
+    background-repeat:no-repeat;
+    height:130px;
+    background-position:40px 0px;
+    
+}
+.features ul {
+    padding:0;margin:0;
+    color:#999999;
+    font-size:12px;
 }
