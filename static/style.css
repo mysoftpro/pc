@@ -187,7 +187,7 @@ p {
 	width: 1000px;
 	text-align: left;
 	position: relative;
-	height:480px;
+	height:480px;//480px;
 }
 #block-block-2 a {
 	margin: 7px 0 0 40px;
@@ -375,4 +375,25 @@ th {
     position: absolute;
     right: -3px;
     top: -52px;
+}
+
+#computers{
+    margin: 0 auto 0;
+    padding: 0;
+    text-alig:n left;
+    width: 1000px;
+}
+
+.item{
+    width:250px;
+    float:left;    
+    background-repeat:no-repeat;
+}
+
+.price{
+    color:white;
+    background-color:#7B9C0A;
+    float:left;
+    padding:4px;
+    font-weight:bold;
 }
