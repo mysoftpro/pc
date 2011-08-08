@@ -48,7 +48,7 @@ model_page_snippet = u"""
 
 index_page_snippet = u"""
 <div style="background-image:url('$image')" class="indexitem">
-<h3><a href="">$name: </a><span class="usprice">$price руб</span></h3>
+<h3><a href="/computer/$name">$name: </a><span class="usprice">$price руб</span></h3>
 </div>
 """
 
