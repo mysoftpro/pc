@@ -73,7 +73,12 @@ class CachedStatic(File):
                 for s in slots_names:
                     stat_info = stat(self.slot_path(s))
                     if stat_info.st_mtime>mtime:
+                        print "max!:"
+                        print s
+                        mtime = stat_info.st_mtime
                         self.statinfo = stat_info
+                print "eeeeeeeeeeeeeeeeeeeeeeeeee"
+                print self.statinfo
             except OSError:
                 self.statinfo = 0
                 if reraise:
@@ -164,6 +169,9 @@ class CachedStatic(File):
             self.type += ';charset=utf-8'
         request.setHeader('Content-Type', self.type)
         last_modified = self.getmtime()
+
+        print "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["
+        print last_modified
 
         # do i need 304?
         if request.setLastModified(last_modified) is CACHED and fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
