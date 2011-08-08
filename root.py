@@ -73,12 +73,8 @@ class CachedStatic(File):
                 for s in slots_names:
                     stat_info = stat(self.slot_path(s))
                     if stat_info.st_mtime>mtime:
-                        print "max!:"
-                        print s
                         mtime = stat_info.st_mtime
                         self.statinfo = stat_info
-                print "eeeeeeeeeeeeeeeeeeeeeeeeee"
-                print self.statinfo
             except OSError:
                 self.statinfo = 0
                 if reraise:
@@ -119,6 +115,7 @@ class CachedStatic(File):
         contents, based on the 'range' header) to the given request.
         """
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+
         self.restat(False)
 
         if self.type is None:
@@ -170,12 +167,8 @@ class CachedStatic(File):
         request.setHeader('Content-Type', self.type)
         last_modified = self.getmtime()
 
-        print "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["
-        print last_modified
-
         # do i need 304?
         if request.setLastModified(last_modified) is CACHED and fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
-            print "30444444444444444444444444444444444"
             return ''
 
         if fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
@@ -282,4 +275,4 @@ class Computer(Resource):
         self.static = CachedStatic(static_dir)
         Resource.__init__(self, *args, **kwargs)
     def getChild(self, name, request):
-        return self.static.getChild(name, request)
+        return self.static.getChild("computer.html", request)
