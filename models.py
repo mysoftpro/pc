@@ -5,12 +5,6 @@ from twisted.internet import defer
 from string import Template
 from urllib import quote_plus, unquote_plus
 
-# <catalog id="7399" name="Процессоры">
-#        <catalog id="18027" name="LGA1155">
-#        <catalog id="18028" name="LGA1156">
-#        <catalog id="9422" name="LGA1366">
-#        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
-#        <catalog id="7700" name="SOCKET AM2">
 
 # <catalog id="7388" name="Материнские платы">
 #       <catalog id="17961" name="LGA1155">
@@ -19,13 +13,41 @@ from urllib import quote_plus, unquote_plus
 #       <catalog id="7449" name="LGA775 Dual Core (процессоры Intel)">
 #       <catalog id="7627" name="SOCKET 478">
 #       <catalog id="7699" name="SOCKET AM2 3 (процессоры AMD)">
-
 #      <catalog id="2899" name="Материнские платы с процессором">
 
+# <catalog id="7399" name="Процессоры">
+#        <catalog id="18027" name="LGA1155">
+#        <catalog id="18028" name="LGA1156">
+#        <catalog id="9422" name="LGA1366">
+#        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
+#        <catalog id="7700" name="SOCKET AM2">
 
-compat= {
-    
+
+mother_to_proc_mapping= {
+    # "LGA1155"
+    ("7363", "7388","17961"):["7363", "7399", "18027"],
+    # "LGA1156"
+    ("7363","7388","12854"):["7363","7399","18028"],
+    # "LGA1366"
+    ("7363","7388","18029"):["7363","7399","9422"],
+    #"LGA775":
+    ("7363","7388","7449"):["7363","7399","7451"],
+    # "SOCKET AM2 3":
+    ("7363","7388","7699"):["7363","7399","7700"]
     }
+
+
+def mother_to_proc(doc):
+    cats = []
+    for c in doc['catalogs']:
+        cats.append(c['id'])
+    return mother_to_proc_mapping[tuple(cats)]
+
+
+def isMother(doc):
+    cats = [c['id'] for c in doc['catalogs']]
+    return "7363" in cats and "7388" in cats
+
 
 models = [
     {'name':u"Локалхост",
