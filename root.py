@@ -20,6 +20,7 @@ from pc.models import models, index
 from pc.catalog import XmlGetter
 from string import Template
 from os import stat
+from lxml import etree
 
 _cached_statics = {}
 global_cache = {}
@@ -33,14 +34,54 @@ static_hooks = {
 
 
 
+# class SlotsTarget:
+#     def __init__(self, template):
+#         self.template = template
+#         self.slots = {'container':None, 'content':None}
+#         self.currentSlot = None
+#         self.currentEl = None
 
-slots_names = ['container', 'content']
+#     def start(self, tag, attrib):
+#         if tag in self.slots:
+#             print "eeeeeeeeeeeeeeeee"
+#             print attrib
+#             self.currentSlot = tag
+#             self.slots[tag] = etree.Element(tag, attrib)
+#         else:
+#             self.currentEl = etree.Element(tag, attrib)
+#     def end(self, tag):
+#         if tag in self.slots:
+#             self.currentSlot = None
+#             self.currentEl = None
+
+#     def data(self, data):
+#         if self.currentEl is not None:
+#             self.currentEl.text = data
+
+#     def comment(self, text):
+#          pass
+
+#     def close(self):
+#          pass
+#          return self
+#     def tostring(self):
+#         d = defer.Deferred()
+#         d.addCallback(lambda x: "ok")
+#         d.callback(None)
+#         return d
 
 
-class NamedSio(SIO):
-    def __init__(self, name):
-        self.name = name
-        SIO.__init__(self)
+# class NamedSio(SIO):
+#     def __init__(self, name):
+#         self.name = name
+#         SIO.__init__(self)
+
+
+
+    # target   = etree.parse(fo, parser)
+    # return target.tostring()
+
+
 
 class CachedStatic(File):
 
@@ -52,55 +93,55 @@ class CachedStatic(File):
 
 
 
-    def slot_path(self, slot_name):
-        return self.path.replace(".html", "_"+slot_name+".html")
+    # def slot_path(self, slot_name):
+    #     return self.path.replace(".html", "_"+slot_name+".html")
 
 
-    def restat(self, reraise=True):
-        """
-        Re-calculate cached effects of 'stat'.  To refresh information on this path
-        after you know the filesystem may have changed, call this method.
+    # def restat(self, reraise=True):
+    #     """
+    #     Re-calculate cached effects of 'stat'.  To refresh information on this path
+    #     after you know the filesystem may have changed, call this method.
 
-        @param reraise: a boolean.  If true, re-raise exceptions from
-        L{os.stat}; otherwise, mark this path as not existing, and remove any
-        cached stat information.
-        """
-        # tretiy3
-        # calculate statinfo for last modified slot
-        if 'html' in self.path:
-            try:
-                mtime = 0
-                for s in slots_names:
-                    stat_info = stat(self.slot_path(s))
-                    if stat_info.st_mtime>mtime:
-                        mtime = stat_info.st_mtime
-                        self.statinfo = stat_info
-            except OSError:
-                self.statinfo = 0
-                if reraise:
-                    raise
-        else:
-            try:
-                self.statinfo = stat(self.path)
-            except OSError:
-                self.statinfo = 0
-                if reraise:
-                    raise
+    #     @param reraise: a boolean.  If true, re-raise exceptions from
+    #     L{os.stat}; otherwise, mark this path as not existing, and remove any
+    #     cached stat information.
+    #     """
+    #     # tretiy3
+    #     # calculate statinfo for last modified slot
+    #     if 'html' in self.path:
+    #         try:
+    #             mtime = 0
+    #             for s in slots_names:
+    #                 stat_info = stat(self.slot_path(s))
+    #                 if stat_info.st_mtime>mtime:
+    #                     mtime = stat_info.st_mtime
+    #                     self.statinfo = stat_info
+    #         except OSError:
+    #             self.statinfo = 0
+    #             if reraise:
+    #                 raise
+    #     else:
+    #         try:
+    #             self.statinfo = stat(self.path)
+    #         except OSError:
+    #             self.statinfo = 0
+    #             if reraise:
+    #                 raise
 
-    def openForReading(self):
-        """Open a file and return it."""
-        # tretiy3
-        if 'html' in self.path:
-            sio = NamedSio(self.path)
-            slots = {}
-            for s in slots_names:
-                f = open(self.slot_path(s))
-                slots.update({s:f.read()})
-                f.close()
-            sio.write(self.skin.substitute(slots))
-            sio.seek(0)
-            return sio
-        return self.open()
+    # def openForReading(self):
+    #     """Open a file and return it."""
+    #     # tretiy3
+    #     if 'html' in self.path:
+    #         sio = NamedSio(self.path)
+    #         slots = {}
+    #         for s in slots_names:
+    #             f = open(self.slot_path(s))
+    #             slots.update({s:f.read()})
+    #             f.close()
+    #         sio.write(self.skin.substitute(slots))
+    #         sio.seek(0)
+    #         return sio
+    #     return self.open()
 
     def render(self, request):
         return self.render_GET(request)
@@ -180,41 +221,55 @@ class CachedStatic(File):
             d.addCallback(self.render_GSIPPED, request)
             return NOT_DONE_YET
 
-    def makeGzip(self, fileForReading, last_modified):
-        if fileForReading.__class__ is NamedSio:
-            content = fileForReading.getvalue()
+
+    def _gzip(self, _content,_name, _time):
+        not_min = "js" in _name and "min." not in _name
+        if not_min:
+            _content = jsmin(_content)
+        buff = StringIO()
+        f = gzip.GzipFile(_name,'wb',9, buff)
+        f.write(_content)
+        f.close()
+        buff.seek(0)
+        gzipped = buff.read()
+        buff.close()
+        _cached_statics[_name] = (_time, gzipped)
+        return gzipped
+
+
+
+    def prepareTemplate(self, fo):
+        d = defer.Deferred()
+        if not 'html' in fo.name:
+            content = fo.read()
+            d.addCallback(lambda x: content)
         else:
-            content = fileForReading.read()
+            parser = etree.HTMLParser(encoding='utf-8')
+            tree = etree.parse(fo, parser)
+            # first element is body
+            subst = {}
+            for body in tree.getroot():
+                for el in body:
+                    subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
+            d.addCallback(lambda x: self.skin.substitute(subst))
+        d.callback(None)
+        return d
+
+    def makeGzip(self, fileForReading, last_modified):
+        # content = fileForReading.read()
+        d = self.prepareTemplate(fileForReading)
         fileForReading.close()
-
-        def _gzip(_content,_name, _time):
-            not_min = "js" in _name and "min." not in _name
-            if not_min:
-                _content = jsmin(_content)
-            buff = StringIO()
-            f = gzip.GzipFile(_name,'wb',9, buff)
-            f.write(_content)
-            f.close()
-            buff.seek(0)
-            gzipped = buff.read()
-            buff.close()
-            _cached_statics[_name] = (_time, gzipped)
-            return gzipped
-
         # Hoooooooooks
         short_name = None
         if '/' in fileForReading.name:
             short_name = fileForReading.name.split('/')[-1]
         else:
             short_name = fileForReading.name.split('\\')[-1]
-        d = defer.Deferred()
+
         if short_name in static_hooks:
-            d = static_hooks[short_name](content)
-            d.addCallback(_gzip, fileForReading.name, last_modified)
-        else:
-            d.addCallback(lambda x: content)
-            d.addCallback(_gzip, fileForReading.name, last_modified)
-            d.callback(None)
+            d.addCallback(static_hooks[short_name])
+            
+        d.addCallback(self._gzip, fileForReading.name, last_modified)
         return d
 
 
