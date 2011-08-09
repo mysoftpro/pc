@@ -22,18 +22,36 @@ from urllib import quote_plus, unquote_plus
 #        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
 #        <catalog id="7700" name="SOCKET AM2">
 
+components = "7363"
+procs = "7399"
+mothers = "7388"
+videos = "7396"
+
+geforce = [components,videos,"7607"]
+radeon = [components,videos,"7613"]
+
+rams = "7394"
+ddr3 = [components, rams, "11576"]
+ddr2 = [components, rams, "7711"]
+so_dim = [components, rams,"16993"]
+
+hdds = [components, rams,"7406"]
+satas = [components, rams,"7673"]
+ides = [components, rams,"7564"]
+cases = [components, rams,"7383"]
+
 
 mother_to_proc_mapping= {
     # "LGA1155"
-    ("7363", "7388","17961"):["7363", "7399", "18027"],
+    (components, mothers,"17961"):[components, procs, "18027"],
     # "LGA1156"
-    ("7363","7388","12854"):["7363","7399","18028"],
+    (components,mothers,"12854"):[components,procs,"18028"],
     # "LGA1366"
-    ("7363","7388","18029"):["7363","7399","9422"],
+    (components,mothers,"18029"):[components,procs,"9422"],
     #"LGA775":
-    ("7363","7388","7449"):["7363","7399","7451"],
+    (components,mothers,"7449"):[components,procs,"7451"],
     # "SOCKET AM2 3":
-    ("7363","7388","7699"):["7363","7399","7700"]
+    (components,mothers,"7699"):[components,procs,"7700"]
     }
 
 
@@ -46,7 +64,9 @@ def mother_to_proc(doc):
 
 def isMother(doc):
     cats = [c['id'] for c in doc['catalogs']]
-    return "7363" in cats and "7388" in cats
+    return components in cats and mothers in cats
+
+
 
 
 models = [
