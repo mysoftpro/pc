@@ -33,56 +33,6 @@ static_hooks = {
 }
 
 
-
-# class SlotsTarget:
-#     def __init__(self, template):
-#         self.template = template
-#         self.slots = {'container':None, 'content':None}
-#         self.currentSlot = None
-#         self.currentEl = None
-
-#     def start(self, tag, attrib):
-#         if tag in self.slots:
-#             print "eeeeeeeeeeeeeeeee"
-#             print attrib
-#             self.currentSlot = tag
-#             self.slots[tag] = etree.Element(tag, attrib)
-#         else:
-#             self.currentEl = etree.Element(tag, attrib)
-#     def end(self, tag):
-#         if tag in self.slots:
-#             self.currentSlot = None
-#             self.currentEl = None
-
-#     def data(self, data):
-#         if self.currentEl is not None:
-#             self.currentEl.text = data
-
-#     def comment(self, text):
-#          pass
-
-#     def close(self):
-#          pass
-#          return self
-#     def tostring(self):
-#         d = defer.Deferred()
-#         d.addCallback(lambda x: "ok")
-#         d.callback(None)
-#         return d
-
-
-# class NamedSio(SIO):
-#     def __init__(self, name):
-#         self.name = name
-#         SIO.__init__(self)
-
-
-
-    # target   = etree.parse(fo, parser)
-    # return target.tostring()
-
-
-
 class CachedStatic(File):
 
     def __init__(self, *args, **kwargs):
@@ -90,58 +40,6 @@ class CachedStatic(File):
         f = open(os.path.join(static_dir, 'skin.html'))
         self.skin = Template(f.read())
         f.close()
-
-
-
-    # def slot_path(self, slot_name):
-    #     return self.path.replace(".html", "_"+slot_name+".html")
-
-
-    # def restat(self, reraise=True):
-    #     """
-    #     Re-calculate cached effects of 'stat'.  To refresh information on this path
-    #     after you know the filesystem may have changed, call this method.
-
-    #     @param reraise: a boolean.  If true, re-raise exceptions from
-    #     L{os.stat}; otherwise, mark this path as not existing, and remove any
-    #     cached stat information.
-    #     """
-    #     # tretiy3
-    #     # calculate statinfo for last modified slot
-    #     if 'html' in self.path:
-    #         try:
-    #             mtime = 0
-    #             for s in slots_names:
-    #                 stat_info = stat(self.slot_path(s))
-    #                 if stat_info.st_mtime>mtime:
-    #                     mtime = stat_info.st_mtime
-    #                     self.statinfo = stat_info
-    #         except OSError:
-    #             self.statinfo = 0
-    #             if reraise:
-    #                 raise
-    #     else:
-    #         try:
-    #             self.statinfo = stat(self.path)
-    #         except OSError:
-    #             self.statinfo = 0
-    #             if reraise:
-    #                 raise
-
-    # def openForReading(self):
-    #     """Open a file and return it."""
-    #     # tretiy3
-    #     if 'html' in self.path:
-    #         sio = NamedSio(self.path)
-    #         slots = {}
-    #         for s in slots_names:
-    #             f = open(self.slot_path(s))
-    #             slots.update({s:f.read()})
-    #             f.close()
-    #         sio.write(self.skin.substitute(slots))
-    #         sio.seek(0)
-    #         return sio
-    #     return self.open()
 
     def render(self, request):
         return self.render_GET(request)
@@ -192,9 +90,6 @@ class CachedStatic(File):
         # cache all images and min.js files
         fn = fileForReading.name
 
-        print "----------------------"
-        print fn
-
         if 'jpg' in fn or 'gif' in fn or 'png' in fn or fn == 'jScrollPane.js':
             request.setHeader("Cache-Control", "max-age=290304000, public")
         else:
@@ -216,8 +111,7 @@ class CachedStatic(File):
             print "FROM CACHE"
             return _cached_statics[fileForReading.name][1]
         else:
-            # d = threads.deferToThread(self.makeGzip, fileForReading, last_modified)
-            d = self.makeGzip(fileForReading, last_modified)
+            d = self.renderTemplate(fileForReading, last_modified)
             d.addCallback(self.render_GSIPPED, request)
             return NOT_DONE_YET
 
@@ -255,7 +149,7 @@ class CachedStatic(File):
         d.callback(None)
         return d
 
-    def makeGzip(self, fileForReading, last_modified):
+    def renderTemplate(self, fileForReading, last_modified):
         # content = fileForReading.read()
         d = self.prepareTemplate(fileForReading)
         fileForReading.close()
