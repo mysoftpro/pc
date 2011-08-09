@@ -16,7 +16,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import models, index
+from pc.models import models, index, computer
 from pc.catalog import XmlGetter
 from string import Template
 from os import stat
@@ -29,7 +29,8 @@ static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
 static_hooks = {
-    'index.html':index
+    'index.html':index,
+    'computer.html':computer
 }
 
 
@@ -54,7 +55,7 @@ class CachedStatic(File):
         contents, based on the 'range' header) to the given request.
         """
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-
+        
         self.restat(False)
 
         if self.type is None:
@@ -111,7 +112,7 @@ class CachedStatic(File):
             print "FROM CACHE"
             return _cached_statics[fileForReading.name][1]
         else:
-            d = self.renderTemplate(fileForReading, last_modified)
+            d = self.renderTemplate(fileForReading, last_modified, request)
             d.addCallback(self.render_GSIPPED, request)
             return NOT_DONE_YET
 
@@ -131,7 +132,6 @@ class CachedStatic(File):
         return gzipped
 
 
-
     def prepareTemplate(self, fo):
         d = defer.Deferred()
         if not 'html' in fo.name:
@@ -145,11 +145,11 @@ class CachedStatic(File):
             for body in tree.getroot():
                 for el in body:
                     subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
-            d.addCallback(lambda x: self.skin.substitute(subst))
+            d.addCallback(lambda x: self.skin.safe_substitute(subst))
         d.callback(None)
         return d
 
-    def renderTemplate(self, fileForReading, last_modified):
+    def renderTemplate(self, fileForReading, last_modified, request):
         # content = fileForReading.read()
         d = self.prepareTemplate(fileForReading)
         fileForReading.close()
@@ -161,7 +161,7 @@ class CachedStatic(File):
             short_name = fileForReading.name.split('\\')[-1]
 
         if short_name in static_hooks:
-            d.addCallback(static_hooks[short_name])
+            d.addCallback(static_hooks[short_name], request)
             
         d.addCallback(self._gzip, fileForReading.name, last_modified)
         return d
