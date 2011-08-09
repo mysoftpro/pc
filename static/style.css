@@ -293,3 +293,48 @@ ul#main_menu li a {
     background-position:0px 40px;
     cursor:pointer;
 }
+
+#compoinents {
+    width:100%;
+}
+
+.comp_left {
+    width:40%;
+}
+.comp_middle{
+    width:20%;
+    text-align:center;
+    vertical-align:center;
+    font-weight:bold;
+}
+.comp_right{
+    width:40%;
+}
+
+
+h2.comp_left {
+    float:left;
+    margin-top:30px;
+}
+h2.comp_middle{
+    float:left;
+    margin-top:30px;
+}
+h2.comp_right{
+    float:left;
+    margin-top:30px;
+}
+
+td.comp_left {
+    color:#999999;
+}
+td.comp_middle{
+/* color:#7B9C0A; */
+}
+td.comp_right{
+    color:#999999;
+}
+
+#comp_right_title{
+    width:300px;
+}

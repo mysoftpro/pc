@@ -5,18 +5,39 @@ from twisted.internet import defer
 from string import Template
 from urllib import quote_plus, unquote_plus
 
-#               mother, proc, video, ram ,                    ide,   case,  displ, kbrd, mouse, sound, lan
+# <catalog id="7399" name="Процессоры">
+#        <catalog id="18027" name="LGA1155">
+#        <catalog id="18028" name="LGA1156">
+#        <catalog id="9422" name="LGA1366">
+#        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
+#        <catalog id="7700" name="SOCKET AM2">
+
+# <catalog id="7388" name="Материнские платы">
+#       <catalog id="17961" name="LGA1155">
+#       <catalog id="12854" name="LGA1156">
+#       <catalog id="18029" name="LGA1366 Dual Core (процессоры Intel Nehalem )">
+#       <catalog id="7449" name="LGA775 Dual Core (процессоры Intel)">
+#       <catalog id="7627" name="SOCKET 478">
+#       <catalog id="7699" name="SOCKET AM2 3 (процессоры AMD)">
+
+#      <catalog id="2899" name="Материнские платы с процессором">
+
+
+compat= {
+    
+    }
+
 models = [
     {'name':u"Локалхост",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'ide':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
      'price':6500
      },
     {'name':u"Браузер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'ide':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
      'price':8500
      },
     {'name':u"Принтер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'ide':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
      'price':15200
      },
     {'name':u"Числодробилка",
@@ -132,6 +153,8 @@ def renderComputer(components, content, model):
         _id = r['id']
         doc = r['doc']
         subst.update({component_name(_id, model):doc['text'].encode('utf-8')})
+    subst.update({'name':model['name'].encode('utf-8')})
+    subst.update({'modifname':(u'Модификация (' + model['name'] + u')').encode('utf-8')})
     return Template(content).safe_substitute(subst)
 
 def computer(content, request):
