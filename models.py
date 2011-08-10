@@ -184,15 +184,18 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
     # item.append(a)
     # return etree.tostring(item,encoding='utf-8')
 
+#subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
+    #return
 
-def renderIndex(elements, m, image_i):
+
+def renderIndex(result, m, image_i):
     # CACHE ALL MODELS HERE!!!
-    m.update({'item_docs':elements})
+    m.update({'item_docs':result})
     template = Template(index_page_snippet)
     res = template.substitute(m, image=imgs[image_i]).encode('utf-8')
     return res
 
-def index(content, request):
+def index(tree, skin, request):
     i = 0
     defs = []
     for m in models:
@@ -202,16 +205,18 @@ def index(content, request):
         i+=1
         if i==len(imgs): i=0
 
-    def _render(res, _content):
+    def _render(res, _tree, _skin):
         html = []
         for el in res:
             if el[0]:
                 html.append(el[1])
-        template = Template(_content)
-        res = template.substitute(models=''.join(html))
-        return res
+        template = Template(u''.join([etree.tostring(e) for e in _tree.find("content").getchildren()]).encode('utf-8'))        
+        content = template.substitute(models=''.join(html))
+        return skin.safe_substitute({'content':content,
+                                     'container':u''.join([etree.tostring(e) for e in _tree.find("container").getchildren()]).encode('utf-8')
+                                     })
     d = defer.DeferredList(defs)
-    d.addCallback(_render, content)
+    d.addCallback(_render, tree, skin)
     return d
 
 
@@ -245,36 +250,34 @@ def renderChoices(choices, content, model):
         if c[0]:
             token = c[1][0]
             options = []
-            if type(c[1][1]) is dict:                
+            if type(c[1][1]) is dict:
                 for r in c[1][1]['rows']:
-                    doc = [r['doc']]
                     options.append(r['doc']['text'].encode('utf-8'))
                 substs.update({token:"<select><option>%s</option></select>" % "</option><option>".join(options)})
             else:
                 for el in c[1][1]:
                     if el[0]:
                         for r in el[1]['rows']:
-                            doc = [r['doc']]
                             options.append(r['doc']['text'].encode('utf-8'))
                 substs.update({token:"<select><option>%s</option></select>" % "</option><option>".join(options)})
     return substs
 
 
-def fillChoices(elements, content, model):
-    docs = [r['doc'] for r in elements['rows'] if r['key'] is not None]
+def fillChoices(result, content, model):
+    docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     mother = [d for d in docs if isMother(d)][0]
 
     defs = []
-    
+
     mother_cats = getCatalogsKey(mother)
 
     defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=mother_cats).addCallback(lambda res: ("mothers",res)))
 
     defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: ("procs",res)))
-    
+
     defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=geforce),
                                     couch.openView(designID, 'catalogs',include_docs=True, key=radeon)]).addCallback(lambda res: ("videos",res)))
-    
+
     defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: ("rams",res)))
     defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=satas).addCallback(lambda res: ("hdds",res)))
 
@@ -283,8 +286,8 @@ def fillChoices(elements, content, model):
 
     defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=displays_19_20),
                                     couch.openView(designID, 'catalogs',include_docs=True, key=displays_22_26)]).addCallback(lambda res: ("displays",res)))
-               
-    
+
+
     defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_a4),
                                     couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_acme),
                                     couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_chikony),
@@ -296,9 +299,9 @@ def fillChoices(elements, content, model):
                                     couch.openView(designID, 'catalogs',include_docs=True, key=mouses_genius)]).addCallback(lambda res: ("mouses",res)))
 
 
-    return defer.DeferredList(defs).addCallback(renderChoices, content, model).addCallback(lambda su: (su,elements))
+    return defer.DeferredList(defs).addCallback(renderChoices, content, model).addCallback(lambda su: (su,result))
 
-def computer(content, request):
+def computer(tree, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
     _models = [m for m in models if m['name'] == name]
     model = _models[0] if len(_models)>0 else models[0]

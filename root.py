@@ -55,7 +55,7 @@ class CachedStatic(File):
         contents, based on the 'range' header) to the given request.
         """
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        
+
         self.restat(False)
 
         if self.type is None:
@@ -104,17 +104,23 @@ class CachedStatic(File):
         request.setHeader('Content-Type', self.type)
         last_modified = self.getmtime()
 
-        # do i need 304?
+        # 304 is here
         if request.setLastModified(last_modified) is CACHED and fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
             return ''
 
         if fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
-            print "FROM CACHE"
             return _cached_statics[fileForReading.name][1]
         else:
-            d = self.renderTemplate(fileForReading, last_modified, request)
-            d.addCallback(self.render_GSIPPED, request)
-            return NOT_DONE_YET
+            if '.html' in fileForReading.name or '.json' in fileForReading.name:
+                d = self.renderTemplate(fileForReading, last_modified, request)
+                d.addCallback(self._gzip, fileForReading.name, last_modified)
+                d.addCallback(self.render_GSIPPED, request)
+                return NOT_DONE_YET
+            else:
+                content = fileForReading.read()
+                fileForReading.close()
+                return self._gzip(content, fileForReading.name, last_modified)
+
 
 
     def _gzip(self, _content,_name, _time):
@@ -132,27 +138,21 @@ class CachedStatic(File):
         return gzipped
 
 
-    def prepareTemplate(self, fo):
-        d = defer.Deferred()
-        if not 'html' in fo.name:
-            content = fo.read()
-            d.addCallback(lambda x: content)
-        else:
-            parser = etree.HTMLParser(encoding='utf-8')
-            tree = etree.parse(fo, parser)
-            # first element is body
-            subst = {}
-            for body in tree.getroot():
-                for el in body:
-                    subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
-            d.addCallback(lambda x: self.skin.safe_substitute(subst))
-        d.callback(None)
-        return d
+    # def prepareTemplate(self, fo):
+
+    #     parser = etree.HTMLParser(encoding='utf-8')
+    #     tree = etree.parse(fo, parser)
+    #     # first element is body
+    #     subst = {}
+    #     for body in tree.getroot():
+    #         for el in body:
+    #             subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
+    #     d.addCallback(lambda x: self.skin.safe_substitute(subst))
+    #     d.callback(None)
+    #     return d
 
     def renderTemplate(self, fileForReading, last_modified, request):
-        # content = fileForReading.read()
-        d = self.prepareTemplate(fileForReading)
-        fileForReading.close()
+
         # Hoooooooooks
         short_name = None
         if '/' in fileForReading.name:
@@ -161,9 +161,15 @@ class CachedStatic(File):
             short_name = fileForReading.name.split('\\')[-1]
 
         if short_name in static_hooks:
-            d.addCallback(static_hooks[short_name], request)
-            
-        d.addCallback(self._gzip, fileForReading.name, last_modified)
+            parser = etree.HTMLParser(encoding='utf-8')
+            tree = etree.parse(fileForReading, parser)
+            d = static_hooks[short_name](tree.getroot().find("body"), self.skin, request)
+        else:
+            # just an empty snippet
+            d = defer.Deferred()
+            content = fileForReading.read()
+            d.addCallback(lambda x: content)
+        fileForReading.close()
         return d
 
 
