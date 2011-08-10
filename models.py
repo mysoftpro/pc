@@ -136,31 +136,12 @@ def component_name(_id, model):
                 return k
 
 
-model_page_snippet = u"""
-<div>
-          <div class="item">
-            <div class="features" style="background-image:url('static/acer-aspire-ie-3450-desktop-pc-1.png');">
-                <ul>
-                  <li>Интелл</li>
-                  <li>2 ядра</li>
-                  <li>2 Гб RAM</li>
-                  <li>1 Гб VRAM</li>
-                  <li>500 Гб HDD</li>
-                  <li>Производительность: 500</li>
-                </ul>
-              </div>
-              <div style="clear:both;"></div>
-              <div class="price label">6500р.</div>
-              <div class="name label">Локалхост.</div>
-          </div>
-        </div>
-"""
 
-index_page_snippet = u"""
-<div style="background-image:url('$image')" class="indexitem">
-<h3><a href="/computer/$name">$name: </a><span class="usprice">$price руб</span></h3>
-</div>
-"""
+# index_page_snippet = u"""
+# <div style="background-image:url('$image')" class="indexitem">
+# <h3><a href="/computer/$name">$name: </a><span class="usprice">$price руб</span></h3>
+# </div>
+# """
 
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
@@ -187,36 +168,45 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
 #subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
     #return
 
+from copy import deepcopy
 
-def renderIndex(result, m, image_i):
+def renderModelForIndex(result, template, m, image_i):
     # CACHE ALL MODELS HERE!!!
+    tree = template.root()
     m.update({'item_docs':result})
-    template = Template(index_page_snippet)
-    res = template.substitute(m, image=imgs[image_i]).encode('utf-8')
-    return res
+    model_snippet = tree.find('model')
+    
+    snippet = deepcopy(model_snippet.find('div'))
+    snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
+    a = snippet.find('.//a')
+    a.set('href','/computer/%s' % m['name'])
+    a.text=m['name']
+    snippet.find('.//span').text=(unicode(m['price']) + u' руб')
+    return snippet
 
-def index(tree, skin, request):
+def index(template, skin, request):
     i = 0
     defs = []
     for m in models:
         d = couch.listDoc(keys=[c for c in getModelComponents(m)],include_docs=True)
-        d.addCallback(renderIndex, m, i)
+        d.addCallback(renderModelForIndex, template, m, i)
         defs.append(d)
         i+=1
         if i==len(imgs): i=0
 
-    def _render(res, _tree, _skin):
-        html = []
+    def _render(res,_template,_skin):
+        div = _template.middle.find('div')
         for el in res:
             if el[0]:
-                html.append(el[1])
-        template = Template(u''.join([etree.tostring(e) for e in _tree.find("content").getchildren()]).encode('utf-8'))        
-        content = template.substitute(models=''.join(html))
-        return skin.safe_substitute({'content':content,
-                                     'container':u''.join([etree.tostring(e) for e in _tree.find("container").getchildren()]).encode('utf-8')
-                                     })
+                div.append(el[1])
+        for el in _template.root().find('leftbutton'):
+            div.append(el)
+        _skin.top = _template.top
+        _skin.middle = _template.middle
+        return skin.render()
+
     d = defer.DeferredList(defs)
-    d.addCallback(_render, tree, skin)
+    d.addCallback(_render, template, skin)
     return d
 
 

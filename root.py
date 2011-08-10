@@ -18,8 +18,8 @@ import simplejson
 from datetime import datetime, date
 from pc.models import models, index, computer
 from pc.catalog import XmlGetter
-from string import Template
-from os import stat
+#from string import Template
+# from os import stat
 from lxml import etree
 
 _cached_statics = {}
@@ -34,13 +34,53 @@ static_hooks = {
 }
 
 
+
+class Template(object):
+    
+    def __init__(self, f=None):
+        # skin
+        if f is None:
+            f = open(os.path.join(static_dir, 'skin.html'))
+        parser = etree.HTMLParser(encoding='utf-8')
+        self.tree = etree.parse(f, parser)
+        f.close()        
+
+    def root(self):
+        return self.tree.getroot().find('body')
+
+    def render(self):
+        return etree.tostring(self.tree).encode('utf-8')
+
+
+    def get_middle(self):
+        return self.root().find('.//middle')#self.tree.getroot().find('.//middle')
+    
+    def set_middle(self, middle):
+        parent = self.get_middle().getparent()
+        parent.replace(self.get_middle(), middle)
+
+    middle = property(get_middle, set_middle)
+
+
+    def get_top(self):
+        return self.root().find('.//top')#self.tree.getroot().find('.//top')
+    
+    def set_top(self, top):
+        parent = self.get_top().getparent()
+        parent.replace(self.get_top(), top)
+
+    top = property(get_top, set_top)
+        
+
+
 class CachedStatic(File):
 
     def __init__(self, *args, **kwargs):
         File.__init__(self, *args, **kwargs)
-        f = open(os.path.join(static_dir, 'skin.html'))
-        self.skin = Template(f.read())
-        f.close()
+        self.skin = Template()
+        # f = open(os.path.join(static_dir, 'skin.html'))
+        # self.skin = Template(f.read())
+        # f.close()
 
     def render(self, request):
         return self.render_GET(request)
@@ -138,19 +178,6 @@ class CachedStatic(File):
         return gzipped
 
 
-    # def prepareTemplate(self, fo):
-
-    #     parser = etree.HTMLParser(encoding='utf-8')
-    #     tree = etree.parse(fo, parser)
-    #     # first element is body
-    #     subst = {}
-    #     for body in tree.getroot():
-    #         for el in body:
-    #             subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
-    #     d.addCallback(lambda x: self.skin.safe_substitute(subst))
-    #     d.callback(None)
-    #     return d
-
     def renderTemplate(self, fileForReading, last_modified, request):
 
         # Hoooooooooks
@@ -161,9 +188,10 @@ class CachedStatic(File):
             short_name = fileForReading.name.split('\\')[-1]
 
         if short_name in static_hooks:
-            parser = etree.HTMLParser(encoding='utf-8')
-            tree = etree.parse(fileForReading, parser)
-            d = static_hooks[short_name](tree.getroot().find("body"), self.skin, request)
+            # parser = etree.HTMLParser(encoding='utf-8')
+            # tree = etree.parse(fileForReading, parser)
+            template = Template(f=fileForReading)
+            d = static_hooks[short_name](template, self.skin, request)
         else:
             # just an empty snippet
             d = defer.Deferred()
