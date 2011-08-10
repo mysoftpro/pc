@@ -151,23 +151,6 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
         ]
 
 
-# item = etree.Element("div", CLASS="item")
-    # a = etree.Element("a", href="", )
-    # img = etree.Element("div", CLASS="icon")
-    # img.append(imgs[image_i])
-    # a.append(img)
-    # price = etree.Element("div", CLASS="price label")
-    # price.text = unicode(m['price']) + u'р.'
-    # name = etree.Element("div", CLASS="name label")
-    # name.text = m['name']
-    # a.append(price)
-    # a.append(name)
-    # item.append(a)
-    # return etree.tostring(item,encoding='utf-8')
-
-#subst.update({el.tag: u''.join([etree.tostring(e) for e in el.getchildren()]).encode('utf-8')})
-    #return
-
 from copy import deepcopy
 
 def renderModelForIndex(result, template, m, image_i):

@@ -49,7 +49,9 @@ class Template(object):
         return self.tree.getroot().find('body')
 
     def render(self):
-        return etree.tostring(self.tree).encode('utf-8')
+        print "eeeeeeeeeeeeeeeeeeeeeeeeeee"
+        print etree.tostring(self.tree)
+        return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
     def get_middle(self):
@@ -212,7 +214,6 @@ class Root(Resource):
         self.static.indexNames = [index_page]
         self.putChild('static',self.static)
         self.putChild('xml',XmlGetter())
-        # self.putChild('model',Model())
         self.putChild('computer', Computer())
         self.host_url = host_url
         self.cookies = []
@@ -240,17 +241,6 @@ class Root(Resource):
 
 
 
-
-# class Model(Resource):
-#     def render_GET(self, request):
-#         model = request.args.get('name', [None])[0]
-#         if model is None:
-#             return 'null'
-#         model = unicode(model, 'utf-8')
-#         model_obs = [m for m in models if m['name'] == model]
-#         if len(model) >0:
-#             print model_obs
-#         return "ok"
 
 
 class Computer(Resource):
