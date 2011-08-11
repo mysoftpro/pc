@@ -18,8 +18,8 @@ import simplejson
 from datetime import datetime, date
 from pc.models import models, index, computer
 from pc.catalog import XmlGetter
-#from string import Template
-# from os import stat
+from urllib import quote_plus, unquote_plus
+
 from lxml import etree
 
 _cached_statics = {}
@@ -49,13 +49,11 @@ class Template(object):
         return self.tree.getroot().find('body')
 
     def render(self):
-        print "eeeeeeeeeeeeeeeeeeeeeeeeeee"
-        print etree.tostring(self.tree)
         return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
     def get_middle(self):
-        return self.root().find('.//middle')#self.tree.getroot().find('.//middle')
+        return self.root().find('.//middle')
     
     def set_middle(self, middle):
         parent = self.get_middle().getparent()
@@ -65,7 +63,7 @@ class Template(object):
 
 
     def get_top(self):
-        return self.root().find('.//top')#self.tree.getroot().find('.//top')
+        return self.root().find('.//top')
     
     def set_top(self, top):
         parent = self.get_top().getparent()
@@ -89,15 +87,11 @@ class CachedStatic(File):
 
 
     def render_GET(self, request):
-
-        """
-        tretiy3--------------------- this is just a copy of original render_GET with small changes
-
-        Begin sending the contents of this L{File} (or a subset of the
-        contents, based on the 'range' header) to the given request.
-        """
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-
+        # print "---------------cached---------------------"
+        # print _cached_statics.keys()
+        print ""
+        
         self.restat(False)
 
         if self.type is None:
@@ -130,15 +124,14 @@ class CachedStatic(File):
             else:
                 raise
 
-        # cache all images and min.js files
-        fn = fileForReading.name
-
-        if 'jpg' in fn or 'gif' in fn or 'png' in fn or fn == 'jScrollPane.js':
+        physical_name = fileForReading.name
+        virtual_name = unquote_plus(request.path.split('/')[-1])
+        
+        if 'jpg' in physical_name or 'gif' in physical_name or 'png' in physical_name or physical_name == 'jScrollPane.js':
             request.setHeader("Cache-Control", "max-age=290304000, public")
         else:
             request.setHeader("Cache-Control", "max-age=0, must-revalidate")#7200
 
-        # ct = zope.contenttype.guess_content_type(fileForReading.name, fileForReading)[0]
         request.setHeader('Content-Encoding', 'gzip')
 
         if 'html' in self.type:
@@ -147,21 +140,37 @@ class CachedStatic(File):
         last_modified = self.getmtime()
 
         # 304 is here
-        if request.setLastModified(last_modified) is CACHED and fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
+        physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
+        virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
+
+        if request.setLastModified(last_modified) is CACHED and (physical_name_in_cache or virtual_name_in_cache):
             return ''
 
-        if fileForReading.name in _cached_statics and _cached_statics[fileForReading.name][0] == last_modified:
-            return _cached_statics[fileForReading.name][1]
+        # cached gzip is here
+        if physical_name_in_cache in _cached_statics:
+            return _cached_statics[physical_name][1]
+
+        if virtual_name_in_cache in _cached_statics:
+            return _cached_statics[virtual_name][1]
+
         else:
             if '.html' in fileForReading.name or '.json' in fileForReading.name:
+                name_to_cache = physical_name
+                if len(virtual_name)>0:
+                    splitted = physical_name.split('\\')
+                    if len(splitted) == 0:
+                        splitted = physical_name.split('/')
+                    if splitted[-1] != virtual_name:
+                        name_to_cache = virtual_name                        
+
                 d = self.renderTemplate(fileForReading, last_modified, request)
-                d.addCallback(self._gzip, fileForReading.name, last_modified)
+                d.addCallback(self._gzip, name_to_cache, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
                 fileForReading.close()
-                return self._gzip(content, fileForReading.name, last_modified)
+                return self._gzip(content, physical_name, last_modified)
 
 
 

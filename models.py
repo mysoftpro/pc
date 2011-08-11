@@ -136,14 +136,6 @@ def component_name(_id, model):
                 return k
 
 
-
-# index_page_snippet = u"""
-# <div style="background-image:url('$image')" class="indexitem">
-# <h3><a href="/computer/$name">$name: </a><span class="usprice">$price руб</span></h3>
-# </div>
-# """
-
-
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
         'static/compaq-presario-sg3440il-desktop-pc1.png',
         'static/dell-studio-hybrid-desktop-pc1.png',
@@ -158,7 +150,7 @@ def renderModelForIndex(result, template, m, image_i):
     tree = template.root()
     m.update({'item_docs':result})
     model_snippet = tree.find('model')
-    
+
     snippet = deepcopy(model_snippet.find('div'))
     snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
     a = snippet.find('.//a')
@@ -195,17 +187,24 @@ def index(template, skin, request):
 
 
 
-def renderComputer(subst_elements, content, model):
-    subst = subst_elements[0]
-    elements = subst_elements[1]
-    for r in elements['rows']:
+def renderComputer(items, template, skin, model):
+    top = template.top
+    top.find("h2[@class='comp_left']").text = model['name']
+    top.find("h2[@class='comp_right']").text = u'Модификация (' + model['name'] + u')'
+    for r in items['rows']:
         if r['key'] is None: continue
         _id = r['id']
-        doc = r['doc']
-        subst.update({component_name(_id, model):doc['text'].encode('utf-8')})
-    subst.update({'name':model['name'].encode('utf-8')})
-    subst.update({'modifname':(u'Модификация (' + model['name'] + u')').encode('utf-8')})
-    return Template(content).safe_substitute(subst)
+        td_exp = "//td[@id='" + component_name(_id, model) + "']"
+        td_found = top.xpath(td_exp)
+        if len(td_found)>0:
+            td_found[0].text = r['doc']['text']
+    skin.top = template.top
+    skin.middle = template.middle
+    return skin.render()
+    #     subst.update({component_name(_id, model):doc['text'].encode('utf-8')})
+    # subst.update({'name':model['name'].encode('utf-8')})
+    # subst.update({'modifname':(u'Модификация (' + model['name'] + u')').encode('utf-8')})
+    # return Template(content).safe_substitute(subst)
 
 
 from twisted.python import log
@@ -216,8 +215,14 @@ def pr(some):
     log.msg(some)
     return some
 
+# def delayedRes(res):
+#     def delayed(some):
+#         li = list(some)
+#         li.insert(0,res)
+#         return tuple(li)
+#     return delayed
 
-def renderChoices(choices, content, model):
+def renderChoices(choices, template, skin, model):
     substs = {}
     for c in choices:
         if c[0]:
@@ -236,7 +241,7 @@ def renderChoices(choices, content, model):
     return substs
 
 
-def fillChoices(result, content, model):
+def fillChoices(result, template, skin, model):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     mother = [d for d in docs if isMother(d)][0]
 
@@ -244,42 +249,63 @@ def fillChoices(result, content, model):
 
     mother_cats = getCatalogsKey(mother)
 
-    defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=mother_cats).addCallback(lambda res: ("mothers",res)))
+    defs.append(couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=mother_cats).addCallback(lambda res: ("mothers",res)))
 
-    defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: ("procs",res)))
+    defs.append(couch.openView(designID,
+                               'catalogs',
+                               include_docs=True,
+                               key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: ("procs",res)))
 
-    defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=geforce),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=radeon)]).addCallback(lambda res: ("videos",res)))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=geforce),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=radeon)]).addCallback(lambda res: ("videos",res)))
 
-    defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: ("rams",res)))
-    defs.append(couch.openView(designID, 'catalogs',include_docs=True, key=satas).addCallback(lambda res: ("hdds",res)))
+    defs.append(couch.openView(designID,
+                               'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: ("rams",res)))
+    defs.append(couch.openView(designID,
+                               'catalogs',include_docs=True, key=satas).addCallback(lambda res: ("hdds",res)))
 
-    defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=cases_400_650),
-                                   couch.openView(designID, 'catalogs',include_docs=True, key=cases_exclusive)]).addCallback(lambda res: ("cases",res)))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=cases_400_650),
+                                   couch.openView(designID,
+                                                  'catalogs',include_docs=True, key=cases_exclusive)]).addCallback(lambda res: ("cases",res)))
 
-    defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=displays_19_20),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=displays_22_26)]).addCallback(lambda res: ("displays",res)))
-
-
-    defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_a4),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_acme),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_chikony),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=kbrds_game)]).addCallback(lambda res: ("kbrds",res)))
-
-    defs.append(defer.DeferredList([couch.openView(designID, 'catalogs',include_docs=True, key=mouses_a4),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=mouses_game),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=mouses_acme),
-                                    couch.openView(designID, 'catalogs',include_docs=True, key=mouses_genius)]).addCallback(lambda res: ("mouses",res)))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=displays_19_20),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=displays_22_26)]).addCallback(lambda res: ("displays",res)))
 
 
-    return defer.DeferredList(defs).addCallback(renderChoices, content, model).addCallback(lambda su: (su,result))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrds_a4),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrds_acme),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrds_chikony),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrds_game)]).addCallback(lambda res: ("kbrds",res)))
 
-def computer(tree, skin, request):
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouses_a4),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouses_game),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouses_acme),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouses_genius)]).addCallback(lambda res: ("mouses",res)))
+
+
+    return defer.DeferredList(defs).addCallback(renderChoices, template, skin, model).addCallback(lambda x: result)
+
+def computer(template, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
     _models = [m for m in models if m['name'] == name]
     model = _models[0] if len(_models)>0 else models[0]
 
     d = couch.listDoc(keys=[c for c in getModelComponents(model)],include_docs=True)
-    d.addCallback(fillChoices, content, model)
-    d.addCallback(renderComputer, content, model)
+    d.addCallback(fillChoices, template, skin, model)
+    d.addCallback(renderComputer, template, skin, model)
     return d
