@@ -90,7 +90,6 @@ class CachedStatic(File):
         # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         # print "---------------cached---------------------"
         # print _cached_statics.keys()
-        print ""
         
         self.restat(False)
 

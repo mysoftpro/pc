@@ -201,10 +201,6 @@ def renderComputer(items, template, skin, model):
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
-    #     subst.update({component_name(_id, model):doc['text'].encode('utf-8')})
-    # subst.update({'name':model['name'].encode('utf-8')})
-    # subst.update({'modifname':(u'Модификация (' + model['name'] + u')').encode('utf-8')})
-    # return Template(content).safe_substitute(subst)
 
 
 from twisted.python import log
@@ -223,22 +219,30 @@ def pr(some):
 #     return delayed
 
 def renderChoices(choices, template, skin, model):
-    substs = {}
+
+    def makeOption(row, select):
+        option = etree.Element('option')
+        option.text = row['doc']['text']
+        option.set('value',row['id'])
+        select.append(option)
+
+    top = template.top
     for c in choices:
-        if c[0]:
-            token = c[1][0]
-            options = []
-            if type(c[1][1]) is dict:
+        if not c[0]: continue
+        token = c[1][0]
+        td_exp = "//td[@id='" + token + "']"
+        td_found = top.xpath(td_exp)
+        if len(td_found)>0:
+            select = etree.Element('select')
+            if type(c[1][1]) is dict:#normal case
                 for r in c[1][1]['rows']:
-                    options.append(r['doc']['text'].encode('utf-8'))
-                substs.update({token:"<select><option>%s</option></select>" % "</option><option>".join(options)})
-            else:
+                    makeOption(r, select)
+            else: # multiple components under 1 token
                 for el in c[1][1]:
                     if el[0]:
                         for r in el[1]['rows']:
-                            options.append(r['doc']['text'].encode('utf-8'))
-                substs.update({token:"<select><option>%s</option></select>" % "</option><option>".join(options)})
-    return substs
+                            makeOption(r, select)
+            td_found[0].append(select)
 
 
 def fillChoices(result, template, skin, model):
