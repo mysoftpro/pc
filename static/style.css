@@ -343,3 +343,6 @@ td.comp_right{
 
 }
 
+.comp_right select {
+    max-width:300px;
+}
