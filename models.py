@@ -190,7 +190,7 @@ def index(template, skin, request):
 def renderComputer(items, template, skin, model):
     top = template.top
     top.find("h2[@class='comp_left']").text = model['name']
-    top.find("h2[@class='comp_right']").text = u'Модификация (' + model['name'] + u')'
+    # top.find("h2[@class='comp_right']").text = u'Модификация (' + model['name'] + u')'
     for r in items['rows']:
         if r['key'] is None: continue
         _id = r['id']
@@ -217,7 +217,6 @@ def pr(some):
 #         li.insert(0,res)
 #         return tuple(li)
 #     return delayed
-
 def renderChoices(choices, template, skin, model):
 
     def makeOption(row, select):
