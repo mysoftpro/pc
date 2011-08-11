@@ -335,8 +335,10 @@ td.comp_middle{
 /* color:#7B9C0A; */
 }
 td.comp_right{
-    color:#999999;
-    text-align:left;
+    color:black;
+    text-align:right;
+    margin-left:20px;
+    
 }
 
 #comp_right_title{
