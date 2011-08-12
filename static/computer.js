@@ -1,28 +1,48 @@
-function htmlDecode(value){
-    return $('<div/>').html(value).text();
-}
-
-var mock_array = new Array;
-function isArray(){
-    return b.constructor == mock_array.constructor;
+function getCatalogs(component){
+    return _(component.catalogs).map(function(el){return el['id'];});
 }
 
 
-// function prepareChoices(){
-//     for (var category in choices){
-// 	if (category.length == 0)
-// 	    continue;
-// 	for (var j = 0,l=choices[category].length;j<l;j++){
-// 	    if (choices[category][j]['id'] != undefined){
+function filterByCatalogs(components, catalogs){
+    return  _(components).filter(function(c){
+				     var cats = getCatalogs(c).slice(0, catalogs.length);
+				     var all = _.zip(cats, catalogs).slice(0,2);
+				     return _(all).all(function(x){return x[0] == x[1];});
+			      });
+}
 
-// 	    }
-// 	}
-
-//     }
+//model_catalogs = undefined;
+// if (!model_catalogs){
+//    model_catalogs = {};
+//     _(model).chain()
+// 	.values()
+//         .each(function(el){
+// 		  model_catalogs[el['id']] = getCatalogs(el);
+// 		  });
 // }
+function componentChanged(event){
+    try{
+	var target = $(event.target);
+	var new_id = target.val();
+	var new_component = choices[target.val()];
+	var new_cats = getCatalogs(new_component);
+	var old_component = filterByCatalogs(_(model).values(), new_cats)[0];
+	console.log(old_component['_id']);
+	console.log(new_component['_id']);
+	console.log(new_model);
+	delete new_model[old_component['_id']];
+	console.log(new_model);
+	new_model[new_component['_id']] = new_component;
+	//console.log(model);
+	//console.log(new_model);
+    } catch (x) {
+	console.log(x);
+    }
+}
 
 $(function(){
       try{
+	  new_model = _.clone(model);
 	  var middles = $('td.comp_middle');
 	  for (var i=0;i<middles.length;i++){
 	      var mid = $(middles.get(i));
@@ -38,7 +58,7 @@ $(function(){
 	      }
 	  }
 	  $('font').remove();
-	  $('select').chosen();
+	  $('select').chosen().change(componentChanged);
 
 
 

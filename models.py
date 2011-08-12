@@ -29,8 +29,8 @@ mothers = "7388"
 
 mothers_1155 = [components, mothers,"17961"]
 mothers_1156 = [components,mothers,"12854"]
-mothers_1366 =[components,mothers,"18029"] 
-mothers_775 = [components,mothers,"7449"]    
+mothers_1366 =[components,mothers,"18029"]
+mothers_775 = [components,mothers,"7449"]
 mothers_am23 = [components,mothers,"7699"]
 
 videos = "7396"
@@ -207,7 +207,7 @@ def index(template, skin, request):
 
 def renderComputer(items, template, skin, model):
     top = template.top
-    top.find("h3").text = model['name']    
+    top.find("h3").text = model['name']
     # top.find("h2[@class='comp_right']").text = u'Модификация (' + model['name'] + u')'
     json = {}
     tottal = 0
@@ -219,13 +219,13 @@ def renderComputer(items, template, skin, model):
 	if len(td_found)>0:
 	    td_found[0].text = r['doc']['text']
 	    r['doc'] = makePrice(r['doc'])
-            td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
-            tottal += r['doc']['price']
+	    td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
+	    tottal += r['doc']['price']
 	    r['doc'] = cleanDoc(r['doc'])
 	    json.update({r['doc']['id']:r['doc']})
-            
+
     for div in top.findall("div[@class='model_price']"):
-        div.find('span').text = u' '.join((unicode(tottal),u'руб'))
+	div.find('span').text = u' '.join((unicode(tottal),u'руб'))
     template.middle.find('script').text += u''.join(('var model=',simplejson.dumps(json),';var tottal=',unicode(tottal)))
     skin.top = template.top
     skin.middle = template.middle
@@ -255,9 +255,9 @@ def renderChoices(choices, template, skin, model):
     def makeOption(row, select):
 	option = etree.Element('option')
 	option.text = u' '.join((row['doc']['text'],unicode(row['doc']['price']),u'руб'))
-	option.set('value',row['id'])        
-        if row['id'] in model_ids:
-            option.set('selected','selected')
+	option.set('value',row['id'])
+	if row['id'] in model_ids:
+	    option.set('selected','selected')
 	select.append(option)
 
     top = template.top
@@ -290,32 +290,32 @@ def renderChoices(choices, template, skin, model):
 
 def fillChoices(result, template, skin, model):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
-    
+
 
     defs = []
-    
-    
+
+
     defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mothers_1366)
-                                    .addCallback(lambda res: ("LGA1366",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mothers_1155)
-                                    .addCallback(lambda res: ("LGA1155",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mothers_1156)
-                                    .addCallback(lambda res: ("LGA1166",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mothers_775)
-                                    .addCallback(lambda res: ("LGA775",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mothers_am23)
-                                    .addCallback(lambda res: ("AM2 3",res))])
-                                   .addCallback(lambda res: ("mothers",res)))
+						   'catalogs',
+						   include_docs=True, key=mothers_1366)
+				    .addCallback(lambda res: ("LGA1366",res)),
+				    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=mothers_1155)
+				    .addCallback(lambda res: ("LGA1155",res)),
+				    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=mothers_1156)
+				    .addCallback(lambda res: ("LGA1166",res)),
+				    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=mothers_775)
+				    .addCallback(lambda res: ("LGA775",res)),
+				    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=mothers_am23)
+				    .addCallback(lambda res: ("AM2 3",res))])
+				   .addCallback(lambda res: ("mothers",res)))
 
     mother = [d for d in docs if isMother(d)][0]
     mother_cats = getCatalogsKey(mother)
