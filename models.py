@@ -218,6 +218,7 @@ def renderComputer(items, template, skin, model):
 	if len(td_found)>0:
 	    td_found[0].text = r['doc']['text']
 	    r['doc'] = makePrice(r['doc'])
+            td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
             tottal += r['doc']['price']
 	    r['doc'] = cleanDoc(r['doc'])
 	    json.update({r['doc']['id']:r['doc']})
