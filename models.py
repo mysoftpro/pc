@@ -239,7 +239,7 @@ def renderChoices(choices, template, skin, model):
                 for el in c[1][1]:
                     if el[0]:
                         option_group = etree.Element('optgroup')
-                        option_group.set('title', el[1][0])
+                        option_group.set('label', el[1][0])
                         for r in el[1][1]['rows']:
                             makeOption(r, option_group)
                         select.append(option_group)
