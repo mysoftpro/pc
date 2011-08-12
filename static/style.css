@@ -333,10 +333,11 @@ td.comp_left {
 }
 td.comp_middle{
 /* color:#7B9C0A; */
+    padding-right:50px;
 }
 td.comp_right{
     color:black;
-    text-align:right;
+    /* text-align:right; */
     margin-left:20px;
     
 }
@@ -350,7 +351,11 @@ td.comp_right{
 }
 
 .comp_right select {
-    /* max-width:300px; */
+    width:400px;
+    /* max-width:300px;
     width:90%;
+    min-width:90%;
+    max-width:90%;
     margin-left:20px;
+    */
 }

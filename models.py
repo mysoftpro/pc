@@ -4,7 +4,7 @@ from lxml import etree
 from twisted.internet import defer
 from string import Template
 from urllib import quote_plus, unquote_plus
-
+import simplejson
 
 # <catalog id="7388" name="Материнские платы">
 #       <catalog id="17961" name="LGA1155">
@@ -136,6 +136,16 @@ def component_name(_id, model):
                 return k
 
 
+
+Margin=1.25
+Course = 29
+
+def makePrice(doc):
+    our_price = doc['price']*Margin*Course
+    doc['price'] = our_price
+    return doc
+
+
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
         'static/compaq-presario-sg3440il-desktop-pc1.png',
         'static/dell-studio-hybrid-desktop-pc1.png',
@@ -217,7 +227,10 @@ def pr(some):
 #         li.insert(0,res)
 #         return tuple(li)
 #     return delayed
+printed = False
+
 def renderChoices(choices, template, skin, model):
+    json = {}
     def makeOption(row, select):
         option = etree.Element('option')
         option.text = row['doc']['text']
@@ -227,7 +240,13 @@ def renderChoices(choices, template, skin, model):
     top = template.top
     for c in choices:
         if not c[0]: continue
+        # from pc import models as ms
+        # if not ms.printed:
+        #     print "--------------------------------"
+        #     print c
+        #     ms.printed = True
         token = c[1][0]
+        json_rows = []
         td_exp = "//td[@id='" + token + "']"
         td_found = top.xpath(td_exp)
         if len(td_found)>0:
@@ -235,17 +254,27 @@ def renderChoices(choices, template, skin, model):
             if type(c[1][1]) is dict:#normal case
                 for r in c[1][1]['rows']:
                     makeOption(r, select)
+                    r['doc'] = makePrice(r['doc'])
+                    r['doc'].pop('text')
+                    json_rows.append(r)
+                json.update({token:json_rows})
             else: # multiple components
-                for el in c[1][1]:
+                for el in c[1][1]:                                        
                     if el[0]:
+                        json_opts_rows = []
                         option_group = etree.Element('optgroup')
                         option_group.set('label', el[1][0])
                         for r in el[1][1]['rows']:
                             makeOption(r, option_group)
+                            r['doc'] = makePrice(r['doc'])
+                            r['doc'].pop('text')
+                            json_opts_rows.append(r)
+                        json_rows.append({el[1][0]:json_opts_rows})
                         select.append(option_group)
             td_found[0].append(select)
-
-
+        json.update({token:json_rows})
+    template.middle.find('script').text = 'var choices=' + simplejson.dumps(json) + ';'
+        
 def fillChoices(result, template, skin, model):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     mother = [d for d in docs if isMother(d)][0]
