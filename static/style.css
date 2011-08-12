@@ -33,6 +33,7 @@ h2 {
 
     height: 25px;
     margin: 0;
+    margin-bottom:10px;
     padding: 7px 0 0 0;
     font-size:36px;
     font-family:Verdana,Arial,Helvetica,sans-serif;
@@ -352,10 +353,27 @@ td.comp_right{
 
 .comp_right select {
     width:400px;
-    /* max-width:300px;
-    width:90%;
-    min-width:90%;
-    max-width:90%;
-    margin-left:20px;
-    */
+}
+.model_price{
+    float:left;
+
+}
+
+.model_price span{
+    font-weight:bold;
+    color:white;
+    background-color:#7B9C0A;
+    font-weight:bold;
+    padding:3px;
+}
+
+#newprice{
+    float:right;
+}
+
+#modelname{
+    float:left;
+    margin:0;
+    margin-right:60px;
+    padding:0;
 }
