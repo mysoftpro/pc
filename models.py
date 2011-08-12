@@ -23,9 +23,15 @@ import simplejson
 #        <catalog id="7700" name="SOCKET AM2">
 
 components = "7363"
+
 procs = "7399"
 mothers = "7388"
 
+mothers_1155 = [components, mothers,"17961"]
+mothers_1156 = [components,mothers,"12854"]
+mothers_1366 =[components,mothers,"18029"] 
+mothers_775 = [components,mothers,"7449"]    
+mothers_am23 = [components,mothers,"7699"]
 
 videos = "7396"
 
@@ -71,16 +77,11 @@ network = "7405"
 lans = [network,"14710"]
 
 mother_to_proc_mapping= {
-    # "LGA1155"
-    (components, mothers,"17961"):[components, procs, "18027"],
-    # "LGA1156"
-    (components,mothers,"12854"):[components,procs,"18028"],
-    # "LGA1366"
-    (components,mothers,"18029"):[components,procs,"9422"],
-    #"LGA775":
-    (components,mothers,"7449"):[components,procs,"7451"],
-    # "SOCKET AM2 3":
-    (components,mothers,"7699"):[components,procs,"7700"]
+    tuple(mothers_1155):[components, procs, "18027"],
+    tuple(mothers_1156):[components,procs,"18028"],
+    tuple(mothers_1366):[components,procs,"9422"],
+    tuple(mothers_775):[components,procs,"7451"],
+    tuple(mothers_am23):[components,procs,"7700"]
     }
 
 
@@ -286,15 +287,35 @@ def renderChoices(choices, template, skin, model):
 
 def fillChoices(result, template, skin, model):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
-    mother = [d for d in docs if isMother(d)][0]
+    
 
     defs = []
+    
+    
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mothers_1366)
+                                    .addCallback(lambda res: ("LGA1366",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mothers_1155)
+                                    .addCallback(lambda res: ("LGA1155",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mothers_1156)
+                                    .addCallback(lambda res: ("LGA1166",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mothers_775)
+                                    .addCallback(lambda res: ("LGA775",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mothers_am23)
+                                    .addCallback(lambda res: ("AM2 3",res))])
+                                   .addCallback(lambda res: ("mothers",res)))
 
+    mother = [d for d in docs if isMother(d)][0]
     mother_cats = getCatalogsKey(mother)
-
-    defs.append(couch.openView(designID,
-			       'catalogs',
-			       include_docs=True, key=mother_cats).addCallback(lambda res: ("mothers",res)))
 
     defs.append(couch.openView(designID,
 			       'catalogs',
