@@ -251,10 +251,13 @@ printed = False
 def renderChoices(choices, template, skin, model):
     # json = {}
     json = {}
+    model_ids = [i for i in getModelComponents(model)]
     def makeOption(row, select):
 	option = etree.Element('option')
 	option.text = u' '.join((row['doc']['text'],unicode(row['doc']['price']),u'руб'))
-	option.set('value',row['id'])
+	option.set('value',row['id'])        
+        if row['id'] in model_ids:
+            option.set('selected','selected')
 	select.append(option)
 
     top = template.top
