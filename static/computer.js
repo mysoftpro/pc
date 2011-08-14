@@ -1,3 +1,12 @@
+
+function recalculate(){
+    var tottal = 0;
+    for (var id in new_model){
+	tottal += new_model[id].price;
+   }
+    $('#newprice span').text(tottal + ' руб');
+}
+
 function getCatalogs(component){
     return _(component.catalogs).map(function(el){return el['id'];});
 }
@@ -11,24 +20,23 @@ function filterByCatalogs(components, catalogs){
 			      });
 }
 
-//model_catalogs = undefined;
-// if (!model_catalogs){
-//    model_catalogs = {};
-//     _(model).chain()
-// 	.values()
-//         .each(function(el){
-// 		  model_catalogs[el['id']] = getCatalogs(el);
-// 		  });
-// }
 function componentChanged(event){
     try{
 	var target = $(event.target);
 	var new_id = target.val();
 	var new_component = choices[target.val()];
 	var new_cats = getCatalogs(new_component);
-	var old_component = filterByCatalogs(_(model).values(), new_cats)[0];
+	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+	console.log("before deleting");
+	console.log(_(new_model).keys().length);
+	console.log(_(new_model).keys());	
 	delete new_model[old_component['_id']];	
+	console.log("after deleting");
+	console.log(_(new_model).keys().length);
+	console.log(_(new_model).keys());
+
 	new_model[new_component['_id']] = new_component;
+	recalculate();
     } catch (x) {
 	console.log(x);
     }
