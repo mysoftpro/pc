@@ -136,8 +136,6 @@ class XmlGetter(Resource):
     image_url = 'http://wit-tech.ru/img/get/file/'
 
     def saveDescription(self, doc, description):
-        print "eeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        print doc['_id']
         if 'description' in doc:
             doc['description'] = description
         else:
@@ -147,6 +145,13 @@ class XmlGetter(Resource):
         else:
             print "will add images"            
             self.getImage(doc)
+
+    def imgReceiverFactory(self, doc, img, d):
+        def factory(response):
+            response.deliverBody(ImageReceiver(doc, img+'.jpg', d))
+        return factory
+                                 
+            
 
     def getImage(self, doc):
         agent = Agent(reactor)
@@ -160,11 +165,9 @@ class XmlGetter(Resource):
                     headers.update({k:v})
             
             url = self.image_url + img
-            print "--"
-            print url
             d = defer.Deferred()
             image_request = agent.request('GET', url,Headers(headers),None)
-            image_request.addCallback(lambda response: response.deliverBody(ImageReceiver(doc, img, d)))
+            image_request.addCallback(self.imgReceiverFactory(doc, img, d))
             image_request.addErrback(self.pr)
             defs.append(d)
         li = defer.DeferredList(defs)
@@ -173,7 +176,6 @@ class XmlGetter(Resource):
         return d
 
     def addImages(self, images, doc):
-        print "addings!"
         attachments = {}
         for i in images:
             if i[0]:

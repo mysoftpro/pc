@@ -208,7 +208,7 @@ def index(template, skin, request):
 
 def renderComputer(items, template, skin, model):
     top = template.top
-    top.find("h3").text = model['name']    
+    top.find("h2").text = model['name']    
     json = {}
     tottal = 0
     for r in items['rows']:
@@ -221,8 +221,8 @@ def renderComputer(items, template, skin, model):
                 r['doc']['text'] = re.sub('<font.*</font>', '',r['doc']['text'])
                 r['doc'].update({'featured':True})
             td_found[0].text = r['doc']['text']
-	    r['doc'] = makePrice(r['doc'])
-	    td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
+	    r['doc'] = makePrice(r['doc'])	    
+            td_found[0].getnext().text = unicode(r['doc']['price'])  + u' руб'
 	    tottal += r['doc']['price']
 	    r['doc'] = cleanDoc(r['doc'])
 	    json.update({r['doc']['_id']:r['doc']})
@@ -256,15 +256,16 @@ def renderChoices(choices, template, skin, model):
     # json = {}
     json = {}
     model_ids = [i for i in getModelComponents(model)]
-    def makeOption(row, select):
+    def makeOption(row, select, td):
 	option = etree.Element('option')
 	if 'font' in row['doc']['text']:
             row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
             row['doc'].update({'featured':True})
-        option.text = u' '.join((row['doc']['text'],unicode(row['doc']['price']),u'руб'))
+        option.text = row['doc']['text']
 	option.set('value',row['id'])
 	if row['id'] in model_ids:
 	    option.set('selected','selected')
+            td.getnext().text = unicode(row['doc']['price']) + u' руб'
 	select.append(option)
 
     top = template.top
@@ -278,7 +279,7 @@ def renderChoices(choices, template, skin, model):
 	    if type(c[1][1]) is dict:#normal case
 		for r in c[1][1]['rows']:
 		    r['doc'] = makePrice(r['doc'])
-		    makeOption(r, select)
+		    makeOption(r, select, td_found[0])
 		    r['doc'] = cleanDoc(r['doc'])
 		    json.update({r['doc']['_id']:r['doc']})
 	    else: # multiple components
@@ -288,7 +289,7 @@ def renderChoices(choices, template, skin, model):
 			option_group.set('label', el[1][0])
 			for r in el[1][1]['rows']:
 			    r['doc'] = makePrice(r['doc'])
-			    makeOption(r, option_group)
+			    makeOption(r, option_group, td_found[0])
 			    r['doc'] = cleanDoc(r['doc'])
 			    json.update({r['doc']['_id']:r['doc']})
 			select.append(option_group)

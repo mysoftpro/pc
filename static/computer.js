@@ -4,7 +4,7 @@ function recalculate(){
     for (var id in new_model){
 	tottal += new_model[id].price;
    }
-    $('#newprice span').text(tottal + ' руб');
+    $('#newprice span').text(tottal);
 }
 
 function getCatalogs(component){
@@ -27,14 +27,7 @@ function componentChanged(event){
 	var new_component = choices[target.val()];
 	var new_cats = getCatalogs(new_component);
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
-	console.log("before deleting");
-	console.log(_(new_model).keys().length);
-	console.log(_(new_model).keys());	
 	delete new_model[old_component['_id']];	
-	console.log("after deleting");
-	console.log(_(new_model).keys().length);
-	console.log(_(new_model).keys());
-
 	new_model[new_component['_id']] = new_component;
 	recalculate();
     } catch (x) {

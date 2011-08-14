@@ -1,48 +1,80 @@
 <top>
-  <h3 id="modelname">original name</h3>
-  <div class="model_price" >Цена этой модели: <span>15200</span></div>
-  <div class="model_price" id="newprice">Цена модифицированной модели:<span>15200</span></div>
-  <div style="clear:both;margin-bottom:20px;">&nbsp;</div>
+  <h2 id="modelname">original name</h2>
+  <p class="description">
+    Отличный компьютер для интернет серфинга. Мощный процессор с hyperthreading позволит держать в браузере десятки
+    открытых вкладок.
+  </p>
+  <p class="description">
+    Вы можете заказать базовую модель нажав на кнопку Сохранить. А также, можно заменить в этой модели любой компонент из тех,
+    что находятся справа. Там показаны только совместимые компоненты. 
+    Вы сразу увидите как меняется цена и производительность вашего нового компьютера. 
+  </p>
+
+  <div class="model_price old" >Цена базовой модели: <span>15200</span> руб</div>
+  <div class="model_price new" id="newprice">Цена модифицированной модели:<span>15200</span> руб</div>
+  
+  <div style="clear:both;">&nbsp;</div>
 
   <table id="components">
+    <tr><td collspan="4" class="comp_title">Корпус</td></tr>
     <tr>
-      <td class="comp_left"  id="case"></td>
-      <td class="comp_middle">Корпус</td>
+      <td class="comp_left"  id="case"></td>      
+      <td class="comp_price"></td>
       <td class="comp_right" id="cases"></td>
+      <td class="comp_price"></td>
     </tr>
     <tr>
-      <td class="comp_left"  id="ram"></td>
-      <td class="comp_middle">ОЗУ</td>
+      <td collspan="4" class="comp_title">ОЗУ</td>
+    </tr>
+    <tr>            
+      <td collspan="4" class="comp_left"  id="ram"></td>
+      <td class="comp_price"></td>
       <td class="comp_right" id="rams"></td>
+      <td class="comp_price"></td>
     </tr>
     <tr>
+      <td collspan="4" class="comp_title">Видеокарта</td>
+    </tr>
+    <tr>      
       <td class="comp_left"  id="video"></td>
-      <td class="comp_middle">Видеокарта</td>
+      <td class="comp_price"></td>
       <td class="comp_right" id="videos"></td>
+      <td class="comp_price"></td>
+      
+    </tr>
+    <tr>
+      <td collspan="4" class="comp_title">Жесткий диск</td>
     </tr>
     <tr>
       <td class="comp_left"  id="hdd"></td>
-      <td class="comp_middle">Жесткий диск</td>
+      <td class="comp_price"></td>
       <td class="comp_right" id="hdds"></td>
+      <td class="comp_price"></td>
+    </tr>
+    <tr>
+      <td collspan="4" class="comp_title">Процессор</td>
     </tr>
     <tr>
       <td class="comp_left"  id="proc"></td>
-      <td class="comp_middle">Процессор</td>
+      <td class="comp_price"></td>
       <td class="comp_right" id="procs"></td>
+      <td class="comp_price"></td>      
+    </tr>
+    <tr>
+      <td collspan="4" class="comp_title">Материнская плата</td>
     </tr>
     <tr>
       <td class="comp_left"  id="mother"></td>
-      <td class="comp_middle">Материнская плата</td>
+      <td class="comp_price"></td>
       <td class="comp_right" id="mothers"></td>
+      <td class="comp_price"></td>
     </tr>
-
   </table>
+    <span class="green_image_button" style="float:right;margin-left:5px;" href="#">В корзину</span>
+    <span class="black_image_button" style="float:right;" href="#">Сбросить</span>
 </top>
 
-<middle>
-  
-  <script type="text/javascript">
-    
+<middle>  
+  <script type="text/javascript">    
   </script>
-
 </middle>
