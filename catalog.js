@@ -16,7 +16,7 @@ var storeDesc = function(code){
 
 
 var rows = $jq('.row');
-for (var i=0;i<3;i++){//rows.length
+for (var i=0;i<rows.length;i++){
     var row = $jq(rows.get(i));
     var code = row.find('.code').text();	  
     var id = row.attr('id');

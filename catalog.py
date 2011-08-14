@@ -71,6 +71,7 @@ class XmlGetter(Resource):
 
     def compareItem(self, some, item, sio):
         raw_doc = sio.getvalue()
+        sio.close()
         doc = simplejson.loads(raw_doc)
         need_store = False
         for k,v in doc.items():
@@ -83,6 +84,7 @@ class XmlGetter(Resource):
             d = couch.addAttachments(doc, raw_doc, version=True)
             d.addCallback(lambda _doc:couch.saveDoc(_doc))
             d.addErrback(self.pr)
+            return d
 
     def getItem(self, res, gen):
         try:
@@ -106,6 +108,9 @@ class XmlGetter(Resource):
 
 
     def compareDocs(self, res):
+        # sys.setrecursionlimit(2000)
+        # from twisted.internet.defer import setDebugging
+        # setDebugging(True)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
@@ -120,7 +125,7 @@ class XmlGetter(Resource):
         if op is not None:
             if op == 'store':
                 proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.storeDocs, self.pr)
-            elif op == 'compare':
+            elif op == 'compare' or op == 'update':
                 proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.compareDocs, self.pr)
             elif op == 'descr':
                 self.storeDescription(request)
@@ -143,7 +148,6 @@ class XmlGetter(Resource):
         if 'imgs' not in doc['description']:
             couch.saveDoc(doc)
         else:
-            print "will add images"            
             self.getImage(doc)
 
     def imgReceiverFactory(self, doc, img, d):
@@ -199,7 +203,6 @@ class ImageReceiver(Protocol):
         self.file.seek(0,2)
         # d = couch.addAttachments(self.doc, {self.name:self.file.getvalue()})
         # d.addCallback(lambda x: self.finish.callback(x)
-        print "finishing!"
         self.finish.callback({self.name:self.file.getvalue()})
         self.file.close()
         
