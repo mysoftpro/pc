@@ -51,7 +51,7 @@ $(function(){
 		  opt.html(opt_text);
 	      }
 	  }
-	  $('font').remove();
+	  //$('font').remove();
 	  $('select').chosen().change(componentChanged);
 
       } catch (x) {

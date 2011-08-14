@@ -217,7 +217,10 @@ def renderComputer(items, template, skin, model):
 	td_exp = "//td[@id='" + component_name(_id, model) + "']"
 	td_found = top.xpath(td_exp)
 	if len(td_found)>0:
-	    td_found[0].text = r['doc']['text']
+	    if 'font' in r['doc']['text']:
+                r['doc']['text'] = re.sub('<font.*</font>', '',r['doc']['text'])
+                r['doc'].update({'featured':True})
+            td_found[0].text = r['doc']['text']
 	    r['doc'] = makePrice(r['doc'])
 	    td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
 	    tottal += r['doc']['price']
