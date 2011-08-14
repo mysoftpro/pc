@@ -27,14 +27,8 @@ function componentChanged(event){
 	var new_component = choices[target.val()];
 	var new_cats = getCatalogs(new_component);
 	var old_component = filterByCatalogs(_(model).values(), new_cats)[0];
-	console.log(old_component['_id']);
-	console.log(new_component['_id']);
-	console.log(new_model);
-	delete new_model[old_component['_id']];
-	console.log(new_model);
+	delete new_model[old_component['_id']];	
 	new_model[new_component['_id']] = new_component;
-	//console.log(model);
-	//console.log(new_model);
     } catch (x) {
 	console.log(x);
     }
@@ -59,9 +53,6 @@ $(function(){
 	  }
 	  $('font').remove();
 	  $('select').chosen().change(componentChanged);
-
-
-
 
       } catch (x) {
 

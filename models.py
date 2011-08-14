@@ -5,6 +5,7 @@ from twisted.internet import defer
 from string import Template
 from urllib import quote_plus, unquote_plus
 import simplejson
+import re
 
 # <catalog id="7388" name="Материнские платы">
 #       <catalog id="17961" name="LGA1155">
@@ -149,7 +150,7 @@ def makePrice(doc):
 
 def cleanDoc(doc):
     if 'text' in doc:
-	doc.pop('text')
+        doc.pop('text')
     if '_attachments' in doc:
 	doc.pop('_attachments')
     return doc
@@ -207,8 +208,7 @@ def index(template, skin, request):
 
 def renderComputer(items, template, skin, model):
     top = template.top
-    top.find("h3").text = model['name']
-    # top.find("h2[@class='comp_right']").text = u'Модификация (' + model['name'] + u')'
+    top.find("h3").text = model['name']    
     json = {}
     tottal = 0
     for r in items['rows']:
@@ -222,7 +222,7 @@ def renderComputer(items, template, skin, model):
 	    td_found[0].text += u' '.join((u'<span class="comp_price">', unicode(r['doc']['price']),u'руб',u'</span>'))
 	    tottal += r['doc']['price']
 	    r['doc'] = cleanDoc(r['doc'])
-	    json.update({r['doc']['id']:r['doc']})
+	    json.update({r['doc']['_id']:r['doc']})
 
     for div in top.findall("div[@class='model_price']"):
 	div.find('span').text = u' '.join((unicode(tottal),u'руб'))
@@ -246,6 +246,7 @@ def pr(some):
 #         li.insert(0,res)
 #         return tuple(li)
 #     return delayed
+
 printed = False
 
 def renderChoices(choices, template, skin, model):
@@ -254,7 +255,10 @@ def renderChoices(choices, template, skin, model):
     model_ids = [i for i in getModelComponents(model)]
     def makeOption(row, select):
 	option = etree.Element('option')
-	option.text = u' '.join((row['doc']['text'],unicode(row['doc']['price']),u'руб'))
+	if 'font' in row['doc']['text']:
+            row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+            row['doc'].update({'featured':True})
+        option.text = u' '.join((row['doc']['text'],unicode(row['doc']['price']),u'руб'))
 	option.set('value',row['id'])
 	if row['id'] in model_ids:
 	    option.set('selected','selected')
