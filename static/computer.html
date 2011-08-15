@@ -1,19 +1,36 @@
 <top>
   <h2 id="modelname">original name</h2>
-  <p class="description">
+  <p class="description" style="color:white;">
     Отличный компьютер для интернет серфинга. Мощный процессор с hyperthreading позволит держать в браузере десятки
     открытых вкладок.
   </p>
-  <p class="description">
-    Вы можете заказать базовую модель нажав на кнопку Сохранить. А также, можно заменить в этой модели любой компонент из тех,
-    что находятся справа. Там показаны только совместимые компоненты. 
+
+  <p class="description" style="color:white;float:left;max-width:600px;">
+    Вы можете заказать базовую модель нажав на кнопку 'В Корзину'.
+
+    А еще, можно заменить в этой модели любой компонент.
+    Выбирайте их в таблице справа. Там показаны только совместимые компоненты. 
     Вы сразу увидите как меняется цена и производительность вашего нового компьютера. 
+
+    Описание каждого компонента читайте под таблицей. Когда вы щелкаете какой-нибудь элемент в таблице, описание обновляется.
   </p>
+
+  <div style="float:right;">
+    <div class="green_image_button" style="float:right;margin-left:5px;" href="#">В корзину</div>
+    <div class="black_image_button" style="float:right;" href="#">Сбросить</div>  
+    <div style="clear:both;">&nbsp;</div>
+    <div class="up_button" style="float:right;margin-left:5px;" href="#">быстрее</div>  
+    <div class="down_button" style="float:right;" href="#">дешевле</div>
+  </div>
+  
+  <div style="clear:both;">&nbsp;</div>
+
 
   <div class="model_price old" >Цена базовой модели: <span>15200</span> руб</div>
   <div class="model_price new" id="newprice">Цена модифицированной модели:<span>15200</span> руб</div>
-  
+
   <div style="clear:both;">&nbsp;</div>
+
 
   <table id="components">
     <tr><td collspan="4" class="comp_title">Корпус</td></tr>
@@ -70,11 +87,15 @@
       <td class="comp_price"></td>
     </tr>
   </table>
-    <span class="green_image_button" style="float:right;margin-left:5px;" href="#">В корзину</span>
-    <span class="black_image_button" style="float:right;" href="#">Сбросить</span>
 </top>
 
 <middle>  
   <script type="text/javascript">    
   </script>
+  <table id="descriptions">
+    <tr>
+      <td id="description_base"></td>
+      <td id="description_new"></td>
+    </tr>
+  </table>
 </middle>

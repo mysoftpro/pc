@@ -350,7 +350,7 @@ td.comp_right{
 }
 
 h3 {
-    font-size:20px;    
+    font-size:16px;    
 }
 
 h4 {
@@ -445,6 +445,36 @@ h4 {
     color:black;
     line-height:48px;
     text-align: center;
+    cursor:pointer;
 }
 
+
+.up_button{
+    -moz-background-clip: border;
+    -moz-background-origin: padding;
+    -moz-background-size: auto auto;
+    background-image: url("/static/up.png");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    display: block;
+    min-height:48px;
+    /* width:48px; */
+    padding-left:48px;
+    cursor:pointer;
+    padding-top:16px;
+}
+.down_button{
+    -moz-background-clip: border;
+    -moz-background-origin: padding;
+    -moz-background-size: auto auto;
+    background-image: url("/static/down.png");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    display: block;
+    min-height:48px;
+    /* width:48px; */
+    padding-left:48px;
+    cursor:pointer;
+    padding-top:16px;
+}
 /* .comp_price{color:#d6d6d6;} */

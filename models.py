@@ -256,16 +256,24 @@ def renderChoices(choices, template, skin, model):
     # json = {}
     json = {}
     model_ids = [i for i in getModelComponents(model)]
+    description_filled = False
     def makeOption(row, select, td):
 	option = etree.Element('option')
 	if 'font' in row['doc']['text']:
             row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
             row['doc'].update({'featured':True})
-        option.text = row['doc']['text']
+        option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' руб'
 	option.set('value',row['id'])
 	if row['id'] in model_ids:
 	    option.set('selected','selected')
             td.getnext().text = unicode(row['doc']['price']) + u' руб'
+            if not description_filled:
+                print "______________________________"
+                print row['doc']['_id']
+                base_descriptions = template.middle.xpath("//td[@id='description_base']")
+                base_descriptions.text = row['doc']['description']
+                new_descriptions = template.middle.xpath("//td[@id='description_new']")
+                new_descriptions.text = row['doc']['description']
 	select.append(option)
 
     top = template.top

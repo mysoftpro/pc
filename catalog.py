@@ -35,6 +35,9 @@ standard_headers = {'User-Agent': ['Mozilla/5.0 (Windows; U; Windows NT 6.1; en-
 
 
 class XmlGetter(Resource):
+    isLeaf = True
+    allowedMethods = ('GET','POST')
+
     def pr(self, fail):
         log.startLogging(sys.stdout)
         log.msg(fail)
@@ -128,11 +131,20 @@ class XmlGetter(Resource):
             elif op == 'compare' or op == 'update':
                 proxy.callRemote(xml_method, xml_login, xml_password).addCallbacks(self.compareDocs, self.pr)
             elif op == 'descr':
+                print "try to store"
                 self.storeDescription(request)
         return "ok"
 
+    def render_POST(self, request):
+        print "pooooooooooooooooooooooooooost"
+        op = request.args.get('op', [None])[0]
+        if op == 'descr':
+            print "try to store"
+            self.storeDescription(request)
+
     def storeDescription(self, request):
         _id = request.args.get('code')[0]
+        print "store! " + str(_id)
         _description = simplejson.loads(request.args.get('desription')[0][1:-1])
         d = couch.openDoc(_id)
         d.addCallback(self.saveDescription, _description)
@@ -140,7 +152,8 @@ class XmlGetter(Resource):
 
     image_url = 'http://wit-tech.ru/img/get/file/'
 
-    def saveDescription(self, doc, description):
+    def saveDescription(self, doc, description):        
+        print "save! " + doc["_id"]
         if 'description' in doc:
             doc['description'] = description
         else:
