@@ -4,7 +4,7 @@ function recalculate(){
     for (var id in new_model){
 	tottal += new_model[id].price;
    }
-    $('#newprice span').text(tottal);
+    $('#newprice').text(tottal);
 }
 
 function getCatalogs(component){

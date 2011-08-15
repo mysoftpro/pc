@@ -227,8 +227,9 @@ def renderComputer(items, template, skin, model):
 	    r['doc'] = cleanDoc(r['doc'])
 	    json.update({r['doc']['_id']:r['doc']})
 
-    for div in top.findall("div[@class='model_price']"):
-	div.find('span').text = u' '.join((unicode(tottal),u'руб'))
+    top.xpath("//span[@id='newprice']")[0].text = unicode(tottal)
+    top.xpath("//span[@id='oldprice']")[0].text = unicode(tottal)
+
     template.middle.find('script').text += u''.join(('var model=',simplejson.dumps(json),';var tottal=',unicode(tottal)))
     skin.top = template.top
     skin.middle = template.middle
@@ -265,6 +266,10 @@ def renderChoices(choices, template, skin, model):
 	option.set('value',row['id'])
 	if row['id'] in model_ids:
 	    option.set('selected','selected')
+            if 'description' not in row['doc']:
+                return
+            if 'comments' not in row['doc']['description']:
+                return
             td.getnext().text = unicode(row['doc']['price']) + u' руб'
             base_descriptions = template.middle.xpath("//td[@id='description_base']")
             base_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']

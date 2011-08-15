@@ -151,17 +151,28 @@ class XmlGetter(Resource):
             print "try to store"
             self.storeDescription(request)
 
+
+    def noSuchDoc(self, _id):
+        def no(fail):
+            print "faaaaaaaaaaaaaaaaaaaaaaail"
+            print fail
+            print _id
+            print ""
+        return no
+
     def storeDescription(self, request):
         _id = request.args.get('code')[0]
         print "store! " + str(_id)
         _description = simplejson.loads(request.args.get('desription')[0][1:-1])
         d = couch.openDoc(_id)
+        d.addErrback(self.noSuchDoc(_id))
         d.addCallback(self.saveDescription, _description)
-
+        
 
     image_url = 'http://wit-tech.ru/img/get/file/'
 
     def saveDescription(self, doc, description):        
+        if doc is None: return
         print "save! " + doc["_id"]
         if 'description' in doc:
             doc['description'] = description
@@ -192,7 +203,7 @@ class XmlGetter(Resource):
             
             url = self.image_url + img
             d = defer.Deferred()
-            image_request = agent.request('GET', url,Headers(headers),None)
+            image_request = agent.request('GET', str(url),Headers(headers),None)
             image_request.addCallback(self.imgReceiverFactory(doc, img, d))
             image_request.addErrback(self.pr)
             defs.append(d)
