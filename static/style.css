@@ -501,3 +501,18 @@ td.comp_right{
     margin-right: 5px;
     padding: 5px;
 }
+
+.better {
+    background-image:url('/static/up_small.png');
+    background-repeat:no-repeat;
+    padding-left:24px;
+    cursor:pointer;
+    color:#999999;
+}
+.cheaper {
+    background-image:url('/static/down_small.png');
+    background-repeat:no-repeat;
+    padding-left:24px;
+    cursor:pointer;
+    color:#999999;
+}
