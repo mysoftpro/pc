@@ -235,11 +235,26 @@ def renderComputer(components_choices, template, skin, model):
         for ch in choices:
             if ch[0] and ch[1][0] == name :
                 select = viewlet.xpath("//div[@class='component_select']")[0].find('select')
-                print ch[1][1]
-                for row in ch[1][1]['rows']:
-                    option = makeOption(row, select)
-                    if row['id'] == code:
-                        option.set('selected','selected')
+                if type(ch[1][1]) is list:
+                    for el in ch[1][1]:
+                        if el[0]:
+                            option_group = etree.Element('optgroup')
+                            option_group.set('label', el[1][0])
+                            for r in el[1][1]['rows']:
+                                r['doc'] = makePrice(r['doc'])
+                                option = makeOption(r, option_group)
+                                if r['id'] == code:
+                                    option.set('selected','selected')
+                                # r['doc'] = cleanDoc(r['doc'])
+                                # json.update({r['doc']['_id']:r['doc']})
+                            select.append(option_group)
+                else:
+                    for row in ch[1][1]['rows']:
+                        option = makeOption(row, select)
+                        # json.update({r['doc']['_id']:r['doc']})
+                        if row['id'] == code:
+                            option.set('selected','selected')
+    
             break
         template.middle.append(viewlet)
     skin.top = template.top
