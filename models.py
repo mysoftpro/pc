@@ -256,7 +256,6 @@ def renderChoices(choices, template, skin, model):
     # json = {}
     json = {}
     model_ids = [i for i in getModelComponents(model)]
-    description_filled = False
     def makeOption(row, select, td):
 	option = etree.Element('option')
 	if 'font' in row['doc']['text']:
@@ -267,13 +266,11 @@ def renderChoices(choices, template, skin, model):
 	if row['id'] in model_ids:
 	    option.set('selected','selected')
             td.getnext().text = unicode(row['doc']['price']) + u' руб'
-            if not description_filled:
-                print "______________________________"
-                print row['doc']['_id']
-                base_descriptions = template.middle.xpath("//td[@id='description_base']")
-                base_descriptions.text = row['doc']['description']
-                new_descriptions = template.middle.xpath("//td[@id='description_new']")
-                new_descriptions.text = row['doc']['description']
+            base_descriptions = template.middle.xpath("//td[@id='description_base']")
+            base_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
+            new_descriptions = template.middle.xpath("//td[@id='description_new']")
+            new_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
+
 	select.append(option)
 
     top = template.top
@@ -297,7 +294,7 @@ def renderChoices(choices, template, skin, model):
 			option_group.set('label', el[1][0])
 			for r in el[1][1]['rows']:
 			    r['doc'] = makePrice(r['doc'])
-			    makeOption(r, option_group, td_found[0])
+			    makeOption(r, option_group, td_found[0])                            
 			    r['doc'] = cleanDoc(r['doc'])
 			    json.update({r['doc']['_id']:r['doc']})
 			select.append(option_group)
