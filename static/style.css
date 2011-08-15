@@ -458,6 +458,11 @@ td.comp_right{
     font-size:14px;
 }
 
+.component_viewlet{
+    margin-bottom:20px;
+    width:1000px;
+}
+
 .component {
     border:1px solid white;
     padding:10px;
