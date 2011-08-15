@@ -209,7 +209,7 @@ def index(template, skin, request):
 
 
 def renderComputer(components_choices, template, skin, model):
-    print components_choices
+
     def makeOption(row, select):
         option = etree.Element('option')
         if 'font' in row['doc']['text']:
@@ -232,34 +232,27 @@ def renderComputer(components_choices, template, skin, model):
         viewlet.xpath("//span[@id='component_new_price']")[0].text = unicode(component_doc['price']) + u' руб'
         viewlet.xpath("//div[@class='body']")[0].text = component_doc['text']
 
-        for ch in choices:
-            print ch[1][0]
-            print ch[1][0] == name
-            if ch[0] and ch[1][0] == name:
-                print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                select = viewlet.xpath("//div[@class='component_select']")[0].find('select')                
-                print select
-                if type(ch[1][1]) is list:
-                    for el in ch[1][1]:
-                        if el[0]:
-                            option_group = etree.Element('optgroup')
-                            option_group.set('label', el[1][0])
-                            for r in el[1][1]['rows']:
-                                r['doc'] = makePrice(r['doc'])
-                                option = makeOption(r, option_group)
-                                if r['id'] == code:
-                                    option.set('selected','selected')
-                                # r['doc'] = cleanDoc(r['doc'])
-                                # json.update({r['doc']['_id']:r['doc']})
-                            select.append(option_group)
-                else:
-                    for row in ch[1][1]['rows']:
-                        option = makeOption(row, select)
-                        # json.update({r['doc']['_id']:r['doc']})
-                        if row['id'] == code:
+        
+        select = viewlet.xpath("//div[@class='component_select']")[0].find('select')                
+        ch = choices[name]
+        if type(ch) is list:
+            for el in ch:
+                if el[0]:
+                    option_group = etree.Element('optgroup')
+                    option_group.set('label', el[1][0])
+                    for r in el[1][1]['rows']:
+                        r['doc'] = makePrice(r['doc'])
+                        option = makeOption(r, option_group)
+                        if r['id'] == code:
                             option.set('selected','selected')
+
+                    select.append(option_group)
+        else:
+            for row in ch['rows']:
+                option = makeOption(row, select)                
+                if row['id'] == code:
+                    option.set('selected','selected')
     
-            break
         template.top.xpath('//div[@id="components"]')[0].append(viewlet)
     skin.top = template.top
     skin.middle = template.middle
@@ -387,7 +380,7 @@ def fillChoices(result):
                                                    'catalogs',
                                                    include_docs=True, key=mothers_am23)
                                     .addCallback(lambda res: ("AM2 3",res))])
-                                   .addCallback(lambda res: ("mother",res)))
+                .addCallback(lambda res: {"mother":res}))
 
     mother = [d for d in docs if isMother(d)][0]
     mother_cats = getCatalogsKey(mother)
@@ -395,20 +388,20 @@ def fillChoices(result):
     defs.append(couch.openView(designID,
                                'catalogs',
                                include_docs=True,
-                               key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: ("proc",res)))
+                               key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: {"proc":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=geforce)
-                                    .addCallback(lambda res: ("GeForce",res)),
+                                    .addCallback(lambda res: (u"GeForce",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=radeon)
-                                    .addCallback(lambda res: ("Radeon",res))])
-                .addCallback(lambda res: ("video",res)))
+                                    .addCallback(lambda res: (u"Radeon",res))])
+                .addCallback(lambda res: {"video":res}))
 
     defs.append(couch.openView(designID,
-                               'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: ("ram",res)))
+                               'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: {"ram":res}))
     defs.append(couch.openView(designID,
-                               'catalogs',include_docs=True, key=satas).addCallback(lambda res: ("hdd",res)))
+                               'catalogs',include_docs=True, key=satas).addCallback(lambda res: {"hdd":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=cases_400_650)
@@ -416,7 +409,7 @@ def fillChoices(result):
                                    couch.openView(designID,
                                                   'catalogs',include_docs=True, key=cases_exclusive)
                                     .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
-                .addCallback(lambda res: ("case",res)))
+                .addCallback(lambda res: {"case":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=displays_19_20)
@@ -424,38 +417,43 @@ def fillChoices(result):
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=displays_22_26)
                                     .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
-                .addCallback(lambda res: ("displ",res)))
+                .addCallback(lambda res: {"displ":res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=kbrds_a4)
-                                    .addCallback(lambda res: ("Клавиатуры A4Tech",res)),
+                                    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=kbrds_acme)
-                                    .addCallback(lambda res: ("Клавиатуры Acme",res)),
+                                    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=kbrds_chikony)
-                                    .addCallback(lambda res: ("Клавиатуры Chikony",res)),
+                                    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=kbrds_game)
-                                    .addCallback(lambda res: ("Игровые Клавиатуры",res)),])
-                .addCallback(lambda res: ("kbrd",res)))
+                                    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
+                .addCallback(lambda res: {"kbrd":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=mouses_a4)
-                                    .addCallback(lambda res: ("Мыши A4Tech",res)),
+                                    .addCallback(lambda res: (u"Мыши A4Tech",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=mouses_game)
-                                    .addCallback(lambda res: ("Игровые Мыши",res)),
+                                    .addCallback(lambda res: (u"Игровые Мыши",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=mouses_acme)
-                                    .addCallback(lambda res: ("Мыши Acme",res)),
+                                    .addCallback(lambda res: (u"Мыши Acme",res)),
                                     couch.openView(designID,
                                                    'catalogs',include_docs=True, key=mouses_genius)
-                                    .addCallback(lambda res: ("Мыши Genius",res))])
-                .addCallback(lambda res: ("mouse",res)))
-
-    return defer.DeferredList(defs).addCallback(lambda choices: (result, choices)) #.addCallback(renderChoices, template, skin, model).addCallback(lambda x: result)
+                                    .addCallback(lambda res: (u"Мыши Genius",res))])
+                .addCallback(lambda res: {"mouse":res}))
+    def makeDict(res):
+        new_res = {}
+        for el in res:
+            if el[0]:
+                new_res.update(el[1])
+        return new_res
+    return defer.DeferredList(defs).addCallback(makeDict).addCallback(lambda choices: (result, choices))
 
 def computer(template, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
