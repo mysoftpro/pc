@@ -24,6 +24,8 @@ import re
 #        <catalog id="7700" name="SOCKET AM2">
 
 components = "7363"
+perifery = "7365"
+
 
 procs = "7399"
 mothers = "7388"
@@ -59,17 +61,17 @@ displays_22_26 = [components,displays,"13209"]
 
 
 kbrds = "7387"
-kbrds_a4 = [components,kbrds,"14092"]
-kbrds_acme = [components,kbrds,"14092"]
-kbrds_chikony = [components,kbrds,"17396"]
-kbrds_game = [components,kbrds,"18450"]
+kbrds_a4 = [perifery,kbrds,"14092"]
+kbrds_acme = [perifery,kbrds,"7593"]
+kbrds_chikony = [perifery,kbrds,"17396"]
+kbrds_game = [perifery,kbrds,"18450"]
 
 
 mouses = "7390"
-mouses_a4 = [components,mouses,"7603"]
-mouses_genius = [components,mouses,"15844"]
-mouses_acme = [components,mouses,"14320"]
-mouses_game = [components,mouses,"7582"]
+mouses_a4 = [perifery,mouses,"7603"]
+mouses_genius = [perifery,mouses,"15844"]
+mouses_acme = [perifery,mouses,"14320"]
+mouses_game = [perifery,mouses,"7582"]
 
 sound = "7413"
 sound_internal = [components,sound,"8012"]
@@ -240,6 +242,11 @@ def renderComputer(components_choices, template, skin, model):
                 if el[0]:
                     option_group = etree.Element('optgroup')
                     option_group.set('label', el[1][0])
+                    if len(el[1][1]['rows']) == 0:
+                        print "what da fuck?"
+                        print el[1][1]
+                        print name
+                        print code
                     for r in el[1][1]['rows']:
                         r['doc'] = makePrice(r['doc'])
                         option = makeOption(r, option_group)
