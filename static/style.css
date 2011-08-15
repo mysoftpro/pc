@@ -224,6 +224,13 @@ ul#main_menu li a {
     width: 1000px;
 }
 
+#components{
+    margin: 0 auto 0;
+    padding: 0;
+    text-alig:n left;
+    width: 1000px;
+    margin-top:30px;
+}
 
 .indexitem
 {
@@ -461,22 +468,36 @@ td.comp_right{
 .component_viewlet{
     margin-bottom:20px;
     width:1000px;
+    margin-bottom:20px;
 }
 
 .component {
-    border:1px solid white;
+    border:1px solid #999999;
     padding:10px;
+
 }
 .component_body {
     float:left;
-    width:430px;
+    width:450px;
 }
 .component_select {
     float:left;
+    width:500px;
+    margin-left:20px;
 }
 .toptools {
     margin-bottom:10px;
 }
 .toptools .model_summary {
     margin-right:5px;
+}
+
+.component_summary {
+    font-size:18px;
+    border: 1px solid #999999;
+    color: #FFFFFF;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-right: 5px;
+    padding: 5px;
 }

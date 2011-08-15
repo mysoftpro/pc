@@ -209,6 +209,7 @@ def index(template, skin, request):
 
 
 def renderComputer(components_choices, template, skin, model):
+    print components_choices
     def makeOption(row, select):
         option = etree.Element('option')
         if 'font' in row['doc']['text']:
@@ -218,23 +219,26 @@ def renderComputer(components_choices, template, skin, model):
         option.set('value',row['id'])
         select.append(option)
         return option
-
+    original_viewlet = template.root().find('componentviewlet')
     components= components_choices[0]
-    choices = components_choices[1]
-    viewlet = deepcopy(template.root().find('componentviewlet'))
-    print viewlet
-    for name,code in model['items'].items():
+    choices = components_choices[1]        
+    for name,code in model['items'].items():        
         if code is None: continue
         if type(code) is list: code = code[0]
+        viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         component_doc = makePrice(component_doc)
-        viewlet.xpath("//span[@id='component_old_price']")[0].text = unicode(component_doc['price'])
-        viewlet.xpath("//span[@id='component_new_price']")[0].text = unicode(component_doc['price'])
-        viewlet.xpath("//div[@class='component_body']")[0].text = component_doc['text']
+        viewlet.xpath("//span[@id='component_old_price']")[0].text = unicode(component_doc['price']) + u' руб'
+        viewlet.xpath("//span[@id='component_new_price']")[0].text = unicode(component_doc['price']) + u' руб'
+        viewlet.xpath("//div[@class='body']")[0].text = component_doc['text']
 
         for ch in choices:
-            if ch[0] and ch[1][0] == name :
-                select = viewlet.xpath("//div[@class='component_select']")[0].find('select')
+            print ch[1][0]
+            print ch[1][0] == name
+            if ch[0] and ch[1][0] == name:
+                print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                select = viewlet.xpath("//div[@class='component_select']")[0].find('select')                
+                print select
                 if type(ch[1][1]) is list:
                     for el in ch[1][1]:
                         if el[0]:
@@ -256,7 +260,7 @@ def renderComputer(components_choices, template, skin, model):
                             option.set('selected','selected')
     
             break
-        template.middle.append(viewlet)
+        template.top.xpath('//div[@id="components"]')[0].append(viewlet)
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
