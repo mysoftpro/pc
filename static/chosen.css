@@ -239,6 +239,8 @@ select.chzn-select {
 }
 .chzn-container .chzn-results .active-result {
   cursor: pointer;
+  /*aganzha*/
+  color:black;
 }
 .chzn-container .chzn-results .highlighted {
   background: #3875d7;
