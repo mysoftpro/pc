@@ -6,6 +6,7 @@ from string import Template
 from urllib import quote_plus, unquote_plus
 import simplejson
 import re
+from copy import deepcopy
 
 # <catalog id="7388" name="Материнские платы">
 #       <catalog id="17961" name="LGA1155">
@@ -151,10 +152,11 @@ def makePrice(doc):
 
 
 def cleanDoc(doc):
-    if 'text' in doc:
-        doc.pop('text')
-    if '_attachments' in doc:
-        doc.pop('_attachments')
+    def pop(token):
+        if token in doc:
+            doc.pop(token)
+    for t in ['text', '_attachments','description','flags','inCart','ordered','reserved','stock1']:#'warranty_type'
+        pop(t)
     return doc
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
@@ -164,7 +166,8 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
         ]
 
 
-from copy import deepcopy
+
+
 
 def renderModelForIndex(result, template, m, image_i):
     # CACHE ALL MODELS HERE!!!
@@ -209,6 +212,7 @@ def index(template, skin, request):
 
 
 
+parts = {'mother':u'Материнская плата', 'proc':u'Процессор', 'video':u'Видео', 'ram':u'Память', 'hdd':u'Жесткий диск', 'case':u'Корпус', 'kbrd':u'Клавиатура', 'mouse':u'Мышь', 'displ':u'Монитор'}
 
 def renderComputer(components_choices, template, skin, model):
 
@@ -224,16 +228,23 @@ def renderComputer(components_choices, template, skin, model):
     original_viewlet = template.root().find('componentviewlet')
     components= components_choices[0]
     choices = components_choices[1]        
+    
+    model_json = {}
+    tottal = 0
+    components_json = {}
+
     for name,code in model['items'].items():        
         if code is None: continue
         if type(code) is list: code = code[0]
         viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         component_doc = makePrice(component_doc)
+        viewlet.xpath('//div[@class="component_tab"]')[0].text = parts[name]
         viewlet.xpath("//span[@id='component_old_price']")[0].text = unicode(component_doc['price']) + u' руб'
         viewlet.xpath("//span[@id='component_new_price']")[0].text = unicode(component_doc['price']) + u' руб'
         viewlet.xpath("//div[@class='body']")[0].text = component_doc['text']
-
+        tottal += component_doc['price']        
+        model_json.update({component_doc['_id']:component_doc})
         
         select = viewlet.xpath("//div[@class='component_select']")[0].find('select')                
         ch = choices[name]
@@ -242,16 +253,13 @@ def renderComputer(components_choices, template, skin, model):
                 if el[0]:
                     option_group = etree.Element('optgroup')
                     option_group.set('label', el[1][0])
-                    if len(el[1][1]['rows']) == 0:
-                        print "what da fuck?"
-                        print el[1][1]
-                        print name
-                        print code
                     for r in el[1][1]['rows']:
                         r['doc'] = makePrice(r['doc'])
                         option = makeOption(r, option_group)
                         if r['id'] == code:
-                            option.set('selected','selected')
+                            option.set('selected','selected')                            
+                        r['doc'] = cleanDoc(r['doc'])
+                        components_json.update({r['doc']['_id']:r['doc']})
 
                     select.append(option_group)
         else:
@@ -259,8 +267,11 @@ def renderComputer(components_choices, template, skin, model):
                 option = makeOption(row, select)                
                 if row['id'] == code:
                     option.set('selected','selected')
-    
+                row['doc'] = cleanDoc(row['doc'])
+                components_json.update({row['doc']['_id']:row['doc']})
         template.top.xpath('//div[@id="components"]')[0].append(viewlet)
+    
+    template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),';var tottal=',unicode(tottal),u';var choices=',simplejson.dumps(components_json),';'))
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
@@ -311,58 +322,58 @@ def pr(some):
 
 printed = False
 
-def renderChoices(choices, template, skin, model):
-    # json = {}
-    json = {}
-    model_ids = [i for i in getModelComponents(model)]
-    def makeOption(row, select, td):
-        option = etree.Element('option')
-        if 'font' in row['doc']['text']:
-            row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-            row['doc'].update({'featured':True})
-        option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' руб'
-        option.set('value',row['id'])
-        if row['id'] in model_ids:
-            option.set('selected','selected')
-            if 'description' not in row['doc']:
-                return
-            if 'comments' not in row['doc']['description']:
-                return
-            td.getnext().text = unicode(row['doc']['price']) + u' руб'
-            base_descriptions = template.middle.xpath("//td[@id='description_base']")
-            base_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
-            new_descriptions = template.middle.xpath("//td[@id='description_new']")
-            new_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
+# def renderChoices(choices, template, skin, model):
+#     # json = {}
+#     json = {}
+#     model_ids = [i for i in getModelComponents(model)]
+#     def makeOption(row, select, td):
+#         option = etree.Element('option')
+#         if 'font' in row['doc']['text']:
+#             row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+#             row['doc'].update({'featured':True})
+#         option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' руб'
+#         option.set('value',row['id'])
+#         if row['id'] in model_ids:
+#             option.set('selected','selected')
+#             if 'description' not in row['doc']:
+#                 return
+#             if 'comments' not in row['doc']['description']:
+#                 return
+#             td.getnext().text = unicode(row['doc']['price']) + u' руб'
+#             base_descriptions = template.middle.xpath("//td[@id='description_base']")
+#             base_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
+#             new_descriptions = template.middle.xpath("//td[@id='description_new']")
+#             new_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
 
-        select.append(option)
+#         select.append(option)
 
-    top = template.top
-    for c in choices:
-        if not c[0]: continue
-        token = c[1][0]
-        td_exp = "//td[@id='" + token + "']"
-        td_found = top.xpath(td_exp)
-        if len(td_found)>0:
-            select = etree.Element('select')
-            if type(c[1][1]) is dict:#normal case
-                for r in c[1][1]['rows']:
-                    r['doc'] = makePrice(r['doc'])
-                    makeOption(r, select, td_found[0])
-                    r['doc'] = cleanDoc(r['doc'])
-                    json.update({r['doc']['_id']:r['doc']})
-            else: # multiple components
-                for el in c[1][1]:
-                    if el[0]:
-                        option_group = etree.Element('optgroup')
-                        option_group.set('label', el[1][0])
-                        for r in el[1][1]['rows']:
-                            r['doc'] = makePrice(r['doc'])
-                            makeOption(r, option_group, td_found[0])
-                            r['doc'] = cleanDoc(r['doc'])
-                            json.update({r['doc']['_id']:r['doc']})
-                        select.append(option_group)
-            td_found[0].append(select)
-    template.middle.find('script').text +='var choices=' + simplejson.dumps(json) + ';'
+#     top = template.top
+#     for c in choices:
+#         if not c[0]: continue
+#         token = c[1][0]
+#         td_exp = "//td[@id='" + token + "']"
+#         td_found = top.xpath(td_exp)
+#         if len(td_found)>0:
+#             select = etree.Element('select')
+#             if type(c[1][1]) is dict:#normal case
+#                 for r in c[1][1]['rows']:
+#                     r['doc'] = makePrice(r['doc'])
+#                     makeOption(r, select, td_found[0])
+#                     r['doc'] = cleanDoc(r['doc'])
+#                     json.update({r['doc']['_id']:r['doc']})
+#             else: # multiple components
+#                 for el in c[1][1]:
+#                     if el[0]:
+#                         option_group = etree.Element('optgroup')
+#                         option_group.set('label', el[1][0])
+#                         for r in el[1][1]['rows']:
+#                             r['doc'] = makePrice(r['doc'])
+#                             makeOption(r, option_group, td_found[0])
+#                             r['doc'] = cleanDoc(r['doc'])
+#                             json.update({r['doc']['_id']:r['doc']})
+#                         select.append(option_group)
+#             td_found[0].append(select)
+#     template.middle.find('script').text +='var choices=' + simplejson.dumps(json) + ';'
 
 def fillChoices(result):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
