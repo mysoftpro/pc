@@ -135,6 +135,14 @@ class XmlGetter(Resource):
                 self.storeDescription(request)
         return "ok"
 
+    def render_OPTIONS(self, request):
+        print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        for i in request.headers:
+            print i
+            print request.headers[i]
+        # print request.headers.getAllRawHeaders()
+        return "ok"
+    
     def render_POST(self, request):
         print "pooooooooooooooooooooooooooost"
         op = request.args.get('op', [None])[0]
