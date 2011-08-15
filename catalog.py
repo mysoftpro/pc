@@ -141,6 +141,7 @@ class XmlGetter(Resource):
             print i
             print request.headers[i]
         # print request.headers.getAllRawHeaders()
+        request.responseHeaders = Headers({'Allow':['POST', 'GET']})
         return "ok"
     
     def render_POST(self, request):
