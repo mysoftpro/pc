@@ -37,6 +37,7 @@ function componentChanged(event){
 
 $(function(){
       try{
+	  $('select').chosen().change(componentChanged);
 	  new_model = _.clone(model);
 	  var middles = $('td.comp_middle');
 	  for (var i=0;i<middles.length;i++){
@@ -53,7 +54,7 @@ $(function(){
 	      }
 	  }
 	  //$('font').remove();
-	  $('select').chosen().change(componentChanged);
+	  
 
       } catch (x) {
 
