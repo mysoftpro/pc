@@ -4,7 +4,10 @@ function recalculate(){
     for (var id in new_model){
 	tottal += new_model[id].price;
    }
-    $('#newprice').text(tottal);
+    $('#newprice').text(tottal).css('background-color','#7B9C0A').parent().css('background-color','#7B9C0A');
+    _.delay(function(e){$('#newprice').css('background-color','#222').parent().css('background-color','#222')},100);
+    $('#large_price').text(tottal);
+    
 }
 
 function getCatalogs(component){

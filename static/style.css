@@ -321,18 +321,24 @@ h3 {
 #summary_left{
     /* float:left; */
     position: fixed;
-    top: 390px;
+    top: 394px;
     left: 0;
 }
 
 #summary_right{    
     /* float:right; */
     position: fixed;
-    top: 390px;
+    top: 394px;
     right: 0;
     text-align:right;
 }
 
+#large{
+    float:right;
+    padding:10px;
+    font-size:34px;
+    color:#999;
+}
 /* .old{ */
 /*     float:left; */
 /* } */
@@ -535,5 +541,7 @@ td.comp_right{
     cursor:pointer;
     color:#999999;
 }
-
-
+#modelname{
+    color:#CB1217;
+    margin-top:5px;
+}

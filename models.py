@@ -180,7 +180,7 @@ def renderModelForIndex(result, template, m, image_i):
     a = snippet.find('.//a')
     a.set('href','/computer/%s' % m['name'])
     a.text=m['name']
-    snippet.find('.//span').text=(unicode(m['price']) + u' руб')
+    snippet.find('.//span').text=(unicode(m['price']) + u' р')
     return snippet
 
 def index(template, skin, request):
@@ -221,10 +221,12 @@ def renderComputer(components_choices, template, skin, model):
         if 'font' in row['doc']['text']:
             row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
             row['doc'].update({'featured':True})
-        option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' руб'
+        option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' р'
         option.set('value',row['id'])
         select.append(option)
         return option
+    template.top.find('h2').text = model['name']    
+    
     original_viewlet = template.root().find('componentviewlet')
     components= components_choices[0]
     choices = components_choices[1]        
@@ -239,11 +241,9 @@ def renderComputer(components_choices, template, skin, model):
         viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         component_doc = makePrice(component_doc)
-        viewlet.xpath('//div[@class="component_tab"]')[0].text = parts[name]
-
+        viewlet.xpath('//div[@class="component_tab"]')[0].text = parts[name]        
         for div in viewlet.xpath("//div[@class='toptools']"):
-            div.find('span').text = unicode(component_doc['price']) + u' руб'
-            
+            div.find('span').text = unicode(component_doc['price']) + u' р'
         viewlet.xpath("//div[@class='body']")[0].text = component_doc['text']
         tottal += component_doc['price']        
         model_json.update({component_doc['_id']:component_doc})
@@ -274,6 +274,9 @@ def renderComputer(components_choices, template, skin, model):
         template.top.xpath('//div[@id="components"]')[0].append(viewlet)
     
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),';var tottal=',unicode(tottal),u';var choices=',simplejson.dumps(components_json),';'))
+    template.top.xpath("//span[@id='large_price']")[0].text = unicode(model['price'])
+    template.top.xpath("//span[@id='oldprice']")[0].text = unicode(model['price'])
+    template.top.xpath("//span[@id='newprice']")[0].text = unicode(model['price'])
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
