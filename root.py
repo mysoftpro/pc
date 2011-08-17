@@ -57,7 +57,13 @@ class Template(object):
     
     def set_middle(self, middle):
         parent = self.get_middle().getparent()
-        parent.replace(self.get_middle(), middle)
+        # REFACTOR
+        div = etree.Element('div')
+        div.set('id','middle')
+        for el in middle:
+            div.append(el)
+        parent.replace(self.get_middle(), div)
+        # parent.replace(self.get_middle(), middle)
 
     middle = property(get_middle, set_middle)
 
@@ -67,7 +73,13 @@ class Template(object):
     
     def set_top(self, top):
         parent = self.get_top().getparent()
-        parent.replace(self.get_top(), top)
+        # REFACTOR
+        div = etree.Element('div')
+        div.set('id','top')
+        for el in top:
+            div.append(el)
+        parent.replace(self.get_top(), div)
+        # parent.replace(self.get_top(), top)
 
     top = property(get_top, set_top)
         

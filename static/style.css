@@ -118,7 +118,9 @@ p {
 	width: 100%;
 	text-align: center;
 	background: #202020 url(gradient_background.jpg) center bottom repeat-x;
+	min-height:380px;
 }
+
 
 #container {
 	margin: 0 auto 0 auto;
@@ -229,7 +231,7 @@ ul#main_menu li a {
     padding: 0;
     text-alig:n left;
     width: 1000px;
-    /* margin-top:30px; */
+    margin-top:-70px;
 }
 
 .indexitem
@@ -499,7 +501,7 @@ td.comp_right{
 .component {
     border:1px solid #999999;
     padding:10px;
-
+    background-color:#222;
 }
 .component_body {
     float:left;

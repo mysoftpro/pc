@@ -4,9 +4,8 @@ function recalculate(){
     for (var id in new_model){
 	tottal += new_model[id].price;
    }
-    $('#newprice').text(tottal).css('background-color','#7B9C0A').parent().css('background-color','#7B9C0A');
-    _.delay(function(e){$('#newprice').css('background-color','#222').parent().css('background-color','#222')},100);
-    $('#large_price').text(tottal);
+    $('#large_price').text(tottal).css('background-color','#7B9C0A');
+    _.delay(function(e){$('#large_price').css('background-color','#222');},100);
     
 }
 
@@ -56,7 +55,14 @@ $(function(){
 		  opt.html(opt_text);
 	      }
 	  }
-	  //$('font').remove();
+	  $($('.component_tab')[4]).waypoint(function(event, direction) {
+						 if (direction == 'down'){
+						     console.log(direction);
+						 }
+						 if (direction == 'up'){
+						     console.log(direction);
+					      }
+					     });
 	  
 
       } catch (x) {

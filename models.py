@@ -234,7 +234,6 @@ def renderComputer(components_choices, template, skin, model):
     model_json = {}
     tottal = 0
     components_json = {}
-
     for name,code in model['items'].items():        
         if code is None: continue
         if type(code) is list: code = code[0]
@@ -271,7 +270,8 @@ def renderComputer(components_choices, template, skin, model):
                     option.set('selected','selected')
                 row['doc'] = cleanDoc(row['doc'])
                 components_json.update({row['doc']['_id']:row['doc']})
-        template.top.xpath('//div[@id="components"]')[0].append(viewlet)
+        template.middle.xpath('//div[@id="components"]')[0].append(viewlet)
+        
     
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),';var tottal=',unicode(tottal),u';var choices=',simplejson.dumps(components_json),';'))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(model['price'])
