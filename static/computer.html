@@ -21,29 +21,30 @@
     <div style="clear:both;">&nbsp;</div>
     <div class="up_button" style="float:right;margin-left:5px;" href="#">лучше</div>  
     <div class="down_button" style="float:right;" href="#">дешевле</div>
+    <div style="float:right;padding:10px;font-size:34px;color:#999;">12500</div>
   </div>
   
   <div style="clear:both;">&nbsp;</div>
 
 
 
-  <div class="model_summary old" >
+  <div  class="model_summary" id="summary_left"> <!-- class="model_summary old" -->
     <div>
-      Базовая модель:
+      Базовая
     </div>
     <div>
-      <span class="model_summary model_price">Цена :<span id="oldprice">15200</span> руб</span>
-      <span class="model_summary model_performance">Производительность :<span id="oldperformance">2.5</span></span>
+      <div class="model_summary model_price">Цена <span id="oldprice">15200</span> руб</div>
+      <div class="model_summary model_performance">Индекс <span id="oldperformance">2.5</span></div>
     </div>
   </div>
 
-  <div class="model_summary new" >
+  <div class="model_summary" id="summary_right"> <!-- class="model_summary new"  -->
     <div>
-      Модифицированная модель:
+      Измененная
     </div>
     <div>
-      <span class="model_summary model_price">Цена :<span id="newprice">15200</span> руб</span>
-      <span class="model_summary model_performance">Производительность :<span id="newperformance">2.5</span></span>
+      <div class="model_summary model_price">Цена <span id="newprice">15200</span> руб</div>
+      <div class="model_summary model_performance">Индекс <span id="newperformance">2.5</span></div>
     </div>
   </div>
   
@@ -67,18 +68,18 @@
     <div class="component">      
       <div class="component_body">
 	<div class="toptools">
-	  <span class="component_summary" id="component_old_price"> 1200 руб </span>
+	  <span class="component_summary component_old_price"> 1200 руб </span>
 	</div>
 	<div class="body"></div>
       </div>
       
       <div class="component_select">
 	<div class="toptools">
-	  <span class="component_summary" id="component_new_price"> 1200 руб </span>
+	  <span class="component_summary component_new_price"> 1200 руб </span>
 	  <a class="component_summary cheaper" href="">дешевле</a></span>
 	  <a class="component_summary better" href=""> лучше </a>
 	  <span class="component_summary"> <a href="">сбросить </a></span>
-	  <span class="component_summary"> <a href="">как выбрать корпус?</a> </span>
+	  <span class="component_summary"> <a class="component_help" href="">как выбрать?</a> </span>
 	</div>
 	<select style="max-width:490px;width:490px;color:black;">	  
 	</select>

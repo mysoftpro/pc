@@ -105,19 +105,19 @@ def isMother(doc):
 
 models = [
     {'name':u"Локалхост",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
      'price':6500
      },
     {'name':u"Браузер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
      'price':8500
      },
     {'name':u"Принтер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15998', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
      'price':15200
      },
     {'name':u"Числодробилка",
-     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 'case':'18219', 'displ':'15606', 'kbrd':'11383', 'mouse':'18185', 'sound':None, 'lan':None},
+     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 'case':'18219', 'displ':'15606', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
      'price':32000
      }
 ]
@@ -240,8 +240,10 @@ def renderComputer(components_choices, template, skin, model):
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         component_doc = makePrice(component_doc)
         viewlet.xpath('//div[@class="component_tab"]')[0].text = parts[name]
-        viewlet.xpath("//span[@id='component_old_price']")[0].text = unicode(component_doc['price']) + u' руб'
-        viewlet.xpath("//span[@id='component_new_price']")[0].text = unicode(component_doc['price']) + u' руб'
+
+        for div in viewlet.xpath("//div[@class='toptools']"):
+            div.find('span').text = unicode(component_doc['price']) + u' руб'
+            
         viewlet.xpath("//div[@class='body']")[0].text = component_doc['text']
         tottal += component_doc['price']        
         model_json.update({component_doc['_id']:component_doc})
@@ -276,34 +278,6 @@ def renderComputer(components_choices, template, skin, model):
     skin.middle = template.middle
     return skin.render()
 
-    # top = template.top
-    # top.find("h2").text = model['name']
-    # json = {}
-    # tottal = 0
-    # for r in items['rows']:
-    #     if r['key'] is None: continue
-    #     _id = r['id']
-    #     td_exp = "//td[@id='" + component_name(_id, model) + "']"
-    #     td_found = top.xpath(td_exp)
-    #     if len(td_found)>0:
-    #         if 'font' in r['doc']['text']:
-    #             r['doc']['text'] = re.sub('<font.*</font>', '',r['doc']['text'])
-    #             r['doc'].update({'featured':True})
-    #         td_found[0].text = r['doc']['text']
-    #         r['doc'] = makePrice(r['doc'])
-    #         td_found[0].getnext().text = unicode(r['doc']['price'])  + u' руб'
-    #         tottal += r['doc']['price']
-    #         r['doc'] = cleanDoc(r['doc'])
-    #         json.update({r['doc']['_id']:r['doc']})
-
-    # top.xpath("//span[@id='newprice']")[0].text = unicode(tottal)
-    # top.xpath("//span[@id='oldprice']")[0].text = unicode(tottal)
-
-    # template.middle.find('script').text += u''.join(('var model=',simplejson.dumps(json),';var tottal=',unicode(tottal)))
-    # skin.top = template.top
-    # skin.middle = template.middle
-    # return skin.render()
-
 
 from twisted.python import log
 import sys
@@ -313,67 +287,9 @@ def pr(some):
     log.msg(some)
     return some
 
-# def delayedRes(res):
-#     def delayed(some):
-#         li = list(some)
-#         li.insert(0,res)
-#         return tuple(li)
-#     return delayed
 
 printed = False
 
-# def renderChoices(choices, template, skin, model):
-#     # json = {}
-#     json = {}
-#     model_ids = [i for i in getModelComponents(model)]
-#     def makeOption(row, select, td):
-#         option = etree.Element('option')
-#         if 'font' in row['doc']['text']:
-#             row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-#             row['doc'].update({'featured':True})
-#         option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' руб'
-#         option.set('value',row['id'])
-#         if row['id'] in model_ids:
-#             option.set('selected','selected')
-#             if 'description' not in row['doc']:
-#                 return
-#             if 'comments' not in row['doc']['description']:
-#                 return
-#             td.getnext().text = unicode(row['doc']['price']) + u' руб'
-#             base_descriptions = template.middle.xpath("//td[@id='description_base']")
-#             base_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
-#             new_descriptions = template.middle.xpath("//td[@id='description_new']")
-#             new_descriptions[0].text = row['doc']['description']['name'] + row['doc']['description']['comments']
-
-#         select.append(option)
-
-#     top = template.top
-#     for c in choices:
-#         if not c[0]: continue
-#         token = c[1][0]
-#         td_exp = "//td[@id='" + token + "']"
-#         td_found = top.xpath(td_exp)
-#         if len(td_found)>0:
-#             select = etree.Element('select')
-#             if type(c[1][1]) is dict:#normal case
-#                 for r in c[1][1]['rows']:
-#                     r['doc'] = makePrice(r['doc'])
-#                     makeOption(r, select, td_found[0])
-#                     r['doc'] = cleanDoc(r['doc'])
-#                     json.update({r['doc']['_id']:r['doc']})
-#             else: # multiple components
-#                 for el in c[1][1]:
-#                     if el[0]:
-#                         option_group = etree.Element('optgroup')
-#                         option_group.set('label', el[1][0])
-#                         for r in el[1][1]['rows']:
-#                             r['doc'] = makePrice(r['doc'])
-#                             makeOption(r, option_group, td_found[0])
-#                             r['doc'] = cleanDoc(r['doc'])
-#                             json.update({r['doc']['_id']:r['doc']})
-#                         select.append(option_group)
-#             td_found[0].append(select)
-#     template.middle.find('script').text +='var choices=' + simplejson.dumps(json) + ';'
 
 def fillChoices(result):
     docs = [r['doc'] for r in result['rows'] if r['key'] is not None]

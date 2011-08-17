@@ -229,7 +229,7 @@ ul#main_menu li a {
     padding: 0;
     text-alig:n left;
     width: 1000px;
-    margin-top:30px;
+    /* margin-top:30px; */
 }
 
 .indexitem
@@ -306,20 +306,39 @@ h3 {
 /* computer top */
 .model_summary {
     font-size:18px;
-    background-color: #222222;
+    background-color: #222222;/* #555555; */
     border: 1px solid #444444;
     color: #FFFFFF;
     font-size: 12px;
     letter-spacing: 1px;
     margin: 5px 0;
     padding: 5px;
+    
+    z-index: 200;
+
 }
-.old{
-    float:left;
+
+#summary_left{
+    /* float:left; */
+    position: fixed;
+    top: 390px;
+    left: 0;
 }
-.new{
-    float:right;
+
+#summary_right{    
+    /* float:right; */
+    position: fixed;
+    top: 390px;
+    right: 0;
+    text-align:right;
 }
+
+/* .old{ */
+/*     float:left; */
+/* } */
+/* .new{ */
+/*     float:right; */
+/* } */
 
 
 
@@ -516,3 +535,5 @@ td.comp_right{
     cursor:pointer;
     color:#999999;
 }
+
+
