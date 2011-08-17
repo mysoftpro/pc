@@ -276,7 +276,7 @@ def renderComputer(components_choices, template, skin, model):
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),';var tottal=',unicode(tottal),u';var choices=',simplejson.dumps(components_json),';'))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(model['price'])
     template.top.xpath("//span[@id='oldprice']")[0].text = unicode(model['price'])
-    template.top.xpath("//span[@id='newprice']")[0].text = unicode(model['price'])
+    # template.top.xpath("//span[@id='newprice']")[0].text = unicode(model['price'])
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
