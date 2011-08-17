@@ -55,12 +55,14 @@ $(function(){
 		  opt.html(opt_text);
 	      }
 	  }
-	  $($('.component_tab')[4]).waypoint(function(event, direction) {
+	  $('#modelname').waypoint(function(event, direction) {
+						 console.log('aaaz');
 						 if (direction == 'down'){
+						     $('#top').css('position','fixed');
 						     console.log(direction);
 						 }
-						 if (direction == 'up'){
-						     console.log(direction);
+						 if (direction == 'up'){						     
+						     //console.log(direction);
 					      }
 					     });
 	  
