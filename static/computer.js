@@ -106,17 +106,19 @@ function installDescriptions(){
 			   );							   
 			   console.log('aa');
 			   // todo! cach result for base model here!
-			   target.text(target.text().replace('Показать','Спрятать'));
+			   target.text(target.text().replace('показать','спрятать'));
 			   var clone = target.clone();
 			   target.parent().find('.description_popup').append(clone);
-			   target.unbind('click').bind('click', function(e){
+			   function unb(el){
+			       el.unbind('click').bind('click', function(e){
+							   e.preventDefault();
+							   target.text(target.text().replace('спрятать','показать'));
 							   target.parent().find('.description_popup').remove();
 							   target.click(showDescription);
 						       });
-			   clone.unbind('click').bind('click', function(e){
-							   target.parent().find('.description_popup').remove();
-							   target.click(showDescription);
-						       });
+			   }
+			   unb(target);
+			   unb(clone);			   
 		       }
 		   });
 	} catch (x) {

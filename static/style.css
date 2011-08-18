@@ -555,19 +555,25 @@ td.comp_right{
     border: 1px solid #444444;
     text-align:left;
     padding:10px;
+    text-align: center;
+    width: 98%;
 }
 
 .new_description{
     float:right;
     max-width:50%;
-    width:48%;
+    width:47%;
     border: 1px solid #444444;
+    padding:10px;
+    text-align: left;
 }
 .old_description{
     float:left;
     max-width:50%;
-    width:48%;
+    width:47%;
     border: 1px solid #444444;
+    padding:10px;
+    text-align: left;
 }
 
 .description_name{
