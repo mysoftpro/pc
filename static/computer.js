@@ -75,11 +75,11 @@ $(function(){
 				     grad.css({
 					   	  'position':'fixed',
 					   	  'z-index':'100',
-					   	  'height':'330px',
+					   	  'height':'310px',
 					   	  'min-height':'0px'
 					      });
 				     var components = $('#components');			     
-				     components.css('padding-top','465px');
+				     components.css('padding-top','475px');
 				     top_fixed = true;				     				  
 				 }
 				 scroll_in_progress = false;
