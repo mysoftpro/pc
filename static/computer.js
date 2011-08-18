@@ -6,7 +6,7 @@ function recalculate(){
    }
     $('#large_price').text(tottal).css('background-color','#7B9C0A');
     _.delay(function(e){$('#large_price').css('background-color','#222');},100);
-    
+
 }
 
 function getCatalogs(component){
@@ -22,6 +22,8 @@ function filterByCatalogs(components, catalogs){
 			      });
 }
 
+var top_fixed = false;
+
 function componentChanged(event){
     try{
 	var target = $(event.target);
@@ -29,7 +31,7 @@ function componentChanged(event){
 	var new_component = choices[target.val()];
 	var new_cats = getCatalogs(new_component);
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
-	delete new_model[old_component['_id']];	
+	delete new_model[old_component['_id']];
 	new_model[new_component['_id']] = new_component;
 	recalculate();
     } catch (x) {
@@ -56,16 +58,27 @@ $(function(){
 	      }
 	  }
 	  $('#modelname').waypoint(function(event, direction) {
-						 console.log('aaaz');
-						 if (direction == 'down'){
-						     $('#top').css('position','fixed');
-						     console.log(direction);
-						 }
-						 if (direction == 'up'){						     
-						     //console.log(direction);
-					      }
+
+				       if (direction == 'down' && !top_fixed){
+					   var top = $('#top');
+					   top.css({
+						       'position':'fixed',
+						       'top':0,
+						       'background-color':'#222',
+						       'z-index':'9999'
+						   });
+					   top_fixed = true;
+					   var middle = $('#middle');
+					   // middle.css({
+					   // 		  'margin-top':top.height() + 'px',
+					   // 		  'overflow':'hidden'
+					   // 	      });
+				       }
+				       if (direction == 'up'){
+					   //console.log(direction);
+				       }
 					     });
-	  
+
 
       } catch (x) {
 

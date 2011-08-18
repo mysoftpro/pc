@@ -270,7 +270,9 @@ def renderComputer(components_choices, template, skin, model):
                     option.set('selected','selected')
                 row['doc'] = cleanDoc(row['doc'])
                 components_json.update({row['doc']['_id']:row['doc']})
-        template.middle.xpath('//div[@id="components"]')[0].append(viewlet)
+        components_container = template.middle.xpath('//div[@id="components"]')[0]
+        for el in viewlet:
+            components_container.append(el)
         
     
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),';var tottal=',unicode(tottal),u';var choices=',simplejson.dumps(components_json),';'))
