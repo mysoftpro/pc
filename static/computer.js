@@ -88,25 +88,42 @@ _.templateSettings = {
 };
 
 function installDescriptions(){
-    $('.component_description a').click(function(e){
-					    var target = $(e.target);
-					    e.preventDefault();
-					    var _id = target.parent().parent().attr('id');
-					    $.ajax({
-						       url:'/component',
-						       data:{'id':_id},
-						       success:function(data){							   
-							   target.parent().append(
-							       _.template(description_template, {
-									      '_new':_.template(description_viewlet, data),
-									      '_old':_.template(description_viewlet, data)
-									  })
-							   );
-							   console.log(data);
-						       }
-						   });
-					    
-					});
+    function showDescription(e){
+	try{
+	    console.log('be');
+	    var target = $(e.target);
+	    e.preventDefault();
+	    var _id = target.parent().parent().attr('id');
+	    $.ajax({
+		       url:'/component',
+		       data:{'id':_id},
+		       success:function(data){							   
+			   target.parent().append(
+			       _.template(description_template, {
+					      '_new':_.template(description_viewlet, data),
+					      '_old':_.template(description_viewlet, data)
+					  })
+			   );							   
+			   console.log('aa');
+			   // todo! cach result for base model here!
+			   target.text(target.text().replace('Показать','Спрятать'));
+			   var clone = target.clone();
+			   target.parent().find('.description_popup').append(clone);
+			   target.unbind('click').bind('click', function(e){
+							   target.parent().find('.description_popup').remove();
+							   target.click(showDescription);
+						       });
+			   clone.unbind('click').bind('click', function(e){
+							   target.parent().find('.description_popup').remove();
+							   target.click(showDescription);
+						       });
+		       }
+		   });
+	} catch (x) {
+    
+	}				    					
+    }
+    $('.component_description a').click(showDescription);
 }
 
 $(function(){
