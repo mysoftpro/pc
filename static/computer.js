@@ -62,15 +62,15 @@ $(function(){
 				 if (scroll_in_progress) return;
 				 scroll_in_progress = true;				 
 				 if (direction == 'down' && !top_fixed){
-				     var top = $('#top');
-				     top.css({
-						 'position':'fixed',
-						 'top':0,
-						 'z-index':'9999',
-						 'background-color':'#202020',
-						 'height':'200px',
-						 'width':'1000px'
-					     });
+				     // var top = $('#top');
+				     // top.css({
+				     // 		 'position':'fixed',
+				     // 		 'top':0,
+				     // 		 'z-index':'9999',
+				     // 		 'background-color':'#202020',
+				     // 		 'height':'200px',
+				     // 		 'width':'1000px'
+				     // 	     });
 				     var grad = $('#gradient_background');
 				     grad.css({
 					   	  'position':'fixed',
@@ -78,8 +78,7 @@ $(function(){
 					   	  'height':'330px',
 					   	  'min-height':'0px'
 					      });
-				     var components = $('#components');
-				     // components.css('padding-top','450px');				     
+				     var components = $('#components');			     
 				     components.css('padding-top','465px');
 				     top_fixed = true;				     				  
 				 }
@@ -90,14 +89,14 @@ $(function(){
 						     if (scroll_in_progress) return;
 						     scroll_in_progress = true;
 						     if (top_fixed && direction=='up'){
-							 var top = $('#top');
+							 //var top = $('#top');
 							 var grad = $('#gradient_background');				
 							 var components = $('#components');
-							 top.css({
-								     'position':'inherit',
-								     'height':'247px',
-								     'background-color': 'inherit'
-								 });
+							 // top.css({
+							 // 	     'position':'inherit',
+							 // 	     'height':'247px',
+							 // 	     'background-color': 'inherit'
+							 // 	 });
 							 grad.css({
 								      'min-height': '380px',
 								      'height':'380px',
