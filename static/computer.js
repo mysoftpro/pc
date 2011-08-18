@@ -23,6 +23,7 @@ function filterByCatalogs(components, catalogs){
 }
 
 var top_fixed = false;
+var scroll_in_progress = false;
 
 function componentChanged(event){
     try{
@@ -57,31 +58,61 @@ $(function(){
 		  opt.html(opt_text);
 	      }
 	  }
-	  $('#modelname').waypoint(function(event, direction) {
-
-				       if (direction == 'down' && !top_fixed){
-					   var top = $('#top');
-					   top.css({
-						       'position':'fixed',
-						       'top':0,
-						       'background-color':'#222',
-						       'z-index':'9999'
-						   });
-					   top_fixed = true;
-					   var middle = $('#middle');
-					   // middle.css({
-					   // 		  'margin-top':top.height() + 'px',
-					   // 		  'overflow':'hidden'
-					   // 	      });
-				       }
-				       if (direction == 'up'){
-					   //console.log(direction);
-				       }
+	  $('#top').waypoint(function(event, direction) {
+				 if (scroll_in_progress) return;
+				 scroll_in_progress = true;				 
+				 if (direction == 'down' && !top_fixed){
+				     var top = $('#top');
+				     top.css({
+						 'position':'fixed',
+						 'top':0,
+						 'z-index':'9999',
+						 'background-color':'#202020',
+						 'height':'200px',
+						 'width':'1000px'
 					     });
-
-
+				     var grad = $('#gradient_background');
+				     grad.css({
+					   	  'position':'fixed',
+					   	  'z-index':'100',
+					   	  'height':'330px',
+					   	  'min-height':'0px'
+					      });
+				     var components = $('#components');
+				     // components.css('padding-top','450px');				     
+				     components.css('padding-top','465px');
+				     top_fixed = true;				     				  
+				 }
+				 scroll_in_progress = false;
+			     });
+	  
+	  $($('.component_tab').get(0)).waypoint(function(event,direction){
+						     if (scroll_in_progress) return;
+						     scroll_in_progress = true;
+						     if (top_fixed && direction=='up'){
+							 var top = $('#top');
+							 var grad = $('#gradient_background');				
+							 var components = $('#components');
+							 top.css({
+								     'position':'inherit',
+								     'height':'247px',
+								     'background-color': 'inherit'
+								 });
+							 grad.css({
+								      'min-height': '380px',
+								      'height':'380px',
+								      'position':'inherit'
+								  });
+							 components.css({'padding-top':'0px'});
+							 top_fixed = false;
+							 $("html,body").animate({ scrollTop: 0 }, 200);
+						     }
+						     scroll_in_progress = false;
+						 });
+	  
+	  
       } catch (x) {
-
+	  console.log(x);
       }
 
 

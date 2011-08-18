@@ -12,7 +12,7 @@ img {
 }
 
 a {
-        color:#999;
+	color:#999;
     	outline: none;
 	text-decoration: underline;
 }
@@ -67,7 +67,7 @@ p {
     margin:12px;
     margin-left:0px;
 }
-#first {    
+#first {
     font-size:36px;
     line-height:36px;
     color:#696969;
@@ -127,7 +127,7 @@ p {
 	padding: 0;
 	width: 1000px;
 	text-align: left;
-	position: relative;	
+	position: relative;
 }
 
 #block-block-2 a {
@@ -136,13 +136,6 @@ p {
 	height: 22px;
 	float: left;
 }
-
-
-
-
-
-
-
 
 #extras {
 	margin: 0 auto 0 auto;
@@ -229,9 +222,8 @@ ul#main_menu li a {
 #components{
     margin: 0 auto 0;
     padding: 0;
-    text-alig:n left;
     width: 1000px;
-    margin-top:-70px;
+    margin-top:-100px;
 }
 
 .indexitem
@@ -254,7 +246,7 @@ ul#main_menu li a {
 
 .item{
     width:250px;
-    float:left;    
+    float:left;
     background-repeat:no-repeat;
 }
 .label {
@@ -282,7 +274,7 @@ ul#main_menu li a {
     background-repeat:no-repeat;
     height:130px;
     background-position:40px 0px;
-    
+
 }
 .features ul {
     padding:0;margin:0;
@@ -301,7 +293,7 @@ ul#main_menu li a {
 
 
 h3 {
-    font-size:16px;    
+    font-size:16px;
 }
 
 
@@ -315,7 +307,7 @@ h3 {
     letter-spacing: 1px;
     margin: 5px 0;
     padding: 5px;
-    
+
     z-index: 200;
 
 }
@@ -327,7 +319,7 @@ h3 {
     /* left: 0; */
 }
 
-#summary_right{    
+#summary_right{
     float:right;
     /* position: fixed; */
     /* top: 394px; */
@@ -356,7 +348,7 @@ h3 {
     font-weight:bold;
 }
 .comp_left {
-    
+
 }
 .comp_price{
     min-width: 60px;
@@ -365,7 +357,7 @@ h3 {
     padding-left: 10px;
 }
 
-.comp_right{    
+.comp_right{
 }
 
 
@@ -375,7 +367,7 @@ td.comp_left {
 td.comp_title{
 }
 td.comp_right{
-    color:black;;    
+    color:black;;
 }
 
 .comp_right select {
@@ -390,7 +382,7 @@ td.comp_right{
     margin-bottom:10px;
 }
 
-.black_text_button{ 
+.black_text_button{
     background-color: #222222;
     border: 1px solid #444444;
     color: #FFFFFF;
@@ -414,7 +406,7 @@ td.comp_right{
     line-height:48px;
     text-align: center;
     min-width: 146px;
-    color:#585858;    
+    color:#585858;
 }
 
 .green_image_button{
@@ -467,8 +459,8 @@ td.comp_right{
 
 .component_tab {
     width:140px;
-    
-    background-color: #AAAAAA; 
+
+    background-color: #AAAAAA;
     color: black;
 
     border-radius: 5px 5px 0px 0px;
@@ -483,7 +475,7 @@ td.comp_right{
     -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
     -webkit-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
 
-    
+
     font-size: 12px;
     padding: 5px 8px;
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2), -1px -1px 1px rgba(0, 0, 0, 0.15);
