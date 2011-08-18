@@ -545,3 +545,27 @@ td.comp_right{
     vertical-align:center;
 
 }
+.component_description{
+    width:100%;
+    text-align:center;
+}
+
+.description_popup{
+    color:#999999;
+    border: 1px solid #444444;
+    text-align:left;
+    padding:10px;
+}
+
+.new_description{
+    float:right;
+    max-width:50%;
+    width:48%;
+    border: 1px solid #444444;
+}
+.old_description{
+    float:left;
+    max-width:50%;
+    width:48%;
+    border: 1px solid #444444;
+}

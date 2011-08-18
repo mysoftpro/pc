@@ -40,37 +40,12 @@ function componentChanged(event){
     }
 }
 
-$(function(){
-      try{
-	  $('select').chosen().change(componentChanged);
-	  new_model = _.clone(model);
-	  var middles = $('td.comp_middle');
-	  for (var i=0;i<middles.length;i++){
-	      var mid = $(middles.get(i));
-	      var token = mid.text();
-	      var prev = mid.prev();
-	      var prev_text = prev.text().replace(token, '');
-	      prev.html(prev_text);
-	      var opts = mid.next().find('option');
-	      for (var j=0;j<opts.length;j++){
-		  var opt = $(opts.get(j));
-		  var opt_text = opt.text().replace(token, '');
-		  opt.html(opt_text);
-	      }
-	  }
-	  $('#top').waypoint(function(event, direction) {
+
+function makeScroll(){
+    $('#top').waypoint(function(event, direction) {
 				 if (scroll_in_progress) return;
-				 scroll_in_progress = true;				 
+				 scroll_in_progress = true;
 				 if (direction == 'down' && !top_fixed){
-				     // var top = $('#top');
-				     // top.css({
-				     // 		 'position':'fixed',
-				     // 		 'top':0,
-				     // 		 'z-index':'9999',
-				     // 		 'background-color':'#202020',
-				     // 		 'height':'200px',
-				     // 		 'width':'1000px'
-				     // 	     });
 				     var grad = $('#gradient_background');
 				     grad.css({
 					   	  'position':'fixed',
@@ -78,25 +53,19 @@ $(function(){
 					   	  'height':'310px',
 					   	  'min-height':'0px'
 					      });
-				     var components = $('#components');			     
+				     var components = $('#components');
 				     components.css('padding-top','475px');
-				     top_fixed = true;				     				  
+				     top_fixed = true;
 				 }
 				 scroll_in_progress = false;
 			     });
-	  
+
 	  $($('.component_tab').get(0)).waypoint(function(event,direction){
 						     if (scroll_in_progress) return;
 						     scroll_in_progress = true;
 						     if (top_fixed && direction=='up'){
-							 //var top = $('#top');
-							 var grad = $('#gradient_background');				
+							 var grad = $('#gradient_background');
 							 var components = $('#components');
-							 // top.css({
-							 // 	     'position':'inherit',
-							 // 	     'height':'247px',
-							 // 	     'background-color': 'inherit'
-							 // 	 });
 							 grad.css({
 								      'min-height': '380px',
 								      'height':'380px',
@@ -108,8 +77,45 @@ $(function(){
 						     }
 						     scroll_in_progress = false;
 						 });
-	  
-	  
+}
+
+var description_template = "<div class=\"description_popup\"><div class=\"new_description\">{{_new}}</div><div class=\"old_description\">{{_old}}</div><div style=\"clear:both;\"></div></div>";
+var description_viewlet = "<div class=\"description_name\">{{name}}</div><div class=\"comments\">{{comments}}</div>";
+
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
+function installDescriptions(){
+    $('.component_description a').click(function(e){
+					    var target = $(e.target);
+					    e.preventDefault();
+					    var _id = target.parent().parent().attr('id');
+					    $.ajax({
+						       url:'/component',
+						       data:{'id':_id},
+						       success:function(data){							   
+							   target.parent().append(
+							       _.template(description_template, {
+									      '_new':_.template(description_viewlet, data),
+									      '_old':_.template(description_viewlet, data)
+									  })
+							   );
+							   console.log(data);
+						       }
+						   });
+					    
+					});
+}
+
+$(function(){
+      try{
+	  $('select').chosen().change(componentChanged);
+	  new_model = _.clone(model);
+	  makeScroll();
+	  installDescriptions();
+
       } catch (x) {
 	  console.log(x);
       }

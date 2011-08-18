@@ -240,6 +240,7 @@ def renderComputer(components_choices, template, skin, model):
         viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         component_doc = makePrice(component_doc)
+        viewlet.xpath('//div[@class="component"]')[0].set('id', component_doc['_id'])
         viewlet.xpath('//div[@class="component_tab"]')[0].text = parts[name]        
         for div in viewlet.xpath("//div[@class='toptools']"):
             div.find('span').text = unicode(component_doc['price']) + u' р'
