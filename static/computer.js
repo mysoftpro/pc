@@ -1,3 +1,9 @@
+// model, new_model => { 19165={...}, 17575={...}, 10661={...}, ещё...}
+// model_parts { 19165="case", 17575="ram", 10661="hdd", ещё...}
+// parts_names => { sound="Звуковая карта", lan="Сетевая карта", ram="Память", ещё...}
+// model is stayed untached. only new model is changed.
+// model ids are equal to td.body ids. they are untoched also
+// new model ids are equal to select.val()
 
 function recalculate(){
     var tottal = 0;
@@ -28,6 +34,9 @@ var scroll_in_progress = false;
 function componentChanged(event){
     try{
 	var target = $(event.target);
+	var new_name = target.find('#'+target.val()).text();
+	var body = target.parent().next();
+	body.html(new_name);
 	var new_id = target.val();
 	var new_component = choices[target.val()];
 	var new_cats = getCatalogs(new_component);
@@ -35,106 +44,105 @@ function componentChanged(event){
 	delete new_model[old_component['_id']];
 	new_model[new_component['_id']] = new_component;
 	recalculate();
+	updateDescription(new_id, body.attr('id'));
     } catch (x) {
 	console.log(x);
     }
 }
 
 
-function makeScroll(){
-    $('#top').waypoint(function(event, direction) {
-				 if (scroll_in_progress) return;
-				 scroll_in_progress = true;
-				 if (direction == 'down' && !top_fixed){
-				     var grad = $('#gradient_background');
-				     grad.css({
-					   	  'position':'fixed',
-					   	  'z-index':'100',
-					   	  'height':'310px',
-					   	  'min-height':'0px'
-					      });
-				     var components = $('#components');
-				     components.css('padding-top','475px');
-				     top_fixed = true;
-				 }
-				 scroll_in_progress = false;
-			     });
 
-	  $($('.component_tab').get(0)).waypoint(function(event,direction){
-						     if (scroll_in_progress) return;
-						     scroll_in_progress = true;
-						     if (top_fixed && direction=='up'){
-							 var grad = $('#gradient_background');
-							 var components = $('#components');
-							 grad.css({
-								      'min-height': '380px',
-								      'height':'380px',
-								      'position':'inherit'
-								  });
-							 components.css({'padding-top':'0px'});
-							 top_fixed = false;
-							 $("html,body").animate({ scrollTop: 0 }, 200);
-						     }
-						     scroll_in_progress = false;
-						 });
+function updateDescription(new_id, body_id){
+    var bodies = $('td.body');
+    var index = 0;
+    for (var i=0,l=bodies.length;i<l;i++){
+	if ($(bodies.get(i)).attr('id') == body_id){
+	    index = i;
+	    break;
+	}
+    }
+    if (!descriptions_cached[new_id]){
+	$.ajax({
+		   url:'/component',
+		   data:{'id':new_id},
+		   success:function(data){
+		       changeDescription(index, new_id, data);
+		   }
+	       });
+
+    }
+    else{
+	changeDescription(index, new_id);
+    }
 }
 
-var description_template = "<div class=\"description_popup\"><div class=\"new_description\">{{_new}}</div><div class=\"old_description\">{{_old}}</div><div style=\"clear:both;\"></div></div>";
-var description_viewlet = "<div class=\"description_name\">{{name}}</div><div class=\"comments\">{{comments}}</div>";
 
-_.templateSettings = {
-    interpolate : /\{\{(.+?)\}\}/g
-    ,evaluate: /\[\[(.+?)\]\]/g
-};
+var descriptions_cached = {};
 
-function installDescriptions(){
-    function showDescription(e){
-	try{
-	    console.log('be');
-	    var target = $(e.target);
-	    e.preventDefault();
-	    var _id = target.parent().parent().attr('id');
-	    $.ajax({
-		       url:'/component',
-		       data:{'id':_id},
-		       success:function(data){							   
-			   target.parent().append(
-			       _.template(description_template, {
-					      '_new':_.template(description_viewlet, data),
-					      '_old':_.template(description_viewlet, data)
-					  })
-			   );							   
-			   console.log('aa');
-			   // todo! cach result for base model here!
-			   target.text(target.text().replace('показать','спрятать'));
-			   var clone = target.clone();
-			   target.parent().find('.description_popup').append(clone);
-			   function unb(el){
-			       el.unbind('click').bind('click', function(e){
-							   e.preventDefault();
-							   target.text(target.text().replace('спрятать','показать'));
-							   target.parent().find('.description_popup').remove();
-							   target.click(showDescription);
-						       });
-			   }
-			   unb(target);
-			   unb(clone);			   
-		       }
-		   });
-	} catch (x) {
-    
-	}				    					
+function changeDescription(index, _id, data){
+    $('.description').hide();
+    var descr = $($('.description').get(index));
+    if (!descriptions_cached[_id]){
+	var _text;
+	if (data){
+	    _text = data['name'] + data['comments'];
+	}	    
+	else
+	    _text = descr.text();
+	descriptions_cached[_id] = _text;
     }
-    $('.component_description a').click(showDescription);
+    descr.html(descriptions_cached[_id]);
+    descr.show();
+    $('#component_title').text(parts_names[model_parts[_id]]);
+}
+
+function installDescription(){
+    $('.description').hide();
+    var f = $('.description').first();
+    var html = f.text();
+    descriptions_cached[$('td.body').attr('id')] = html;
+    f.html(html);
+    f.show();
+}
+
+function installBodies(){
+    var bodies = $('td.body');
+	  bodies.mouseover(function(e){
+				 $(e.target).css('color','#aadd00');
+			     });
+	  bodies.mouseleave(function(e){
+				 $(e.target).css('color','white');
+			     });
+	  bodies.click(function(e){
+			   var target = $(e.target);
+			   var _id = target.attr('id');
+			   for (var i=0,l=bodies.length;i<l;i++){
+			       var _body = $(bodies.get(i));
+
+			       if (_body.attr('id') == _id){
+				   _body.parent().children().css('opacity','1.0');
+				   _body.hide();
+				   var select_block = _body.prev().show();
+				   var real_id = select_block.find('select').val();
+				   changeDescription(i,real_id);
+			       }
+			       else{
+				   _body.show();
+				   _body.prev().hide();
+				   _body.parent().children().css('opacity','0.6');
+			       }
+			       _body.css('opacity','1.0');
+			   }
+		       });
+	  bodies.first().click();
 }
 
 $(function(){
       try{
 	  $('select').chosen().change(componentChanged);
 	  new_model = _.clone(model);
-	  makeScroll();
-	  installDescriptions();
-
+	  installBodies();
+	  installDescription();
       } catch (x) {
 	  console.log(x);
       }

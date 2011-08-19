@@ -9,7 +9,7 @@ import gzip
 from twisted.web.resource import Resource, ForbiddenResource
 from twisted.web.static import File, getTypeAndEncoding
 from twisted.internet import reactor, threads, defer
-from kalog.jsmin import jsmin
+from pc.jsmin import jsmin
 from twisted.web.server import NOT_DONE_YET
 import os
 from twisted.web.http import CACHED
@@ -186,9 +186,9 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-	not_min = "js" in _name and "min." not in _name
-	if not_min:
-	    _content = jsmin(_content)
+	# not_min = "js" in _name and "min." not in _name
+	# if not_min:
+	#     _content = jsmin(_content)
 	buff = StringIO()
 	f = gzip.GzipFile(_name,'wb',9, buff)
 	f.write(_content)
@@ -292,7 +292,10 @@ class Component(Resource):
     isLeaf = True
     allowedMethods = ('GET',)
     def writeComponent(self, doc, request):
-	request.write(simplejson.dumps(doc['description']))
+	if 'description' in doc:
+            request.write(simplejson.dumps(doc['description']))
+        else:
+            request.write(simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]}))
 	request.finish()
 
     def render_GET(self, request):
