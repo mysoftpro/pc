@@ -526,10 +526,11 @@ label:hover{
 
     box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
     -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -webkit-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
+     -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
+    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
 
-    padding: 5px 8px;
-    
+    padding: 5px 5px;
+    text-align:center;
     cursor:pointer;
     font-weight:bold;
     font-size:14px;
@@ -550,15 +551,16 @@ label:hover{
     background-color: #444;
     height:18px;
     margin-top:28px;
+    background-color:#323232;
 }
 
-#sys{
+.section{
 text-align:left;
 background-image:url('/static/under_header.png');
 background-repeat: no-repeat;
 background-position: 0px 20px;
 padding-bottom:5px;
 height:30px;
-padding-left: 80px;
-color:#999;
+padding-left: 120px;
+color:#7b9c0a;
 }

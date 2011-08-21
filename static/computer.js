@@ -66,6 +66,7 @@ function updateDescription(new_id, body_id){
 		   url:'/component',
 		   data:{'id':new_id},
 		   success:function(data){
+		       data['title'] = parts_names[model_parts[body_id]];
 		       changeDescription(index, new_id, data);
 		   }
 	       });
@@ -86,14 +87,19 @@ function changeDescription(index, _id, data){
 	var _text;
 	if (data){
 	    _text = data['name'] + data['comments'];
-	}	    
+	}
 	else
 	    _text = descr.text();
 	descriptions_cached[_id] = _text;
     }
     descr.html(descriptions_cached[_id]);
     descr.show();
-    $('#component_title').text(parts_names[model_parts[_id]]);
+    if (!data){
+	var new_name = parts_names[model_parts[_id]];	
+	var component_title = $('#component_title');
+	component_title.text(new_name);
+	component_title.next().text('как выбирать ' + new_name);	
+    }        
 }
 
 function installDescription(){
@@ -120,21 +126,63 @@ function installBodies(){
 			       var _body = $(bodies.get(i));
 
 			       if (_body.attr('id') == _id){
-				   _body.parent().children().css('opacity','1.0');
 				   _body.hide();
 				   var select_block = _body.prev().show();
-				   var real_id = select_block.find('select').val();
-				   changeDescription(i,real_id);
+				   //??
+				   // var real_id = select_block.find('select').val();
+				   changeDescription(i,_id);
 			       }
 			       else{
 				   _body.show();
 				   _body.prev().hide();
-				   _body.parent().children().css('opacity','0.6');
 			       }
-			       _body.css('opacity','1.0');
 			   }
 		       });
 	  bodies.first().click();
+}
+
+
+function cheaperBetter(){
+    function _cheaperBetter(prev_next){
+	function handler(e){
+	    e.preventDefault();
+	    var target = $(e.target);
+	    var select = target.parent().parent().first().find('select');
+	    select.parent().next().click();
+	    var select_val = select.val();
+	    var opts = select.children().toArray();
+	    if (opts[0].tagName == 'OPTGROUP'){
+		var res = [];
+		for (var i=0,l=opts.length;i<l;i++){
+		    var childs = $(opts[i]).children().toArray();
+		    for (var j=0,k=childs.length;j<k;j++){
+			res.push(childs[j]);
+		    }
+		}
+		opts = res;
+	    }
+	    var current_option;
+	    for(var i=0,l=opts.length;i<l;i++){
+		var op = $(opts[i]);
+		if (op.val() == select_val){
+		    current_option = op;
+		    break;
+		}
+	    }
+	    var prev_or_next = prev_next(current_option);
+	    if ((prev_or_next).tagName == "OPTGROUP"){
+		prev_or_next = prev_next(prev_next);
+	    }
+	    if (prev_or_next && prev_or_next.length>0){
+		select.val(prev_or_next.val());
+		select.next().find('span').text(prev_or_next.text());
+		componentChanged({'target':select[0]});
+	    }
+	}
+	return handler;
+    }
+    $('.cheaper').click(_cheaperBetter(function(op){return $(op).prev();}));
+    $('.better').click(_cheaperBetter(function(op){return $(op).next();}));
 }
 
 $(function(){
@@ -143,6 +191,7 @@ $(function(){
 	  new_model = _.clone(model);
 	  installBodies();
 	  installDescription();
+	  cheaperBetter();
       } catch (x) {
 	  console.log(x);
       }
