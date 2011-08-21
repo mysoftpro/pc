@@ -244,6 +244,11 @@ ul#main_menu li a {
     padding: 0;
     width: 1000px;
 }
+#perifery{
+    margin: 0 auto 0;
+    padding: 0;
+    width: 1000px;
+}
 
 .indexitem
 {
@@ -349,6 +354,12 @@ h3 {
     border:1px solid white;
     padding:10px;
 }
+
+#perifery_descriptions {
+    border:1px solid white;
+    padding:10px;
+}
+
 .description {
     color:#ddd;
     margin-top:10px;
