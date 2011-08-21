@@ -228,7 +228,7 @@ def renderComputer(components_choices, template, skin, model):
 	    row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
 	    row['doc'].update({'featured':True})
 	option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' р'
-	option.set('id',row['id'])
+	# option.set('id',row['id'])
 	option.set('value',row['id'])
 	return option
 
@@ -315,7 +315,7 @@ def renderComputer(components_choices, template, skin, model):
                                                     ';var tottal=',unicode(tottal),
                                                     u';var choices=',simplejson.dumps(components_json),
                                                     '; var model_parts=', simplejson.dumps(model_parts),
-                                                    ';parts_names=',simplejson.dumps(parts_names)))
+                                                    ';var parts_names=',simplejson.dumps(parts_names)))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal)#model['price']
     template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal)#model['price']
     skin.top = template.top

@@ -34,7 +34,7 @@ var scroll_in_progress = false;
 function componentChanged(event){
     try{
 	var target = $(event.target);
-	var new_name = target.find('#'+target.val()).text();
+	var new_name = target.find('option[value="'+target.val() + '"]').text();
 	var body = target.parent().next();
 	body.html(new_name);
 	var new_id = target.val();
@@ -95,11 +95,11 @@ function changeDescription(index, _id, data){
     descr.html(descriptions_cached[_id]);
     descr.show();
     if (!data){
-	var new_name = parts_names[model_parts[_id]];	
+	var new_name = parts_names[model_parts[_id]];
 	var component_title = $('#component_title');
 	component_title.text(new_name);
-	component_title.next().text('как выбирать ' + new_name);	
-    }        
+	component_title.next().text('как выбирать ' + new_name);
+    }
 }
 
 function installDescription(){
@@ -141,13 +141,28 @@ function installBodies(){
 	  bodies.first().click();
 }
 
+var chbeQueue = [];
+
+
+function getSelect(target){
+    var select;
+    if (target[0].tagName == 'TD'){
+	select = target.parent().first().find('select');
+    }
+    else{
+	select = target.parent().parent().first().find('select');
+    }
+    return select;
+}
+
 
 function cheaperBetter(){
+    chbeQueue = [];
     function _cheaperBetter(prev_next){
 	function handler(e){
 	    e.preventDefault();
 	    var target = $(e.target);
-	    var select = target.parent().parent().first().find('select');
+	    var select = getSelect(target);
 	    select.parent().next().click();
 	    var select_val = select.val();
 	    var opts = select.children().toArray();
@@ -175,7 +190,7 @@ function cheaperBetter(){
 	    }
 	    if (prev_or_next && prev_or_next.length>0){
 		select.val(prev_or_next.val());
-		select.next().find('span').text(prev_or_next.text());
+		select.next().find('span').text(prev_or_next.text());		
 		componentChanged({'target':select[0]});
 	    }
 	}
@@ -185,6 +200,20 @@ function cheaperBetter(){
     $('.better').click(_cheaperBetter(function(op){return $(op).next();}));
 }
 
+
+function reset(){
+    $('.reset').click(function(e){
+			  e.preventDefault();
+			  var target = $(e.target);
+			  var select = getSelect(target);
+			  var body = select.parent().next();
+			  select.val(body.attr('id'));
+			  select.next().find('span').text(select.find('option[value="' + body.attr('id') + '"]').text());
+			  componentChanged({'target':select[0]});
+		     });
+}
+
+
 $(function(){
       try{
 	  $('select').chosen().change(componentChanged);
@@ -192,6 +221,7 @@ $(function(){
 	  installBodies();
 	  installDescription();
 	  cheaperBetter();
+	  reset();
       } catch (x) {
 	  console.log(x);
       }
