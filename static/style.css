@@ -520,8 +520,8 @@ label:hover{
     color: #7b9c0a;
 }
 .perif{
-    margin-right:5px;
-    margin-left:14px;
+    /* margin-right:5px; */
+    /* margin-left:14px; */
 }
 
 
@@ -581,4 +581,8 @@ color:#7b9c0a;
 .reset{
     padding-right:0px;
     text-align:right;
+}
+
+#options{
+    width:460px;
 }

@@ -151,7 +151,8 @@ function installBodies(){
 			       }
 			   }
 		       });
-	  bodies.first().click();
+    // console.log(bodies.first());
+    // bodies.first().click();
 }
 
 var chbeQueue = [];
@@ -170,7 +171,7 @@ function getSelect(target){
 
 
 function getBody(select){
-    return select.parent().next().click();
+    return select.parent().next();
 }
 
 

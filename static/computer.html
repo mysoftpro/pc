@@ -24,38 +24,62 @@
     <div id="large"><span id="large_price"></span> р / <span id="large_index">2.5</span></div>
     <div style="clear:both;"></div>
     <div style="float:right;">
+      <table id="options">
+	<tr>
 
-      <input class="perif" id="windows" value="windows" type="checkbox" checked="checked"/>
-      <label for="windows">Windows</label>
+	  <td style="width:110px;">
+	    <input class="perif" id="monitor" value="monitor" type="checkbox" checked="checked"/>
+	    <label for="monitor">монитор</label>
+	  </td>
 
 
-      <input class="perif" id="monitor" value="monitor" type="checkbox" checked="checked"/>
-      <label for="monitor">монитор</label>
+	  <td style="width:80px;">
+	    <input class="perif" id="windows" value="windows" type="checkbox" checked="checked"/>
+	    <label for="windows">Windows</label>
+	  </td>
 
-      <input class="perif" id="audio" value="audio" type="checkbox" checked="checked"/>
-      <label for="audio">колонки</label>
+	  <td style="width:80px;">
+	    <input class="perif" id="keyboard" value="keyboard" type="checkbox" checked="checked"/>
+	    <label for="keyboard">клавиатура</label>
+	  </td>
 
-      <input class="perif" id="keyboard" value="keyboard" type="checkbox" checked="checked"/>
-      <label for="keyboard">клавиатура</label>
+	  <td style="width:90px;">
+	    <input class="perif" id="mouse" value="mouse" type="checkbox" checked="checked"/>
+	    <label for="mouse">мышь</label>
+	  </td>
+	 	  
+	</tr>
+	<tr>
 
-      <input class="perif" id="mouse" value="mouse" type="checkbox" checked="checked"/>
-      <label for="mouse">мышь</label>
+	  <td>
+	    <input class="perif" id="build" value="build" type="checkbox" checked="checked" />
+	    <label  for="build">Сборка: 500 р</label>
+	  </td>
 
+	  <td colspan="2">
+
+	    <input class="perif" id="installing" value="installing" type="checkbox" checked="checked" />
+	    <label for="windows">Установка windows: 300 р</label>
+
+	  </td>
+	  
+	  <td colspan="2">
+	    <input class="perif" id="delivery" value="delivery" type="checkbox" checked="checked" />
+	    <label for="delivery">Доставка: 0 р</label>
+
+	  </td>
+
+
+	</tr>
+
+      </table>
     </div>
 
-    <div style="clear:both;"></div>
 
     <div style="float:right;">
 
-      <input class="perif" id="installing" value="installing" type="checkbox" checked="checked" />
-      <label for="mouse">Установка windows: 300 р</label>
 
 
-      <input class="perif" id="delivery" value="delivery" type="checkbox" checked="checked" />
-      <label style="margin-right:12px;" for="mouse">Доставка: 0 р</label>
-
-      <input class="perif" id="build" value="build" type="checkbox" checked="checked" />
-      <label style="margin-right:12px;" for="mouse">Сборка: 500 р</label>      
 
     </div>
 
@@ -70,14 +94,14 @@
   <table id="components">
   </table>
   <div></div>
-  
+
   <div id="component_title" class="component_tab active">
     Процессор
   </div>
   <div class="component_tab inactive" style="width:auto;">как выбирать</div>
   <div style="clear:both"></div>
   <div id="descriptions">
-    
+
   </div>
 
   <h2 style="margin-top:20px;" class="section">Периферия</h2>
@@ -95,7 +119,7 @@
 
   <script type="text/javascript">
   </script>
-  
+
   <script type="text/javascript" src="/static/chosen.jquery.js"></script>
   <script type="text/javascript" src="/static/computer.js"></script>
 </middle>
