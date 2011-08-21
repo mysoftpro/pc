@@ -42,13 +42,15 @@ h2 {
     text-transform:uppercase;
     color:#7b9c0a;
     z-index:9999;
+    position:relative;
+    top:-40px;
 }
 
 #banner1 {
     height:320px;
     background:url('hp1.png');
     background-repeat:no-repeat;
-    background-position: 400px 60px;
+    background-position: 400px 80px;
 }
 .title {
        text-transform:uppercase;
@@ -62,10 +64,10 @@ p {
     margin-left:0px;
 }
 #first {
-    font-size:44px;
+    font-size:64px;
     line-height:44px;
     color:#696969;
-    margin-bottom:20px;
+    margin-bottom:40px;
     text-align:justify;
 }
 #second{
@@ -493,7 +495,7 @@ td.body{
 td.component_price{
     min-width:60px;
     text-align:right;
-    padding-right:10px;
+    padding-right:20px;
 }
 
 td {
@@ -563,4 +565,9 @@ padding-bottom:5px;
 height:30px;
 padding-left: 120px;
 color:#7b9c0a;
+}
+
+.reset{
+    padding-right:0px;
+    text-align:right;
 }

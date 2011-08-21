@@ -14,7 +14,7 @@
 
   </div>
 
-  <div style="float:right;padding-top:20px;">
+  <div style="float:right;">
     <div class="green_image_button" style="float:right;margin-left:5px;" href="#">В корзину</div>
     <div class="black_image_button" style="float:right;" href="#">Сбросить</div>
     <div class="white_image_button" style="float:right;" href="#">Подсказки</div>
@@ -64,10 +64,21 @@
   </div>
 
   <h2 style="margin-top:20px;" class="section">Периферия</h2>
-  <table id="perifery" style="height:400px;">
+
+  <table id="perifery">
   </table>
+
+  <div id="perifery_title" class="component_tab active">
+    Процессор
+  </div>
+
+  <div class="component_tab inactive" style="width:auto;">как выбирать</div>
+  <div style="clear:both"></div>
+  <div id="perifery_descriptions"></div>
+
   <script type="text/javascript">
   </script>
+  
   <script type="text/javascript" src="/static/chosen.jquery.js"></script>
   <script type="text/javascript" src="/static/computer.js"></script>
 </middle>
@@ -83,6 +94,6 @@
     <td class="component_price"> 1200 р </td>
     <td class="cheaper"><a href="">дешевле</a></td>
     <td class="better"> <a href="">лучше </a></td>
-    <td> <a class="reset" href="">сбросить </a></td>
+    <td class="reset"> <a href="">сбросить </a></td>
 </tr>
 </componentviewlet>

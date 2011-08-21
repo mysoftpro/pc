@@ -158,8 +158,8 @@ def cleanDoc(doc):
     for t in ['text', '_attachments','description','flags','inCart','ordered','reserved','stock1', '_rev', 'warranty_type']:#
 	pop(t)
     if 'catalogs' in doc:
-        for c in doc['catalogs']:
-            c.pop('name')
+	for c in doc['catalogs']:
+	    c.pop('name')
     return doc
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
@@ -215,9 +215,9 @@ def index(template, skin, request):
 
 
 
-parts = {'proc':10, 'ram':20, 'video':30, 'hdd':40, 'case':50,'sound':60, 'lan':70, 'mother':80,'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
+parts = {'proc':10, 'ram':20, 'video':30, 'hdd':40, 'case':50, 'mother':60, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
 parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус','sound':u'Звуковая карта',
-               'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
+	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
 
 def renderComputer(components_choices, template, skin, model):
@@ -247,7 +247,7 @@ def renderComputer(components_choices, template, skin, model):
     tottal = 0
     components_json = {}
     viewlets = []
-    
+
     # description_json = {}
     for name,code in model['items'].items():
 	if code is None: continue
@@ -265,12 +265,12 @@ def renderComputer(components_choices, template, skin, model):
 	descr = etree.Element('div')
 	descr.set('class','description')
 	descr.text = component_doc['description']['name'] + component_doc['description']['comments']
-	        
+
 	tottal += component_doc['price']
-        
-        component_doc = cleanDoc(component_doc)
+
+	component_doc = cleanDoc(component_doc)
 	model_json.update({component_doc['_id']:component_doc})
-        model_parts.update({component_doc['_id']:name})
+	model_parts.update({component_doc['_id']:name})
 	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(component_doc['price']) + u' р'
 
 	select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
@@ -288,8 +288,8 @@ def renderComputer(components_choices, template, skin, model):
 			if r['id'] == code:
 			    option.set('selected','selected')
 			_options.append((option, r['doc']['price']))
-                        r['doc'] = cleanDoc(r['doc'])
-                        components_json.update({r['doc']['_id']:r['doc']})
+			r['doc'] = cleanDoc(r['doc'])
+			components_json.update({r['doc']['_id']:r['doc']})
 		    appendOptions(_options, option_group)
 		    options.append((option_group, 0))
 	else:
@@ -303,19 +303,26 @@ def renderComputer(components_choices, template, skin, model):
 		components_json.update({row['doc']['_id']:row['doc']})
 	appendOptions(options, select)
 
-        viewlets.append((parts[name],viewlet,descr))
+	viewlets.append((parts[name],viewlet,descr))
 
-    components_container = template.middle.xpath('//table[@id="components"]')[0]   
+
+    components_container = template.middle.xpath('//table[@id="components"]')[0]
     description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
+    perifery_container = template.middle.xpath('//table[@id="perifery"]')[0]
+    perifery_description_container = template.middle.xpath('//div[@id="perifery_descriptions"]')[0]
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-        components_container.append(viewlet[1].find('tr'))        
-        description_container.append(viewlet[2])
+        if viewlet[0]<=60:
+            components_container.append(viewlet[1].find('tr'))
+            description_container.append(viewlet[2])
+        else:
+            perifery_container.append(viewlet[1].find('tr'))
+            perifery_description_container.append(viewlet[2])
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-                                                    ';var tottal=',unicode(tottal),
-                                                    u';var choices=',simplejson.dumps(components_json),
-                                                    '; var model_parts=', simplejson.dumps(model_parts),
-                                                    ';var parts_names=',simplejson.dumps(parts_names)))
+						    ';var tottal=',unicode(tottal),
+						    u';var choices=',simplejson.dumps(components_json),
+						    '; var model_parts=', simplejson.dumps(model_parts),
+						    ';var parts_names=',simplejson.dumps(parts_names)))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal)#model['price']
     template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal)#model['price']
     skin.top = template.top
@@ -393,7 +400,7 @@ def fillChoices(result):
 
     defs.append(defer.DeferredList([couch.openView(designID,
 						   'catalogs',include_docs=True, key=displays_19_20)
-				    .addCallback(lambda res: (u"Мониторы 29-20 дюймов",res)),
+				    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
 				    couch.openView(designID,
 						   'catalogs',include_docs=True, key=displays_22_26)
 				    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])

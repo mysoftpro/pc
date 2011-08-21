@@ -39,6 +39,8 @@ function componentChanged(event){
 	body.html(new_name);
 	var new_id = target.val();
 	var new_component = choices[target.val()];
+
+	getPrice(body).text(new_component.price + ' р');
 	var new_cats = getCatalogs(new_component);
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	delete new_model[old_component['_id']];
@@ -80,9 +82,14 @@ function updateDescription(new_id, body_id){
 
 var descriptions_cached = {};
 
+function getTitles(descr){
+    var inactive = descr.parent().prev().prev();
+    return [inactive.prev(), inactive];
+    
+}
 function changeDescription(index, _id, data){
-    $('.description').hide();
     var descr = $($('.description').get(index));
+    descr.parent().children().hide();
     if (!descriptions_cached[_id]){
 	var _text;
 	if (data){
@@ -96,9 +103,9 @@ function changeDescription(index, _id, data){
     descr.show();
     if (!data){
 	var new_name = parts_names[model_parts[_id]];
-	var component_title = $('#component_title');
-	component_title.text(new_name);
-	component_title.next().text('как выбирать ' + new_name);
+	var titles = getTitles(descr);
+	titles[0].text(new_name);
+	titles[1].text('как выбирать ' + new_name);
     }
 }
 
@@ -160,6 +167,11 @@ function getBody(select){
     return select.parent().next().click();
 }
 
+
+function getPrice(body){
+    return body.next();
+}
+
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
@@ -180,6 +192,7 @@ function cheaperBetter(){
 		}
 		opts = res;
 	    }
+	    var opts_values = _(opts).map(function(o){return $(o).val();});
 	    var current_option;
 	    for(var i=0,l=opts.length;i<l;i++){
 		var op = $(opts[i]);
@@ -188,20 +201,21 @@ function cheaperBetter(){
 		    break;
 		}
 	    }
-	    var prev_or_next = prev_next(current_option);
-	    if ((prev_or_next).tagName == "OPTGROUP"){
-		prev_or_next = prev_next(prev_next);
-	    }
-	    if (prev_or_next && prev_or_next.length>0){
-		select.val(prev_or_next.val());
-		select.next().find('span').text(prev_or_next.text());		
-		componentChanged({'target':select[0]});
-	    }
+	    var index = opts_values.indexOf($(current_option).val());
+	    var new_index = prev_next(i);
+ 
+	    if (new_index < 0 || new_index>=opts_values.length)
+		return;
+	    var new_option = $(opts[new_index]);
+	    
+	    select.val(new_option.val());
+	    select.next().find('span').text(new_option.text());
+	    componentChanged({'target':select[0]});
 	}
 	return handler;
     }
-    $('.cheaper').click(_cheaperBetter(function(op){return $(op).prev();}));
-    $('.better').click(_cheaperBetter(function(op){return $(op).next();}));
+    $('.cheaper').click(_cheaperBetter(function(i){return i-1;}));
+    $('.better').click(_cheaperBetter(function(i){return i+1;}));
 }
 
 
