@@ -30,12 +30,12 @@ h2 {
 
 
 #logo {
-    background-image:url('/static/alfa_rubic_new.png');
-    background-repeat:no-repeat;
+    /* background-image:url('/static/alfa_rubic_new.png'); */
+    /* background-repeat:no-repeat; */
     height:40px;
     margin: 0;
     margin-bottom:10px;
-    padding: 7px 0 0 40px;
+    padding: 0 0 10px 0;
     font-size:36px;
     font-family:Verdana,Arial,Helvetica,sans-serif;
     font-weight:bold;
@@ -43,16 +43,9 @@ h2 {
     color:#7b9c0a;
     z-index:9999;
 }
-#phone_large{
-font-size:36px;
-    font-family:Verdana,Arial,Helvetica,sans-serif;
-    font-weight:bold;
-    text-transform:uppercase;
-    color:#7b9c0a;
-    z-index:9999;
-}
+
 #banner1 {
-    height:360px;
+    height:320px;
     background:url('hp1.png');
     background-repeat:no-repeat;
     background-position: 400px 60px;
@@ -205,12 +198,25 @@ ul#main_menu li a {
 /* End hide from IE-mac */
 
 
-.shipping-banner {
+#phone {
     margin: 0;
     padding: 0;
     position: absolute;
     right: -3px;
     top: -52px;
+    background-image:url("/static/phone.png");
+    background-repeat:no-repeat;
+    display:block;
+    width:385px;
+    height:45px;
+    font-weigfht:bold;
+    color:white;
+    font-size:18px;
+    text-align:center;
+    vertical-align:middle;
+    text-decoration:none;
+    padding-top:10px;
+    
 }
 
 #computers{
@@ -218,6 +224,17 @@ ul#main_menu li a {
     padding: 0;
     text-alig:n left;
     width: 1000px;
+}
+
+#other{
+   margin: 0 auto 0;
+   padding: 0;
+   text-align: center;
+   width: 1000px;
+   padding-top:30px;
+   font-size:16px;
+   line-height:18px;
+   color:#999;
 }
 
 #components{
@@ -319,7 +336,7 @@ h3 {
 }
 
 #large{
-    float:right;
+    float:left;
     padding:10px;
     font-size:34px;
     color:#999;
@@ -462,6 +479,9 @@ h3 {
 .component_select{
     display:none;
 }
+select{
+    width:520px;color:black;
+}
 
 
 td.body{
@@ -488,7 +508,7 @@ label:hover{
 }
 .perif{
     margin-right:5px;
-    margin-left:32px;
+    margin-left:14px;
 }
 
 
@@ -530,4 +550,15 @@ label:hover{
     background-color: #444;
     height:18px;
     margin-top:28px;
+}
+
+#sys{
+text-align:left;
+background-image:url('/static/under_header.png');
+background-repeat: no-repeat;
+background-position: 0px 20px;
+padding-bottom:5px;
+height:30px;
+padding-left: 80px;
+color:#999;
 }

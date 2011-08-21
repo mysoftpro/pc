@@ -308,7 +308,7 @@ def renderComputer(components_choices, template, skin, model):
     components_container = template.middle.xpath('//table[@id="components"]')[0]   
     description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-        components_container.append(viewlet[1])
+        components_container.append(viewlet[1].find('tr'))        
         description_container.append(viewlet[2])
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
@@ -321,7 +321,7 @@ def renderComputer(components_choices, template, skin, model):
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('style',' margin: -60px auto;padding: 0;width:1000px')
+    skin.root().xpath('//div[@id="middle"]')[0].set('style',' margin: -40px auto;padding: 0;width:1000px')
     return skin.render()
 
 

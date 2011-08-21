@@ -7,7 +7,7 @@
 	<span class="model_summary">Базовый индекс производительности <strong id="basepi">2.5</strong> </span>
 	<span style="clear:both;"></span>
     </div>
-    <div style="padding:5px 5px 5px 0">
+    <div style="padding:5px 5px 5px 0; color:#999">
       Отличный компьютер для интернет серфинга. Мощный процессор с hyperthreading позволит держать в браузере десятки
       открытых вкладок. Материнская плата поддержит совместимость на 3-4 года вперед.
     </div>
@@ -25,9 +25,12 @@
     <div style="clear:both;"></div>
     <div style="float:right;">
 
+      <input class="perif" id="windows" value="windows" type="checkbox" checked="checked"/>
+      <label for="windows">Windows</label>
+
+
       <input class="perif" id="monitor" value="monitor" type="checkbox" checked="checked"/>
       <label for="monitor">монитор</label>
-
 
       <input class="perif" id="audio" value="audio" type="checkbox" checked="checked"/>
       <label for="audio">колонки</label>
@@ -46,7 +49,7 @@
 </top>
 
 <middle>
-  <h2>Системный блок</h2>
+  <h2 id="sys">Системный блок</h2>
   <table id="components">
   </table>
   <div></div>
@@ -61,7 +64,7 @@
   </div>
 
   <h2 style="margin-top:20px;">Периферия</h2>
-  <table id="perifery" style="height:50px;">
+  <table id="perifery" style="height:400px;">
   </table>
 
 
@@ -73,7 +76,7 @@
 <componentviewlet>
 <tr class="component_viewlet">
   <td class="component_select">
-    <select style="width:600px;color:black;">
+    <select style="">
     </select>
   </td>
     <td class="body" style="color:white;"></td>
