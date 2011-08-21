@@ -156,6 +156,10 @@ function getSelect(target){
 }
 
 
+function getBody(select){
+    return select.parent().next().click();
+}
+
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
@@ -163,7 +167,7 @@ function cheaperBetter(){
 	    e.preventDefault();
 	    var target = $(e.target);
 	    var select = getSelect(target);
-	    select.parent().next().click();
+	    getBody(select).click();
 	    var select_val = select.val();
 	    var opts = select.children().toArray();
 	    if (opts[0].tagName == 'OPTGROUP'){
@@ -209,6 +213,7 @@ function reset(){
 			  var body = select.parent().next();
 			  select.val(body.attr('id'));
 			  select.next().find('span').text(select.find('option[value="' + body.attr('id') + '"]').text());
+			  getBody(select).click();
 			  componentChanged({'target':select[0]});
 		     });
 }
