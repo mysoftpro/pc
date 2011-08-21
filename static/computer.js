@@ -116,6 +116,12 @@ function installDescription(){
     descriptions_cached[$('td.body').attr('id')] = html;
     f.html(html);
     f.show();
+    
+    f = $('#perifery_descriptions').children().first();
+    html = f.text();
+    descriptions_cached[getBody($('#perifery tr td').first().find('select')).attr('id')] = html;
+    f.html(html);
+    f.show();
 }
 
 function installBodies(){
