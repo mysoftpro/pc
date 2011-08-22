@@ -204,9 +204,14 @@ var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return s
 function confirmPopup(message, success, fail){
     var answer = confirm(message);
     if (answer)
-	success();
+        success();
     else
-	fail();
+        fail();
+}
+
+
+function changeSocket(new_component, old_component){
+    
 }
 
 
@@ -246,18 +251,20 @@ function cheaperBetter(){
             var new_cats = getCatalogs(choices[new_option_val]);
             var sameCatalogs = _(_.zip(current_cats,new_cats)).all(function(x){return x[0]==x[1];});
             var change = function(){
-		select.val(new_option.val());
+                select.val(new_option.val());
                 select.next().find('span').text(new_option.text());
                 componentChanged({'target':select[0]});
-	    };
-	    if (!sameCatalogs){
-                confirmPopup("Вы выбрали сокет, не совместимый с сокетом материнской платы.",
-			     change,
+            };
+            if (!sameCatalogs){
+                // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
+                // by body id. than it is possible to get cyr name for the component from parts_names
+                confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+                             function(){change();changeSocket(new_component);},
                              function(){});
             }
-	    else{
-		change();
-	    }            
+            else{
+                change();
+            }
         }
         return handler;
     }
