@@ -20,11 +20,19 @@ function getCatalogs(component){
 }
 
 
-function filterByCatalogs(components, catalogs){
-    return  _(components).filter(function(c){
-                                     var cats = getCatalogs(c).slice(0, catalogs.length);
-                                     var all = _.zip(cats, catalogs).slice(0,2);
-                                     return _(all).all(function(x){return x[0] == x[1];});
+function filterByCatalogs(components, catalogs, no_slice){
+    return  _(components).filter(function(c){                                     
+				     var cats = getCatalogs(c).slice(0, catalogs.length);
+				     // this func is used for models and for choices
+				     // _sli = 2 allow to get specific part from model, by part catalogs
+				     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] ) 
+				     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
+				     var _sli = 2;
+				     if (no_slice)
+					 _sli = cats.length;
+                                     var all = _.zip(cats, catalogs).slice(0,_sli);
+                                     var answer = _(all).all(function(x){return x[0] == x[1];});				     
+				     return answer;
                               });
 }
 
@@ -210,11 +218,72 @@ function confirmPopup(message, success, fail){
 }
 
 
-function changeSocket(new_component, old_component){
-    
+
+function getIntPrice(body){
+    // TODO - refactor re to separate function
+    var price = getPrice(body);
+    console.log(body);
+    console.log(price);    
+    return parseInt(price.text().match("[0-9]+[ ]р$")[0].replace(' р',''));
 }
 
+// this function change other components! not
+// new_component or old_component, but appropriate
+// components on other side of socket
 
+function changeSocket(new_cats, body){
+    try{
+        // TODO! it is possible to make it complettely without dom
+	// in model! it is possible to eliminate body (it is just used for the price
+	// and get price just from new model, using filter by catalogs !!!!
+	var part = model_parts[body.attr('id')];
+        var mapping;
+	var other_body;
+        if (part == 'proc'){
+            mapping = proc_to_mother_mapping;
+	    //                tr       table
+	    other_body = body.parent().parent().children().last().find('td.body');
+        }
+        else{
+            mapping = mother_to_proc_mapping;
+	    other_body = body.parent().parent().children().first().find('td.body');
+        }
+
+        var other_catalogs;
+        for (var i=0,l=mapping.length;i<l;i++){
+            if (_(_.zip(mapping[i][0],new_cats)).all(function(x){return x[0]==x[1];})){
+                other_catalogs = mapping[i][1];
+                break;
+            }
+        }
+	var other_price = getIntPrice(other_body);
+	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
+	// console.log(other_components);
+	// console.log(new_cats);
+	var diff = 1000000;
+	var appropriate_other_component;
+	for (var i=0,l=other_components.length;i<l;i++){
+	    var _diff = other_components[i].price - other_price;
+	    if (_diff<diff){
+		appropriate_other_component = other_components[i];
+		diff = _diff;
+	    }		
+	}
+	console.log(new_cats);
+	console.log(other_catalogs);
+	console.log(other_components);
+	console.log(appropriate_other_component);
+    } catch (x) {
+        console.log(x);
+    }
+}
+// TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
+// by body id. than it is possible to get cyr name for the component from parts_names
+
+
+
+//TODO GLOBAL. the body, which i always need is just an id of old component.
+// may be instead of getBody, just return catalogs, and part?
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
@@ -258,8 +327,9 @@ function cheaperBetter(){
             if (!sameCatalogs){
                 // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
                 // by body id. than it is possible to get cyr name for the component from parts_names
+                // IF VIDEO IS JUST - just do change()!
                 confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-                             function(){change();changeSocket(new_component);},
+                             function(){change();changeSocket(new_cats, getBody(select));},
                              function(){});
             }
             else{

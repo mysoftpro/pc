@@ -90,14 +90,14 @@ procs_fm1 =  [components,procs,"19257"]
 
 
 
-mother_to_proc_mapping= {
-    tuple(mothers_1155):procs_1155,
-    tuple(mothers_1156):procs_1156,
-    tuple(mothers_1366):procs_1366,
-    tuple(mothers_775):procs_775,
-    tuple(mothers_am23):procs_am23,
-    tuple(mothers_fm1):procs_fm1
-    }
+mother_to_proc_mapping= [
+    (mothers_1155,procs_1155),
+    (mothers_1156,procs_1156),
+    (mothers_1366,procs_1366),
+    (mothers_775,procs_775),
+    (mothers_am23,procs_am23),
+    (mothers_fm1,procs_fm1)
+    ]
 
 
 
@@ -332,9 +332,12 @@ def renderComputer(components_choices, template, skin, model):
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
 						    ';var tottal=',unicode(tottal),
-						    u';var choices=',simplejson.dumps(components_json),
-						    '; var model_parts=', simplejson.dumps(model_parts),
-						    ';var parts_names=',simplejson.dumps(parts_names)))
+						    ';var choices=',simplejson.dumps(components_json),
+						    ';var model_parts=', simplejson.dumps(model_parts),
+						    ';var parts_names=',simplejson.dumps(parts_names),
+                                                    ';var mother_to_proc_mapping=',simplejson.dumps(mother_to_proc_mapping),
+                                                    ';var proc_to_mother_mapping=',simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping])
+                                                    ))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal)#model['price']
     template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal)#model['price']
     skin.top = template.top
