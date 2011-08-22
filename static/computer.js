@@ -25,24 +25,26 @@ function getCatalogs(component){
 function isEqualCatalogs(cat1,cat2, sli){
     var _sli = cat1.length;
     if (sli)
-	_sli = sli;
-    return _.zip(cats, catalogs).slice(0,_sli);
+        _sli = sli;
+    var all = _.zip(cat1, cat2).slice(0,_sli);
+    var answer = _(all).all(function(x){return x[0] == x[1];});
+    return answer;
 }
 
 function filterByCatalogs(components, catalogs, no_slice){
-    return  _(components).filter(function(c){                                     
-				     var cats = getCatalogs(c).slice(0, catalogs.length);
-				     // this func is used for models and for choices
-				     // _sli = 2 allow to get specific part from model, by part catalogs
-				     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] ) 
-				     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
-				     var _sli = 2;
-				     if (no_slice)
-					 _sli = cats.length;
-                                     var all = _.zip(cats, catalogs).slice(0,_sli);
-                                     //var all = isEqualCatalogs
-				     var answer = _(all).all(function(x){return x[0] == x[1];});				     
-				     return answer;
+    return  _(components).filter(function(c){
+                                     var cats = getCatalogs(c).slice(0, catalogs.length);
+                                     // this func is used for models and for choices
+                                     // _sli = 2 allow to get specific part from model, by part catalogs
+                                     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] )
+                                     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
+                                     var _sli = 2;
+                                     if (no_slice)
+                                         _sli = cats.length;
+                                     // var all = _.zip(cats, catalogs).slice(0,_sli);
+                                     // var answer = _(all).all(function(x){return x[0] == x[1];});
+                                     // return answer;
+                                     return isEqualCatalogs(cats, catalogs, _sli);
                               });
 }
 
@@ -52,7 +54,7 @@ var scroll_in_progress = false;
 function componentChanged(event){
     try{
         var target = $(event.target);
-	// TODO - refactor that!
+        // TODO - refactor that!
         var new_name = target.find('option[value="'+target.val() + '"]').text();
         var body = target.parent().next();
         body.html(new_name);
@@ -249,46 +251,46 @@ function getComponentsTable(body){
 function changeSocket(new_cats, body){
     try{
         // TODO! it is possible to make it complettely without dom
-	// in model! it is possible to eliminate body (it is just used for the price
-	// and get price just from new model, using filter by catalogs !!!!
-	var part = model_parts[body.attr('id')];
+        // in model! it is possible to eliminate body (it is just used for the price
+        // and get price just from new model, using filter by catalogs !!!!
+        var part = model_parts[body.attr('id')];
         var mapping;
-	var other_body;
+        var other_body;
         if (part == 'proc'){
             mapping = proc_to_mother_mapping;
-	    other_body = getComponentsTable(body).children().last().find('td.body');
+            other_body = getComponentsTable(body).children().last().find('td.body');
         }
         else{
             mapping = mother_to_proc_mapping;
-	    other_body = getComponentsTable(body).children().first().find('td.body');
+            other_body = getComponentsTable(body).children().first().find('td.body');
         }
 
         var other_catalogs;
         for (var i=0,l=mapping.length;i<l;i++){
-            if (_(_.zip(mapping[i][0],new_cats)).all(function(x){return x[0]==x[1];})){
-                other_catalogs = mapping[i][1];
-                break;
+            if (isEqualCatalogs(mapping[i][0], new_cats)){			    
+		other_catalogs = mapping[i][1];
+		break;
             }
         }
-	var other_price = priceFromText(getPrice(other_body).text());
-	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
-	var diff = 1000000;
-	var appropriate_other_component;
-	for (var i=0,l=other_components.length;i<l;i++){
-	    var _diff = other_components[i].price - other_price;
-	    if (_diff<diff){
-		appropriate_other_component = other_components[i];
-		diff = _diff;
-	    }		
-	}
-	var other_select = getSelect(other_body);
-	var other_option = getOption(other_select, appropriate_other_component['_id']);
-	other_select.val(other_option.val());
-	// TODO - refactor that
+        var other_price = priceFromText(getPrice(other_body).text());
+        var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
+        var diff = 1000000;
+        var appropriate_other_component;
+        for (var i=0,l=other_components.length;i<l;i++){
+            var _diff = other_components[i].price - other_price;
+            if (_diff<diff){
+                appropriate_other_component = other_components[i];
+                diff = _diff;
+            }
+        }
+        var other_select = getSelect(other_body);
+        var other_option = getOption(other_select, appropriate_other_component['_id']);
+        other_select.val(other_option.val());
+        // TODO - refactor that
         //other_select.next().find('span').text(other_option.text());
         getChosenTitle(other_select).text(other_option.text());
-	componentChanged({'target':other_select[0]});
-	
+        componentChanged({'target':other_select[0]});
+
     } catch (x) {
         console.log(x);
     }
@@ -330,13 +332,13 @@ function cheaperBetter(){
             var new_option_val = new_option.val();
             var current_cats = getCatalogs(choices[current_option_val]);
             var new_cats = getCatalogs(choices[new_option_val]);
-            var sameCatalogs = _(_.zip(current_cats,new_cats)).all(function(x){return x[0]==x[1];});
+            
             var change = function(){
                 select.val(new_option.val());
-		getChosenTitle(select).text(new_option.text());
+                getChosenTitle(select).text(new_option.text());
                 componentChanged({'target':select[0]});
             };
-            if (!sameCatalogs){
+            if (!isEqualCatalogs(current_cats, new_cats)){
                 // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
                 // by body id. than it is possible to get cyr name for the component from parts_names
                 // IF VIDEO IS JUST - just do change()!
@@ -366,9 +368,9 @@ function reset(){
                           var target = $(e.target);
                           var select = getSelect(target);
                           var body = getBody(select);
-			  var _id = body.attr('id');
+                          var _id = body.attr('id');
                           select.val(_id);
-			  getChosenTitle(select).text(getOption(select, _id).text());
+                          getChosenTitle(select).text(getOption(select, _id).text());
                           getBody(select).click();
                           componentChanged({'target':select[0]});
                      });
