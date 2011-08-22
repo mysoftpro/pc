@@ -256,7 +256,7 @@ class Root(Resource):
 	    if len(self.cookies) < 10:
 		reactor.callLater(0, self.collectCookies)
 	u = str(request.URLPath())
-	if ('http://' + self.host_url + '/' == u):
+	if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
 	    return self.static.getChild(name, request)
 	return self
 

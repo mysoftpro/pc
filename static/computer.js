@@ -8,7 +8,7 @@
 function recalculate(){
     var tottal = 0;
     for (var id in new_model){
-	tottal += new_model[id].price;
+        tottal += new_model[id].price;
    }
     $('#large_price').text(tottal).css('background-color','#7B9C0A');
     _.delay(function(e){$('#large_price').css('background-color','#222');},100);
@@ -22,10 +22,10 @@ function getCatalogs(component){
 
 function filterByCatalogs(components, catalogs){
     return  _(components).filter(function(c){
-				     var cats = getCatalogs(c).slice(0, catalogs.length);
-				     var all = _.zip(cats, catalogs).slice(0,2);
-				     return _(all).all(function(x){return x[0] == x[1];});
-			      });
+                                     var cats = getCatalogs(c).slice(0, catalogs.length);
+                                     var all = _.zip(cats, catalogs).slice(0,2);
+                                     return _(all).all(function(x){return x[0] == x[1];});
+                              });
 }
 
 var top_fixed = false;
@@ -33,22 +33,22 @@ var scroll_in_progress = false;
 
 function componentChanged(event){
     try{
-	var target = $(event.target);
-	var new_name = target.find('option[value="'+target.val() + '"]').text();
-	var body = target.parent().next();
-	body.html(new_name);
-	var new_id = target.val();
-	var new_component = choices[target.val()];
+        var target = $(event.target);
+        var new_name = target.find('option[value="'+target.val() + '"]').text();
+        var body = target.parent().next();
+        body.html(new_name);
+        var new_id = target.val();
+        var new_component = choices[target.val()];
 
-	getPrice(body).text(new_component.price + ' р');
-	var new_cats = getCatalogs(new_component);
-	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
-	delete new_model[old_component['_id']];
-	new_model[new_component['_id']] = new_component;
-	recalculate();
-	updateDescription(new_id, body.attr('id'));
+        getPrice(body).text(new_component.price + ' р');
+        var new_cats = getCatalogs(new_component);
+        var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+        delete new_model[old_component['_id']];
+        new_model[new_component['_id']] = new_component;
+        recalculate();
+        updateDescription(new_id, body.attr('id'));
     } catch (x) {
-	console.log(x);
+        console.log(x);
     }
 }
 
@@ -58,24 +58,24 @@ function updateDescription(new_id, body_id){
     var bodies = $('td.body');
     var index = 0;
     for (var i=0,l=bodies.length;i<l;i++){
-	if ($(bodies.get(i)).attr('id') == body_id){
-	    index = i;
-	    break;
-	}
+        if ($(bodies.get(i)).attr('id') == body_id){
+            index = i;
+            break;
+        }
     }
     if (!descriptions_cached[new_id]){
-	$.ajax({
-		   url:'/component',
-		   data:{'id':new_id},
-		   success:function(data){
-		       data['title'] = parts_names[model_parts[body_id]];
-		       changeDescription(index, new_id, data);
-		   }
-	       });
+        $.ajax({
+                   url:'/component',
+                   data:{'id':new_id},
+                   success:function(data){
+                       data['title'] = parts_names[model_parts[body_id]];
+                       changeDescription(index, new_id, data);
+                   }
+               });
 
     }
     else{
-	changeDescription(index, new_id);
+        changeDescription(index, new_id);
     }
 }
 
@@ -85,27 +85,27 @@ var descriptions_cached = {};
 function getTitles(descr){
     var inactive = descr.parent().prev().prev();
     return [inactive.prev(), inactive];
-    
+
 }
 function changeDescription(index, _id, data){
     var descr = $($('.description').get(index));
     descr.parent().children().hide();
     if (!descriptions_cached[_id]){
-	var _text;
-	if (data){
-	    _text = data['name'] + data['comments'];
-	}
-	else
-	    _text = descr.text();
-	descriptions_cached[_id] = _text;
+        var _text;
+        if (data){
+            _text = data['name'] + data['comments'];
+        }
+        else
+            _text = descr.text();
+        descriptions_cached[_id] = _text;
     }
     descr.html(descriptions_cached[_id]);
     descr.show();
     if (!data){
-	var new_name = parts_names[model_parts[_id]];
-	var titles = getTitles(descr);
-	titles[0].text(new_name);
-	titles[1].text('как выбирать ' + new_name);
+        var new_name = parts_names[model_parts[_id]];
+        var titles = getTitles(descr);
+        titles[0].text(new_name);
+        titles[1].text('как выбирать ' + new_name);
     }
 }
 
@@ -116,7 +116,7 @@ function installDescription(){
     descriptions_cached[$('td.body').attr('id')] = html;
     f.html(html);
     f.show();
-    
+
     f = $('#perifery_descriptions').children().first();
     html = f.text();
     descriptions_cached[getBody($('#perifery tr td').first().find('select')).attr('id')] = html;
@@ -126,32 +126,31 @@ function installDescription(){
 
 function installBodies(){
     var bodies = $('td.body');
-	  bodies.mouseover(function(e){
-				 $(e.target).css('color','#aadd00');
-			     });
-	  bodies.mouseleave(function(e){
-				 $(e.target).css('color','white');
-			     });
-	  bodies.click(function(e){
-			   var target = $(e.target);
-			   var _id = target.attr('id');
-			   for (var i=0,l=bodies.length;i<l;i++){
-			       var _body = $(bodies.get(i));
+          bodies.mouseover(function(e){
+                                 $(e.target).css('color','#aadd00');
+                             });
+          bodies.mouseleave(function(e){
+                                 $(e.target).css('color','white');
+                             });
+          bodies.click(function(e){
+                           var target = $(e.target);
+                           var _id = target.attr('id');
+                           for (var i=0,l=bodies.length;i<l;i++){
+                               var _body = $(bodies.get(i));
 
-			       if (_body.attr('id') == _id){
-				   _body.hide();
-				   var select_block = _body.prev().show();
-				   //??
-				   // var real_id = select_block.find('select').val();
-				   changeDescription(i,_id);
-			       }
-			       else{
-				   _body.show();
-				   _body.prev().hide();
-			       }
-			   }
-		       });
-    // console.log(bodies.first());
+                               if (_body.attr('id') == _id){
+                                   _body.hide();
+                                   var select_block = _body.prev().show();
+                                   //??
+                                   // var real_id = select_block.find('select').val();
+                                   changeDescription(i,_id);
+                               }
+                               else{
+                                   _body.show();
+                                   _body.prev().hide();
+                               }
+                           }
+                       });
     // bodies.first().click();
 }
 
@@ -161,10 +160,10 @@ var chbeQueue = [];
 function getSelect(target){
     var select;
     if (target[0].tagName == 'TD'){
-	select = target.parent().first().find('select');
+        select = target.parent().first().find('select');
     }
     else{
-	select = target.parent().parent().first().find('select');
+        select = target.parent().parent().first().find('select');
     }
     return select;
 }
@@ -179,47 +178,88 @@ function getPrice(body){
     return body.next();
 }
 
+
+function getOptionForChBe(select){
+    var opts = select.children().toArray();
+    if (opts[0].tagName == 'OPTGROUP'){
+        var opts_price = [];
+        for (var i=0,l=opts.length;i<l;i++){
+            var childs = $(opts[i]).children().toArray();
+            for (var j=0,k=childs.length;j<k;j++){
+                var op = childs[j];
+                var text = $(op).text();
+                var text_price = text.match("[0-9]+[ ]р$")[0];
+                var int_price = parseInt(text_price.replace(' р', ''));
+                opts_price.push([op, int_price]);
+            }
+        }
+        opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
+    }
+    return opts;
+}
+
+var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return select.val();});
+
+
+function confirmPopup(message, success, fail){
+    var answer = confirm(message);
+    if (answer)
+	success();
+    else
+	fail();
+}
+
+
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
-	function handler(e){
-	    e.preventDefault();
-	    var target = $(e.target);
-	    var select = getSelect(target);
-	    getBody(select).click();
-	    var select_val = select.val();
-	    var opts = select.children().toArray();
-	    if (opts[0].tagName == 'OPTGROUP'){
-		var res = [];
-		for (var i=0,l=opts.length;i<l;i++){
-		    var childs = $(opts[i]).children().toArray();
-		    for (var j=0,k=childs.length;j<k;j++){
-			res.push(childs[j]);
-		    }
-		}
-		opts = res;
-	    }
-	    var opts_values = _(opts).map(function(o){return $(o).val();});
-	    var current_option;
-	    for(var i=0,l=opts.length;i<l;i++){
-		var op = $(opts[i]);
-		if (op.val() == select_val){
-		    current_option = op;
-		    break;
-		}
-	    }
-	    var index = opts_values.indexOf($(current_option).val());
-	    var new_index = prev_next(i);
- 
-	    if (new_index < 0 || new_index>=opts_values.length)
-		return;
-	    var new_option = $(opts[new_index]);
-	    
-	    select.val(new_option.val());
-	    select.next().find('span').text(new_option.text());
-	    componentChanged({'target':select[0]});
-	}
-	return handler;
+        function handler(e){
+            e.preventDefault();
+            var target = $(e.target);
+            var select = getSelect(target);
+            getBody(select).click();
+            var select_val = select.val();
+
+            var opts = fastGetOptionForChBe(select);
+
+            var opts_values = _(opts).map(function(o){return $(o).val();});
+            var current_option;
+            for(var i=0,l=opts.length;i<l;i++){
+                var op = $(opts[i]);
+                if (op.val() == select_val){
+                    current_option = op;
+                    break;
+                }
+            }
+
+            var current_option_val = $(current_option).val();
+
+            var index = opts_values.indexOf(current_option_val);
+            var new_index = prev_next(i);
+
+            if (new_index < 0 || new_index>=opts_values.length)
+                return;
+            var new_option = $(opts[new_index]);
+
+            var new_option_val = new_option.val();
+            var current_cats = getCatalogs(choices[current_option_val]);
+            var new_cats = getCatalogs(choices[new_option_val]);
+            var sameCatalogs = _(_.zip(current_cats,new_cats)).all(function(x){return x[0]==x[1];});
+            var change = function(){
+		select.val(new_option.val());
+                select.next().find('span').text(new_option.text());
+                componentChanged({'target':select[0]});
+	    };
+	    if (!sameCatalogs){
+                confirmPopup("Вы выбрали сокет, не совместимый с сокетом материнской платы.",
+			     change,
+                             function(){});
+            }
+	    else{
+		change();
+	    }            
+        }
+        return handler;
     }
     $('.cheaper').click(_cheaperBetter(function(i){return i-1;}));
     $('.better').click(_cheaperBetter(function(i){return i+1;}));
@@ -228,28 +268,28 @@ function cheaperBetter(){
 
 function reset(){
     $('.reset').click(function(e){
-			  e.preventDefault();
-			  var target = $(e.target);
-			  var select = getSelect(target);
-			  var body = select.parent().next();
-			  select.val(body.attr('id'));
-			  select.next().find('span').text(select.find('option[value="' + body.attr('id') + '"]').text());
-			  getBody(select).click();
-			  componentChanged({'target':select[0]});
-		     });
+                          e.preventDefault();
+                          var target = $(e.target);
+                          var select = getSelect(target);
+                          var body = select.parent().next();
+                          select.val(body.attr('id'));
+                          select.next().find('span').text(select.find('option[value="' + body.attr('id') + '"]').text());
+                          getBody(select).click();
+                          componentChanged({'target':select[0]});
+                     });
 }
 
 
 $(function(){
       try{
-	  $('select').chosen().change(componentChanged);
-	  new_model = _.clone(model);
-	  installBodies();
-	  installDescription();
-	  cheaperBetter();
-	  reset();
+          $('select').chosen().change(componentChanged);
+          new_model = _.clone(model);
+          installBodies();
+          installDescription();
+          cheaperBetter();
+          reset();
       } catch (x) {
-	  console.log(x);
+          console.log(x);
       }
 
 
