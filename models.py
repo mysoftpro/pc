@@ -80,13 +80,23 @@ sound_internal = [components,sound,"8012"]
 network = "7405"
 lans = [network,"14710"]
 
+procs_1155 = [components, procs, "18027"]
+procs_1156 = [components,procs,"18028"]
+procs_1366 = [components,procs,"9422"]
+procs_775 = [components,procs,"7451"]
+procs_am23 = [components,procs,"770"]
+
+
+
+
 mother_to_proc_mapping= {
-    tuple(mothers_1155):[components, procs, "18027"],
-    tuple(mothers_1156):[components,procs,"18028"],
-    tuple(mothers_1366):[components,procs,"9422"],
-    tuple(mothers_775):[components,procs,"7451"],
-    tuple(mothers_am23):[components,procs,"7700"]
+    tuple(mothers_1155):procs_1155,
+    tuple(mothers_1156):procs_1156,
+    tuple(mothers_1366):procs_1366,
+    tuple(mothers_775):procs_775,
+    tuple(mothers_am23):procs_am23
     }
+
 
 
 def getCatalogsKey(doc):
@@ -345,7 +355,7 @@ printed = False
 
 
 def fillChoices(result):
-    docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
+    # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     defs = []
     defs.append(defer.DeferredList([couch.openView(designID,
 						   'catalogs',
@@ -369,13 +379,32 @@ def fillChoices(result):
 				    .addCallback(lambda res: ("AM2 3",res))])
 		.addCallback(lambda res: {"mother":res}))
 
-    mother = [d for d in docs if isMother(d)][0]
-    mother_cats = getCatalogsKey(mother)
+    # mother = [d for d in docs if isMother(d)][0]
+    # mother_cats = getCatalogsKey(mother)
 
-    defs.append(couch.openView(designID,
-			       'catalogs',
-			       include_docs=True,
-			       key=mother_to_proc_mapping[tuple(mother_cats)]).addCallback(lambda res: {"proc":res}))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=procs_1155)
+                                    .addCallback(lambda res:('LGA1155',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=procs_1156)
+                                                   .addCallback(lambda res:('LGA1156',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=procs_1366)
+                                                   .addCallback(lambda res:('LGA1366',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=procs_am23)
+                                    .addCallback(lambda res:('AM2 3',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=procs_775)
+                                                   .addCallback(lambda res:('LGA7755',res)),
+                                    ])
+                
+                .addCallback(lambda res: {"proc":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
 						   'catalogs',include_docs=True, key=geforce)
@@ -440,6 +469,7 @@ def fillChoices(result):
 	    if el[0]:
 		new_res.update(el[1])
 	return new_res
+    #TODO - this callbaqck to the higher level
     return defer.DeferredList(defs).addCallback(makeDict).addCallback(lambda choices: (result, choices))
 
 def computer(template, skin, request):

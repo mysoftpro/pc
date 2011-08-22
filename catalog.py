@@ -16,6 +16,8 @@ from random import randint
 from twisted.web.http_headers import Headers
 from twisted.internet.protocol import Protocol
 from twisted.internet import defer
+import os
+from datetime import datetime
 
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
                         'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
@@ -76,16 +78,17 @@ class XmlGetter(Resource):
         raw_doc = sio.getvalue()
         sio.close()
         doc = simplejson.loads(raw_doc)
-        need_store = False
+        component_changed = False
         for k,v in doc.items():
             if k in item:
                 if doc[k] != item[k]:
                     # TODO - treat changes here!
-                    need_store = True
+                    component_changed = True
                     doc[k] = item[k]
-        if need_store:
+            
+        if component_changed:
             d = couch.addAttachments(doc, raw_doc, version=True)
-            d.addCallback(lambda _doc:couch.saveDoc(_doc))
+            d.addCallback(lambda _doc:couch.saveDoc(_doc))        
             d.addErrback(self.pr)
             return d
 
@@ -111,14 +114,18 @@ class XmlGetter(Resource):
 
 
     def compareDocs(self, res):
-        # sys.setrecursionlimit(2000)
-        # from twisted.internet.defer import setDebugging
-        # setDebugging(True)
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
         tree = etree.parse(gz)
-        root = tree.getroot()
+        
+        gz.seek(0)
+        f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
+        f.write(gz.read())
+        f.close()
+        gz.close()
+        
+        root = tree.getroot()        
         gen = xmlToDocs([], root)
         self.getItem(None, gen)
 
@@ -136,7 +143,6 @@ class XmlGetter(Resource):
         return "ok"
 
     def render_OPTIONS(self, request):
-        print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         for i in request.headers:
             print i
             print request.headers[i]
@@ -145,7 +151,6 @@ class XmlGetter(Resource):
         return "ok"
     
     def render_POST(self, request):
-        print "pooooooooooooooooooooooooooost"
         op = request.args.get('op', [None])[0]
         if op == 'descr':
             print "try to store"
@@ -154,10 +159,8 @@ class XmlGetter(Resource):
 
     def noSuchDoc(self, _id):
         def no(fail):
-            print "faaaaaaaaaaaaaaaaaaaaaaail"
             print fail
             print _id
-            print ""
         return no
 
     def storeDescription(self, request):
