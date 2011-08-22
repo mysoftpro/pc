@@ -85,35 +85,45 @@ class XmlGetter(Resource):
                     # TODO - treat changes here!
                     component_changed = True
                     doc[k] = item[k]
-            
         if component_changed:
             d = couch.addAttachments(doc, raw_doc, version=True)
-            d.addCallback(lambda _doc:couch.saveDoc(_doc))        
+            # TODO! drop some later attachments!  if updates are every hour - store just 8 of them, for example
+            d.addCallback(lambda _doc:couch.saveDoc(_doc))
             d.addErrback(self.pr)
             return d
 
-    def getItem(self, res, gen):
+    def cleanDocs(self, _all_docs, codes):
+        for row in _all_docs['rows']:
+            try:
+                int(row['id'])
+            except ValueError:
+                continue
+            if row['id'] not in codes:
+                couch.deleteDoc(row['id'], row['value']['rev'])
+        # destroy cache here!
+        from pc import root
+        root._cached_statics = {}
+
+    def getItem(self, res, gen, codes):
         try:
             item = gen.next()
         except StopIteration:
+            _all = couch.listDoc()
+            _all.addCallback(self.cleanDocs, codes)
+            self.cleanDocs(codes)
             return
         sio = StringIO()
         item_code = item.pop('code')
+        codes.add(item_code)
         d = couch.openDoc(item_code, writer=sio)
-        if item_code == '19258':
-            print "getcha!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         def co(res):
-            if item_code == '19258':
-                print "callback?"
             self.compareItem(res, item, sio)
         def st(fail):
-            if item_code == '19258':
-                print "fail of cause!"            
             c = couch.saveDoc(item, docId=item_code)
             c.addErrback(self.pr)
         d.addCallbacks(co,st)
         d.addErrback(self.pr)
-        d.addCallback(self.getItem, gen)
+        d.addCallback(self.getItem, gen, codes)
         d.addErrback(self.pr)
         return d
 
@@ -122,16 +132,16 @@ class XmlGetter(Resource):
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
-                
+
         f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
         f.write(gz.read())
         f.close()
 
         gz.seek(0)
         tree = etree.parse(gz)
-        root = tree.getroot()        
+        root = tree.getroot()
         gen = xmlToDocs([], root)
-        self.getItem(None, gen)
+        self.getItem(None, gen, set())
 
     def render_GET(self, request):
         proxy = Proxy(xml_source)
@@ -153,7 +163,7 @@ class XmlGetter(Resource):
         # print request.headers.getAllRawHeaders()
         request.responseHeaders = Headers({'Allow':['POST', 'GET'], 'Access-Control-Allow-Origin': ['*']})
         return "ok"
-    
+
     def render_POST(self, request):
         op = request.args.get('op', [None])[0]
         if op == 'descr':
@@ -174,11 +184,11 @@ class XmlGetter(Resource):
         d = couch.openDoc(_id)
         d.addErrback(self.noSuchDoc(_id))
         d.addCallback(self.saveDescription, _description)
-        
+
 
     image_url = 'http://wit-tech.ru/img/get/file/'
 
-    def saveDescription(self, doc, description):        
+    def saveDescription(self, doc, description):
         if doc is None: return
         print "save! " + doc["_id"]
         if 'description' in doc:
@@ -194,8 +204,8 @@ class XmlGetter(Resource):
         def factory(response):
             response.deliverBody(ImageReceiver(doc, img+'.jpg', d))
         return factory
-                                 
-            
+
+
 
     def getImage(self, doc):
         agent = Agent(reactor)
@@ -207,7 +217,7 @@ class XmlGetter(Resource):
                     headers.update({'User-Agent':[standard_user_agents[randint(0,len(standard_user_agents)-1)]]})
                 else:
                     headers.update({k:v})
-            
+
             url = self.image_url + img
             d = defer.Deferred()
             image_request = agent.request('GET', str(url),Headers(headers),None)
@@ -245,7 +255,7 @@ class ImageReceiver(Protocol):
         # d.addCallback(lambda x: self.finish.callback(x)
         self.finish.callback({self.name:self.file.getvalue()})
         self.file.close()
-        
+
 
 
 
