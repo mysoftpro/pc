@@ -1,3 +1,4 @@
+// like this code? i`ll develop for you! just call +79114691892
 // model, new_model => { 19165={...}, 17575={...}, 10661={...}, ещё...}
 // model_parts { 19165="case", 17575="ram", 10661="hdd", ещё...}
 // parts_names => { sound="Звуковая карта", lan="Сетевая карта", ram="Память", ещё...}
@@ -42,6 +43,7 @@ var scroll_in_progress = false;
 function componentChanged(event){
     try{
         var target = $(event.target);
+	// TODO - refactor that!
         var new_name = target.find('option[value="'+target.val() + '"]').text();
         var body = target.parent().next();
         body.html(new_name);
@@ -269,18 +271,17 @@ function changeSocket(new_cats, body){
 		diff = _diff;
 	    }		
 	}
-	console.log(new_cats);
-	console.log(other_catalogs);
-	console.log(other_components);
-	console.log(appropriate_other_component);
+	var other_select = getSelect(other_body);
+	var other_option = getOption(other_select, appropriate_other_component['_id']);//other_select.find('option[value="' + appropriate_other_component['_id']+'"]');
+	other_select.val(other_option.val());
+	// TODO - refactor that
+        other_select.next().find('span').text(other_option.text());
+        componentChanged({'target':other_select[0]});
+	
     } catch (x) {
         console.log(x);
     }
 }
-// TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
-// by body id. than it is possible to get cyr name for the component from parts_names
-
-
 
 //TODO GLOBAL. the body, which i always need is just an id of old component.
 // may be instead of getBody, just return catalogs, and part?
@@ -329,7 +330,7 @@ function cheaperBetter(){
                 // by body id. than it is possible to get cyr name for the component from parts_names
                 // IF VIDEO IS JUST - just do change()!
                 confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-                             function(){change();changeSocket(new_cats, getBody(select));},
+                             function(){changeSocket(new_cats, getBody(select));change();},
                              function(){});
             }
             else{
@@ -343,6 +344,11 @@ function cheaperBetter(){
 }
 
 
+
+function getOption(select, _id){
+    return select.find('option[value="' + _id + '"]');
+}
+
 function reset(){
     $('.reset').click(function(e){
                           e.preventDefault();
@@ -350,7 +356,7 @@ function reset(){
                           var select = getSelect(target);
                           var body = select.parent().next();
                           select.val(body.attr('id'));
-                          select.next().find('span').text(select.find('option[value="' + body.attr('id') + '"]').text());
+                          select.next().find('span').text(getOption(select, body.attr('id')).text());
                           getBody(select).click();
                           componentChanged({'target':select[0]});
                      });
