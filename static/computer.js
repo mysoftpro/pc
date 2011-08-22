@@ -1,4 +1,4 @@
-// like this code? i`ll develop for you! just call +79114691892
+// like this code? i`ll such develop for you! just call +79114691892
 // model, new_model => { 19165={...}, 17575={...}, 10661={...}, ещё...}
 // model_parts { 19165="case", 17575="ram", 10661="hdd", ещё...}
 // parts_names => { sound="Звуковая карта", lan="Сетевая карта", ram="Память", ещё...}
@@ -21,6 +21,14 @@ function getCatalogs(component){
 }
 
 
+
+function isEqualCatalogs(cat1,cat2, sli){
+    var _sli = cat1.length;
+    if (sli)
+	_sli = sli;
+    return _.zip(cats, catalogs).slice(0,_sli);
+}
+
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){                                     
 				     var cats = getCatalogs(c).slice(0, catalogs.length);
@@ -32,7 +40,8 @@ function filterByCatalogs(components, catalogs, no_slice){
 				     if (no_slice)
 					 _sli = cats.length;
                                      var all = _.zip(cats, catalogs).slice(0,_sli);
-                                     var answer = _(all).all(function(x){return x[0] == x[1];});				     
+                                     //var all = isEqualCatalogs
+				     var answer = _(all).all(function(x){return x[0] == x[1];});				     
 				     return answer;
                               });
 }
@@ -377,6 +386,4 @@ $(function(){
       } catch (x) {
           console.log(x);
       }
-
-
   });
