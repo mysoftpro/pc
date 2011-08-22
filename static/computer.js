@@ -41,11 +41,8 @@ function filterByCatalogs(components, catalogs, no_slice){
                                      var _sli = 2;
                                      if (no_slice)
                                          _sli = cats.length;
-                                     // var all = _.zip(cats, catalogs).slice(0,_sli);
-                                     // var answer = _(all).all(function(x){return x[0] == x[1];});
-                                     // return answer;
                                      return isEqualCatalogs(cats, catalogs, _sli);
-                              });
+				 });
 }
 
 var top_fixed = false;
@@ -369,10 +366,30 @@ function reset(){
                           var select = getSelect(target);
                           var body = getBody(select);
                           var _id = body.attr('id');
-                          select.val(_id);
-                          getChosenTitle(select).text(getOption(select, _id).text());
-                          getBody(select).click();
-                          componentChanged({'target':select[0]});
+			  
+			  var component_after_reset = model[_id];
+			  var component_before_reset = choices[select.val()];
+			  var cats_after_reset = getCatalogs(component_after_reset);
+			  var cats_before_reset = getCatalogs(component_before_reset);
+			  function change(){
+			      select.val(_id);
+                              getChosenTitle(select).text(getOption(select, _id).text());
+                              getBody(select).click();
+                              componentChanged({'target':select[0]});
+			  }
+			  if (!isEqualCatalogs(cats_after_reset, cats_before_reset)){
+			      // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
+			      // by body id. than it is possible to get cyr name for the component from parts_names
+			      // IF VIDEO IS JUST - just do change()!
+			      confirmPopup("В первоначальном варианте сокет процессора отличается от сокета выбранной сейчас материнской платы.",
+					   function(){changeSocket(cats_after_reset, body);change();},
+					   function(){});
+			  }
+			  else{
+			      change();
+			  }
+			  
+                          
                      });
 }
 
