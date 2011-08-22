@@ -197,10 +197,7 @@ function getOptionForChBe(select){
             var childs = $(opts[i]).children().toArray();
             for (var j=0,k=childs.length;j<k;j++){
                 var op = childs[j];
-                var text = $(op).text();
-                var text_price = text.match("[0-9]+[ ]р$")[0];
-                var int_price = parseInt(text_price.replace(' р', ''));
-                opts_price.push([op, int_price]);
+                opts_price.push([op, priceFromText($(op).text())]);
             }
         }
         opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
@@ -220,13 +217,20 @@ function confirmPopup(message, success, fail){
 }
 
 
+function priceFromText(text_price){
+    console.log(text_price);
+    return parseInt(text_price.match("[0-9]+[ ]р$")[0].replace(' р',''));
+}
 
-function getIntPrice(body){
-    // TODO - refactor re to separate function
-    var price = getPrice(body);
-    console.log(body);
-    console.log(price);    
-    return parseInt(price.text().match("[0-9]+[ ]р$")[0].replace(' р',''));
+
+
+function getChosenTitle(select){
+    return select.next().find('span');
+}
+
+// TODO! memoise all this getters!!!
+function getComponentsTable(body){
+    return body.parent().parent();
 }
 
 // this function change other components! not
@@ -243,12 +247,11 @@ function changeSocket(new_cats, body){
 	var other_body;
         if (part == 'proc'){
             mapping = proc_to_mother_mapping;
-	    //                tr       table
-	    other_body = body.parent().parent().children().last().find('td.body');
+	    other_body = getComponentsTable(body).children().last().find('td.body');
         }
         else{
             mapping = mother_to_proc_mapping;
-	    other_body = body.parent().parent().children().first().find('td.body');
+	    other_body = getComponentsTable(body).children().first().find('td.body');
         }
 
         var other_catalogs;
@@ -258,7 +261,7 @@ function changeSocket(new_cats, body){
                 break;
             }
         }
-	var other_price = getIntPrice(other_body);
+	var other_price = priceFromText(getPrice(other_body).text());
 	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
 	// console.log(other_components);
 	// console.log(new_cats);
@@ -272,11 +275,12 @@ function changeSocket(new_cats, body){
 	    }		
 	}
 	var other_select = getSelect(other_body);
-	var other_option = getOption(other_select, appropriate_other_component['_id']);//other_select.find('option[value="' + appropriate_other_component['_id']+'"]');
+	var other_option = getOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
 	// TODO - refactor that
-        other_select.next().find('span').text(other_option.text());
-        componentChanged({'target':other_select[0]});
+        //other_select.next().find('span').text(other_option.text());
+        getChosenTitle(other_select).text(other_option.text());
+	componentChanged({'target':other_select[0]});
 	
     } catch (x) {
         console.log(x);
