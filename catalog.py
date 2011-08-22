@@ -100,12 +100,17 @@ class XmlGetter(Resource):
         sio = StringIO()
         item_code = item.pop('code')
         d = couch.openDoc(item_code, writer=sio)
+        if item_code == '19258':
+            print "getcha!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         def co(res):
+            if item_code == '19258':
+                print "callback?"
             self.compareItem(res, item, sio)
         def st(fail):
-            if 'code' in item:
-                c = couch.saveDoc(item, docId=item.pop('code'))
-                c.addErrback(self.pr)
+            if item_code == '19258':
+                print "fail of cause!"            
+            c = couch.saveDoc(item, docId=item_code)
+            c.addErrback(self.pr)
         d.addCallbacks(co,st)
         d.addErrback(self.pr)
         d.addCallback(self.getItem, gen)
@@ -117,14 +122,13 @@ class XmlGetter(Resource):
         src = base64.decodestring(res)
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
-        tree = etree.parse(gz)
-        
-        gz.seek(0)
+                
         f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
         f.write(gz.read())
         f.close()
-        gz.close()
-        
+
+        gz.seek(0)
+        tree = etree.parse(gz)
         root = tree.getroot()        
         gen = xmlToDocs([], root)
         self.getItem(None, gen)

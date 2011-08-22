@@ -36,6 +36,7 @@ mothers_1156 = [components,mothers,"12854"]
 mothers_1366 =[components,mothers,"18029"]
 mothers_775 = [components,mothers,"7449"]
 mothers_am23 = [components,mothers,"7699"]
+mothers_fm1 = [components,mothers,"19238"]
 
 videos = "7396"
 
@@ -85,7 +86,7 @@ procs_1156 = [components,procs,"18028"]
 procs_1366 = [components,procs,"9422"]
 procs_775 = [components,procs,"7451"]
 procs_am23 = [components,procs,"770"]
-
+procs_fm1 =  [components,procs,"19257"]
 
 
 
@@ -94,7 +95,8 @@ mother_to_proc_mapping= {
     tuple(mothers_1156):procs_1156,
     tuple(mothers_1366):procs_1366,
     tuple(mothers_775):procs_775,
-    tuple(mothers_am23):procs_am23
+    tuple(mothers_am23):procs_am23,
+    tuple(mothers_fm1):procs_fm1
     }
 
 
@@ -376,7 +378,12 @@ def fillChoices(result):
 				    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True, key=mothers_am23)
-				    .addCallback(lambda res: ("AM2 3",res))])
+				    .addCallback(lambda res: ("AM2 3",res)),
+                                    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=mothers_fm1)
+				    .addCallback(lambda res: ("FM1",res))
+                                    ])
 		.addCallback(lambda res: {"mother":res}))
 
     # mother = [d for d in docs if isMother(d)][0]
@@ -402,6 +409,10 @@ def fillChoices(result):
                                                    'catalogs',
                                                    include_docs=True,key=procs_775)
                                                    .addCallback(lambda res:('LGA7755',res)),
+                                    couch.openView(designID,
+						   'catalogs',
+						   include_docs=True, key=procs_fm1)
+				    .addCallback(lambda res: ("FM1",res))
                                     ])
                 
                 .addCallback(lambda res: {"proc":res}))
