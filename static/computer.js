@@ -48,9 +48,9 @@ function filterByCatalogs(components, catalogs, no_slice){
 var top_fixed = false;
 var scroll_in_progress = false;
 
-function componentChanged(event){
+function componentChanged(maybe_event){
     try{
-        var target = $(event.target);
+        var target = $(maybe_event.target);
         // TODO - refactor that!
         var new_name = target.find('option[value="'+target.val() + '"]').text();
         var body = target.parent().next();
@@ -64,7 +64,8 @@ function componentChanged(event){
         delete new_model[old_component['_id']];
         new_model[new_component['_id']] = new_component;
         recalculate();
-        updateDescription(new_id, body.attr('id'));
+        if (!maybe_event['no_desc'])
+	    updateDescription(new_id, body.attr('id'));
     } catch (x) {
         console.log(x);
     }
@@ -301,10 +302,8 @@ function changeSocket(new_cats, body){
         var other_select = getSelect(other_body);
         var other_option = getOption(other_select, appropriate_other_component['_id']);
         other_select.val(other_option.val());
-        // TODO - refactor that
-        //other_select.next().find('span').text(other_option.text());
         getChosenTitle(other_select).text(other_option.text());
-        componentChanged({'target':other_select[0]});
+        componentChanged({'target':other_select[0],'no_desc':true});
 
     } catch (x) {
         console.log(x);
