@@ -110,7 +110,6 @@ class XmlGetter(Resource):
         except StopIteration:
             _all = couch.listDoc()
             _all.addCallback(self.cleanDocs, codes)
-            self.cleanDocs(codes)
             return
         sio = StringIO()
         item_code = item.pop('code')

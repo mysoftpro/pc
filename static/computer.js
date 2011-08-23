@@ -108,7 +108,7 @@ function getTitles(descr){
 function changeDescription(index, _id, data){
     var descr = $($('.description').get(index));
     descr.parent().children().hide();
-    if (!descriptions_cached[_id]){
+    if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
         var _text;
         if (data){
             _text = data['name'] + data['comments'];
@@ -170,7 +170,7 @@ function installBodies(){
                            }
                        });
     // show chosen whe page is ready or not?
-    // bodies.first().click();
+    bodies.first().click();
 }
 
 var chbeQueue = [];

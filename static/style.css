@@ -243,6 +243,9 @@ ul#main_menu li a {
     margin: 0 auto 0;
     padding: 0;
     width: 1000px;
+    background-color: #333333;
+    border: 1px solid #777777;
+    padding: 5px;
 }
 #perifery{
     margin: 0 auto 0;
@@ -351,7 +354,7 @@ h3 {
 
 
 #descriptions {
-    border:1px solid white;
+    border:1px solid #777;
     padding:10px;
 }
 
@@ -561,10 +564,10 @@ label:hover{
     float:left;
     color:white;
     font-size: 10px;
-    background-color: #444;
+    background-color: #999;
     height:18px;
     margin-top:28px;
-    background-color:#323232;
+    background-color:#333;
 }
 
 .section{

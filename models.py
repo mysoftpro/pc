@@ -276,7 +276,12 @@ def renderComputer(components_choices, template, skin, model):
 
 	descr = etree.Element('div')
 	descr.set('class','description')
-	descr.text = component_doc['description']['name'] + component_doc['description']['comments']
+        d_comments = ''
+        d_name = ''
+        if 'description' in component_doc:
+            d_name = component_doc['description']['name']
+            d_comments = component_doc['description']['comments']
+	descr.text =  d_name + d_comments 
 
 	tottal += component_doc['price']
 
@@ -295,7 +300,11 @@ def renderComputer(components_choices, template, skin, model):
 		    option_group.set('label', el[1][0])
 		    _options = []
 		    for r in el[1][1]['rows']:
-			r['doc'] = makePrice(r['doc'])
+                        try:
+                            r['doc'] = makePrice(r['doc'])
+                        except:
+                            print r
+                            raise
 			option = makeOption(r)
 			if r['id'] == code:
 			    option.set('selected','selected')
@@ -364,27 +373,27 @@ def fillChoices(result):
     defs = []
     defs.append(defer.DeferredList([couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_1366)
+						   include_docs=True, key=mothers_1366, stale=False)
 				    .addCallback(lambda res: ("LGA1366",res)),
 				    couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_1155)
+						   include_docs=True, key=mothers_1155, stale=False)
 				    .addCallback(lambda res: ("LGA1155",res)),
 				    couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_1156)
+						   include_docs=True, key=mothers_1156, stale=False)
 				    .addCallback(lambda res: ("LGA1166",res)),
 				    couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_775)
+						   include_docs=True, key=mothers_775, stale=False)
 				    .addCallback(lambda res: ("LGA775",res)),
 				    couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_am23)
+						   include_docs=True, key=mothers_am23, stale=False)
 				    .addCallback(lambda res: ("AM2 3",res)),
                                     couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=mothers_fm1)
+						   include_docs=True, key=mothers_fm1, stale=False)
 				    .addCallback(lambda res: ("FM1",res))
                                     ])
 		.addCallback(lambda res: {"mother":res}))
@@ -394,87 +403,89 @@ def fillChoices(result):
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',
-                                                   include_docs=True,key=procs_1155)
+                                                   include_docs=True,key=procs_1155, stale=False)
                                     .addCallback(lambda res:('LGA1155',res)),
                                     couch.openView(designID,
                                                    'catalogs',
-                                                   include_docs=True,key=procs_1156)
+                                                   include_docs=True,key=procs_1156, stale=False)
                                                    .addCallback(lambda res:('LGA1156',res)),
                                     couch.openView(designID,
                                                    'catalogs',
-                                                   include_docs=True,key=procs_1366)
+                                                   include_docs=True,key=procs_1366, stale=False)
                                                    .addCallback(lambda res:('LGA1366',res)),
                                     couch.openView(designID,
                                                    'catalogs',
-                                                   include_docs=True,key=procs_am23)
+                                                   include_docs=True,key=procs_am23, stale=False)
                                     .addCallback(lambda res:('AM2 3',res)),
                                     couch.openView(designID,
                                                    'catalogs',
-                                                   include_docs=True,key=procs_775)
+                                                   include_docs=True,key=procs_775, stale=False)
                                                    .addCallback(lambda res:('LGA7755',res)),
                                     couch.openView(designID,
 						   'catalogs',
-						   include_docs=True, key=procs_fm1)
+						   include_docs=True, key=procs_fm1, stale=False)
 				    .addCallback(lambda res: ("FM1",res))
                                     ])
                 
                 .addCallback(lambda res: {"proc":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=geforce)
+						   'catalogs',include_docs=True, key=geforce, stale=False)
 				    .addCallback(lambda res: (u"GeForce",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=radeon)
+						   'catalogs',include_docs=True, key=radeon, stale=False)
 				    .addCallback(lambda res: (u"Radeon",res))])
 		.addCallback(lambda res: {"video":res}))
 
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=ddr3).addCallback(lambda res: {"ram":res}))
+			       'catalogs',include_docs=True, key=ddr3, stale=False)
+                .addCallback(lambda res: {"ram":res}))
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=satas).addCallback(lambda res: {"hdd":res}))
+			       'catalogs',include_docs=True, key=satas, stale=False)
+                .addCallback(lambda res: {"hdd":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=cases_400_650)
+						   'catalogs',include_docs=True, key=cases_400_650, stale=False)
 				    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
 				   couch.openView(designID,
-						  'catalogs',include_docs=True, key=cases_exclusive)
+						  'catalogs',include_docs=True, key=cases_exclusive, stale=False)
 				    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
 		.addCallback(lambda res: {"case":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=displays_19_20)
+						   'catalogs',include_docs=True, key=displays_19_20, stale=False)
 				    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=displays_22_26)
+						   'catalogs',include_docs=True, key=displays_22_26, stale=False)
 				    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
 		.addCallback(lambda res: {"displ":res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrds_a4)
+						   'catalogs',include_docs=True, key=kbrds_a4, stale=False)
 				    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrds_acme)
+						   'catalogs',include_docs=True, key=kbrds_acme, stale=False)
 				    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrds_chikony)
+						   'catalogs',include_docs=True, key=kbrds_chikony, stale=False)
 				    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrds_game)
+						   'catalogs',include_docs=True, key=kbrds_game, stale=False)
 				    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
 		.addCallback(lambda res: {"kbrd":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouses_a4)
+						   'catalogs',include_docs=True, key=mouses_a4, stale=False)
 				    .addCallback(lambda res: (u"Мыши A4Tech",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouses_game)
+						   'catalogs',include_docs=True, key=mouses_game, stale=False)
 				    .addCallback(lambda res: (u"Игровые Мыши",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouses_acme)
+						   'catalogs',include_docs=True, key=mouses_acme, stale=False)
 				    .addCallback(lambda res: (u"Мыши Acme",res)),
 				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouses_genius)
+						   'catalogs',include_docs=True, key=mouses_genius, stale=False)
 				    .addCallback(lambda res: (u"Мыши Genius",res))])
 		.addCallback(lambda res: {"mouse":res}))
     def makeDict(res):
