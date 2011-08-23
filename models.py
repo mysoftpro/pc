@@ -85,7 +85,7 @@ procs_1155 = [components, procs, "18027"]
 procs_1156 = [components,procs,"18028"]
 procs_1366 = [components,procs,"9422"]
 procs_775 = [components,procs,"7451"]
-procs_am23 = [components,procs,"770"]
+procs_am23 = [components,procs,"7700"]
 procs_fm1 =  [components,procs,"19257"]
 
 

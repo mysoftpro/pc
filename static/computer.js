@@ -278,8 +278,7 @@ function changeSocket(new_cats, body){
         }
         else{
             mapping = mother_to_proc_mapping;
-            other_body = getProcBody();
-	    
+            other_body = getProcBody();	    
         }
         var other_catalogs;
         for (var i=0,l=mapping.length;i<l;i++){
@@ -292,7 +291,7 @@ function changeSocket(new_cats, body){
         var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
         var diff = 1000000;
         var appropriate_other_component;
-        for (var i=0,l=other_components.length;i<l;i++){
+	for (var i=0,l=other_components.length;i<l;i++){
             var _diff = other_components[i].price - other_price;
             if (_diff<diff){
                 appropriate_other_component = other_components[i];
