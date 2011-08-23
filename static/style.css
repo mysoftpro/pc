@@ -246,14 +246,6 @@ ul#main_menu li a {
     border: 1px solid #777777;
     padding: 10px;
 }
-#perifery{
-    margin: 0 auto 0;    
-    width: 1000px;
-    background-color: #333333;
-    border: 1px solid #777777;
-    padding: 10px;
-
-}
 
 .indexitem
 {
@@ -526,10 +518,6 @@ label {
 }
 label:hover{
     color: #7b9c0a;
-}
-.perif{
-    /* margin-right:5px; */
-    /* margin-left:14px; */
 }
 
 

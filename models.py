@@ -121,19 +121,19 @@ def isMother(doc):
 
 models = [
     {'name':u"Локалхост",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
      'price':6500
      },
     {'name':u"Браузер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
      'price':8500
      },
     {'name':u"Принтер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
      'price':15200
      },
     {'name':u"Числодробилка",
-     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 'case':'18219', 'displ':'15606', 'kbrd':None, 'mouse':None, 'sound':None, 'lan':None},
+     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None},
      'price':32000
      }
 ]
@@ -231,7 +231,7 @@ def index(template, skin, request):
 
 
 
-parts = {'proc':10, 'ram':20, 'video':30, 'hdd':40, 'case':50, 'mother':160, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
+parts = {'mother':0, 'proc':10, 'video':20, 'hdd':30, 'ram':40, 'case':50, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
 parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус','sound':u'Звуковая карта',
 	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
@@ -327,8 +327,12 @@ def renderComputer(components_choices, template, skin, model):
 		    option.set('selected','selected')
 		row['doc'] = cleanDoc(row['doc'])
 		components_json.update({row['doc']['_id']:row['doc']})
-	appendOptions(options, select)
 
+	if name in ['mouse','kbrd','displ']:
+            option = makeOption({'doc':{'text':u'нет','price':0},'id':'no' + name})
+            options.append((option,0))
+
+        appendOptions(options, select)
 	viewlets.append((parts[name],viewlet,descr))
 
 
