@@ -109,9 +109,13 @@ def getCatalogsKey(doc):
 
 
 def isMother(doc):
-    cats = getCatalogsKey(doc)#[c['id'] for c in doc['catalogs']]
+    cats = getCatalogsKey(doc)
     return components in cats and mothers in cats
 
+
+# def isProc(doc):
+#     cats = getCatalogsKey(doc)
+#     return components in cats and mothers in cats
 
 
 
@@ -227,7 +231,7 @@ def index(template, skin, request):
 
 
 
-parts = {'proc':10, 'ram':20, 'video':30, 'hdd':40, 'case':50, 'mother':60, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
+parts = {'proc':10, 'ram':20, 'video':30, 'hdd':40, 'case':50, 'mother':160, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
 parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус','sound':u'Звуковая карта',
 	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
@@ -269,7 +273,8 @@ def renderComputer(components_choices, template, skin, model):
 
 	component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
 	component_doc = makePrice(component_doc)
-
+        tr = viewlet.find("tr")
+        tr.set('id',name)
 	body = viewlet.xpath("//td[@class='body']")[0]
 	body.set('id',component_doc['_id'])
 	body.text = re.sub('<font.*</font>', '',component_doc['text'])
@@ -329,15 +334,10 @@ def renderComputer(components_choices, template, skin, model):
 
     components_container = template.middle.xpath('//table[@id="components"]')[0]
     description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
-    perifery_container = template.middle.xpath('//table[@id="perifery"]')[0]
-    perifery_description_container = template.middle.xpath('//div[@id="perifery_descriptions"]')[0]
+
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-        if viewlet[0]<=60:
-            components_container.append(viewlet[1].find('tr'))
-            description_container.append(viewlet[2])
-        else:
-            perifery_container.append(viewlet[1].find('tr'))
-            perifery_description_container.append(viewlet[2])
+        components_container.append(viewlet[1].find('tr'))
+        description_container.append(viewlet[2])
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
 						    ';var tottal=',unicode(tottal),

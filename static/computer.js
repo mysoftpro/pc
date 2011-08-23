@@ -135,11 +135,11 @@ function installDescription(){
     f.html(html);
     f.show();
 
-    f = $('#perifery_descriptions').children().first();
-    html = f.text();
-    descriptions_cached[getBody($('#perifery tr td').first().find('select')).attr('id')] = html;
-    f.html(html);
-    f.show();
+    // f = $('#perifery_descriptions').children().first();
+    // html = f.text();
+    // descriptions_cached[getBody($('#perifery tr td').first().find('select')).attr('id')] = html;
+    // f.html(html);
+    // f.show();
 }
 
 function installBodies(){
@@ -159,8 +159,6 @@ function installBodies(){
                                if (_body.attr('id') == _id){
                                    _body.hide();
                                    var select_block = _body.prev().show();
-                                   //??
-                                   // var real_id = select_block.find('select').val();
                                    changeDescription(i,_id);
                                }
                                else{
@@ -245,6 +243,20 @@ function getComponentsTable(body){
 // new_component or old_component, but appropriate
 // components on other side of socket
 
+
+function getProcBody(body){
+ return  getComponentsTable(body).children().last().find('td.body');
+}
+
+
+function getProcBody(){
+    return  $('#proc').find('td.body');
+}
+
+function getMotherBody(){
+    return $('#mother').find('td.body');
+}
+
 function changeSocket(new_cats, body){
     try{
         // TODO! it is possible to make it complettely without dom
@@ -255,13 +267,15 @@ function changeSocket(new_cats, body){
         var other_body;
         if (part == 'proc'){
             mapping = proc_to_mother_mapping;
-            other_body = getComponentsTable(body).children().last().find('td.body');
+            other_body = getMotherBody();	    
         }
         else{
             mapping = mother_to_proc_mapping;
-            other_body = getComponentsTable(body).children().first().find('td.body');
+            other_body = getProcBody();
+	    
         }
-
+	console.log('other_body');
+	console.log(other_body);
         var other_catalogs;
         for (var i=0,l=mapping.length;i<l;i++){
             if (isEqualCatalogs(mapping[i][0], new_cats)){			    
