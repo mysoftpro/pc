@@ -257,6 +257,13 @@ function getMotherBody(){
     return $('#mother').find('td.body');
 }
 
+function isProc(body){
+    return body.parent().attr('id') == 'proc';
+}
+function isMother(body){
+    return body.parent().attr('id') == 'mother';
+}
+
 function changeSocket(new_cats, body){
     try{
         // TODO! it is possible to make it complettely without dom
@@ -274,8 +281,6 @@ function changeSocket(new_cats, body){
             other_body = getProcBody();
 	    
         }
-	console.log('other_body');
-	console.log(other_body);
         var other_catalogs;
         for (var i=0,l=mapping.length;i<l;i++){
             if (isEqualCatalogs(mapping[i][0], new_cats)){			    
@@ -316,7 +321,7 @@ function cheaperBetter(){
             e.preventDefault();
             var target = $(e.target);
             var select = getSelect(target);
-            getBody(select).click();
+            var body = getBody(select).click();
             var select_val = select.val();
 
             var opts = fastGetOptionForChBe(select);
@@ -349,7 +354,7 @@ function cheaperBetter(){
                 getChosenTitle(select).text(new_option.text());
                 componentChanged({'target':select[0]});
             };
-            if (!isEqualCatalogs(current_cats, new_cats)){
+            if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
                 // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
                 // by body id. than it is possible to get cyr name for the component from parts_names
                 // IF VIDEO IS JUST - just do change()!
@@ -391,7 +396,7 @@ function reset(){
                               getBody(select).click();
                               componentChanged({'target':select[0]});
 			  }
-			  if (!isEqualCatalogs(cats_after_reset, cats_before_reset)){
+			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
 			      // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
 			      // by body id. than it is possible to get cyr name for the component from parts_names
 			      // IF VIDEO IS JUST - just do change()!
