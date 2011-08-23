@@ -123,7 +123,7 @@ function changeDescription(index, _id, data){
         var new_name = parts_names[model_parts[_id]];
         var titles = getTitles(descr);
         titles[0].text(new_name);
-        titles[1].text('как выбирать ' + new_name);
+        // titles[1].text('как выбирать ' + new_name);
     }
 }
 

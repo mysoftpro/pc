@@ -231,7 +231,7 @@ ul#main_menu li a {
 #other{
    margin: 0 auto 0;
    padding: 0;
-   text-align: center;
+   text-align: left;
    width: 1000px;
    padding-top:30px;
    font-size:16px;
@@ -241,16 +241,18 @@ ul#main_menu li a {
 
 #components{
     margin: 0 auto 0;
-    padding: 0;
     width: 1000px;
     background-color: #333333;
     border: 1px solid #777777;
-    padding: 5px;
+    padding: 10px;
 }
 #perifery{
-    margin: 0 auto 0;
-    padding: 0;
+    margin: 0 auto 0;    
     width: 1000px;
+    background-color: #333333;
+    border: 1px solid #777777;
+    padding: 10px;
+
 }
 
 .indexitem
@@ -353,14 +355,17 @@ h3 {
 }
 
 
-#descriptions {
-    border:1px solid #777;
-    padding:10px;
-}
+.description_container {
+    border-radius: 0px 5px 5px 5px;
+    -moz-border-radius:0px 5px 5px 5px;
 
-#perifery_descriptions {
-    border:1px solid white;
+    -webkit-border-top-left-radius: 0px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border:1px solid #555;
     padding:10px;
+    background-color:#444;
 }
 
 .description {
@@ -540,11 +545,6 @@ label:hover{
     -webkit-border-bottom-left-radius: 0px;
     -webkit-border-bottom-right-radius: 0px;
 
-    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
-     -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
-    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
-
     padding: 5px 5px;
     text-align:center;
     cursor:pointer;
@@ -559,12 +559,16 @@ label:hover{
     font-size: 12px;
     height:24px;
     margin-top:20px;
+    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
+    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
 }
 .component_tab.inactive{
     float:left;
     color:white;
     font-size: 10px;
-    background-color: #999;
+    border: 1px solid #999999;
     height:18px;
     margin-top:28px;
     background-color:#333;

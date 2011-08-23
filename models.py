@@ -193,7 +193,7 @@ def renderModelForIndex(result, template, m, image_i):
     snippet = deepcopy(model_snippet.find('div'))
     snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
     a = snippet.find('.//a')
-    a.set('href','/computer/%s' % m['name'])
+    a.set('href','/desktop/%s' % m['name'])
     a.text=m['name']
     snippet.find('.//span').text=(unicode(m['price']) + u' р')
     return snippet

@@ -234,7 +234,7 @@ class Root(Resource):
 	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
-	self.putChild('computer', Computer())
+	self.putChild('desktop', Desktop())
 	self.putChild('component', Component())
 	self.host_url = host_url
 	self.cookies = []
@@ -264,7 +264,7 @@ class Root(Resource):
 
 
 
-class Computer(Resource):
+class Desktop(Resource):
     def __init__(self, *args, **kwargs):
 	self.static = CachedStatic(static_dir)
 	Resource.__init__(self, *args, **kwargs)
