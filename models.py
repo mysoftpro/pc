@@ -89,6 +89,7 @@ procs_am23 = [components,procs,"7700"]
 procs_fm1 =  [components,procs,"19257"]
 
 
+windows = ["7369","14570","14571"]
 
 mother_to_proc_mapping= [
     (mothers_1155,procs_1155),
@@ -121,19 +122,23 @@ def isMother(doc):
 
 models = [
     {'name':u"Локалхост",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
+                 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439'},
      'price':6500
      },
     {'name':u"Браузер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
+                 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439'},
      'price':8500
      },
     {'name':u"Принтер",
-     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None},
+     'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 
+                 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439'},
      'price':15200
      },
     {'name':u"Числодробилка",
-     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None},
+     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991', 
+                 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None, 'windows':'14439'},
      'price':32000
      }
 ]
@@ -158,11 +163,17 @@ def component_name(_id, model):
 
 
 
-Margin=1.25
-Course = 29
+Margin=1.2
+Course = 29.5
 
 def makePrice(doc):
-    our_price = doc['price']*Margin*Course
+    course = Course
+    # cats = getCatalogsKey(doc)
+    # isWindows = len(filter(lambda x: x[0] == x[1],zip(windows,cats))) == len(cats)
+    
+    if getCatalogsKey(doc) == windows:
+        course = 1
+    our_price = doc['price']*Margin*course
     doc['price'] = int(str(round(our_price)).split('.')[0])
     return doc
 
@@ -231,7 +242,7 @@ def index(template, skin, request):
 
 
 
-parts = {'mother':0, 'proc':10, 'video':20, 'hdd':30, 'ram':40, 'case':50, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'kbrd':110, 'mouse':120 }
+parts = {'mother':0, 'proc':10, 'video':20, 'hdd':30, 'ram':40, 'case':50, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'windows':110, 'kbrd':120, 'mouse':130}
 parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус','sound':u'Звуковая карта',
 	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
@@ -328,7 +339,7 @@ def renderComputer(components_choices, template, skin, model):
 		row['doc'] = cleanDoc(row['doc'])
 		components_json.update({row['doc']['_id']:row['doc']})
 
-	if name in ['mouse','kbrd','displ']:
+	if name in ['mouse','kbrd','displ','windows']:
             option = makeOption({'doc':{'text':u'нет','price':0},'id':'no' + name})
             options.append((option,0))
 
@@ -447,6 +458,9 @@ def fillChoices(result):
     defs.append(couch.openView(designID,
 			       'catalogs',include_docs=True, key=satas, stale=False)
                 .addCallback(lambda res: {"hdd":res}))
+    defs.append(couch.openView(designID,
+			       'catalogs',include_docs=True, key=windows, stale=False)
+                .addCallback(lambda res: {"windows":res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
 						   'catalogs',include_docs=True, key=cases_400_650, stale=False)

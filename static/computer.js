@@ -51,11 +51,14 @@ var scroll_in_progress = false;
 function componentChanged(maybe_event){
     try{
         var target = $(maybe_event.target);
-        // TODO - refactor that!
+        var new_id = target.val();
+	if (new_id.match('no'))
+	    return;//nomouse etc
+	// TODO - refactor that!
         var new_name = target.find('option[value="'+target.val() + '"]').text();
         var body = target.parent().next();
         body.html(new_name);
-        var new_id = target.val();
+        
         var new_component = choices[target.val()];
 
         getPrice(body).text(new_component.price + ' р');
