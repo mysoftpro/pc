@@ -619,3 +619,9 @@ color:#7b9c0a;
     margin-top: 3px;
     text-align: right;
 }
+
+#descriptions{
+    height:300px;
+    position:relative;
+    overflow:hidden;
+}

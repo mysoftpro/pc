@@ -422,6 +422,7 @@ $(function(){
           installDescription();
           cheaperBetter();
           reset();
+	  $('#descriptions').jScrollPane();//{scrollbarWidth:5}
       } catch (x) {
           console.log(x);
       }
