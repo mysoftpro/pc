@@ -15,7 +15,16 @@ function recalculate(){
     var tottal = 0;
     for (var id in new_model){
         tottal += new_model[id].price;
-   }
+    }
+    var bui = $('#obuild').is(':checked');
+    if (bui){
+	tottal += 500;
+    }
+    var win = $('#owindows').is(':checked');
+    if (win){
+	tottal +=300;
+    }
+    
     var lp = $('#large_price');
     lp.text(tottal);
     blink(lp, '#222');
@@ -210,6 +219,10 @@ function getPrice(body){
     return body.next();
 }
 
+
+function getReset(body){
+    return body.parent().children().last();
+}
 
 function getOptionForChBe(select){
     var opts = select.children().toArray();
@@ -425,7 +438,33 @@ function reset(){
 }
 
 function installOptions(){
-    
+    function substructAdd(e){
+	console.log('egey!');
+	var target = $(e.target);
+
+	    //console.log('oppa!');
+	var _id = target.val();
+	if (_(['oinstalling','odelivery','obuild']).any(function(el){return el == _id;})){
+	    recalculate();
+	}
+	else{
+	    console.log('alalal!');
+	    var tr = $('#' + _id.substring(1,_id.length));
+	    var op = tr.find('option').last();
+	    console.log(tr);
+	    console.log(op);
+	    var select = op.parent();
+	    if (!target.is(':checked')){		
+		select.val(op.val());
+		getChosenTitle(select).text(op.text());
+		componentChanged({'target':select[0],'no_desc':true});
+	    }
+	    else{
+		getReset(getBody(select)).click();
+	    }
+	}	    	
+    }
+    $('#options input').change(substructAdd);
 }
 
 $(function(){
