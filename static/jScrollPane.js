@@ -335,7 +335,8 @@
 			 trackOffset += topArrowHeight;
 		     }
 		     trackHeight -= settings.topCapHeight + settings.bottomCapHeight;
-		     $track.css({'height': trackHeight+'px', top:trackOffset+'px'})
+		     //tretiy33
+		     $track.css({'height': trackHeight+'px', top:trackOffset+'px'});
 		     
 		     var $pane = $(this).css({'position':'absolute', 'overflow':'visible'});
 		     

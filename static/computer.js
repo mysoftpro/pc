@@ -105,12 +105,14 @@ function updateDescription(new_id, body_id){
 var descriptions_cached = {};
 
 function getTitles(descr){
-    var inactive = descr.parent().prev().prev();
-    return [inactive.prev(), inactive];
-
+    var title =$('#component_title');
+    return [title, title.next()];
 }
+
 function changeDescription(index, _id, data){
-    var descr = $($('.description').get(index));
+    var descrptions = $('#descriptions');
+    //var descr = $($('.description').get(index));
+    var descr = $(descrptions.children().get(index));
     descr.parent().children().hide();
     if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
         var _text;
@@ -119,10 +121,14 @@ function changeDescription(index, _id, data){
         }
         else
             _text = descr.text();
+	if (_text == '')
+	    _text = 'к сожалению описание не предоставлено поставщиком';
         descriptions_cached[_id] = _text;
     }
     descr.html(descriptions_cached[_id]);
+    descrptions.jScrollPaneRemove();
     descr.show();
+    descrptions.jScrollPane();
     if (!data){
         var new_name = parts_names[model_parts[_id]];
         var titles = getTitles(descr);
