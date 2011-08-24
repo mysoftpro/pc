@@ -247,18 +247,46 @@ parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'В
 	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
 
+replacements = {'10661':'19171'}
+
+# TODO! if replacement is not found, just add return some mock doc and send email to admin
+# check also how much are at store. see u'flags': u'0', u'inCart': 0, u'stock1': 0, u'ordered': 0,
+
+def replaceComponent(model, code, components,choices):    
+    ret = None
+    repl = replacements[code]
+    # the copy is neede here because component doc returned is a ref for 
+    # component in choices
+    # component doc will be cleaned later by clean_doc!
+    
+    if choices is list:
+        for el in choices:
+            if el[0]:
+                for ch in el[1]['rows']:
+                    if ch['id'] == repl:
+                        ret = deepcopy(ch['doc'])
+                        break
+    else:
+        for ch in choices['rows']:
+            if ch['id'] == repl:
+                ret = deepcopy(ch['doc'])
+                break
+    return ret                
+
 def renderComputer(components_choices, template, skin, model):
 
     def makeOption(row):
-	option = etree.Element('option')
-	if 'font' in row['doc']['text']:
-	    row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-	    row['doc'].update({'featured':True})
-	option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' р'
-	# option.set('id',row['id'])
-	option.set('value',row['id'])
-	return option
-
+        try:
+            option = etree.Element('option')
+            if 'font' in row['doc']['text']:
+                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+                row['doc'].update({'featured':True})
+            option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' р'
+            # option.set('id',row['id'])
+            option.set('value',row['id'])
+            return option
+        except:
+            print row
     def appendOptions(options, container):
 	for o in sorted(options, lambda x,y: x[1]-y[1]):
 	    container.append(o[0])
@@ -281,8 +309,11 @@ def renderComputer(components_choices, template, skin, model):
 
 	if type(code) is list: code = code[0]
 	viewlet = deepcopy(original_viewlet)
-
 	component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
+        if component_doc is None:
+            print "aha!:"
+            component_doc = replaceComponent(model, code, components, choices[name])
+            print component_doc
 	component_doc = makePrice(component_doc)
         tr = viewlet.find("tr")
         tr.set('id',name)
