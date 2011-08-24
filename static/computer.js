@@ -14,7 +14,7 @@ function blink($target, bcolor){
 function recalculate(){
     var tottal = 0;
     for (var id in new_model){
-        tottal += new_model[id].price;
+	tottal += new_model[id].price;
     }
     var bui = $('#obuild').is(':checked');
     if (bui){
@@ -24,7 +24,7 @@ function recalculate(){
     if (win){
 	tottal +=300;
     }
-    
+
     var lp = $('#large_price');
     lp.text(tottal);
     blink(lp, '#222');
@@ -41,7 +41,7 @@ function getCatalogs(component){
 function isEqualCatalogs(cat1,cat2, sli){
     var _sli = cat1.length;
     if (sli)
-        _sli = sli;
+	_sli = sli;
     var all = _.zip(cat1, cat2).slice(0,_sli);
     var answer = _(all).all(function(x){return x[0] == x[1];});
     return answer;
@@ -49,15 +49,15 @@ function isEqualCatalogs(cat1,cat2, sli){
 
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
-                                     var cats = getCatalogs(c).slice(0, catalogs.length);
-                                     // this func is used for models and for choices
-                                     // _sli = 2 allow to get specific part from model, by part catalogs
-                                     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] )
-                                     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
-                                     var _sli = 2;
-                                     if (no_slice)
-                                         _sli = cats.length;
-                                     return isEqualCatalogs(cats, catalogs, _sli);
+				     var cats = getCatalogs(c).slice(0, catalogs.length);
+				     // this func is used for models and for choices
+				     // _sli = 2 allow to get specific part from model, by part catalogs
+				     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] )
+				     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
+				     var _sli = 2;
+				     if (no_slice)
+					 _sli = cats.length;
+				     return isEqualCatalogs(cats, catalogs, _sli);
 				 });
 }
 
@@ -66,31 +66,48 @@ var scroll_in_progress = false;
 
 function componentChanged(maybe_event){
     try{
-        var target = $(maybe_event.target);
-        var new_id = target.val();
-	if (new_id.match('no'))
-	    return;//nomouse etc
-	// TODO - refactor that!
-        var new_name = target.find('option[value="'+target.val() + '"]').text();
-        var body = target.parent().next();
-        body.html(new_name);
-        
-        var new_component = choices[target.val()];
+	var target = $(maybe_event.target);
+	var new_id = target.val();
+	var body = getBody(target);
 
-        getPrice(body).text(new_component.price + ' р');
-        var new_cats = getCatalogs(new_component);
-        var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
-        delete new_model[old_component['_id']];
-        new_model[new_component['_id']] = new_component;
-        recalculate();
+	var new_name;
+	var new_component;
+	var new_cats;
+	// no option
+	if (new_id.match('no')){
+	    new_name = 'нет';
+	    new_component = {'_id':body.attr('id')};
+	    new_cats = model[body.attr('id')]['catalogs'];
+	}
+	else{
+	    new_name = target.find('option[value="'+target.val() + '"]').text();	    
+	    new_component = choices[target.val()];
+	    new_cats = getCatalogs(new_component);
+	}
+
+	// var new_name = target.find('option[value="'+target.val() + '"]').text();
+	// var new_component = choices[target.val()];
+	// var new_cats = getCatalogs(new_component);
+
+	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+	delete new_model[old_component['_id']];
+	new_model[new_component['_id']] = new_component;
+
+	recalculate();
+
+	body.html(new_name);
+
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
 	    component_color = maybe_event['component_color'];
+	getPrice(body).text(new_component.price + ' р');
 	blink(getPrice(body), component_color);
-        if (!maybe_event['no_desc'])
+
+	if (!maybe_event['no_desc'])
 	    updateDescription(new_id, body.attr('id'));
+
     } catch (x) {
-        console.log(x);
+	console.log(x);
     }
 }
 
@@ -100,24 +117,24 @@ function updateDescription(new_id, body_id){
     var bodies = $('td.body');
     var index = 0;
     for (var i=0,l=bodies.length;i<l;i++){
-        if ($(bodies.get(i)).attr('id') == body_id){
-            index = i;
-            break;
-        }
+	if ($(bodies.get(i)).attr('id') == body_id){
+	    index = i;
+	    break;
+	}
     }
     if (!descriptions_cached[new_id]){
-        $.ajax({
-                   url:'/component',
-                   data:{'id':new_id},
-                   success:function(data){
-                       data['title'] = parts_names[model_parts[body_id]];
-                       changeDescription(index, new_id, data);
-                   }
-               });
+	$.ajax({
+		   url:'/component',
+		   data:{'id':new_id},
+		   success:function(data){
+		       data['title'] = parts_names[model_parts[body_id]];
+		       changeDescription(index, new_id, data);
+		   }
+	       });
 
     }
     else{
-        changeDescription(index, new_id);
+	changeDescription(index, new_id);
     }
 }
 
@@ -135,25 +152,25 @@ function changeDescription(index, _id, data){
     var descr = $(descrptions.children().get(index));
     descr.parent().children().hide();
     if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
-        var _text;
-        if (data){
-            _text = data['name'] + data['comments'];
-        }
-        else
-            _text = descr.text();
+	var _text;
+	if (data){
+	    _text = data['name'] + data['comments'];
+	}
+	else
+	    _text = descr.text();
 	if (_text == '')
 	    _text = 'к сожалению описание не предоставлено поставщиком';
-        descriptions_cached[_id] = _text;
+	descriptions_cached[_id] = _text;
     }
     descr.html(descriptions_cached[_id]);
     descrptions.jScrollPaneRemove();
     descr.show();
     descrptions.jScrollPane();
     if (!data){
-        var new_name = parts_names[model_parts[_id]];
-        var titles = getTitles(descr);
-        titles[0].text(new_name);
-        // titles[1].text('как выбирать ' + new_name);
+	var new_name = parts_names[model_parts[_id]];
+	var titles = getTitles(descr);
+	titles[0].text(new_name);
+	// titles[1].text('как выбирать ' + new_name);
     }
 }
 
@@ -168,29 +185,29 @@ function installDescription(){
 
 function installBodies(){
     var bodies = $('td.body');
-          bodies.mouseover(function(e){
-                                 $(e.target).css('color','#aadd00');
-                             });
-          bodies.mouseleave(function(e){
-                                 $(e.target).css('color','white');
-                             });
-          bodies.click(function(e){
-                           var target = $(e.target);
-                           var _id = target.attr('id');
-                           for (var i=0,l=bodies.length;i<l;i++){
-                               var _body = $(bodies.get(i));
+	  bodies.mouseover(function(e){
+				 $(e.target).css('color','#aadd00');
+			     });
+	  bodies.mouseleave(function(e){
+				 $(e.target).css('color','white');
+			     });
+	  bodies.click(function(e){
+			   var target = $(e.target);
+			   var _id = target.attr('id');
+			   for (var i=0,l=bodies.length;i<l;i++){
+			       var _body = $(bodies.get(i));
 
-                               if (_body.attr('id') == _id){
-                                   _body.hide();
-                                   var select_block = _body.prev().show();
-                                   changeDescription(i,_id);
-                               }
-                               else{
-                                   _body.show();
-                                   _body.prev().hide();
-                               }
-                           }
-                       });
+			       if (_body.attr('id') == _id){
+				   _body.hide();
+				   var select_block = _body.prev().show();
+				   changeDescription(i,_id);
+			       }
+			       else{
+				   _body.show();
+				   _body.prev().hide();
+			       }
+			   }
+		       });
     // show chosen whe page is ready or not?
     bodies.first().click();
 }
@@ -201,10 +218,10 @@ var chbeQueue = [];
 function getSelect(target){
     var select;
     if (target[0].tagName == 'TD'){
-        select = target.parent().first().find('select');
+	select = target.parent().first().find('select');
     }
     else{
-        select = target.parent().parent().first().find('select');
+	select = target.parent().parent().first().find('select');
     }
     return select;
 }
@@ -227,15 +244,15 @@ function getReset(body){
 function getOptionForChBe(select){
     var opts = select.children().toArray();
     if (opts[0].tagName == 'OPTGROUP'){
-        var opts_price = [];
-        for (var i=0,l=opts.length;i<l;i++){
-            var childs = $(opts[i]).children().toArray();
-            for (var j=0,k=childs.length;j<k;j++){
-                var op = childs[j];
-                opts_price.push([op, priceFromText($(op).text())]);
-            }
-        }
-        opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
+	var opts_price = [];
+	for (var i=0,l=opts.length;i<l;i++){
+	    var childs = $(opts[i]).children().toArray();
+	    for (var j=0,k=childs.length;j<k;j++){
+		var op = childs[j];
+		opts_price.push([op, priceFromText($(op).text())]);
+	    }
+	}
+	opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
     }
     return opts;
 }
@@ -246,9 +263,9 @@ var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return s
 function confirmPopup(message, success, fail){
     var answer = confirm(message);
     if (answer)
-        success();
+	success();
     else
-        fail();
+	fail();
 }
 
 
@@ -294,46 +311,46 @@ function isMother(body){
 
 function changeSocket(new_cats, body){
     try{
-        // TODO! it is possible to make it complettely without dom
-        // in model! it is possible to eliminate body (it is just used for the price
-        // and get price just from new model, using filter by catalogs !!!!
-        var part = model_parts[body.attr('id')];
-        var mapping;
-        var other_body;
-        if (part == 'proc'){
-            mapping = proc_to_mother_mapping;
-            other_body = getMotherBody();	    
-        }
-        else{
-            mapping = mother_to_proc_mapping;
-            other_body = getProcBody();	    
-        }
-        var other_catalogs;
-        for (var i=0,l=mapping.length;i<l;i++){
-            if (isEqualCatalogs(mapping[i][0], new_cats)){			    
+	// TODO! it is possible to make it complettely without dom
+	// in model! it is possible to eliminate body (it is just used for the price
+	// and get price just from new model, using filter by catalogs !!!!
+	var part = model_parts[body.attr('id')];
+	var mapping;
+	var other_body;
+	if (part == 'proc'){
+	    mapping = proc_to_mother_mapping;
+	    other_body = getMotherBody();
+	}
+	else{
+	    mapping = mother_to_proc_mapping;
+	    other_body = getProcBody();
+	}
+	var other_catalogs;
+	for (var i=0,l=mapping.length;i<l;i++){
+	    if (isEqualCatalogs(mapping[i][0], new_cats)){
 		other_catalogs = mapping[i][1];
 		break;
-            }
-        }
-        var other_price = priceFromText(getPrice(other_body).text());
-        var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
-        var diff = 1000000;
-        var appropriate_other_component;
+	    }
+	}
+	var other_price = priceFromText(getPrice(other_body).text());
+	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
+	var diff = 1000000;
+	var appropriate_other_component;
 	for (var i=0,l=other_components.length;i<l;i++){
-            var _diff = other_components[i].price - other_price;
-            if (_diff<diff){
-                appropriate_other_component = other_components[i];
-                diff = _diff;
-            }
-        }
-        var other_select = getSelect(other_body);
-        var other_option = getOption(other_select, appropriate_other_component['_id']);
-        other_select.val(other_option.val());
-        getChosenTitle(other_select).text(other_option.text());
-        componentChanged({'target':other_select[0],'no_desc':true});
+	    var _diff = other_components[i].price - other_price;
+	    if (_diff<diff){
+		appropriate_other_component = other_components[i];
+		diff = _diff;
+	    }
+	}
+	var other_select = getSelect(other_body);
+	var other_option = getOption(other_select, appropriate_other_component['_id']);
+	other_select.val(other_option.val());
+	getChosenTitle(other_select).text(other_option.text());
+	componentChanged({'target':other_select[0],'no_desc':true});
 
     } catch (x) {
-        console.log(x);
+	console.log(x);
     }
 }
 
@@ -342,56 +359,56 @@ function changeSocket(new_cats, body){
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
-        function handler(e){
-            e.preventDefault();
-            var target = $(e.target);
-            var select = getSelect(target);
-            var body = getBody(select).click();
-            var select_val = select.val();
+	function handler(e){
+	    e.preventDefault();
+	    var target = $(e.target);
+	    var select = getSelect(target);
+	    var body = getBody(select).click();
+	    var select_val = select.val();
 
-            var opts = fastGetOptionForChBe(select);
+	    var opts = fastGetOptionForChBe(select);
 
-            var opts_values = _(opts).map(function(o){return $(o).val();});
-            var current_option;
-            for(var i=0,l=opts.length;i<l;i++){
-                var op = $(opts[i]);
-                if (op.val() == select_val){
-                    current_option = op;
-                    break;
-                }
-            }
+	    var opts_values = _(opts).map(function(o){return $(o).val();});
+	    var current_option;
+	    for(var i=0,l=opts.length;i<l;i++){
+		var op = $(opts[i]);
+		if (op.val() == select_val){
+		    current_option = op;
+		    break;
+		}
+	    }
 
-            var current_option_val = $(current_option).val();
+	    var current_option_val = $(current_option).val();
 
-            var index = opts_values.indexOf(current_option_val);
-            var new_index = prev_next(i);
+	    var index = opts_values.indexOf(current_option_val);
+	    var new_index = prev_next(i);
 
-            if (new_index < 0 || new_index>=opts_values.length)
-                return;
-            var new_option = $(opts[new_index]);
+	    if (new_index < 0 || new_index>=opts_values.length)
+		return;
+	    var new_option = $(opts[new_index]);
 
-            var new_option_val = new_option.val();
-            var current_cats = getCatalogs(choices[current_option_val]);
-            var new_cats = getCatalogs(choices[new_option_val]);
-            
-            var change = function(){
-                select.val(new_option.val());
-                getChosenTitle(select).text(new_option.text());
-                componentChanged({'target':select[0]});
-            };
-            if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
-                // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
-                // by body id. than it is possible to get cyr name for the component from parts_names
-                // IF VIDEO IS JUST - just do change()!
-                confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-                             function(){changeSocket(new_cats, getBody(select));change();},
-                             function(){});
-            }
-            else{
-                change();
-            }
-        }
-        return handler;
+	    var new_option_val = new_option.val();
+	    var current_cats = getCatalogs(choices[current_option_val]);
+	    var new_cats = getCatalogs(choices[new_option_val]);
+
+	    var change = function(){
+		select.val(new_option.val());
+		getChosenTitle(select).text(new_option.text());
+		componentChanged({'target':select[0]});
+	    };
+	    if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
+		// TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
+		// by body id. than it is possible to get cyr name for the component from parts_names
+		// IF VIDEO IS JUST - just do change()!
+		confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+			     function(){changeSocket(new_cats, getBody(select));change();},
+			     function(){});
+	    }
+	    else{
+		change();
+	    }
+	}
+	return handler;
     }
     $('.cheaper').click(_cheaperBetter(function(i){return i-1;}));
     $('.better').click(_cheaperBetter(function(i){return i+1;}));
@@ -405,21 +422,21 @@ function getOption(select, _id){
 
 function reset(){
     $('.reset').click(function(e){
-                          e.preventDefault();
-                          var target = $(e.target);
-                          var select = getSelect(target);
-                          var body = getBody(select);
-                          var _id = body.attr('id');
-			  
+			  e.preventDefault();
+			  var target = $(e.target);
+			  var select = getSelect(target);
+			  var body = getBody(select);
+			  var _id = body.attr('id');
+
 			  var component_after_reset = model[_id];
 			  var component_before_reset = choices[select.val()];
 			  var cats_after_reset = getCatalogs(component_after_reset);
 			  var cats_before_reset = getCatalogs(component_before_reset);
 			  function change(){
 			      select.val(_id);
-                              getChosenTitle(select).text(getOption(select, _id).text());
-                              getBody(select).click();
-                              componentChanged({'target':select[0],'component_color':'transparent'});
+			      getChosenTitle(select).text(getOption(select, _id).text());
+			      getBody(select).click();
+			      componentChanged({'target':select[0],'component_color':'transparent'});
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
 			      // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
@@ -432,9 +449,9 @@ function reset(){
 			  else{
 			      change();
 			  }
-			  
-                          
-                     });
+
+
+		     });
 }
 
 function installOptions(){
@@ -451,33 +468,36 @@ function installOptions(){
 	    console.log('alalal!');
 	    var tr = $('#' + _id.substring(1,_id.length));
 	    var op = tr.find('option').last();
-	    console.log(tr);
-	    console.log(op);
-	    var select = op.parent();
-	    if (!target.is(':checked')){		
+	    // console.log(tr);
+	    // console.log(op);
+	    var select = getSelect(tr.children().first());
+	    if (!target.is(':checked')){
+		// console.log('o yeah');
+		// console.log(op.val());
 		select.val(op.val());
 		getChosenTitle(select).text(op.text());
 		componentChanged({'target':select[0],'no_desc':true});
 	    }
 	    else{
+		console.log(' o now');
 		getReset(getBody(select)).click();
 	    }
-	}	    	
+	}
     }
     $('#options input').change(substructAdd);
 }
 
 $(function(){
       try{
-          $('select').chosen().change(componentChanged);
-          new_model = _.clone(model);
-          installBodies();
-          installDescription();
-          cheaperBetter();
-          reset();
+	  $('select').chosen().change(componentChanged);
+	  new_model = _.clone(model);
+	  installBodies();
+	  installDescription();
+	  cheaperBetter();
+	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
       } catch (x) {
-          console.log(x);
+	  console.log(x);
       }
   });
