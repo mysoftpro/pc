@@ -374,7 +374,7 @@ def renderComputer(components_choices, template, skin, model):
 		row['doc'] = cleanDoc(row['doc'])
 		components_json.update({row['doc']['_id']:row['doc']})
 
-	if name in ['mouse','kbrd','displ','windows']:
+	if name in ['mouse','kbrd','displ','windows', 'audio']:
             option = makeOption({'doc':{'text':u'нет','price':0},'id':'no' + name})
             options.append((option,0))
 

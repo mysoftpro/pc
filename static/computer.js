@@ -6,14 +6,21 @@
 // model ids are equal to td.body ids. they are untoched also
 // new model ids are equal to select.val()
 
+function blink($target, bcolor){
+    $target.css('background-color','#7B9C0A');
+    _.delay(function(e){$target.css('background-color',bcolor);},100);
+}
+
 function recalculate(){
     var tottal = 0;
     for (var id in new_model){
         tottal += new_model[id].price;
    }
-    $('#large_price').text(tottal).css('background-color','#7B9C0A');
-    _.delay(function(e){$('#large_price').css('background-color','#222');},100);
-
+    var lp = $('#large_price');
+    lp.text(tottal);
+    blink(lp, '#222');
+    // $('#large_price').text(tottal).css('background-color','#7B9C0A');
+    // _.delay(function(e){$('#large_price').css('background-color','#222');},100);
 }
 
 function getCatalogs(component){
@@ -67,6 +74,10 @@ function componentChanged(maybe_event){
         delete new_model[old_component['_id']];
         new_model[new_component['_id']] = new_component;
         recalculate();
+	var component_color = '#404040';
+	if (maybe_event['component_color'])
+	    component_color = maybe_event['component_color'];
+	blink(getPrice(body), component_color);
         if (!maybe_event['no_desc'])
 	    updateDescription(new_id, body.attr('id'));
     } catch (x) {
@@ -144,12 +155,6 @@ function installDescription(){
     descriptions_cached[$('td.body').attr('id')] = html;
     f.html(html);
     f.show();
-
-    // f = $('#perifery_descriptions').children().first();
-    // html = f.text();
-    // descriptions_cached[getBody($('#perifery tr td').first().find('select')).attr('id')] = html;
-    // f.html(html);
-    // f.show();
 }
 
 function installBodies(){
@@ -401,7 +406,7 @@ function reset(){
 			      select.val(_id);
                               getChosenTitle(select).text(getOption(select, _id).text());
                               getBody(select).click();
-                              componentChanged({'target':select[0]});
+                              componentChanged({'target':select[0],'component_color':'transparent'});
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
 			      // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
@@ -419,6 +424,9 @@ function reset(){
                      });
 }
 
+function installOptions(){
+    
+}
 
 $(function(){
       try{
@@ -428,7 +436,8 @@ $(function(){
           installDescription();
           cheaperBetter();
           reset();
-	  $('#descriptions').jScrollPane();//{scrollbarWidth:5}
+	  $('#descriptions').jScrollPane();
+	  installOptions();
       } catch (x) {
           console.log(x);
       }
