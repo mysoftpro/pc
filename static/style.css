@@ -480,7 +480,7 @@ h3 {
     display:none;
 }
 select{
-    width:520px;color:black;
+    width:600px;color:black;
 }
 
 
@@ -624,6 +624,7 @@ color:#7b9c0a;
 
 #descriptions{
     height:300px;
+    margin-bottom:20px;
 }
 
 

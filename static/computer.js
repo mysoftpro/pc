@@ -89,9 +89,7 @@ function componentChanged(maybe_event){
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
 	    component_color = maybe_event['component_color'];
-	console.log('aaaa');
-	console.log(new_component);
-	console.log(new_component.price);
+
 	getPrice(body).text(new_component.price + ' р');
 	blink(getPrice(body), component_color);
 

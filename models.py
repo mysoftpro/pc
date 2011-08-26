@@ -109,17 +109,19 @@ mother_to_proc_mapping= [
 def getCatalogsKey(doc):
     cats = []
     for c in doc['catalogs']:
-        cats.append(c['id'])
+        cats.append(str(c['id']))
     return cats
 
 
-def isMother(doc):
-    cats = getCatalogsKey(doc)
-    return components in cats and mothers in cats
+# def isMother(doc, cats=None):
+#     if cats is None:
+#         cats = getCatalogsKey(doc)
+#     return components in cats and mothers in cats
 
 
-# def isProc(doc):
-#     cats = getCatalogsKey(doc)
+# def isProc(doc, cats=None):
+#     if cats is None:
+#         cats = getCatalogsKey(doc)
 #     return components in cats and mothers in cats
 
 
@@ -128,27 +130,31 @@ models = [
     {'name':u"Локалхост",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
                  'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
-     'price':6500
+     'price':6500,
+     "socket":"1155"
      },
     {'name':u"Браузер",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
                  'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
-     'price':8500
+     'price':8500,
+     "socket":"1155"
      },
     {'name':u"Принтер",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661',
                  'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
-     'price':15200
+     'price':15200,
+     "socket":"1155"
      },
     {'name':u"Числодробилка",
      'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991',
                  'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
-     'price':32000
+     'price':32000,
+     "socket":"1155"
      }
 ]
 
 def getModelComponents(model):
-    for v in model['items'].values():
+    for k,v in model['items'].items():
         if type(v) is list:
             for el in v:
                 yield el
@@ -253,25 +259,28 @@ parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'В
 
 
 
-def replaceComponent(model, code, choices):
-    # keys = sorted([k for k in choices.keys()])
-    # index  = keys.index(code)
-    
-    # ret = None
-    # repl = replacements[code]
-    # # the copy is neede here because component doc returned is a ref for
-    # # component in choices
-    # # component doc will be cleaned later by clean_doc!
-    
+def replaceComponent(code, choices, name, socket):
     flatten = []
+    
+    def sameCatalog(doc):
+        retval = True
+        if name in ['mother','proc']:
+            retval = False
+            cats = name + 's_' + socket
+            real_cats = globals()[cats]
+            retval = getCatalogsKey(doc) == real_cats
+        return retval
+
     if type(choices) is list:
         for el in choices:
             if el[0]:
                 for ch in el[1][1]['rows']:
-                    flatten.append(ch['doc'])                    
+                    if sameCatalog(ch['doc']):
+                        flatten.append(ch['doc'])
     else:
         for ch in choices['rows']:
             flatten.append(ch['doc'])
+
     keys = [doc['id'] for doc in flatten]
     keys.append(code)
     keys = sorted(keys)
@@ -280,7 +289,7 @@ def replaceComponent(model, code, choices):
     _next = ind+1
     if _next == _length:
         _next = ind-1
-    next_el = deepcopy(flatten[_next])    
+    next_el = deepcopy(flatten[_next])
     return next_el
 
 def renderComputer(components_choices, template, skin, model):
@@ -327,13 +336,14 @@ def renderComputer(components_choices, template, skin, model):
     # description_json = {}
     for name,code in model['items'].items():
         if code is None: continue
-        print code
         if type(code) is list: code = code[0]
         viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
         if component_doc is None:
-            component_doc = replaceComponent(model, code, choices[name])
-        print component_doc
+            component_doc = replaceComponent(code, choices[name], name, model['socket'])
+        else:
+            if component_doc['stock1'] == 0:
+                component_doc = replaceComponent(code, choices[name], name, model['socket'])
         component_doc = makePrice(component_doc)
         tr = viewlet.find("tr")
         tr.set('id',name)
@@ -355,6 +365,10 @@ def renderComputer(components_choices, template, skin, model):
         component_doc = cleanDoc(component_doc)
         model_json.update({component_doc['_id']:component_doc})
         model_parts.update({component_doc['_id']:name})
+
+
+        #TODO! now. when replacement is taking place, it need to check mother and proc!
+
         viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(component_doc['price']) + u' р'
 
         select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
@@ -370,7 +384,7 @@ def renderComputer(components_choices, template, skin, model):
                     for r in el[1][1]['rows']:
                         r['doc'] = makePrice(r['doc'])
                         option = makeOption(r)
-                        if r['id'] == code:
+                        if r['id'] == component_doc['_id']:
                             option.set('selected','selected')
                         _options.append((option, r['doc']['price']))
                         r['doc'] = cleanDoc(r['doc'])
@@ -383,7 +397,7 @@ def renderComputer(components_choices, template, skin, model):
                 row['doc'] = makePrice(row['doc'])
                 option = makeOption(row)
                 options.append((option, row['doc']['price']))
-                if row['id'] == code:
+                if row['id'] == component_doc['_id']:
                     option.set('selected','selected')
                 row['doc'] = cleanDoc(row['doc'])
                 components_json.update({row['doc']['_id']:row['doc']})
@@ -458,8 +472,6 @@ def fillChoices(result):
                                     ])
                 .addCallback(lambda res: {"mother":res}))
 
-    # mother = [d for d in docs if isMother(d)][0]
-    # mother_cats = getCatalogsKey(mother)
 
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',
