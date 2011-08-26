@@ -189,7 +189,7 @@ def cleanDoc(doc):
     for t in ['text', '_attachments','description','flags','inCart','ordered','reserved','stock1', '_rev', 'warranty_type']:#
         pop(t)
     if 'catalogs' in doc:
-        for c in doc['catalogs']:            
+        for c in doc['catalogs']:
             if 'name' in c:
                 c.pop('name')
     return doc
@@ -252,31 +252,36 @@ parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'В
                'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
 
-replacements = {'10661':'19171','15252':'18920'}
 
-# TODO! if replacement is not found, just add return some mock doc and send email to admin
-# check also how much are at store. see u'flags': u'0', u'inCart': 0, u'stock1': 0, u'ordered': 0,
-
-def replaceComponent(model, code, components,choices):
-    ret = None
-    repl = replacements[code]
-    # the copy is neede here because component doc returned is a ref for
-    # component in choices
-    # component doc will be cleaned later by clean_doc!
-
+def replaceComponent(model, code, choices):
+    # keys = sorted([k for k in choices.keys()])
+    # index  = keys.index(code)
+    
+    # ret = None
+    # repl = replacements[code]
+    # # the copy is neede here because component doc returned is a ref for
+    # # component in choices
+    # # component doc will be cleaned later by clean_doc!
+    
+    flatten = []
     if type(choices) is list:
         for el in choices:
             if el[0]:
                 for ch in el[1][1]['rows']:
-                    if ch['id'] == repl:
-                        ret = deepcopy(ch['doc'])
-                        break
+                    flatten.append(ch['doc'])                    
     else:
         for ch in choices['rows']:
-            if ch['id'] == repl:
-                ret = deepcopy(ch['doc'])
-                break
-    return ret
+            flatten.append(ch['doc'])
+    keys = [doc['id'] for doc in flatten]
+    keys.append(code)
+    keys = sorted(keys)
+    _length = len(keys)
+    ind = keys.index(code)
+    _next = ind+1
+    if _next == _length:
+        _next = ind-1
+    next_el = deepcopy(flatten[_next])    
+    return next_el
 
 def renderComputer(components_choices, template, skin, model):
 
@@ -286,7 +291,9 @@ def renderComputer(components_choices, template, skin, model):
             if 'font' in row['doc']['text']:
                 row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
                 row['doc'].update({'featured':True})
-            option.text = row['doc']['text'] + u' ' + unicode(row['doc']['price']) + u' р'
+            option.text = row['doc']['text']
+            if row['doc']['price']>0:
+                 option.text +=u' ' + unicode(row['doc']['price']) + u' р'
             option.set('value',row['id'])
             return option
         except:
@@ -320,12 +327,13 @@ def renderComputer(components_choices, template, skin, model):
     # description_json = {}
     for name,code in model['items'].items():
         if code is None: continue
-
+        print code
         if type(code) is list: code = code[0]
         viewlet = deepcopy(original_viewlet)
         component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
-        if component_doc is None:            
-            component_doc = replaceComponent(model, code, components, choices[name])            
+        if component_doc is None:
+            component_doc = replaceComponent(model, code, choices[name])
+        print component_doc
         component_doc = makePrice(component_doc)
         tr = viewlet.find("tr")
         tr.set('id',name)
@@ -353,13 +361,12 @@ def renderComputer(components_choices, template, skin, model):
         ch = choices[name]
         options = []
         if type(ch) is list:
+            noComponent(name, component_doc, ch[0][1][1]['rows'])
             for el in ch:
                 if el[0]:
                     option_group = etree.Element('optgroup')
                     option_group.set('label', el[1][0])
                     _options = []
-                    # options.append(makeOption({'doc':{'text':u'нет','price':0},'id':'no' + name}))
-                    noComponent(name, component_doc, el[1][1]['rows'])
                     for r in el[1][1]['rows']:
                         r['doc'] = makePrice(r['doc'])
                         option = makeOption(r)

@@ -70,28 +70,15 @@ function componentChanged(maybe_event){
 	var new_id = target.val();
 	var body = getBody(target);
 
-	// var new_name;
-	// var new_component;
-	// var new_cats;
-	// no option. fuck!
-	// if (new_id.match('no')){
-	//     new_name = 'нет';
-	//     new_component = {'_id':body.attr('id'),'price':0};
-	//     new_cats = getCatalogs(model[body.attr('id')]);
-	//     new_component['catalogs'] = model[body.attr('id')]['catalogs'];	    
-	// }
-	// else{
-	//     new_name = target.find('option[value="'+target.val() + '"]').text();	    
-	//     new_component = choices[target.val()];
-	//     new_cats = getCatalogs(new_component);
-	// }
-
 	var new_name = target.find('option[value="'+target.val() + '"]').text();
 	var new_component = choices[target.val()];
 
 	var new_cats = getCatalogs(new_component);
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+	var old_id = old_component['_id'];
+	if (old_id.match('no'))
+	    $('#' + old_id.slice(1,old_id.length)).prop('checked', true);
 	delete new_model[old_component['_id']];
 	new_model[new_component['_id']] = new_component;
 
@@ -102,6 +89,9 @@ function componentChanged(maybe_event){
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
 	    component_color = maybe_event['component_color'];
+	console.log('aaaa');
+	console.log(new_component);
+	console.log(new_component.price);
 	getPrice(body).text(new_component.price + ' р');
 	blink(getPrice(body), component_color);
 
@@ -390,9 +380,6 @@ function cheaperBetter(){
 	    var new_option = $(opts[new_index]);
 
 	    var new_option_val = new_option.val();
-	    // console.log('((');
-	    // console.log(current_option_val);
-	    // console.log(new_option_val);
 	    var current_cats = getCatalogs(choices[current_option_val]);
 	    var new_cats = getCatalogs(choices[new_option_val]);
 
@@ -462,8 +449,6 @@ function reset(){
 function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
-
-	    //console.log('oppa!');
 	var _id = target.val();
 	if (_(['oinstalling','odelivery','obuild']).any(function(el){return el == _id;})){
 	    recalculate();
