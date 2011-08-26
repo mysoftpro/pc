@@ -301,8 +301,9 @@ def renderComputer(components_choices, template, skin, model):
                 row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
                 row['doc'].update({'featured':True})
             option.text = row['doc']['text']
-            if row['doc']['price']>0:
-                 option.text +=u' ' + unicode(row['doc']['price']) + u' р'
+
+            option.text +=u' ' + unicode(row['doc']['price']) + u' р'
+            
             option.set('value',row['id'])
             return option
         except:

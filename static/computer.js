@@ -66,6 +66,7 @@ var scroll_in_progress = false;
 
 function componentChanged(maybe_event){
     try{
+
 	var target = $(maybe_event.target);
 	var new_id = target.val();
 	var body = getBody(target);
@@ -112,7 +113,9 @@ function updateDescription(new_id, body_id){
 	    break;
 	}
     }
-    if (!descriptions_cached[new_id]){
+    if (new_id.match('no'))
+	descriptions_cached[new_id] = '';
+    if (descriptions_cached[new_id] == undefined){
 	$.ajax({
 		   url:'/component',
 		   data:{'id':new_id},
@@ -232,19 +235,23 @@ function getReset(body){
 }
 
 function getOptionForChBe(select){
-    var opts = select.children().toArray();
-    if (opts[0].tagName == 'OPTGROUP'){
-	var opts_price = [];
-	for (var i=0,l=opts.length;i<l;i++){
-	    var childs = $(opts[i]).children().toArray();
-	    for (var j=0,k=childs.length;j<k;j++){
-		var op = childs[j];
-		opts_price.push([op, priceFromText($(op).text())]);
+    try{	    
+	var opts = select.children().toArray();
+	if (opts[0].tagName == 'OPTGROUP'){
+	    var opts_price = [];
+	    for (var i=0,l=opts.length;i<l;i++){
+		var childs = $(opts[i]).children().toArray();
+		for (var j=0,k=childs.length;j<k;j++){
+		    var op = childs[j];
+		    opts_price.push([op, priceFromText($(op).text())]);
+		}
 	    }
+	    opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
 	}
-	opts = _(opts_price.sort(function(x,y){return x[1]-y[1];})).map(function(opp){return opp[0];});
+	return opts;
+    } catch (x) {
+	console.log(x);
     }
-    return opts;
 }
 
 var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return select.val();});
@@ -350,52 +357,57 @@ function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
 	function handler(e){
-	    e.preventDefault();
-	    var target = $(e.target);
-	    var select = getSelect(target);
-	    var body = getBody(select).click();
-	    var select_val = select.val();
+	    try{
+		
 
-	    var opts = fastGetOptionForChBe(select);
-
-	    var opts_values = _(opts).map(function(o){return $(o).val();});
-	    var current_option;
-	    for(var i=0,l=opts.length;i<l;i++){
-		var op = $(opts[i]);
-		if (op.val() == select_val){
-		    current_option = op;
-		    break;
+		e.preventDefault();
+		var target = $(e.target);
+		var select = getSelect(target);
+		var body = getBody(select).click();
+		var select_val = select.val();
+		var opts = fastGetOptionForChBe(select);
+		var opts_values = _(opts).map(function(o){return $(o).val();});
+		var current_option;
+		for(var i=0,l=opts.length;i<l;i++){
+		    var op = $(opts[i]);
+		    if (op.val() == select_val){
+			current_option = op;
+			break;
+		    }
 		}
-	    }
 
-	    var current_option_val = $(current_option).val();
+		var current_option_val = $(current_option).val();
 
-	    var index = opts_values.indexOf(current_option_val);
-	    var new_index = prev_next(i);
+		var index = opts_values.indexOf(current_option_val);
+		var new_index = prev_next(i);
 
-	    if (new_index < 0 || new_index>=opts_values.length)
-		return;
-	    var new_option = $(opts[new_index]);
+		if (new_index < 0 || new_index>=opts_values.length)
+		    return;
+		var new_option = $(opts[new_index]);
 
-	    var new_option_val = new_option.val();
-	    var current_cats = getCatalogs(choices[current_option_val]);
-	    var new_cats = getCatalogs(choices[new_option_val]);
+		var new_option_val = new_option.val();
+		var current_cats = getCatalogs(choices[current_option_val]);
+		var new_cats = getCatalogs(choices[new_option_val]);
+		
 
-	    var change = function(){
-		select.val(new_option.val());
-		getChosenTitle(select).text(new_option.text());
-		componentChanged({'target':select[0]});
-	    };
-	    if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
-		// TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
-		// by body id. than it is possible to get cyr name for the component from parts_names
-		// IF VIDEO IS JUST - just do change()!
-		confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-			     function(){changeSocket(new_cats, getBody(select));change();},
-			     function(){});
-	    }
-	    else{
-		change();
+		var change = function(){
+		    select.val(new_option.val());
+		    getChosenTitle(select).text(new_option.text());
+		    componentChanged({'target':select[0]});
+		};
+		if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
+		    // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
+		    // by body id. than it is possible to get cyr name for the component from parts_names
+		    // IF VIDEO IS JUST - just do change()!
+		    confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+				 function(){changeSocket(new_cats, getBody(select));change();},
+				 function(){});
+		}
+		else{
+		    change();
+		}
+	    } catch (x) {
+		console.log(x);
 	    }
 	}
 	return handler;
