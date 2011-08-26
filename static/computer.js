@@ -64,6 +64,13 @@ function filterByCatalogs(components, catalogs, no_slice){
 var top_fixed = false;
 var scroll_in_progress = false;
 
+
+
+function setOption(_id, value){
+    if (_id.match('no'))
+	$('#' + _id.slice(1,_id.length)).prop('checked', value);
+}
+
 function componentChanged(maybe_event){
     try{
 
@@ -74,14 +81,15 @@ function componentChanged(maybe_event){
 	var new_name = target.find('option[value="'+target.val() + '"]').text();
 	var new_component = choices[target.val()];
 
+
 	var new_cats = getCatalogs(new_component);
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	var old_id = old_component['_id'];
-	if (old_id.match('no'))
-	    $('#' + old_id.slice(1,old_id.length)).prop('checked', true);
-	delete new_model[old_component['_id']];
-	new_model[new_component['_id']] = new_component;
+	
+	
+	delete new_model[old_id];
+	new_model[new_id] = new_component;
 
 	recalculate();
 
@@ -93,6 +101,10 @@ function componentChanged(maybe_event){
 
 	getPrice(body).text(new_component.price + ' р');
 	blink(getPrice(body), component_color);
+
+
+	setOption(new_id, false);
+	setOption(old_id, true);
 
 	if (!maybe_event['no_desc'])
 	    updateDescription(new_id, body.attr('id'));
@@ -441,10 +453,7 @@ function reset(){
 			      componentChanged({'target':select[0],'component_color':'transparent'});
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
-			      // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
-			      // by body id. than it is possible to get cyr name for the component from parts_names
-			      // IF VIDEO IS JUST - just do change()!
-			      confirmPopup("В первоначальном варианте сокет процессора отличается от сокета выбранной сейчас материнской платы.",
+			      confirmPopup("Cокет процессора отличается от сокета выбранной сейчас материнской платы.",
 					   function(){changeSocket(cats_after_reset, body);change();},
 					   function(){});
 			  }
