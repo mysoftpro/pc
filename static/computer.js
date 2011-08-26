@@ -70,24 +70,26 @@ function componentChanged(maybe_event){
 	var new_id = target.val();
 	var body = getBody(target);
 
-	var new_name;
-	var new_component;
-	var new_cats;
-	// no option
-	if (new_id.match('no')){
-	    new_name = 'нет';
-	    new_component = {'_id':body.attr('id')};
-	    new_cats = model[body.attr('id')]['catalogs'];
-	}
-	else{
-	    new_name = target.find('option[value="'+target.val() + '"]').text();	    
-	    new_component = choices[target.val()];
-	    new_cats = getCatalogs(new_component);
-	}
+	// var new_name;
+	// var new_component;
+	// var new_cats;
+	// no option. fuck!
+	// if (new_id.match('no')){
+	//     new_name = 'нет';
+	//     new_component = {'_id':body.attr('id'),'price':0};
+	//     new_cats = getCatalogs(model[body.attr('id')]);
+	//     new_component['catalogs'] = model[body.attr('id')]['catalogs'];	    
+	// }
+	// else{
+	//     new_name = target.find('option[value="'+target.val() + '"]').text();	    
+	//     new_component = choices[target.val()];
+	//     new_cats = getCatalogs(new_component);
+	// }
 
-	// var new_name = target.find('option[value="'+target.val() + '"]').text();
-	// var new_component = choices[target.val()];
-	// var new_cats = getCatalogs(new_component);
+	var new_name = target.find('option[value="'+target.val() + '"]').text();
+	var new_component = choices[target.val()];
+
+	var new_cats = getCatalogs(new_component);
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	delete new_model[old_component['_id']];
@@ -388,6 +390,9 @@ function cheaperBetter(){
 	    var new_option = $(opts[new_index]);
 
 	    var new_option_val = new_option.val();
+	    // console.log('((');
+	    // console.log(current_option_val);
+	    // console.log(new_option_val);
 	    var current_cats = getCatalogs(choices[current_option_val]);
 	    var new_cats = getCatalogs(choices[new_option_val]);
 
@@ -456,7 +461,6 @@ function reset(){
 
 function installOptions(){
     function substructAdd(e){
-	console.log('egey!');
 	var target = $(e.target);
 
 	    //console.log('oppa!');
@@ -465,21 +469,16 @@ function installOptions(){
 	    recalculate();
 	}
 	else{
-	    console.log('alalal!');
 	    var tr = $('#' + _id.substring(1,_id.length));
-	    var op = tr.find('option').last();
-	    // console.log(tr);
-	    // console.log(op);
+	    var op = tr.find('option').first();
+
 	    var select = getSelect(tr.children().first());
 	    if (!target.is(':checked')){
-		// console.log('o yeah');
-		// console.log(op.val());
 		select.val(op.val());
 		getChosenTitle(select).text(op.text());
 		componentChanged({'target':select[0],'no_desc':true});
 	    }
 	    else{
-		console.log(' o now');
 		getReset(getBody(select)).click();
 	    }
 	}

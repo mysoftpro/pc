@@ -300,7 +300,8 @@ class Component(Resource):
 
     def render_GET(self, request):
 	_id = request.args.get('id', [None])[0]
-	if _id is None: return 'ok'
+	if _id is None: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
+        if 'no' in _id: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	d = couch.openDoc(_id)
