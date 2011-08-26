@@ -36,13 +36,13 @@ select.chzn-select {
 /* @group Single Chosen */
 .chzn-container-single .chzn-single {
   background-color: #fff;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #363636), color-stop(0.5, #D4D4D4));
-  background-image: -webkit-linear-gradient(center bottom, #363636 0%, #D4D4D4 50%);
-  background-image: -moz-linear-gradient(center bottom, #363636 0%, #D4D4D4 50%);
-  background-image: -o-linear-gradient(top, #363636 0%,#b3b3b3 50%);
-  background-image: -ms-linear-gradient(top, #363636 0%,#b3b3b3 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#363636', endColorstr='#b3b3b3',GradientType=0 );
-  background-image: linear-gradient(top, #363636 0%,#b3b3b3 50%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #767676), color-stop(0.5, #D4D4D4));
+  background-image: -webkit-linear-gradient(center bottom, #767676 0%, #D4D4D4 50%);
+  background-image: -moz-linear-gradient(center bottom, #767676 0%, #D4D4D4 50%);
+  background-image: -o-linear-gradient(top, #767676 0%,#b3b3b3 50%);
+  background-image: -ms-linear-gradient(top, #767676 0%,#b3b3b3 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#767676', endColorstr='#b3b3b3',GradientType=0 );
+  background-image: linear-gradient(top, #767676 0%,#b3b3b3 50%);
   -webkit-border-radius: 4px;
   -moz-border-radius   : 4px;
   border-radius        : 4px;
@@ -81,9 +81,9 @@ select.chzn-select {
   background-image: -webkit-linear-gradient(center bottom, #ccc 0%, #eee 60%);
   background-image: -moz-linear-gradient(center bottom, #ccc 0%, #eee 60%);
   background-image: -o-linear-gradient(bottom, #ccc 0%, #eee 60%);
-  background-image: -ms-linear-gradient(top, #cccccc 0%,#363636 60%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#363636',GradientType=0 );
-  background-image: linear-gradient(top, #cccccc 0%,#363636 60%);
+  background-image: -ms-linear-gradient(top, #cccccc 0%,#767676 60%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#767676',GradientType=0 );
+  background-image: linear-gradient(top, #cccccc 0%,#767676 60%);
   border-left: 1px solid #aaa;
   position: absolute;
   right: 0;
@@ -105,13 +105,13 @@ select.chzn-select {
 }
 .chzn-container-single .chzn-search input {
   background: #fff url('chosen-sprite.png') no-repeat 100% -20px;
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #363636));
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -webkit-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -moz-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -o-linear-gradient(bottom, #D4D4D4 85%, #363636 99%);
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #b3b3b3 85%,#363636 99%);
-  background: url('chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #b3b3b3 85%,#363636 99%);
-  background: url('chosen-sprite.png') no-repeat 100% -20px, linear-gradient(top, #b3b3b3 85%,#363636 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #767676));
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -webkit-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -moz-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -o-linear-gradient(bottom, #D4D4D4 85%, #767676 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #b3b3b3 85%,#767676 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #b3b3b3 85%,#767676 99%);
+  background: url('chosen-sprite.png') no-repeat 100% -20px, linear-gradient(top, #b3b3b3 85%,#767676 99%);
   margin: 1px 0;
   padding: 4px 20px 4px 5px;
   outline: 0;
@@ -132,13 +132,13 @@ select.chzn-select {
 /* @group Multi Chosen */
 .chzn-container-multi .chzn-choices {
   background-color: #fff;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #363636));
-  background-image: -webkit-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);
-  background-image: -moz-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);
-  background-image: -o-linear-gradient(bottom, #D4D4D4 85%, #363636 99%);
-  background-image: -ms-linear-gradient(top, #b3b3b3 85%,#363636 99%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#363636',GradientType=0 );
-  background-image: linear-gradient(top, #b3b3b3 85%,#363636 99%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #767676));
+  background-image: -webkit-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);
+  background-image: -moz-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);
+  background-image: -o-linear-gradient(bottom, #D4D4D4 85%, #767676 99%);
+  background-image: -ms-linear-gradient(top, #b3b3b3 85%,#767676 99%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#767676',GradientType=0 );
+  background-image: linear-gradient(top, #b3b3b3 85%,#767676 99%);
   border: 1px solid #aaa;
   margin: 0;
   padding: 0;
@@ -180,13 +180,15 @@ select.chzn-select {
   -webkit-background-clip: padding-box;
   background-clip        : padding-box;
   background-color: #b3b3b3;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #b3b3b3), color-stop(0.7, #363636));
-  background-image: -webkit-linear-gradient(center bottom, #b3b3b3 0%, #363636 70%);
-  background-image: -moz-linear-gradient(center bottom, #b3b3b3 0%, #363636 70%);
-  background-image: -o-linear-gradient(bottom, #b3b3b3 0%, #363636 70%);
-  background-image: -ms-linear-gradient(top, #b3b3b3 0%,#363636 70%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#363636',GradientType=0 );
-  background-image: linear-gradient(top, #b3b3b3 0%,#363636 70%);
+  /* tretiy3 767676 -> 767676*/
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #b3b3b3), color-stop(0.7, #767676));
+  background-image: -webkit-linear-gradient(center bottom, #b3b3b3 0%, #767676 70%);
+  background-image: -moz-linear-gradient(center bottom, #b3b3b3 0%, #767676 70%);
+  background-image: -o-linear-gradient(bottom, #b3b3b3 0%, #767676 70%);
+  background-image: -ms-linear-gradient(top, #b3b3b3 0%,#767676 70%);
+
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#767676',GradientType=0 );
+  background-image: linear-gradient(top, #b3b3b3 0%,#767676 70%);
   color: #333;
   border: 1px solid #b4b4b4;
   line-height: 13px;
@@ -284,13 +286,13 @@ select.chzn-select {
   -o-box-shadow     : 0 1px 0 #fff inset;
   box-shadow        : 0 1px 0 #fff inset;
   background-color: #eee;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #D4D4D4), color-stop(0.5, #363636));
-  background-image: -webkit-linear-gradient(center bottom, #D4D4D4 0%, #363636 50%);
-  background-image: -moz-linear-gradient(center bottom, #D4D4D4 0%, #363636 50%);
-  background-image: -o-linear-gradient(bottom, #D4D4D4 0%, #363636 50%);
-  background-image: -ms-linear-gradient(top, #b3b3b3 0%,#363636 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#363636',GradientType=0 );
-  background-image: linear-gradient(top, #b3b3b3 0%,#363636 50%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #D4D4D4), color-stop(0.5, #767676));
+  background-image: -webkit-linear-gradient(center bottom, #D4D4D4 0%, #767676 50%);
+  background-image: -moz-linear-gradient(center bottom, #D4D4D4 0%, #767676 50%);
+  background-image: -o-linear-gradient(bottom, #D4D4D4 0%, #767676 50%);
+  background-image: -ms-linear-gradient(top, #b3b3b3 0%,#767676 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3b3b3', endColorstr='#767676',GradientType=0 );
+  background-image: linear-gradient(top, #b3b3b3 0%,#767676 50%);
   -webkit-border-bottom-left-radius : 0;
   -webkit-border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft : 0;
@@ -336,13 +338,13 @@ select.chzn-select {
 .chzn-rtl.chzn-container-active .chzn-single-with-drop div { border-right: none; }
 .chzn-rtl .chzn-search input {
   background: url('chosen-sprite.png') no-repeat -38px -20px, #b3b3b3;
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #363636));
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -webkit-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);  
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -moz-linear-gradient(center bottom, #D4D4D4 85%, #363636 99%);
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -o-linear-gradient(bottom, #D4D4D4 85%, #363636 99%);
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #b3b3b3 85%,#363636 99%);
-  background: url('chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #b3b3b3 85%,#363636 99%);
-  background: url('chosen-sprite.png') no-repeat -38px -20px, linear-gradient(top, #b3b3b3 85%,#363636 99%);
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #D4D4D4), color-stop(0.99, #767676));
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -webkit-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);  
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -moz-linear-gradient(center bottom, #D4D4D4 85%, #767676 99%);
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -o-linear-gradient(bottom, #D4D4D4 85%, #767676 99%);
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #b3b3b3 85%,#767676 99%);
+  background: url('chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #b3b3b3 85%,#767676 99%);
+  background: url('chosen-sprite.png') no-repeat -38px -20px, linear-gradient(top, #b3b3b3 85%,#767676 99%);
   padding: 4px 5px 4px 20px;
 }
 /* @end */

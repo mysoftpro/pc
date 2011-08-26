@@ -373,6 +373,7 @@ def renderComputer(components_choices, template, skin, model):
         viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(component_doc['price']) + u' р'
 
         select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
+
         ch = choices[name]
         options = []
         if type(ch) is list:
