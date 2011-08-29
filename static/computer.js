@@ -63,13 +63,13 @@ var top_fixed = false;
 var scroll_in_progress = false;
 
 
-function jgetOption(_id){
+function jgetPerifery(_id){
     return $('#' + _id.slice(1,_id.length));
 }
 
-function setOption(_id, value){
+function setPerifery(_id, value){
     if (_id.match('no'))
-	jgetOption(_id).prop('checked', value);
+	jgetPerifery(_id).prop('checked', value);
 }
 
 function componentChanged(maybe_event){
@@ -106,9 +106,8 @@ function componentChanged(maybe_event){
 	jgetPrice(body).text(new_component.price + ' р');
 	blink(jgetPrice(body), component_color);
 
-
-	setOption(new_id, false);
-	setOption(old_id, true);
+	setPerifery(new_id, false);
+	setPerifery(old_id, true);
 
 	if (!maybe_event['no_desc'])
 	    updateDescription(new_id, body.attr('id'));
@@ -509,7 +508,7 @@ function reset(){
 					   function(){});
 			  }
 			  else{
-			      change();
+			      change(select);
 			  }
 
 

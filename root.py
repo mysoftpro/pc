@@ -19,6 +19,9 @@ from datetime import datetime, date
 from pc.models import models, index, computer
 from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
+from twisted.web import proxy
+from twisted.web.error import NoResource
+
 
 from lxml import etree
 
@@ -159,16 +162,16 @@ class CachedStatic(File):
 
 	# cached gzip is here
 	# print "---------------------------------"
-        # print physical_name_in_cache
-        # print virtual_name_in_cache
-        if physical_name_in_cache:
-            print "................................"
-            print "cached physycal...................."
+	# print physical_name_in_cache
+	# print virtual_name_in_cache
+	if physical_name_in_cache:
+	    print "................................"
+	    print "cached physycal...................."
 	    return _cached_statics[physical_name][1]
 
 	if virtual_name_in_cache:
 	    print "cached virtusl!!!!!!!!!!!!!!!!!!"
-            return _cached_statics[virtual_name][1]
+	    return _cached_statics[virtual_name][1]
 
 	else:
 	    if '.html' in fileForReading.name or '.json' in fileForReading.name:
@@ -242,6 +245,7 @@ class Root(Resource):
 	self.putChild('xml',XmlGetter())
 	self.putChild('desktop', Desktop())
 	self.putChild('component', Component())
+	self.putChild('image', ImageProxy())
 	self.host_url = host_url
 	self.cookies = []
 	reactor.callLater(0, self.collectCookies)
@@ -299,17 +303,41 @@ class Component(Resource):
     allowedMethods = ('GET',)
     def writeComponent(self, doc, request):
 	if 'description' in doc:
-            request.write(simplejson.dumps(doc['description']))
-        else:
-            request.write(simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]}))
+	    request.write(simplejson.dumps(doc['description']))
+	else:
+	    request.write(simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]}))
 	request.finish()
 
     def render_GET(self, request):
 	_id = request.args.get('id', [None])[0]
 	if _id is None: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
-        if 'no' in _id: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
+	if 'no' in _id: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	d = couch.openDoc(_id)
 	d.addCallback(self.writeComponent, request)
 	return NOT_DONE_YET
+
+# http://localhost:5984/pc/18060/L0JlbnFfbGNkL1Y5MjAuanBn.jpg
+class ImageProxy(Resource):
+    def __init__(self, *args, **kwargs):
+	Resource.__init__(self, *args, **kwargs)
+	self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
+
+    def getChild(self, path, request):
+        last = request.uri.split('/')[-1]
+        
+        # safety to not show couch internals
+        # just check that it endswith image extension and no parameters in it
+        if '?' in last or '&' in last:
+            return NoResource()
+        image = last.endswith('.jpg')
+        image = image or last.endswith('.jpeg')
+        image = image or last.endswith('.png')
+        image = image or last.endswith('.gif')
+        
+        if not image:
+            return NoResource()
+        
+	return self.proxy.getChild(path, request)
+
