@@ -158,11 +158,17 @@ class CachedStatic(File):
 	    return ''
 
 	# cached gzip is here
-	if physical_name_in_cache in _cached_statics:
+	# print "---------------------------------"
+        # print physical_name_in_cache
+        # print virtual_name_in_cache
+        if physical_name_in_cache:
+            print "................................"
+            print "cached physycal...................."
 	    return _cached_statics[physical_name][1]
 
-	if virtual_name_in_cache in _cached_statics:
-	    return _cached_statics[virtual_name][1]
+	if virtual_name_in_cache:
+	    print "cached virtusl!!!!!!!!!!!!!!!!!!"
+            return _cached_statics[virtual_name][1]
 
 	else:
 	    if '.html' in fileForReading.name or '.json' in fileForReading.name:

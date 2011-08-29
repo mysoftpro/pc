@@ -28,8 +28,6 @@ function recalculate(){
     var lp = $('#large_price');
     lp.text(tottal);
     blink(lp, '#222');
-    // $('#large_price').text(tottal).css('background-color','#7B9C0A');
-    // _.delay(function(e){$('#large_price').css('background-color','#222');},100);
 }
 
 function getCatalogs(component){
@@ -65,10 +63,13 @@ var top_fixed = false;
 var scroll_in_progress = false;
 
 
+function jgetOption(_id){
+    return $('#' + _id.slice(1,_id.length));
+}
 
 function setOption(_id, value){
     if (_id.match('no'))
-	$('#' + _id.slice(1,_id.length)).prop('checked', value);
+	jgetOption(_id).prop('checked', value);
 }
 
 function componentChanged(maybe_event){
@@ -79,6 +80,10 @@ function componentChanged(maybe_event){
 	var body = getBody(target);
 
 	var new_name = target.find('option[value="'+target.val() + '"]').text();
+
+	if (new_name.match('нет'))
+	    new_name = 'нет';
+
 	var new_component = choices[target.val()];
 
 
@@ -86,8 +91,7 @@ function componentChanged(maybe_event){
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	var old_id = old_component['_id'];
-	
-	
+		
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
@@ -115,12 +119,20 @@ function componentChanged(maybe_event){
 }
 
 
+function jgetBodies(){
+    return $('td.body');
+}
+
+
+function jgetBodyByIndex(bodies, index){
+    return $(bodies.get(index));
+}
 
 function updateDescription(new_id, body_id){
-    var bodies = $('td.body');
+    var bodies = jgetBodies();
     var index = 0;
     for (var i=0,l=bodies.length;i<l;i++){
-	if ($(bodies.get(i)).attr('id') == body_id){
+	if (jgetBodyByIndex(bodies, i).attr('id') == body_id){
 	    index = i;
 	    break;
 	}
@@ -146,15 +158,24 @@ function updateDescription(new_id, body_id){
 
 var descriptions_cached = {};
 
-function getTitles(descr){
+function jgetTitles(descr){
     var title =$('#component_title');
     return [title, title.next()];
 }
 
+
+function jgetDescriptions(){
+    return $('#descriptions');
+}
+
+function jgetDescrByIndex(descriptions, index){
+    return $(descriptions.children().get(index));
+}
+
+
 function changeDescription(index, _id, data){
-    var descrptions = $('#descriptions');
-    //var descr = $($('.description').get(index));
-    var descr = $(descrptions.children().get(index));
+    var descrptions = jgetDescriptions();
+    var descr = jgetDescrByIndex(descrptions, index);
     descr.parent().children().hide();
     if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
 	var _text;
@@ -173,7 +194,7 @@ function changeDescription(index, _id, data){
     descrptions.jScrollPane();
     if (!data){
 	var new_name = parts_names[model_parts[_id]];
-	var titles = getTitles(descr);
+	var titles = jgetTitles(descr);
 	titles[0].text(new_name);
 	// titles[1].text('как выбирать ' + new_name);
     }

@@ -103,6 +103,7 @@ class XmlGetter(Resource):
         # destroy cache here!
         from pc import root
         root._cached_statics = {}
+        # TODO!!!! touch all html files!!!!!!!!!!
 
     def getItem(self, res, gen, codes):
         try:
