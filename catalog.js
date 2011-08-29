@@ -15,7 +15,7 @@ var storeDesc = function(code){
 			 console.log('success');
 			 $jq.ajax({
 				      type: 'POST',
-				      url:'http://pc/xml',
+				      url:'http://localhost/xml',
 				      data:{'op':'descr','code':code, 'desription':data}
 				    });
 		     }
