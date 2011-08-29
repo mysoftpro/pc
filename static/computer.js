@@ -193,8 +193,8 @@ function componentChanged(maybe_event){
 	setPerifery(new_id, false);
 	setPerifery(old_id, true);
 
-	if (!maybe_event['no_desc'])
-	    updateDescription(new_id, body.attr('id'));
+	//if (!maybe_event['no_desc'])
+	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
 
     } catch (x) {
 	console.log(x);
@@ -215,7 +215,7 @@ function _jgetBodyByIndex(index){
 
 var jgetBodyByIndex = _.memoize(_jgetBodyByIndex, function(index){return index;});
 
-function updateDescription(new_id, body_id){
+function updateDescription(new_id, body_id, does_not_show){
     var index = 0;
     var bodies = jgetBodies();
     for (var i=0,l=bodies.length;i<l;i++){
@@ -224,21 +224,20 @@ function updateDescription(new_id, body_id){
 	    break;
 	}
     }
-    if (new_id.match('no'))
-	descriptions_cached[new_id] = '';
+    // if (new_id.match('no'))
+    // 	descriptions_cached[new_id] = '';
     if (descriptions_cached[new_id] == undefined){
 	$.ajax({
 		   url:'/component',
 		   data:{'id':new_id},
 		   success:function(data){
 		       data['title'] = parts_names[model_parts[body_id]];
-		       changeDescription(index, new_id, data);
+		       changeDescription(index, new_id, !does_not_show, data);
 		   }
 	       });
-
     }
     else{
-	changeDescription(index, new_id);
+	changeDescription(index, new_id, !does_not_show);
     }
 }
 
@@ -274,11 +273,13 @@ function treatDescriptionText(text){
 
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
-function changeDescription(index, _id, data){
+function changeDescription(index, _id, show, data){
     try{
+	console.log(index + ' ' + _id +  ' ' + data + ' ' + show);
 	var descrptions = jgetDescriptions();
 	var descr = jgetDescrByIndex(index);
-	descrptions.children().hide();
+	if (show)
+	    descrptions.children().hide();
 	if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
 	    var _text = '';
 	    if (data){
@@ -295,9 +296,11 @@ function changeDescription(index, _id, data){
 		_text = 'к сожалению описание не предоставлено поставщиком';
 	    descriptions_cached[_id] = treatDescriptionText(_text);
 	}
+	if (!show)
+	    return;
 	descr.html(descriptions_cached[_id]);
 	descrptions.jScrollPaneRemove();
-	descr.show();	
+	descr.show();
 	descrptions.jScrollPane();
 	if (!data){
 	    var new_name = parts_names[model_parts[_id]];
@@ -331,8 +334,11 @@ function installBodies(){
 				       doNotStress = false;
 				   }
 				   else{
-				       changeDescription(i,_id);   
-				   }				   
+				       // ???
+				       var select = jgetSelect(_body);
+				       changeDescription(i,select.val(), true);
+				       //changeDescription(i,_id, true);
+				   }
 			       }
 			       else{
 				   _body.show();
@@ -359,7 +365,7 @@ function jgetSelect(target){
     }
     return jgetSelectByRow(target);
 }
-    
+
 
 function _jgetBody(select){
     return select.parent().next();
@@ -410,14 +416,14 @@ function confirmPopup(message, success, fail){
     if (doNotAsk){
 	success();
 	return;
-    }	
+    }
     $('#doChange').unbind('click').click(function(e){
 					     $('#mask').click();
-					     success(); 
+					     success();
 					 });
     $('#doNotChange').unbind('click').click(function(e){
 						$('#mask').click();
-					 });    
+					 });
     makeMask(function(){}, fail)();
 }
 
@@ -644,11 +650,11 @@ function installOptions(){
 	else{
 	    // var tr = $('#' + _id.substring(1,_id.length));
 	    // var op = tr.find('option').first();
-	    // var select = jgetSelect(tr.children().first());	    
+	    // var select = jgetSelect(tr.children().first());
 
 	    var op = jgetPeriferyOp(_id);
 	    var select = op.parent();
-	    
+
 	    if (select[0].tagName == 'OPTGROUP')
 		select = select.parent();
 
