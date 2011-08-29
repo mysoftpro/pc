@@ -77,7 +77,7 @@ function componentChanged(maybe_event){
 
 	var target = $(maybe_event.target);
 	var new_id = target.val();
-	var body = getBody(target);
+	var body = jgetBody(target);
 
 	var new_name = target.find('option[value="'+target.val() + '"]').text();
 
@@ -91,7 +91,7 @@ function componentChanged(maybe_event){
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	var old_id = old_component['_id'];
-		
+
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
@@ -103,8 +103,8 @@ function componentChanged(maybe_event){
 	if (maybe_event['component_color'])
 	    component_color = maybe_event['component_color'];
 
-	getPrice(body).text(new_component.price + ' р');
-	blink(getPrice(body), component_color);
+	jgetPrice(body).text(new_component.price + ' р');
+	blink(jgetPrice(body), component_color);
 
 
 	setOption(new_id, false);
@@ -196,21 +196,25 @@ function changeDescription(index, _id, data){
 	var new_name = parts_names[model_parts[_id]];
 	var titles = jgetTitles(descr);
 	titles[0].text(new_name);
-	// titles[1].text('как выбирать ' + new_name);
     }
 }
 
+function jgetDescriptionsByClass(){
+    return $('.description');
+}
+
 function installDescription(){
-    $('.description').hide();
-    var f = $('.description').first();
+    var descriptions = jgetDescriptionsByClass();
+    descriptions.hide();
+    var f = descriptions.first();
     var html = f.text();
-    descriptions_cached[$('td.body').attr('id')] = html;
+    descriptions_cached[jgetBodies().attr('id')] = html;
     f.html(html);
     f.show();
 }
 
 function installBodies(){
-    var bodies = $('td.body');
+    var bodies = jgetBodies();
 	  bodies.mouseover(function(e){
 				 $(e.target).css('color','#aadd00');
 			     });
@@ -234,14 +238,13 @@ function installBodies(){
 			       }
 			   }
 		       });
-    // show chosen whe page is ready or not?
     bodies.first().click();
 }
 
 var chbeQueue = [];
 
 
-function getSelect(target){
+function jgetSelect(target){
     var select;
     if (target[0].tagName == 'TD'){
 	select = target.parent().first().find('select');
@@ -253,22 +256,22 @@ function getSelect(target){
 }
 
 
-function getBody(select){
+function jgetBody(select){
     return select.parent().next();
 }
 
 
-function getPrice(body){
+function jgetPrice(body){
     return body.next();
 }
 
 
-function getReset(body){
+function jgetReset(body){
     return body.parent().children().last();
 }
 
 function getOptionForChBe(select){
-    try{	    
+    try{
 	var opts = select.children().toArray();
 	if (opts[0].tagName == 'OPTGROUP'){
 	    var opts_price = [];
@@ -339,22 +342,43 @@ function isMother(body){
     return body.parent().attr('id') == 'mother';
 }
 
+
+function jgetSocketOpositeBody(body){
+    var part = model_parts[body.attr('id')];
+    var mapping;
+    var other_body;
+    if (part == 'proc'){
+	mapping = proc_to_mother_mapping;
+	other_body = getMotherBody();
+    }
+    else{
+	mapping = mother_to_proc_mapping;
+	other_body = getProcBody();
+    }
+    return [other_body, mapping];
+}
+
 function changeSocket(new_cats, body){
     try{
 	// TODO! it is possible to make it complettely without dom
 	// in model! it is possible to eliminate body (it is just used for the price
 	// and get price just from new model, using filter by catalogs !!!!
-	var part = model_parts[body.attr('id')];
-	var mapping;
-	var other_body;
-	if (part == 'proc'){
-	    mapping = proc_to_mother_mapping;
-	    other_body = getMotherBody();
-	}
-	else{
-	    mapping = mother_to_proc_mapping;
-	    other_body = getProcBody();
-	}
+	
+	// var part = model_parts[body.attr('id')];
+	// var mapping;
+	// var other_body;
+	// if (part == 'proc'){
+	//     mapping = proc_to_mother_mapping;
+	//     other_body = getMotherBody();
+	// }
+	// else{
+	//     mapping = mother_to_proc_mapping;
+	//     other_body = getProcBody();
+	// }
+	var other_body_map = jgetSocketOpositeBody(body);
+	var other_body = other_body_map[0];
+	var mapping = other_body_map[1];
+
 	var other_catalogs;
 	for (var i=0,l=mapping.length;i<l;i++){
 	    if (isEqualCatalogs(mapping[i][0], new_cats)){
@@ -362,7 +386,7 @@ function changeSocket(new_cats, body){
 		break;
 	    }
 	}
-	var other_price = priceFromText(getPrice(other_body).text());
+	var other_price = priceFromText(jgetPrice(other_body).text());
 	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
 	var diff = 1000000;
 	var appropriate_other_component;
@@ -373,7 +397,7 @@ function changeSocket(new_cats, body){
 		diff = _diff;
 	    }
 	}
-	var other_select = getSelect(other_body);
+	var other_select = jgetSelect(other_body);
 	var other_option = getOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
 	getChosenTitle(other_select).text(other_option.text());
@@ -385,18 +409,18 @@ function changeSocket(new_cats, body){
 }
 
 //TODO GLOBAL. the body, which i always need is just an id of old component.
-// may be instead of getBody, just return catalogs, and part?
+// may be instead of jgetBody, just return catalogs, and part?
 function cheaperBetter(){
     chbeQueue = [];
     function _cheaperBetter(prev_next){
 	function handler(e){
 	    try{
-		
+
 
 		e.preventDefault();
 		var target = $(e.target);
-		var select = getSelect(target);
-		var body = getBody(select).click();
+		var select = jgetSelect(target);
+		var body = jgetBody(select).click();
 		var select_val = select.val();
 		var opts = fastGetOptionForChBe(select);
 		var opts_values = _(opts).map(function(o){return $(o).val();});
@@ -421,7 +445,7 @@ function cheaperBetter(){
 		var new_option_val = new_option.val();
 		var current_cats = getCatalogs(choices[current_option_val]);
 		var new_cats = getCatalogs(choices[new_option_val]);
-		
+
 
 		var change = function(){
 		    select.val(new_option.val());
@@ -433,7 +457,7 @@ function cheaperBetter(){
 		    // by body id. than it is possible to get cyr name for the component from parts_names
 		    // IF VIDEO IS JUST - just do change()!
 		    confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-				 function(){changeSocket(new_cats, getBody(select));change();},
+				 function(){changeSocket(new_cats, jgetBody(select));change();},
 				 function(){});
 		}
 		else{
@@ -459,23 +483,29 @@ function reset(){
     $('.reset').click(function(e){
 			  e.preventDefault();
 			  var target = $(e.target);
-			  var select = getSelect(target);
-			  var body = getBody(select);
+			  var select = jgetSelect(target);
+			  var body = jgetBody(select);
 			  var _id = body.attr('id');
 
 			  var component_after_reset = model[_id];
 			  var component_before_reset = choices[select.val()];
 			  var cats_after_reset = getCatalogs(component_after_reset);
 			  var cats_before_reset = getCatalogs(component_before_reset);
-			  function change(){
-			      select.val(_id);
-			      getChosenTitle(select).text(getOption(select, _id).text());
-			      getBody(select).click();
-			      componentChanged({'target':select[0],'component_color':'transparent'});
+			  function change(_select){
+			      var __body = jgetBody(_select);
+			      var __id = __body.attr('id');
+			      _select.val(__id);
+			      getChosenTitle(_select).text(getOption(_select, __id).text());
+			      __body.click();
+			      componentChanged({'target':_select[0],'component_color':'transparent'});
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
 			      confirmPopup("Cокет процессора отличается от сокета выбранной сейчас материнской платы.",
-					   function(){changeSocket(cats_after_reset, body);change();},
+					   function(){					       
+					       var other_body = jgetSocketOpositeBody(body)[0];
+					       change(jgetSelect(other_body));
+					       change(select);
+					   },
 					   function(){});
 			  }
 			  else{
@@ -497,14 +527,14 @@ function installOptions(){
 	    var tr = $('#' + _id.substring(1,_id.length));
 	    var op = tr.find('option').first();
 
-	    var select = getSelect(tr.children().first());
+	    var select = jgetSelect(tr.children().first());
 	    if (!target.is(':checked')){
 		select.val(op.val());
 		getChosenTitle(select).text(op.text());
 		componentChanged({'target':select[0],'no_desc':true});
 	    }
 	    else{
-		getReset(getBody(select)).click();
+		jgetReset(jgetBody(select)).click();
 	    }
 	}
     }
