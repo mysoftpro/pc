@@ -11,6 +11,78 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
+var masked = false;
+
+function makeMask(action, _closing){
+    function _makeMask(e){
+	try{
+	    console.log('aga!');
+	    if (e)
+		e.preventDefault();
+	    var maskHeight = $(document).height();
+	    var maskWidth = $(window).width();
+	    $('#mask').css({'width':maskWidth,'height':maskHeight});
+	    $('#mask').fadeIn(400);
+	    $('#mask').fadeTo("slow",0.9);
+	    var winH = $(window).scrollTop();
+	    var winW = $(window).width();
+
+	    var details = $('#details');
+
+	    var _left = winW/2-details.width()/2;
+	    var _top = 80;
+	    details.css('top', _top);
+	    details.css('left', _left);
+
+	    action();
+
+	    function closing(){
+		details.before('<div id="lbefore">Esc</div>');
+		details.after('<div id="lafter">Esc</div>');
+		var lafter = $('#lafter');
+		var lbefore = $('#lbefore');
+		var lwidth = details.width();
+		var lheight = details.height();
+		var _offset = 250;
+		lbefore.css('top', _top + _offset);
+		lbefore.css('left', _left - $('#lafter').width()-50);
+		lafter.css('top', _top + _offset);
+		lafter.css('left', _left + lwidth);
+	    }
+	    details.fadeIn(600, closing);
+	    masked = true;
+	    // ???
+	    $('#details.close').click(function (e) {
+					  e.preventDefault();
+					  $('#mask').hide();
+					  details.hide();
+					  details.html('');
+					  masked = false;
+					  if (_closing)_closing();
+				      });
+	    $('#mask').click(function () {
+				 $(this).hide();
+				 details.hide();
+				 details.html('');
+				 masked = false;
+				 $('#lbefore').remove();
+				 $('#lafter').remove();
+				 if (_closing)_closing();
+		     });
+
+	    $(document.documentElement).keyup(function (event) {
+						  if (event.keyCode == '27') {
+						      $('#mask').click();
+						  }
+					      });
+	}
+	catch (e){
+	    console.log(e);
+	}
+    }
+    return _makeMask;
+}
+
 
 function blink($target, bcolor){
     $target.css('background-color','#7B9C0A');
@@ -346,11 +418,13 @@ var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return s
 
 
 function confirmPopup(message, success, fail){
-    var answer = confirm(message);
-    if (answer)
-	success();
-    else
-	fail();
+    // var answer = confirm(message);
+    // if (answer)
+    // 	success();
+    // else
+    // 	fail();
+    makeMask(function(){}, function(){})();
+    success();
 }
 
 
@@ -370,7 +444,7 @@ var jgetChosenTitle = _.memoize(_jgetChosenTitle, function(select){return select
 function _jgetProcBody(){
     return  $('#proc').find('td.body');
 }
-var _jgetProcBody = _.memoize(_jgetProcBody, function(){return 0;});
+var jgetProcBody = _.memoize(_jgetProcBody, function(){return 0;});
 
 
 function _jgetMotherBody(){

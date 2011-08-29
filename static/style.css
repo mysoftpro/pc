@@ -631,3 +631,74 @@ color:#7b9c0a;
 .component_viewlet{
     height:36px;
 }
+
+#mask {
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:9000;
+    background-color:#555;
+    display:none;
+}
+
+#details {
+    color:black;
+    margin: auto;
+    max-width: 45em;
+    min-width: 370px;
+    width: 95%;
+    background-color:#ffffff;
+    position:absolute;
+    left:0;
+    top:80;
+    display:none;
+    z-index:9999;
+    background-color: #F5F5FF;
+    background-image: -moz-linear-gradient(#FBFBFB, #830000);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FBFBFB), to(#830000)); 
+    background-image: -webkit-linear-gradient(top, #FBFBFB, #830000);
+    background-image: -o-linear-gradient(top, #FBFBFB, #830000);
+    background-image: linear-gradient(top, #FBFBFB, #830000);
+
+    border-radius: 15px 15px 15px 15px;
+    -moz-border-radius:15px 15px 15px 15px;
+    -webkit-border-bottom-right-radius: 15px;
+    -webkit-border-bottom-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    -webkit-border-top-left-radius: 15px;
+
+    box-shadow: 0 5px 10px #AAAAAA;
+    -moz-box-shadow:0 5px 10px #AAAAAA; 
+    -webkit-box-shadow: 0 5px 10px #AAAAAA;
+    padding: 14px 10px;
+}
+
+.changeSocket {
+    margin-left:80px;
+    margin-right:80px;
+    padding: 5px;
+    color:white;
+    cursor:pointer;
+
+    padding-left:20px;
+    padding-right:20px;
+
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+
+    
+    background-color: #000000;
+    background-image: -moz-linear-gradient(#F1F1FF, #000000);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#F1F1FF), to(#000000)); 
+    background-image: -webkit-linear-gradient(top, #F1F1FF, #000000);
+    background-image: -o-linear-gradient(top, #F1F1FF, #000000); 
+    background-image: linear-gradient(top, #F1F1FF, #000000); 
+    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
