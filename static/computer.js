@@ -283,18 +283,19 @@ function installBodies(){
 var chbeQueue = [];
 
 
-function _jgetSelect(target){
-    var select;
-    if (target[0].tagName == 'TD'){
-	select = target.parent().first().find('select');
-    }
-    else{
-	select = target.parent().parent().first().find('select');
-    }
-    return select;
+
+function _jgetSelectByRow(row){
+    return row.first().find('select');
 }
 
-var jgetSelect = _jgetSelect;//_.memoize(_jgetSelect, function(target){return target[0];});
+var jgetSelectByRow = _.memoize(_jgetSelectByRow, function(row){return row.attr('id');});
+
+function jgetSelect(target){
+    while (target[0].tagName != 'TR'){
+	target = target.parent();
+    }
+    return jgetSelectByRow(target);
+}
     
 
 function _jgetBody(select){
@@ -427,7 +428,7 @@ function changeSocket(new_cats, body){
 	    }
 	}
 	var other_select = jgetSelect(other_body);
-	var other_option = getOption(other_select, appropriate_other_component['_id']);
+	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
 	jgetChosenTitle(other_select).text(other_option.text());
 	componentChanged({'target':other_select[0],'no_desc':true});
