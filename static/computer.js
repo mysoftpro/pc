@@ -6,6 +6,12 @@
 // model ids are equal to td.body ids. they are untoched also
 // new model ids are equal to select.val()
 
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
+
 function blink($target, bcolor){
     $target.css('background-color','#7B9C0A');
     _.delay(function(e){$target.css('background-color',bcolor);},100);
@@ -172,44 +178,55 @@ function jgetDescrByIndex(descriptions, index){
 }
 
 
+function treatDescriptionText(text){
+    return text;
+}
+
+function jgetDescriptionParent(descr){
+    return descr.parent().children();
+}
+
+var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
+
 function changeDescription(index, _id, data){
-    var descrptions = jgetDescriptions();
-    var descr = jgetDescrByIndex(descrptions, index);
-    descr.parent().children().hide();
-    if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
-	var _text;
-	if (data){
-	    _text = data['name'] + data['comments'];
+    try{
+	
+
+	var descrptions = jgetDescriptions();
+	var descr = jgetDescrByIndex(descrptions, index);
+	jgetDescriptionParent(descr).hide();
+	if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
+	    var _text = '';
+	    if (data){		
+		if (data['imgs']){		
+		    for (var i=0,l=data['imgs'].length;i<l;i++){
+			_text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
+		    }		    
+		}
+		_text += data['name'] + data['comments'];
+	    }
+	    else
+		_text = descr.text();
+	    if (_text == '')
+		_text = 'к сожалению описание не предоставлено поставщиком';
+	    descriptions_cached[_id] = treatDescriptionText(_text);
 	}
-	else
-	    _text = descr.text();
-	if (_text == '')
-	    _text = 'к сожалению описание не предоставлено поставщиком';
-	descriptions_cached[_id] = _text;
-    }
-    descr.html(descriptions_cached[_id]);
-    descrptions.jScrollPaneRemove();
-    descr.show();
-    descrptions.jScrollPane();
-    if (!data){
-	var new_name = parts_names[model_parts[_id]];
-	var titles = jgetTitles(descr);
-	titles[0].text(new_name);
+	descr.html(descriptions_cached[_id]);
+	descrptions.jScrollPaneRemove();
+	descr.show();
+	descrptions.jScrollPane();
+	if (!data){
+	    var new_name = parts_names[model_parts[_id]];
+	    var titles = jgetTitles(descr);
+	    titles[0].text(new_name);
+	}
+    } catch (x) {
+	console.log(x);
     }
 }
 
 function jgetDescriptionsByClass(){
     return $('.description');
-}
-
-function installDescription(){
-    var descriptions = jgetDescriptionsByClass();
-    descriptions.hide();
-    var f = descriptions.first();
-    var html = f.text();
-    descriptions_cached[jgetBodies().attr('id')] = html;
-    f.html(html);
-    f.show();
 }
 
 function installBodies(){
@@ -362,7 +379,7 @@ function changeSocket(new_cats, body){
 	// TODO! it is possible to make it complettely without dom
 	// in model! it is possible to eliminate body (it is just used for the price
 	// and get price just from new model, using filter by catalogs !!!!
-	
+
 	// var part = model_parts[body.attr('id')];
 	// var mapping;
 	// var other_body;
@@ -500,7 +517,7 @@ function reset(){
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
 			      confirmPopup("Cокет процессора отличается от сокета выбранной сейчас материнской платы.",
-					   function(){					       
+					   function(){
 					       var other_body = jgetSocketOpositeBody(body)[0];
 					       change(jgetSelect(other_body));
 					       change(select);
@@ -545,7 +562,6 @@ $(function(){
 	  $('select').chosen().change(componentChanged);
 	  new_model = _.clone(model);
 	  installBodies();
-	  installDescription();
 	  cheaperBetter();
 	  reset();
 	  $('#descriptions').jScrollPane();
