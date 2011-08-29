@@ -14,7 +14,7 @@ _.templateSettings = {
 
 function blink($target, bcolor){
     $target.css('background-color','#7B9C0A');
-    _.delay(function(e){$target.css('background-color',bcolor);},100);
+    _.delay(function(e){$target.css('background-color',bcolor);},200);
 }
 
 function recalculate(){
