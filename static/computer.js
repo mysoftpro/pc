@@ -217,7 +217,6 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 function changeDescription(index, _id, data){
     try{
-
 	var descrptions = jgetDescriptions();
 	var descr = jgetDescrByIndex(index);
 	descrptions.children().hide();
@@ -239,7 +238,7 @@ function changeDescription(index, _id, data){
 	}
 	descr.html(descriptions_cached[_id]);
 	descrptions.jScrollPaneRemove();
-	descr.show();
+	descr.show();	
 	descrptions.jScrollPane();
 	if (!data){
 	    var new_name = parts_names[model_parts[_id]];
@@ -269,7 +268,12 @@ function installBodies(){
 			       if (_body.attr('id') == _id){
 				   _body.hide();
 				   var select_block = _body.prev().show();
-				   changeDescription(i,_id);
+				   if (doNotStress){
+				       doNotStress = false;
+				   }
+				   else{
+				       changeDescription(i,_id);   
+				   }				   
 			       }
 			       else{
 				   _body.show();
@@ -438,6 +442,9 @@ function changeSocket(new_cats, body){
     }
 }
 
+
+var doNotStress = false;
+
 //TODO GLOBAL. the body, which i always need is just an id of old component.
 // may be instead of jgetBody, just return catalogs, and part?
 function cheaperBetter(){
@@ -450,7 +457,11 @@ function cheaperBetter(){
 		e.preventDefault();
 		var target = $(e.target);
 		var select = jgetSelect(target);
+
+		// do not stress users!
+		doNotStress = true;
 		var body = jgetBody(select).click();
+
 		var select_val = select.val();
 		var opts = fastGetOptionForChBe(select);
 		var opts_values = _(opts).map(function(o){return $(o).val();});
