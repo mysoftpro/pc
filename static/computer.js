@@ -17,21 +17,38 @@ function blink($target, bcolor){
     _.delay(function(e){$target.css('background-color',bcolor);},200);
 }
 
+function _jgetLargePrice(){
+    return $('#large_price');
+}
+var jgetLargePrice = _.memoize(_jgetLargePrice,function(){return 0;});
+
+
+function _jgetBuild(){
+    return $('#obuild');
+}
+var jgetBuild = _.memoize(_jgetBuild,function(){return 0;});
+
+function _jgetWindows(){
+    return $('#owindows');
+}
+var jgetWindows = _.memoize(_jgetWindows, function(){return 0;});
+
+
 function recalculate(){
     var tottal = 0;
     for (var id in new_model){
 	tottal += new_model[id].price;
     }
-    var bui = $('#obuild').is(':checked');
+    var bui = jgetBuild().is(':checked');
     if (bui){
 	tottal += 500;
     }
-    var win = $('#owindows').is(':checked');
+    var win = jgetWindows().is(':checked');
     if (win){
 	tottal +=300;
     }
 
-    var lp = $('#large_price');
+    var lp = jgetLargePrice();
     lp.text(tottal);
     blink(lp, '#222');
 }
@@ -69,9 +86,11 @@ var top_fixed = false;
 var scroll_in_progress = false;
 
 
-function jgetPerifery(_id){
+function _jgetPerifery(_id){
     return $('#' + _id.slice(1,_id.length));
 }
+
+var jgetPerifery = _.memoize(_jgetPerifery, function(_id){return _id;});
 
 function setPerifery(_id, value){
     if (_id.match('no'))
@@ -124,20 +143,24 @@ function componentChanged(maybe_event){
 }
 
 
-function jgetBodies(){
+function _jgetBodies(){
     return $('td.body');
 }
+var jgetBodies = _.memoize(_jgetBodies, function(){return 0;});
 
 
-function jgetBodyByIndex(bodies, index){
+function _jgetBodyByIndex(index){
+    var bodies = jgetBodies();
     return $(bodies.get(index));
 }
 
+var jgetBodyByIndex = _.memoize(_jgetBodyByIndex, function(index){return index;});
+
 function updateDescription(new_id, body_id){
-    var bodies = jgetBodies();
     var index = 0;
+    var bodies = jgetBodies();
     for (var i=0,l=bodies.length;i<l;i++){
-	if (jgetBodyByIndex(bodies, i).attr('id') == body_id){
+	if (jgetBodyByIndex(i).attr('id') == body_id){
 	    index = i;
 	    break;
 	}
@@ -163,45 +186,48 @@ function updateDescription(new_id, body_id){
 
 var descriptions_cached = {};
 
-function jgetTitles(descr){
+function _jgetTitles(){
     var title =$('#component_title');
     return [title, title.next()];
 }
 
+var jgetTitles = _.memoize(_jgetTitles, function(){return 0;});
 
-function jgetDescriptions(){
+
+function _jgetDescriptions(){
     return $('#descriptions');
 }
+var jgetDescriptions = _.memoize(_jgetDescriptions, function(){return 0;});
 
-function jgetDescrByIndex(descriptions, index){
-    return $(descriptions.children().get(index));
+
+function _jgetDescrByIndex(index){
+    return $(jgetDescriptions().children().get(index));
 }
+
+var jgetDescrByIndex = _.memoize(_jgetDescrByIndex, function(index){return index;});
+
 
 
 function treatDescriptionText(text){
     return text;
 }
 
-function jgetDescriptionParent(descr){
-    return descr.parent().children();
-}
 
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 function changeDescription(index, _id, data){
     try{
-	
 
 	var descrptions = jgetDescriptions();
-	var descr = jgetDescrByIndex(descrptions, index);
-	jgetDescriptionParent(descr).hide();
+	var descr = jgetDescrByIndex(index);
+	descrptions.children().hide();
 	if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
 	    var _text = '';
-	    if (data){		
-		if (data['imgs']){		
+	    if (data){
+		if (data['imgs']){
 		    for (var i=0,l=data['imgs'].length;i<l;i++){
 			_text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
-		    }		    
+		    }
 		}
 		_text += data['name'] + data['comments'];
 	    }
@@ -217,7 +243,7 @@ function changeDescription(index, _id, data){
 	descrptions.jScrollPane();
 	if (!data){
 	    var new_name = parts_names[model_parts[_id]];
-	    var titles = jgetTitles(descr);
+	    var titles = jgetTitles();
 	    titles[0].text(new_name);
 	}
     } catch (x) {
@@ -225,9 +251,6 @@ function changeDescription(index, _id, data){
     }
 }
 
-function jgetDescriptionsByClass(){
-    return $('.description');
-}
 
 function installBodies(){
     var bodies = jgetBodies();
@@ -260,7 +283,7 @@ function installBodies(){
 var chbeQueue = [];
 
 
-function jgetSelect(target){
+function _jgetSelect(target){
     var select;
     if (target[0].tagName == 'TD'){
 	select = target.parent().first().find('select');
@@ -271,20 +294,28 @@ function jgetSelect(target){
     return select;
 }
 
+var jgetSelect = _jgetSelect;//_.memoize(_jgetSelect, function(target){return target[0];});
+    
 
-function jgetBody(select){
+function _jgetBody(select){
     return select.parent().next();
 }
 
+var jgetBody = _.memoize(_jgetBody, function(select){return select.attr('id');});
 
-function jgetPrice(body){
+
+function _jgetPrice(body){
     return body.next();
 }
 
+var jgetPrice = _.memoize(_jgetPrice, function(body){return body.attr('id');});
 
-function jgetReset(body){
+
+function _jgetReset(body){
     return body.parent().children().last();
 }
+
+var jgetReset = _.memoize(_jgetReset, function(body){return body.attr('id');});
 
 function getOptionForChBe(select){
     try{
@@ -323,40 +354,36 @@ function priceFromText(text_price){
 }
 
 
-
-function getChosenTitle(select){
+function _jgetChosenTitle(select){
     return select.next().find('span');
 }
 
-// TODO! memoise all this getters!!!
-function getComponentsTable(body){
-    return body.parent().parent();
-}
-
-// this function change other components! not
-// new_component or old_component, but appropriate
-// components on other side of socket
+var jgetChosenTitle = _.memoize(_jgetChosenTitle, function(select){return select.attr('id');});
 
 
-function getProcBody(body){
- return  getComponentsTable(body).children().last().find('td.body');
-}
 
-
-function getProcBody(){
+function _jgetProcBody(){
     return  $('#proc').find('td.body');
 }
+var _jgetProcBody = _.memoize(_jgetProcBody, function(){return 0;});
 
-function getMotherBody(){
+
+function _jgetMotherBody(){
     return $('#mother').find('td.body');
 }
 
-function isProc(body){
+var jgetMotherBody = _.memoize(_jgetMotherBody, function(){return 0;});
+
+
+function _isProc(body){
     return body.parent().attr('id') == 'proc';
 }
-function isMother(body){
+var isProc = _.memoize(_isProc, function(body){return body.attr('id');});
+
+function _isMother(body){
     return body.parent().attr('id') == 'mother';
 }
+var isMother = _.memoize(_isMother, function(body){return body.attr('id');});
 
 
 function jgetSocketOpositeBody(body){
@@ -365,32 +392,18 @@ function jgetSocketOpositeBody(body){
     var other_body;
     if (part == 'proc'){
 	mapping = proc_to_mother_mapping;
-	other_body = getMotherBody();
+	other_body = jgetMotherBody();
     }
     else{
 	mapping = mother_to_proc_mapping;
-	other_body = getProcBody();
+	other_body = jgetProcBody();
     }
     return [other_body, mapping];
 }
 
 function changeSocket(new_cats, body){
     try{
-	// TODO! it is possible to make it complettely without dom
-	// in model! it is possible to eliminate body (it is just used for the price
-	// and get price just from new model, using filter by catalogs !!!!
 
-	// var part = model_parts[body.attr('id')];
-	// var mapping;
-	// var other_body;
-	// if (part == 'proc'){
-	//     mapping = proc_to_mother_mapping;
-	//     other_body = getMotherBody();
-	// }
-	// else{
-	//     mapping = mother_to_proc_mapping;
-	//     other_body = getProcBody();
-	// }
 	var other_body_map = jgetSocketOpositeBody(body);
 	var other_body = other_body_map[0];
 	var mapping = other_body_map[1];
@@ -416,7 +429,7 @@ function changeSocket(new_cats, body){
 	var other_select = jgetSelect(other_body);
 	var other_option = getOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
-	getChosenTitle(other_select).text(other_option.text());
+	jgetChosenTitle(other_select).text(other_option.text());
 	componentChanged({'target':other_select[0],'no_desc':true});
 
     } catch (x) {
@@ -465,7 +478,7 @@ function cheaperBetter(){
 
 		var change = function(){
 		    select.val(new_option.val());
-		    getChosenTitle(select).text(new_option.text());
+		    jgetChosenTitle(select).text(new_option.text());
 		    componentChanged({'target':select[0]});
 		};
 		if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
@@ -491,9 +504,11 @@ function cheaperBetter(){
 
 
 
-function getOption(select, _id){
+function _jgetOption(select, _id){
     return select.find('option[value="' + _id + '"]');
 }
+
+var jgetOption = _.memoize(_jgetOption, function(s,i){return i;});
 
 function reset(){
     $('.reset').click(function(e){
@@ -511,7 +526,7 @@ function reset(){
 			      var __body = jgetBody(_select);
 			      var __id = __body.attr('id');
 			      _select.val(__id);
-			      getChosenTitle(_select).text(getOption(_select, __id).text());
+			      jgetChosenTitle(_select).text(jgetOption(_select, __id).text());
 			      __body.click();
 			      componentChanged({'target':_select[0],'component_color':'transparent'});
 			  }
@@ -532,6 +547,13 @@ function reset(){
 		     });
 }
 
+
+function _jgetPeriferyOp(_id){
+    var tr = $('#' + _id.substring(1,_id.length));
+    return tr.find('option').first();
+}
+var jgetPeriferyOp = _.memoize(_jgetPeriferyOp, function(_id){return _id;});
+
 function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
@@ -540,13 +562,19 @@ function installOptions(){
 	    recalculate();
 	}
 	else{
-	    var tr = $('#' + _id.substring(1,_id.length));
-	    var op = tr.find('option').first();
+	    // var tr = $('#' + _id.substring(1,_id.length));
+	    // var op = tr.find('option').first();
+	    // var select = jgetSelect(tr.children().first());	    
 
-	    var select = jgetSelect(tr.children().first());
+	    var op = jgetPeriferyOp(_id);
+	    var select = op.parent();
+	    
+	    if (select[0].tagName == 'OPTGROUP')
+		select = select.parent();
+
 	    if (!target.is(':checked')){
 		select.val(op.val());
-		getChosenTitle(select).text(op.text());
+		jgetChosenTitle(select).text(op.text());
 		componentChanged({'target':select[0],'no_desc':true});
 	    }
 	    else{
