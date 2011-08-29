@@ -224,8 +224,8 @@ function updateDescription(new_id, body_id, does_not_show){
 	    break;
 	}
     }
-    // if (new_id.match('no'))
-    // 	descriptions_cached[new_id] = '';
+    if (new_id.match('no'))
+    	descriptions_cached[new_id] = '';
     if (descriptions_cached[new_id] == undefined){
 	$.ajax({
 		   url:'/component',
