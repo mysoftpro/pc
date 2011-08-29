@@ -16,58 +16,45 @@ var masked = false;
 function makeMask(action, _closing){
     function _makeMask(e){
 	try{
-	    console.log('aga!');
 	    if (e)
 		e.preventDefault();
 	    var maskHeight = $(document).height();
 	    var maskWidth = $(window).width();
-	    $('#mask').css({'width':maskWidth,'height':maskHeight});
-	    $('#mask').fadeIn(400);
-	    $('#mask').fadeTo("slow",0.9);
+	    $('#mask').css({'width':maskWidth,'height':maskHeight})
+		.fadeIn(400)
+		.fadeTo("slow",0.9);
 	    var winH = $(window).scrollTop();
 	    var winW = $(window).width();
 
 	    var details = $('#details');
 
 	    var _left = winW/2-details.width()/2;
-	    var _top = 80;
+	    var _top;
+	    if (winH == 0)
+		_top = 80;
+	    else
+		_top = winH+80;
 	    details.css('top', _top);
 	    details.css('left', _left);
 
 	    action();
 
 	    function closing(){
-		details.before('<div id="lbefore">Esc</div>');
-		details.after('<div id="lafter">Esc</div>');
-		var lafter = $('#lafter');
-		var lbefore = $('#lbefore');
-		var lwidth = details.width();
-		var lheight = details.height();
-		var _offset = 250;
-		lbefore.css('top', _top + _offset);
-		lbefore.css('left', _left - $('#lafter').width()-50);
-		lafter.css('top', _top + _offset);
-		lafter.css('left', _left + lwidth);
 	    }
 	    details.fadeIn(600, closing);
 	    masked = true;
-	    // ???
 	    $('#details.close').click(function (e) {
 					  e.preventDefault();
 					  $('#mask').hide();
 					  details.hide();
-					  details.html('');
 					  masked = false;
-					  if (_closing)_closing();
+					  _closing();
 				      });
 	    $('#mask').click(function () {
 				 $(this).hide();
 				 details.hide();
-				 details.html('');
 				 masked = false;
-				 $('#lbefore').remove();
-				 $('#lafter').remove();
-				 if (_closing)_closing();
+				 _closing();
 		     });
 
 	    $(document.documentElement).keyup(function (event) {
@@ -416,15 +403,22 @@ function getOptionForChBe(select){
 
 var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return select.val();});
 
+var doNotAsk = false;
 
 function confirmPopup(message, success, fail){
-    // var answer = confirm(message);
-    // if (answer)
-    // 	success();
-    // else
-    // 	fail();
-    makeMask(function(){}, function(){})();
-    success();
+
+    if (doNotAsk){
+	success();
+	return;
+    }	
+    $('#doChange').unbind('click').click(function(e){
+					     $('#mask').click();
+					     success(); 
+					 });
+    $('#doNotChange').unbind('click').click(function(e){
+						$('#mask').click();
+					 });    
+    makeMask(function(){}, fail)();
 }
 
 
@@ -680,6 +674,11 @@ $(function(){
 	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
+	  $('#donotask').change(function(e){
+				    if ($(e.target).is(':checked')){
+					doNotAsk = true;
+				    }
+				});
       } catch (x) {
 	  console.log(x);
       }
