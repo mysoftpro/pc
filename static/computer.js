@@ -170,7 +170,6 @@ function componentChanged(maybe_event){
 
 	var new_component = choices[target.val()];
 
-
 	var new_cats = getCatalogs(new_component);
 
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
@@ -193,7 +192,6 @@ function componentChanged(maybe_event){
 	setPerifery(new_id, false);
 	setPerifery(old_id, true);
 
-	//if (!maybe_event['no_desc'])
 	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
 
     } catch (x) {
@@ -275,7 +273,6 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 function changeDescription(index, _id, show, data){
     try{
-	console.log(index + ' ' + _id +  ' ' + data + ' ' + show);
 	var descrptions = jgetDescriptions();
 	var descr = jgetDescrByIndex(index);
 	if (show)
@@ -334,10 +331,8 @@ function installBodies(){
 				       doNotStress = false;
 				   }
 				   else{
-				       // ???
 				       var select = jgetSelect(_body);
 				       changeDescription(i,select.val(), true);
-				       //changeDescription(i,_id, true);
 				   }
 			       }
 			       else{
@@ -413,23 +408,27 @@ var doNotAsk = false;
 
 function confirmPopup(message, success, fail){
 
-    if (doNotAsk){
-	success();
-	return;
-    }
-    $('#doChange').unbind('click').click(function(e){
-					     $('#mask').click();
-					     success();
-					 });
-    $('#doNotChange').unbind('click').click(function(e){
-						$('#mask').click();
-					 });
-    makeMask(function(){}, fail)();
+    success();
+    // if (doNotAsk){
+    // 	success();
+    // 	return;
+    // }
+    // $('#doChange').unbind('click').click(function(e){
+    // 					     $('#mask').click();
+    // 					     success();
+    // 					 });
+    // $('#doNotChange').unbind('click').click(function(e){
+    // 						$('#mask').click();
+    // 					 });
+    // makeMask(function(){}, fail)();
 }
 
 
 function priceFromText(text_price){
-    return parseInt(text_price.match("[0-9]+[ ]р$")[0].replace(' р',''));
+    //return parseInt(text_price.match("[0-9]+[ ][рin\.]$")[0].replace(' р',''));
+    var ma = text_price.match("([0-9]+)[ ][ршт\.]+$");
+    var text = ma.pop();
+    return parseInt(text);
 }
 
 
@@ -671,6 +670,23 @@ function installOptions(){
     $('#options input').change(substructAdd);
 }
 
+function changeRam(rambody, count, direction){
+    
+    var new_count;
+    var need_hide;    
+    if (direction == 'up'){
+	new_count = count + 1;
+	need_hide = true;
+    }
+    else{
+	new_count = count - 1;
+	need_hide = true;
+    }
+    // TODO! add count to ram component in new model!!!
+    // var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+    return [new_count, need_hide];
+}
+
 $(function(){
       try{
 	  $('select').chosen().change(componentChanged);
@@ -680,11 +696,39 @@ $(function(){
 	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
-	  $('#donotask').change(function(e){
-				    if ($(e.target).is(':checked')){
-					doNotAsk = true;
-				    }
-				});
+	  var rambody = jgetBody(jgetSelectByRow($('#ram')));
+	  rambody.append('<span id="ramcount">1 шт.</span> <span id="incram">+1шт</span>');
+	  $('#incram').click(function(e){
+				 if ($('#decram').length == 0){
+				     rambody.append('<span id="decram">-1шт</span>');
+				     $('#decram').click(function(e){
+							    $('#incram').show();
+							    var ramcount = $('#ramcount');
+							    var count = priceFromText(ramcount.text());
+							    var new_count_hide = changeRam(count, 'down');
+							    ramcount.text(new_count_hide[0] + ' шт.');
+							    if (new_count_hide[1]){
+								$(e.target).hide();
+							    }
+							});
+				 }
+				 $('#decram').show();
+				 var ramcount = $('#ramcount');
+				 var count = priceFromText(ramcount.text());
+				 var new_count_hide = changeRam(count, 'up');
+				 ramcount.text(new_count_hide[0] + ' шт.');
+				 if (new_count_hide[1]){
+				     $(e.target).hide();
+				 }
+		       });
+
+
+	  // $('#donotask').change(function(e){
+	  // 			    if ($(e.target).is(':checked')){
+	  // 				doNotAsk = true;
+	  // 			    }
+	  // 			});
+
       } catch (x) {
 	  console.log(x);
       }
