@@ -181,11 +181,11 @@ function componentChanged(maybe_event){
 	// when recalculating ram, it is not needed to delete component
 	// because possible only count is changed
 	delete new_model[old_id];
-	new_model[new_id] = new_component;    
-	
+	new_model[new_id] = new_component;
+
 	recalculate();
-	
-	body.html(new_name);	
+
+	body.html(new_name);
 
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
@@ -203,7 +203,7 @@ function componentChanged(maybe_event){
 	setPerifery(old_id, true);
 
 	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
-	
+
 
     } catch (x) {
 	console.log(x);
@@ -695,20 +695,25 @@ function installOptions(){
     $('#options input').change(substructAdd);
 }
 
-//19251 undefined. Материнская плата ASUS F1A75 FM1 AMD75 RAID/GL/mATX 3788 р
-function changeRam(direction){    
+
+function shadowCram(target){
+	target.unbind('click');
+	target.css({'cursor':'auto',color:"#444 !important"});
+}
+
+function changeRam(e, direction){
+    console.log('changeRam');
     var ramselect = jgetSelectByRow($('#ram'));
     var component = choices[ramselect.val()];
     var count = 1;
     if (component['count'])
 	count = component['count'];
     var new_count;
-    var need_hide;    
-    
+    var need_hide;
+    var max_count;
     if (direction == 'up'){
 	// refactor that: #mother
 	var body = $('#mother').find('td.body');
-	var max_count;
 	if (body.text().match('4DDR3'))
 	    max_count = 4;
 	if (!max_count && body.text().match('2DDR3'))
@@ -731,7 +736,7 @@ function changeRam(direction){
 		max_count = 4;
 	    if (!max_count && descr.text().match('2 x DDR3 DIMM'))
 		max_count = 2;
-	    
+
 	    if (!max_count && descr.text().match('Memory 4 x DIMM'))
 		max_count = 4;
 	    if (!max_count && descr.text().match('Memory 2 x DIMM'))
@@ -746,39 +751,31 @@ function changeRam(direction){
 		max_count = 4;
 	    if (!max_count && descr.text().match('Количество слотов памяти[ \t]*2'))
 		max_count = 2;
-	    
+
 	    if (!max_count && descr.text().match('Количество разъемов DDR3 4'))
 		max_count = 4;
 	    if (!max_count && descr.text().match('Количество разъемов DDR3 2'))
-		max_count = 2;	    
+		max_count = 2;
 
 	    if (!max_count && descr.text().match('4 x 1.5V DDR3'))
 		max_count = 4;
 	    if (!max_count && descr.text().match('2 x 1.5V DDR3'))
-		max_count = 2;	    
+		max_count = 2;
 
 	    if (!max_count && descr.text().match('Four 240-pin DDR3 SDRAM'))
 		max_count = 4;
 	    if (!max_count && descr.text().match('Two 240-pin DDR3 SDRAM'))
 		max_count = 2;
-	    
+
 	    if (!max_count && descr.text().match('DDR3 4 szt.'))
 		max_count = 4;
 	    if (!max_count && descr.text().match('DDR3 2 szt.'))
-		max_count = 2;    
-	}	
+		max_count = 2;
+	}
 	new_count = count + 1;
-	if (max_count == new_count)
-	    need_hide = true;
-	else 
-	    need_hide = false;
     }
     else{
-	new_count = count - 1;
-	if (new_count == 1)
-	    need_hide = true;
-	else
-	    need_hide = false;
+	new_count = count - 1;	
     }
     component['count'] = new_count;
     componentChanged({'target':ramselect[0],'no_desc':true});
@@ -786,6 +783,12 @@ function changeRam(direction){
     // delete component['count'];
     installRamCount();
     
+    if (max_count && max_count == new_count)
+	shadowCram($('#incram'));    
+    if (new_count == 1){
+	shadowCram($('#decram'));
+    }
+
 }
 
 function installRamCount(){
@@ -794,20 +797,16 @@ function installRamCount(){
     rambody.text(rambody.text().substring(0,100));
     var component = new_model[ramselect.val()];
     var pcs = 1;
-    var display = 'none';
     if (component['count']){
 	pcs = component['count'];
-	if (pcs>1)
-	    display = 'inherit';
     }
-	
-    rambody.append(_.template('<span id="ramcount">{{pcs}} шт.</span> <span id="incram">+1шт</span><span id="decram" style="display:{{display}}">-1шт</span>',
+
+    rambody.append(_.template('<span id="ramcount">{{pcs}} шт.</span> <span id="incram">+1шт</span><span id="decram">-1шт</span>',
 			      {
-				  display:display,
 				  pcs:pcs
 			      }));
-    $('#incram').click(function(e){changeRam('up');});
-    $('#decram').click(function(e){changeRam('down');});
+    $('#incram').click(function(e){changeRam(e,'up');});
+    $('#decram').click(function(e){changeRam(e,'down');});
 }
 
 $(function(){
@@ -820,7 +819,7 @@ $(function(){
 	  $('#descriptions').jScrollPane();
 	  installOptions();
 	  installRamCount();
-
+	  shadowCram($('#decram'));
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
