@@ -320,6 +320,8 @@ function installBodies(){
 				 $(e.target).css('color','white');
 			     });
 	  bodies.click(function(e){
+			   if(e.target.tagName != 'TD')
+			       return;
 			   var target = $(e.target);
 			   var _id = target.attr('id');
 			   for (var i=0,l=bodies.length;i<l;i++){
@@ -679,12 +681,10 @@ function changeRam(ramselect, count, direction){
     var new_count;
     var need_hide;    
     var component = new_model[ramselect.val()];
-    console.log(component);
     if (direction == 'up'){
 	// refactor that: #mother
 	var body = $('#mother').find('td.body');
 	var max_count;
-	console.log(body.text());
 	if (body.text().match('4DDR3'))
 	    max_count = 4;
 	if (!max_count && body.text().match('2DDR3'))
@@ -744,9 +744,10 @@ function changeRam(ramselect, count, direction){
 		max_count = 2;    
 	}
 	new_count = count + 1;
-	console.log(max_count);
-	console.log(new_count);
-	need_hide = true;
+	if (max_count == new_count)
+	    need_hide = true;
+	else 
+	    need_hide = false;
     }
     else{
 	new_count = count - 1;
