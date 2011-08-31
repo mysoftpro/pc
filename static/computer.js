@@ -11,64 +11,64 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var masked = false;
+// var masked = false;
 
-function makeMask(action, _closing){
-    function _makeMask(e){
-	try{
-	    if (e)
-		e.preventDefault();
-	    var maskHeight = $(document).height();
-	    var maskWidth = $(window).width();
-	    $('#mask').css({'width':maskWidth,'height':maskHeight})
-		.fadeIn(400)
-		.fadeTo("slow",0.9);
-	    var winH = $(window).scrollTop();
-	    var winW = $(window).width();
+// function makeMask(action, _closing){
+//     function _makeMask(e){
+// 	try{
+// 	    if (e)
+// 		e.preventDefault();
+// 	    var maskHeight = $(document).height();
+// 	    var maskWidth = $(window).width();
+// 	    $('#mask').css({'width':maskWidth,'height':maskHeight})
+// 		.fadeIn(400)
+// 		.fadeTo("slow",0.9);
+// 	    var winH = $(window).scrollTop();
+// 	    var winW = $(window).width();
 
-	    var details = $('#details');
+// 	    var details = $('#details');
 
-	    var _left = winW/2-details.width()/2;
-	    var _top;
-	    if (winH == 0)
-		_top = 80;
-	    else
-		_top = winH+80;
-	    details.css('top', _top);
-	    details.css('left', _left);
+// 	    var _left = winW/2-details.width()/2;
+// 	    var _top;
+// 	    if (winH == 0)
+// 		_top = 80;
+// 	    else
+// 		_top = winH+80;
+// 	    details.css('top', _top);
+// 	    details.css('left', _left);
 
-	    action();
+// 	    action();
 
-	    function closing(){
-	    }
-	    details.fadeIn(600, closing);
-	    masked = true;
-	    $('#details.close').click(function (e) {
-					  e.preventDefault();
-					  $('#mask').hide();
-					  details.hide();
-					  masked = false;
-					  _closing();
-				      });
-	    $('#mask').click(function () {
-				 $(this).hide();
-				 details.hide();
-				 masked = false;
-				 _closing();
-		     });
+// 	    function closing(){
+// 	    }
+// 	    details.fadeIn(600, closing);
+// 	    masked = true;
+// 	    $('#details.close').click(function (e) {
+// 					  e.preventDefault();
+// 					  $('#mask').hide();
+// 					  details.hide();
+// 					  masked = false;
+// 					  _closing();
+// 				      });
+// 	    $('#mask').click(function () {
+// 				 $(this).hide();
+// 				 details.hide();
+// 				 masked = false;
+// 				 _closing();
+// 		     });
 
-	    $(document.documentElement).keyup(function (event) {
-						  if (event.keyCode == '27') {
-						      $('#mask').click();
-						  }
-					      });
-	}
-	catch (e){
-	    console.log(e);
-	}
-    }
-    return _makeMask;
-}
+// 	    $(document.documentElement).keyup(function (event) {
+// 						  if (event.keyCode == '27') {
+// 						      $('#mask').click();
+// 						  }
+// 					      });
+// 	}
+// 	catch (e){
+// 	    console.log(e);
+// 	}
+//     }
+//     return _makeMask;
+// }
 
 
 function blink($target, bcolor){
@@ -311,6 +311,7 @@ function changeDescription(index, _id, show, data){
 
 
 function installBodies(){
+    var init = true;
     var bodies = jgetBodies();
 	  bodies.mouseover(function(e){
 				 $(e.target).css('color','#aadd00');
@@ -340,8 +341,11 @@ function installBodies(){
 				   _body.prev().hide();
 			       }
 			   }
+			   if (!init && $('#ramcount').length == 0)
+			       installRamCount();
 		       });
     bodies.first().click();
+    init = false;
 }
 
 var chbeQueue = [];
@@ -670,21 +674,118 @@ function installOptions(){
     $('#options input').change(substructAdd);
 }
 
-function changeRam(rambody, count, direction){
-    
+//19251 undefined. Материнская плата ASUS F1A75 FM1 AMD75 RAID/GL/mATX 3788 р
+function changeRam(ramselect, count, direction){    
     var new_count;
     var need_hide;    
+    var component = new_model[ramselect.val()];
+    console.log(component);
     if (direction == 'up'){
+	// refactor that: #mother
+	var body = $('#mother').find('td.body');
+	var max_count;
+	console.log(body.text());
+	if (body.text().match('4DDR3'))
+	    max_count = 4;
+	if (!max_count && body.text().match('2DDR3'))
+	    max_count = 2;
+
+	if (!max_count && body.text().match('4 x 1.5V'))
+	    max_count = 4;
+	if (!max_count && body.text().match('2 x 1.5V'))
+	    max_count = 2;
+
+	if (!max_count && body.text().match('4 DIMM DDR3'))
+	    max_count = 4;
+	if (!max_count && body.text().match('2 DIMM DDR3'))
+	    max_count = 2;
+
+	if (!max_count){
+	    // refactor that: 0
+	    var descr = jgetDescrByIndex(0);
+	    if (descr.text().match('4 x DDR3 DIMM'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('2 x DDR3 DIMM'))
+		max_count = 2;
+	    
+	    if (!max_count && descr.text().match('Memory 4 x DIMM'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('Memory 2 x DIMM'))
+		max_count = 2;
+
+	    if (!max_count && descr.text().match('DDR3\n4 szt.'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('DDR3\n2 szt.'))
+		max_count = 2;
+
+	    if (!max_count && descr.text().match('Количество слотов памяти[ \t]*4'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('Количество слотов памяти[ \t]*2'))
+		max_count = 2;
+	    
+	    if (!max_count && descr.text().match('Количество разъемов DDR3 4'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('Количество разъемов DDR3 2'))
+		max_count = 2;	    
+
+	    if (!max_count && descr.text().match('4 x 1.5V DDR3'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('2 x 1.5V DDR3'))
+		max_count = 2;	    
+
+	    if (!max_count && descr.text().match('Four 240-pin DDR3 SDRAM'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('Two 240-pin DDR3 SDRAM'))
+		max_count = 2;
+	    
+	    if (!max_count && descr.text().match('DDR3 4 szt.'))
+		max_count = 4;
+	    if (!max_count && descr.text().match('DDR3 2 szt.'))
+		max_count = 2;    
+	}
 	new_count = count + 1;
+	console.log(max_count);
+	console.log(new_count);
 	need_hide = true;
     }
     else{
 	new_count = count - 1;
-	need_hide = true;
+	if (new_count == 1)
+	    need_hide = true;
+	else
+	    need_hide = false;
     }
-    // TODO! add count to ram component in new model!!!
-    // var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+    component['count'] = new_count;
     return [new_count, need_hide];
+}
+
+function installRamCount(){
+    var ramselect = jgetSelectByRow($('#ram'));
+    var rambody = jgetBody(ramselect);
+    rambody.append('<span id="ramcount">1 шт.</span> <span id="incram">+1шт</span>');
+    $('#incram').click(function(e){
+			   if ($('#decram').length == 0){
+			       rambody.append('<span id="decram">-1шт</span>');
+			       $('#decram').click(function(e){
+						      $('#incram').show();
+						      var ramcount = $('#ramcount');
+						      var count = priceFromText(ramcount.text());
+						      var new_count_hide = changeRam(ramselect, count, 'down');
+						      ramcount.text(new_count_hide[0] + ' шт.');
+						      if (new_count_hide[1]){
+							  $(e.target).hide();
+						      }
+						  });
+			   }
+			   $('#decram').show();
+			   var ramcount = $('#ramcount');
+			   var count = priceFromText(ramcount.text());
+			   var new_count_hide = changeRam(ramselect, count, 'up');
+			   ramcount.text(new_count_hide[0] + ' шт.');
+			   if (new_count_hide[1]){
+			       $(e.target).hide();
+			   }
+		       });
 }
 
 $(function(){
@@ -696,32 +797,7 @@ $(function(){
 	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
-	  var rambody = jgetBody(jgetSelectByRow($('#ram')));
-	  rambody.append('<span id="ramcount">1 шт.</span> <span id="incram">+1шт</span>');
-	  $('#incram').click(function(e){
-				 if ($('#decram').length == 0){
-				     rambody.append('<span id="decram">-1шт</span>');
-				     $('#decram').click(function(e){
-							    $('#incram').show();
-							    var ramcount = $('#ramcount');
-							    var count = priceFromText(ramcount.text());
-							    var new_count_hide = changeRam(count, 'down');
-							    ramcount.text(new_count_hide[0] + ' шт.');
-							    if (new_count_hide[1]){
-								$(e.target).hide();
-							    }
-							});
-				 }
-				 $('#decram').show();
-				 var ramcount = $('#ramcount');
-				 var count = priceFromText(ramcount.text());
-				 var new_count_hide = changeRam(count, 'up');
-				 ramcount.text(new_count_hide[0] + ' шт.');
-				 if (new_count_hide[1]){
-				     $(e.target).hide();
-				 }
-		       });
-
+	  installRamCount();
 
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
