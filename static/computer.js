@@ -180,16 +180,12 @@ function componentChanged(maybe_event){
 
 	// when recalculating ram, it is not needed to delete component
 	// because possible only count is changed
-	if (new_id !== old_id){
-	    delete new_model[old_id];
-	    new_model[new_id] = new_component;    
-	}
+	delete new_model[old_id];
+	new_model[new_id] = new_component;    
 	
 	recalculate();
-
-	if (new_id !== old_id){
-	    body.html(new_name);
-	}
+	
+	body.html(new_name);	
 
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
@@ -197,8 +193,8 @@ function componentChanged(maybe_event){
 
 	var mult = 1;
 	// may be just count is changed
-	if (new_id == old_id && old_component['count'])
-	    mult = old_component['count'];
+	if (new_component['count'])
+	    mult = new_component['count'];
 	jgetPrice(body).text(new_component.price*mult + ' р');
 
 	blink(jgetPrice(body), component_color);
@@ -207,6 +203,7 @@ function componentChanged(maybe_event){
 	setPerifery(old_id, true);
 
 	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
+	
 
     } catch (x) {
 	console.log(x);
@@ -591,7 +588,15 @@ function cheaperBetter(){
 		    // by body id. than it is possible to get cyr name for the component from parts_names
 		    // IF VIDEO IS JUST - just do change()!
 		    confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-				 function(){changeSocket(new_cats, jgetBody(select));change();},
+				 function(){
+				     // if (isMother){
+				     // 	 var ramselect = jgetSelectByRow($('#ram'));
+				     // 	 var rambody = jgetBody(ramselect);
+				     // 	 var ram= new_model[ramselect.val()];
+				     // 	 if (ram['count'] && ram['count']<)
+				     // }
+				     changeSocket(new_cats, jgetBody(select));
+				     change();},
 				 function(){});
 		}
 		else{
@@ -691,10 +696,15 @@ function installOptions(){
 }
 
 //19251 undefined. Материнская плата ASUS F1A75 FM1 AMD75 RAID/GL/mATX 3788 р
-function changeRam(ramselect, count, direction){    
+function changeRam(direction){    
+    var ramselect = jgetSelectByRow($('#ram'));
+    var component = choices[ramselect.val()];
+    var count = 1;
+    if (component['count'])
+	count = component['count'];
     var new_count;
     var need_hide;    
-    var component = new_model[ramselect.val()];
+    
     if (direction == 'up'){
 	// refactor that: #mother
 	var body = $('#mother').find('td.body');
@@ -756,7 +766,7 @@ function changeRam(ramselect, count, direction){
 		max_count = 4;
 	    if (!max_count && descr.text().match('DDR3 2 szt.'))
 		max_count = 2;    
-	}
+	}	
 	new_count = count + 1;
 	if (max_count == new_count)
 	    need_hide = true;
@@ -772,38 +782,32 @@ function changeRam(ramselect, count, direction){
     }
     component['count'] = new_count;
     componentChanged({'target':ramselect[0],'no_desc':true});
-    return [new_count, need_hide];
+    // i`ve just change component in choices to perform componentChanged. cleanup required
+    // delete component['count'];
+    installRamCount();
+    
 }
 
 function installRamCount(){
     var ramselect = jgetSelectByRow($('#ram'));
     var rambody = jgetBody(ramselect);
     rambody.text(rambody.text().substring(0,100));
-    rambody.append('<span id="ramcount">1 шт.</span> <span id="incram">+1шт</span>');
-    $('#incram').click(function(e){
-			   if ($('#decram').length == 0){
-			       rambody.append('<span id="decram">-1шт</span>');
-			       $('#decram').click(function(e){
-						      $('#incram').show();
-						      var ramcount = $('#ramcount');
-						      var count = priceFromText(ramcount.text());
-						      var new_count_hide = changeRam(ramselect, count, 'down');
-						      ramcount.text(new_count_hide[0] + ' шт.');
-						      if (new_count_hide[1]){
-							  $(e.target).hide();
-						      }
-						  });
-			   }
-			   var decram = $('#decram');
-			   var ramcount = $('#ramcount');
-			   var count = priceFromText(ramcount.text());
-			   var new_count_hide = changeRam(ramselect, count, 'up');
-			   ramcount.text(new_count_hide[0] + ' шт.');
-			   if (new_count_hide[1]){
-			       $(e.target).hide();			       
-			   }
-			   decram.show();
-		       });
+    var component = model[ramselect.val()];
+    var pcs = 1;
+    var display = 'none';
+    if (component['count']){
+	pcs = component['count'];
+	if (pcs>1)
+	    display = 'inherit';
+    }
+	
+    rambody.append(_.template('<span id="ramcount">{{pcs}} шт.</span> <span id="incram">+1шт</span><span id="decram" style="display:{{display}}">-1шт</span>',
+			      {
+				  display:display,
+				  pcs:pcs
+			      }));
+    $('#incram').click(function(e){changeRam('up');});
+    $('#decram').click(function(e){changeRam('down');});
 }
 
 $(function(){
