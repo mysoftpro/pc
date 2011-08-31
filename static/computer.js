@@ -763,6 +763,7 @@ function changeRam(ramselect, count, direction){
 function installRamCount(){
     var ramselect = jgetSelectByRow($('#ram'));
     var rambody = jgetBody(ramselect);
+    rambody.text(rambody.text().substring(0,100));
     rambody.append('<span id="ramcount">1 шт.</span> <span id="incram">+1шт</span>');
     $('#incram').click(function(e){
 			   if ($('#decram').length == 0){
@@ -778,14 +779,15 @@ function installRamCount(){
 						      }
 						  });
 			   }
-			   $('#decram').show();
+			   var decram = $('#decram');
 			   var ramcount = $('#ramcount');
 			   var count = priceFromText(ramcount.text());
 			   var new_count_hide = changeRam(ramselect, count, 'up');
 			   ramcount.text(new_count_hide[0] + ' шт.');
 			   if (new_count_hide[1]){
-			       $(e.target).hide();
+			       $(e.target).hide();			       
 			   }
+			   decram.show();
 		       });
 }
 

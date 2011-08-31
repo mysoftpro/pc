@@ -704,19 +704,27 @@ color:#7b9c0a;
     -webkit-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-#incram {
+#incram,#decram {
     color: #AADD00 !important;
     cursor: pointer;
-    margin-left: 24px;
-}
-#decram {
-    color: #AADD00 !important;
-    cursor: pointer;
-    margin-left: 24px;
+    margin-left: 14px;
+    border: 1px solid #444;
+    padding:4px;
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    background-color:#222;
+    float:right;
 }
 
 #ramcount {
+    color:white !important;
     font-weight:bold;
-    cursor: pointer;
-    padding-left: 24px;
+    border: 1px solid #444;
+    padding:4px;
+    margin-left: 14px;
+    float:right;
 }
