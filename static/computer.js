@@ -792,7 +792,7 @@ function installRamCount(){
     var ramselect = jgetSelectByRow($('#ram'));
     var rambody = jgetBody(ramselect);
     rambody.text(rambody.text().substring(0,100));
-    var component = model[ramselect.val()];
+    var component = new_model[ramselect.val()];
     var pcs = 1;
     var display = 'none';
     if (component['count']){
