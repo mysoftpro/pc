@@ -96,7 +96,10 @@ var jgetWindows = _.memoize(_jgetWindows, function(){return 0;});
 function recalculate(){
     var tottal = 0;
     for (var id in new_model){
-	tottal += new_model[id].price;
+	var mult = 1;
+	if (new_model[id]['count'])
+	    mult = new_model[id]['count'];
+	tottal += new_model[id].price*mult;
     }
     var bui = jgetBuild().is(':checked');
     if (bui){
@@ -175,18 +178,29 @@ function componentChanged(maybe_event){
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	var old_id = old_component['_id'];
 
-	delete new_model[old_id];
-	new_model[new_id] = new_component;
-
+	// when recalculating ram, it is not needed to delete component
+	// because possible only count is changed
+	if (new_id !== old_id){
+	    delete new_model[old_id];
+	    new_model[new_id] = new_component;    
+	}
+	
 	recalculate();
 
-	body.html(new_name);
+	if (new_id !== old_id){
+	    body.html(new_name);
+	}
 
 	var component_color = '#404040';
 	if (maybe_event['component_color'])
 	    component_color = maybe_event['component_color'];
 
-	jgetPrice(body).text(new_component.price + ' р');
+	var mult = 1;
+	// may be just count is changed
+	if (new_id == old_id && old_component['count'])
+	    mult = old_component['count'];
+	jgetPrice(body).text(new_component.price*mult + ' р');
+
 	blink(jgetPrice(body), component_color);
 
 	setPerifery(new_id, false);
@@ -757,6 +771,7 @@ function changeRam(ramselect, count, direction){
 	    need_hide = false;
     }
     component['count'] = new_count;
+    componentChanged({'target':ramselect[0],'no_desc':true});
     return [new_count, need_hide];
 }
 
