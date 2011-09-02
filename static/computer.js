@@ -324,12 +324,6 @@ function changeDescription(index, _id, show, data){
 function installBodies(){
     var init = true;
     var bodies = jgetBodies();
-	  bodies.mouseover(function(e){
-				 $(e.target).css('color','#aadd00');
-			     });
-	  bodies.mouseleave(function(e){
-				 $(e.target).css('color','white');
-			     });
 	  bodies.click(function(e){
 			   if(e.target.tagName != 'TD')
 			       return;
@@ -697,12 +691,15 @@ function installOptions(){
 
 
 function shadowCram(target){
-	target.unbind('click');
-	target.css({'cursor':'auto',color:"#444 !important"});
+    target.unbind('click');
+    target.css({'cursor':'auto','color':"#444444"});
+    // var paint= function(e){
+    // 	$(e.target).css({'cursor':'auto','color':"#444444"});
+    // };
+    // target.mouseout(paint).mouseover(paint);
 }
 
 function changeRam(e, direction){
-    console.log('changeRam');
     var ramselect = jgetSelectByRow($('#ram'));
     var component = choices[ramselect.val()];
     var count = 1;
@@ -779,8 +776,6 @@ function changeRam(e, direction){
     }
     component['count'] = new_count;
     componentChanged({'target':ramselect[0],'no_desc':true});
-    // i`ve just change component in choices to perform componentChanged. cleanup required
-    // delete component['count'];
     installRamCount();
     
     if (max_count && max_count == new_count)
@@ -788,7 +783,6 @@ function changeRam(e, direction){
     if (new_count == 1){
 	shadowCram($('#decram'));
     }
-
 }
 
 function installRamCount(){
@@ -805,6 +799,8 @@ function installRamCount(){
 			      {
 				  pcs:pcs
 			      }));
+    // $('#incram').unbind('mouseover').unbind('mouseout').click(function(e){changeRam(e,'up');});
+    // $('#decram').unbind('mouseover').unbind('mouseout').click(function(e){changeRam(e,'down');});
     $('#incram').click(function(e){changeRam(e,'up');});
     $('#decram').click(function(e){changeRam(e,'down');});
 }

@@ -490,6 +490,10 @@ td.body{
     width:670px;
 }
 
+td:hover{
+    color:#aadd00;
+}
+
 
 td.component_price{
     min-width:60px;
@@ -704,8 +708,8 @@ color:#7b9c0a;
     -webkit-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-#incram,#decram {
-    color: #AADD00 !important;
+#incram,#decram  {
+    color: #AADD00;
     cursor: pointer;
     margin-left: 14px;
     border: 1px solid #444;
