@@ -432,8 +432,8 @@ def renderComputer(components_choices, template, skin, model):
 						    ';var proc_to_mother_mapping=',simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
                                                     ';var Course=',str(Course),';'
 						    ))
-    template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal +800)
-    template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal + 800)
+    # template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal +800)
+    # template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal + 800)
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')

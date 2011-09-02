@@ -82,6 +82,12 @@ function _jgetLargePrice(){
 var jgetLargePrice = _.memoize(_jgetLargePrice,function(){return 0;});
 
 
+function _jgetLargePin(){
+    return $('#large_index');
+}
+var jgetLargePin = _.memoize(_jgetLargePin,function(){return 0;});
+
+
 function _jgetBuild(){
     return $('#obuild');
 }
@@ -124,7 +130,23 @@ function calculatePin(component){
 	if (component['count'])
 	    c = component['count'];
 	retval = p*c;
-	console.log(retval);
+	if (retval <= 1)
+	    retval = 2.9;
+	else if (retval == 2)
+	    retval = 3.9;
+	else if (retval == 3)
+	     retval = 4.9;
+	else if (retval == 4)
+	    retval = 5.9;
+	else if (retval == 6)
+	    retval = 6.7;
+	else if (retval == 8)
+	    retval = 7.1;
+	else if (retval == 12)
+	    retval = 7.7;
+	else{
+	    retval = 7.9;
+	}
     }
     return retval;
 }
@@ -150,6 +172,11 @@ function recalculate(){
     var lp = jgetLargePrice();
     lp.text(tottal);
     blink(lp, '#222');
+    var lowest = Array.sort(pins,function(x1,x2){return x1-x2;})[0];
+    //console.log(pins);
+    var pin = jgetLargePin();
+    pin.text(Math.round(lowest*10)/10);
+    blink(pin, '#222');    
 }
 
 function getCatalogs(component){
@@ -223,8 +250,7 @@ function componentChanged(maybe_event){
 	recalculate();
 
 	if (isRam(body) && new_name.length>60){
-	    new_name = new_name.substring(0,60);
-	    
+	    new_name = new_name.substring(0,60);	    
 	}
 	    
 	body.html(new_name);
@@ -869,6 +895,9 @@ $(function(){
 	  installOptions();
 	  installRamCount();
 	  shadowCram($('#decram'));
+	  recalculate();
+	  $('#basepi').html($('#large_index').html());
+	  $('#baseprice').html($('#large_price').html());
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
