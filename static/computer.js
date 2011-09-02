@@ -105,7 +105,7 @@ function _jgetBodyById(_id){
 var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
 
 function getRamPin(body){
-    
+
     var text = jgetChosenTitle(jgetSelect(body)).text().replace('МВ','MB');//cyr to lat
     var retval = 1;
     if (text.match('1024MB'))
@@ -173,10 +173,9 @@ function recalculate(){
     lp.text(tottal);
     blink(lp, '#222');
     var lowest = Array.sort(pins,function(x1,x2){return x1-x2;})[0];
-    //console.log(pins);
     var pin = jgetLargePin();
     pin.text(Math.round(lowest*10)/10);
-    blink(pin, '#222');    
+    blink(pin, '#222');
 }
 
 function getCatalogs(component){
@@ -250,9 +249,9 @@ function componentChanged(maybe_event){
 	recalculate();
 
 	if (isRam(body) && new_name.length>60){
-	    new_name = new_name.substring(0,60);	    
+	    new_name = new_name.substring(0,60);
 	}
-	    
+
 	body.html(new_name);
 
 	var component_color = '#404040';
@@ -569,9 +568,8 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
-function changeSocket(new_cats, body){
+function changeSocket(new_cats, body, direction){
     try{
-
 	var other_body_map = jgetSocketOpositeBody(body);
 	var other_body = other_body_map[0];
 	var mapping = other_body_map[1];
@@ -587,19 +585,32 @@ function changeSocket(new_cats, body){
 	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
 	var diff = 1000000;
 	var appropriate_other_component;
+	var spare_diff = 1000000;
+	var spare_appropriate_other_component;
 	for (var i=0,l=other_components.length;i<l;i++){
 	    var _diff = other_components[i].price - other_price;
-	    if (_diff<diff){
-		appropriate_other_component = other_components[i];
-		diff = _diff;
+	    if (Math.abs(_diff)<diff){
+		if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
+		    appropriate_other_component = other_components[i];
+		    diff = Math.abs(_diff);
+		}
 	    }
-	}
+	    if (Math.abs(_diff)<spare_diff){
+		spare_appropriate_other_component = other_components[i];
+		spare_diff = Math.abs(_diff);
+	    }
+	}	
+	if (!spare_appropriate_other_component)
+	    return false;
+	if (!appropriate_other_component)
+	    appropriate_other_component = spare_appropriate_other_component;
+	
 	var other_select = jgetSelect(other_body);
 	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
 	jgetChosenTitle(other_select).text(other_option.text());
 	componentChanged({'target':other_select[0],'no_desc':true});
-
+	return true;
     } catch (x) {
 	console.log(x);
     }
@@ -668,8 +679,12 @@ function cheaperBetter(){
 				     // 	 var ram= new_model[ramselect.val()];
 				     // 	 if (ram['count'] && ram['count']<)
 				     // }
-				     changeSocket(new_cats, jgetBody(select));
-				     change();},
+				     if (changeSocket(new_cats, jgetBody(select), prev_next(0)))
+					 change();
+				     else{
+					 new_option.remove();
+				     }
+				 },
 				 function(){});
 		}
 		else{
