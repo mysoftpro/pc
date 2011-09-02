@@ -98,6 +98,19 @@ function _jgetBodyById(_id){
 }
 var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
 
+function getRamPin(body){
+    
+    var text = jgetChosenTitle(jgetSelect(body)).text().replace('МВ','MB');//cyr to lat
+    var retval = 1;
+    if (text.match('1024MB'))
+	retval = 1;
+    else if (text.match('2048MB'))
+	retval = 2;
+    else if (text.match('4096MB'))
+	retval = 4;
+    return retval;
+}
+
 function calculatePin(component){
     var retval = 8;
     var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
@@ -105,18 +118,26 @@ function calculatePin(component){
     if (isProc(body) || isMother(body) || isVideo(body)){
 	retval = Math.log(component.price/Course)*2.1-5;
     }
+    if (isRam(body)){
+	var p = getRamPin(body);
+	var c = 1;
+	if (component['count'])
+	    c = component['count'];
+	retval = p*c;
+	console.log(retval);
+    }
     return retval;
 }
 
 function recalculate(){
     var tottal = 0;
-    var pin = [];
+    var pins = [];
     for (var id in new_model){
 	var mult = 1;
 	if (new_model[id]['count'])
 	    mult = new_model[id]['count'];
 	tottal += new_model[id].price*mult;
-	console.log(calculatePin(new_model[id]));
+	pins.push(calculatePin(new_model[id]));
     }
     var bui = jgetBuild().is(':checked');
     if (bui){
@@ -201,6 +222,11 @@ function componentChanged(maybe_event){
 
 	recalculate();
 
+	if (isRam(body) && new_name.length>60){
+	    new_name = new_name.substring(0,60);
+	    
+	}
+	    
 	body.html(new_name);
 
 	var component_color = '#404040';
@@ -496,6 +522,10 @@ function _isVideo(body){
 }
 var isVideo = _.memoize(_isVideo, function(body){return body.attr('id');});
 
+function _isRam(body){
+    return body.parent().attr('id') == 'ram';
+}
+var isRam = _.memoize(_isRam, function(body){return body.attr('id');});
 
 
 function jgetSocketOpositeBody(body){
