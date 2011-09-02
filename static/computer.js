@@ -599,12 +599,12 @@ function changeSocket(new_cats, body, direction){
 		spare_appropriate_other_component = other_components[i];
 		spare_diff = Math.abs(_diff);
 	    }
-	}	
+	}
 	if (!spare_appropriate_other_component)
 	    return false;
 	if (!appropriate_other_component)
 	    appropriate_other_component = spare_appropriate_other_component;
-	
+
 	var other_select = jgetSelect(other_body);
 	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
 	other_select.val(other_option.val());
@@ -618,6 +618,7 @@ function changeSocket(new_cats, body, direction){
 
 
 var doNotStress = false;
+
 
 //TODO GLOBAL. the body, which i always need is just an id of old component.
 // may be instead of jgetBody, just return catalogs, and part?
@@ -899,9 +900,29 @@ function installRamCount(){
     $('#decram').click(function(e){changeRam(e,'down');});
 }
 
+
+function manualChange(e){
+    var select = $(e.target);
+    var body = jgetBody(select);
+    var new_cats = getCatalogs(choices[select.val()]);
+    var current_cats = getCatalogs(filterByCatalogs(_(new_model).values(), new_cats)[0]);
+    //var current_cats = getCatalogs(new_model[select.val()]);
+    if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
+	confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+		     function(){
+			 if (changeSocket(new_cats, body, -1))
+			     componentChanged(e);
+		     },
+		     function(){});
+    }
+    else{
+	componentChanged(e);
+    }
+}
+
 $(function(){
       try{
-	  $('select').chosen().change(componentChanged);
+	  $('select').chosen().change(manualChange);//componentChanged
 	  new_model = _.clone(model);
 	  installBodies();
 	  cheaperBetter();
