@@ -429,7 +429,8 @@ def renderComputer(components_choices, template, skin, model):
 						    ';var model_parts=', simplejson.dumps(model_parts),
 						    ';var parts_names=',simplejson.dumps(parts_names),
 						    ';var mother_to_proc_mapping=',simplejson.dumps(mother_to_proc_mapping),
-						    ';var proc_to_mother_mapping=',simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping])
+						    ';var proc_to_mother_mapping=',simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
+                                                    ';var Course=',str(Course),';'
 						    ))
     template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal +800)
     template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal + 800)

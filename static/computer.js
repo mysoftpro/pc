@@ -93,13 +93,30 @@ function _jgetWindows(){
 var jgetWindows = _.memoize(_jgetWindows, function(){return 0;});
 
 
+function _jgetBodyById(_id){
+    return $('#' + _id);
+}
+var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
+
+function calculatePin(component){
+    var retval = 8;
+    var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
+    var body = jgetBodyById(old_component['_id']);
+    if (isProc(body) || isMother(body) || isVideo(body)){
+	retval = Math.log(component.price/Course)*2.1-5;
+    }
+    return retval;
+}
+
 function recalculate(){
     var tottal = 0;
+    var pin = [];
     for (var id in new_model){
 	var mult = 1;
 	if (new_model[id]['count'])
 	    mult = new_model[id]['count'];
 	tottal += new_model[id].price*mult;
+	console.log(calculatePin(new_model[id]));
     }
     var bui = jgetBuild().is(':checked');
     if (bui){
@@ -109,7 +126,6 @@ function recalculate(){
     if (win){
 	tottal +=300;
     }
-
     var lp = jgetLargePrice();
     lp.text(tottal);
     blink(lp, '#222');
@@ -475,6 +491,13 @@ function _isMother(body){
 var isMother = _.memoize(_isMother, function(body){return body.attr('id');});
 
 
+function _isVideo(body){
+    return body.parent().attr('id') == 'video';
+}
+var isVideo = _.memoize(_isVideo, function(body){return body.attr('id');});
+
+
+
 function jgetSocketOpositeBody(body){
     var part = model_parts[body.attr('id')];
     var mapping;
@@ -772,14 +795,14 @@ function changeRam(e, direction){
 	new_count = count + 1;
     }
     else{
-	new_count = count - 1;	
+	new_count = count - 1;
     }
     component['count'] = new_count;
     componentChanged({'target':ramselect[0],'no_desc':true});
     installRamCount();
-    
+
     if (max_count && max_count == new_count)
-	shadowCram($('#incram'));    
+	shadowCram($('#incram'));
     if (new_count == 1){
 	shadowCram($('#decram'));
     }
