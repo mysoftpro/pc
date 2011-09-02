@@ -920,6 +920,30 @@ function manualChange(e){
     }
 }
 
+var myMessages = ['info','warning','error','success'];
+function hideAllMessages()
+{
+		 var messagesHeights = new Array(); // this array will store height for each
+
+		 for (var i=0; i<myMessages.length; i++)
+		 {
+				  messagesHeights[i] = $('.' + myMessages[i]).outerHeight(); // fill array
+				  $('.' + myMessages[i]).css('top', -messagesHeights[i]); //move element outside viewport
+		 }
+}
+
+function showMessage(type)
+{
+	$('.'+ type +'-trigger').click(function(e){
+					   e.preventDefault();
+					   hideAllMessages();	
+					   //var winH = $(window).scrollTop();
+					   $('.'+type).animate({top:"0",left:"0"}, 500);
+				       });
+}
+
+
+
 $(function(){
       try{
 	  $('select').chosen().change(manualChange);//componentChanged
@@ -934,12 +958,26 @@ $(function(){
 	  recalculate();
 	  $('#basepi').html($('#large_index').html());
 	  $('#baseprice').html($('#large_price').html());
+
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
 	  // 			    }
 	  // 			});
-
+	  
+	  hideAllMessages();
+	  
+	  // Show message
+	  for(var i=0;i<myMessages.length;i++)
+	  {
+	      showMessage(myMessages[i]);
+	  }
+	  
+	  // When message is clicked, hide it
+	  $('.message').click(function(){
+				  $(this).animate({top: -$(this).outerHeight()}, 500);
+				     });
+	  
       } catch (x) {
 	  console.log(x);
       }
