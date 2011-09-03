@@ -615,7 +615,7 @@ function changeSocket(new_cats, body, direction){
 	}
 	var other_price = priceFromText(jgetPrice(other_body).text());
 	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
-
+	
 	var appropriate_other_component;
 	if (!appr_components[1])
 	    return false;
@@ -670,7 +670,6 @@ function cheaperBetter(){
     function _cheaperBetter(prev_next){
 	function handler(e){
 	    try{
-
 
 		e.preventDefault();
 		var target = $(e.target);
@@ -976,13 +975,13 @@ function GCheaperGBeater(){
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = actuals[0]['pin'];
 			     var highest = actuals[actuals.length-1]['pin'];
-			     log(highest);
-			     log(lowest);
+			     
 			     if (highest-lowest>0.5){
 				 var old_component = new_model[actuals[actuals.length-1]['id']];
+				 var old_cats = getCatalogs(old_component);
 				 var appr_components = getNearestComponent(old_component.price,
-									   getCatalogs(old_component), -1, false);
-				 log(appr_components);
+									   old_cats, -1, false);
+				 
 				 // no appr component for that direction!
 				 if (!appr_components[0]){
 				     log('fail');
@@ -991,18 +990,34 @@ function GCheaperGBeater(){
 
 				 var appr_component = appr_components[0];
 				 var appr_cats = getCatalogs(appr_component);
-
 				 var model_component = filterByCatalogs(_(model).values(), appr_cats)[0];
-				 log(model_component);
-				 var model_body = jgetBodyById(model_component['id']);
-				 log(model_body);
-				 if (isMother(model_body) || isProc(model_body)){
-				     log('aaaaaaaaaaaaaaaaaaaaaaa');
-				     log(appr_component);
+				 
+				 var model_body = jgetBodyById(model_component['_id']);
+				 
+				 var change = function(){
+				     var select = jgetSelect(model_body);
+				     var new_option = jgetOption(select, appr_component['_id']);
+				     select.val(new_option.val());
+				     jgetChosenTitle(select).text(new_option.text());
+				     componentChanged({'target':select[0]});
+				 };
+
+				 if ((isProc(model_body) || isMother(model_body)) 
+				     && !isEqualCatalogs(appr_cats, old_cats)){
+				     confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+						  function(){
+						      if (changeSocket(appr_cats, model_body, -1))
+							  change();
+						      else{
+							  new_option.remove();
+						      }
+						  },
+						  function(){});
 				 }
-				 else {
-				     log('video');
-				 }
+				 else{
+				     // TODO! RAM
+				     change();
+				 }				 
 			     }
 			 });
 

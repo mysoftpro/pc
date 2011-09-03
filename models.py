@@ -456,11 +456,12 @@ printed = False
 def fillChoices(result):
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     defs = []
-    defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mothers_1366, stale=False)
-				    .addCallback(lambda res: ("LGA1366",res)),
-				    couch.openView(designID,
+    defs.append(defer.DeferredList([
+                # couch.openView(designID,
+		# 				   'catalogs',
+		# 				   include_docs=True, key=mothers_1366, stale=False)
+		# 		    .addCallback(lambda res: ("LGA1366",res)),
+		 		    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True, key=mothers_1155, stale=False)
 				    .addCallback(lambda res: ("LGA1155",res)),
@@ -492,10 +493,10 @@ def fillChoices(result):
 						   'catalogs',
 						   include_docs=True,key=procs_1156, stale=False)
 						   .addCallback(lambda res:('LGA1156',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=procs_1366, stale=False)
-						   .addCallback(lambda res:('LGA1366',res)),
+				    # couch.openView(designID,
+				    #     	   'catalogs',
+				    #     	   include_docs=True,key=procs_1366, stale=False)
+				    #     	   .addCallback(lambda res:('LGA1366',res)),
 				    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True,key=procs_am23, stale=False)
