@@ -15,7 +15,7 @@ var storeDesc = function(code){
 			 console.log('success');
 			 $jq.ajax({
 				      type: 'POST',
-				      url:'http://pc/xml',
+				      url:'http://localhost/xml',
 				      data:{'op':'descr','code':code, 'desription':data}
 				    });
 		     }
@@ -33,3 +33,38 @@ for (var i=0;i<rows.length;i++){
     var _storeDesc = storeDesc(code);
     _storeDesc();	  	  
 }
+
+
+var code_required = '19364';
+var storeSingleDesc = function(code){
+    function store(){
+	console.log('store single!!!!');
+	$jq.ajax({
+		     url:wurl + id,
+		     success:function(data){
+			 console.log('success single');
+			 $jq.ajax({
+				      type: 'POST',
+				      url:'http://localhost/xml',
+				      data:{'op':'descr','code':code, 'desription':data}
+				    });
+		     }
+		 });
+    }
+    return store;
+};
+
+function walk (){
+var _rows = $jq('.row');
+for (var j=0;j<_rows.length;j++){
+    var row = $jq(_rows.get(j));
+    var code = row.find('.code').text();
+    console.log(code);
+    if (code != code_required)
+	continue;
+    var id = row.attr('id');
+    var _storeDesc = storeSingleDesc(code);
+    _storeDesc();	  	  
+}    
+}
+walk();
