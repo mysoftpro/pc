@@ -568,6 +568,30 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
+
+function getNearestComponent(price, catalogs, direction){    
+    var other_components = filterByCatalogs(_(choices).values(), catalogs, true);
+    var diff = 1000000;
+    var appr_component;
+    var spare_diff = 1000000;
+    var spare_appr_component;
+    for (var i=0,l=other_components.length;i<l;i++){
+	var _diff = other_components[i].price - price;
+	if (Math.abs(_diff)<diff){
+	    if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
+		appr_component = other_components[i];
+		diff = Math.abs(_diff);
+	    }
+	}
+	if (Math.abs(_diff)<spare_diff){
+		spare_appr_component = other_components[i];
+	    spare_diff = Math.abs(_diff);
+	}
+    }
+    return [appr_component, spare_appr_component];
+}
+
+
 function changeSocket(new_cats, body, direction){
     try{
 	var other_body_map = jgetSocketOpositeBody(body);
@@ -582,28 +606,39 @@ function changeSocket(new_cats, body, direction){
 	    }
 	}
 	var other_price = priceFromText(jgetPrice(other_body).text());
-	var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
-	var diff = 1000000;
+	var appr_components = getNearestComponent(other_price, other_catalogs, direction);
+
 	var appropriate_other_component;
-	var spare_diff = 1000000;
-	var spare_appropriate_other_component;
-	for (var i=0,l=other_components.length;i<l;i++){
-	    var _diff = other_components[i].price - other_price;
-	    if (Math.abs(_diff)<diff){
-		if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
-		    appropriate_other_component = other_components[i];
-		    diff = Math.abs(_diff);
-		}
-	    }
-	    if (Math.abs(_diff)<spare_diff){
-		spare_appropriate_other_component = other_components[i];
-		spare_diff = Math.abs(_diff);
-	    }
-	}
-	if (!spare_appropriate_other_component)
+	if (!appr_components[1])
 	    return false;
-	if (!appropriate_other_component)
-	    appropriate_other_component = spare_appropriate_other_component;
+	if (!appr_components[0])
+	    appropriate_other_component = appr_components[1];
+	else
+	    appropriate_other_component = appr_components[0];
+
+	// var other_price = priceFromText(jgetPrice(other_body).text());
+	// var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
+	// var diff = 1000000;
+	// var appropriate_other_component;
+	// var spare_diff = 1000000;
+	// var spare_appropriate_other_component;
+	// for (var i=0,l=other_components.length;i<l;i++){
+	//     var _diff = other_components[i].price - other_price;
+	//     if (Math.abs(_diff)<diff){
+	// 	if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
+	// 	    appropriate_other_component = other_components[i];
+	// 	    diff = Math.abs(_diff);
+	// 	}
+	//     }
+	//     if (Math.abs(_diff)<spare_diff){
+	// 	spare_appropriate_other_component = other_components[i];
+	// 	spare_diff = Math.abs(_diff);
+	//     }
+	// }
+	// if (!spare_appropriate_other_component)
+	//     return false;
+	// if (!appropriate_other_component)
+	//     appropriate_other_component = spare_appropriate_other_component;
 
 	var other_select = jgetSelect(other_body);
 	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
@@ -920,6 +955,34 @@ function manualChange(e){
     }
 }
 
+function getSortedPins(){
+    var pins = [];
+    for (var id in new_model){
+	pins.push({'id':id,'pin':calculatePin(new_model[id])});
+    }
+    var sorted = Array.sort(pins,function(x1,x2){return x1['pin']-x2['pin'];});
+    return sorted;
+}
+
+function GCheaperGBeater(){
+    $('#gcheaper').click(function(){
+			     var pins = getSortedPins();
+			     var actuals = _(pins).filter(function(x){return x['pin']!==8;});
+			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
+			     var lowest = actuals[0]['pin'];
+			     var highest = actuals[actuals.length-1]['pin'];
+			     if (highest-lowest<0.5){
+				 var old_component = new_model[highest['id']];
+				 var appr_components = filterByCatalogs(_(choices).values(),
+									getCatalogs(old_component), false);
+
+
+			     }
+			 });
+
+}
+
+
 $(function(){
       try{
 	  $('select').chosen().change(manualChange);//componentChanged
@@ -934,6 +997,7 @@ $(function(){
 	  recalculate();
 	  $('#basepi').html($('#large_index').html());
 	  $('#baseprice').html($('#large_price').html());
+	  GCheaperGBeater();
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
