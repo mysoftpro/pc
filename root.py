@@ -157,20 +157,17 @@ class CachedStatic(File):
 	physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
 	virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
 
-	if request.setLastModified(last_modified) is CACHED and (physical_name_in_cache or virtual_name_in_cache):
-	    return ''
+        if request.setLastModified(last_modified) is CACHED and (physical_name_in_cache or virtual_name_in_cache):                
+            return ''
 
 	# cached gzip is here
 	# print "---------------------------------"
 	# print physical_name_in_cache
 	# print virtual_name_in_cache
 	if physical_name_in_cache:
-	    print "................................"
-	    print "cached physycal...................."
 	    return _cached_statics[physical_name][1]
 
 	if virtual_name_in_cache:
-	    print "cached virtusl!!!!!!!!!!!!!!!!!!"
 	    return _cached_statics[virtual_name][1]
 
 	else:
@@ -325,19 +322,18 @@ class ImageProxy(Resource):
 	self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
 
     def getChild(self, path, request):
-        last = request.uri.split('/')[-1]
-        
-        # safety to not show couch internals
-        # just check that it endswith image extension and no parameters in it
-        if '?' in last or '&' in last:
-            return NoResource()
-        image = last.endswith('.jpg')
-        image = image or last.endswith('.jpeg')
-        image = image or last.endswith('.png')
-        image = image or last.endswith('.gif')
-        
-        if not image:
-            return NoResource()
-        
-	return self.proxy.getChild(path, request)
+	last = request.uri.split('/')[-1]
 
+	# safety to not show couch internals
+	# just check that it endswith image extension and no parameters in it
+	if '?' in last or '&' in last:
+	    return NoResource()
+	image = last.endswith('.jpg')
+	image = image or last.endswith('.jpeg')
+	image = image or last.endswith('.png')
+	image = image or last.endswith('.gif')
+
+	if not image:
+	    return NoResource()
+
+	return self.proxy.getChild(path, request)

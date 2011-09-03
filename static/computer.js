@@ -5,7 +5,7 @@
 // model is stayed untached. only new model is changed.
 // model ids are equal to td.body ids. they are untoched also
 // new model ids are equal to select.val()
-
+var log = console.log;
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
@@ -64,7 +64,7 @@ _.templateSettings = {
 // 					      });
 // 	}
 // 	catch (e){
-// 	    console.log(e);
+// 	    log(e);
 // 	}
 //     }
 //     return _makeMask;
@@ -273,7 +273,7 @@ function componentChanged(maybe_event){
 
 
     } catch (x) {
-	console.log(x);
+	log(x);
     }
 }
 
@@ -383,7 +383,7 @@ function changeDescription(index, _id, show, data){
 	    titles[0].text(new_name);
 	}
     } catch (x) {
-	console.log(x);
+	log(x);
     }
 }
 
@@ -418,6 +418,14 @@ function installBodies(){
 			   if (!init && $('#ramcount').length == 0)
 			       installRamCount();
 		       });
+    //what a fuck is that?
+    for (var j=0,l=bodies.length;j<l;j++){
+	var b = $(bodies.get(j));
+	var select = jgetSelect(b);
+	if (select.val() !== b.attr('id')){
+	    select.val(b.attr('id'));
+	}
+    }
     bodies.first().click();
     init = false;
 }
@@ -476,7 +484,7 @@ function getOptionForChBe(select){
 	}
 	return opts;
     } catch (x) {
-	console.log(x);
+	log(x);
     }
 }
 
@@ -569,8 +577,8 @@ function jgetSocketOpositeBody(body){
 }
 
 
-function getNearestComponent(price, catalogs, direction){    
-    var other_components = filterByCatalogs(_(choices).values(), catalogs, true);
+function getNearestComponent(price, catalogs, direction, same_socket){
+    var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
     var diff = 1000000;
     var appr_component;
     var spare_diff = 1000000;
@@ -606,7 +614,7 @@ function changeSocket(new_cats, body, direction){
 	    }
 	}
 	var other_price = priceFromText(jgetPrice(other_body).text());
-	var appr_components = getNearestComponent(other_price, other_catalogs, direction);
+	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
 
 	var appropriate_other_component;
 	if (!appr_components[1])
@@ -647,7 +655,7 @@ function changeSocket(new_cats, body, direction){
 	componentChanged({'target':other_select[0],'no_desc':true});
 	return true;
     } catch (x) {
-	console.log(x);
+	log(x);
     }
 }
 
@@ -672,7 +680,7 @@ function cheaperBetter(){
 		doNotStress = true;
 		var body = jgetBody(select).click();
 
-		var select_val = select.val();
+		var select_val = select.val();		
 		var opts = fastGetOptionForChBe(select);
 		var opts_values = _(opts).map(function(o){return $(o).val();});
 		var current_option;
@@ -683,12 +691,9 @@ function cheaperBetter(){
 			break;
 		    }
 		}
-
 		var current_option_val = $(current_option).val();
-
 		var index = opts_values.indexOf(current_option_val);
 		var new_index = prev_next(i);
-
 		if (new_index < 0 || new_index>=opts_values.length)
 		    return;
 		var new_option = $(opts[new_index]);
@@ -727,7 +732,7 @@ function cheaperBetter(){
 		    change();
 		}
 	    } catch (x) {
-		console.log(x);
+		log(x);
 	    }
 	}
 	return handler;
@@ -971,12 +976,33 @@ function GCheaperGBeater(){
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = actuals[0]['pin'];
 			     var highest = actuals[actuals.length-1]['pin'];
-			     if (highest-lowest<0.5){
-				 var old_component = new_model[highest['id']];
-				 var appr_components = filterByCatalogs(_(choices).values(),
-									getCatalogs(old_component), false);
+			     log(highest);
+			     log(lowest);
+			     if (highest-lowest>0.5){
+				 var old_component = new_model[actuals[actuals.length-1]['id']];
+				 var appr_components = getNearestComponent(old_component.price,
+									   getCatalogs(old_component), -1, false);
+				 log(appr_components);
+				 // no appr component for that direction!
+				 if (!appr_components[0]){
+				     log('fail');
+				     return;
+				 }
 
+				 var appr_component = appr_components[0];
+				 var appr_cats = getCatalogs(appr_component);
 
+				 var model_component = filterByCatalogs(_(model).values(), appr_cats)[0];
+				 log(model_component);
+				 var model_body = jgetBodyById(model_component['id']);
+				 log(model_body);
+				 if (isMother(model_body) || isProc(model_body)){
+				     log('aaaaaaaaaaaaaaaaaaaaaaa');
+				     log(appr_component);
+				 }
+				 else {
+				     log('video');
+				 }
 			     }
 			 });
 
@@ -1005,6 +1031,6 @@ $(function(){
 	  // 			});
 
       } catch (x) {
-	  console.log(x);
+	  log(x);
       }
   });
