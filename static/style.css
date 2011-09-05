@@ -50,7 +50,7 @@ h2 {
     height:325px;
     background:url('hp1.png');
     background-repeat:no-repeat;
-    background-position: 400px 80px;
+    background-position: 400px 60px;
 }
 .title {
        text-transform:uppercase;
@@ -68,7 +68,8 @@ p {
     line-height:44px;
     color:#696969;
     margin-bottom:40px;
-    text-align:justify;
+    text-align:center;
+    margin-bottom:0px;
 }
 #second{
 
@@ -114,7 +115,7 @@ p {
 	width: 100%;
 	text-align: center;
 	background: #202020 url(gradient_background.jpg) center bottom repeat-x;
-	min-height:380px;
+	/* min-height:380px; */
 }
 
 
@@ -249,9 +250,9 @@ ul#main_menu li a {
 
 .indexitem
 {
-    width:230px;
+    width:240px;
     max-height:150px;
-    padding-top:100px;
+    padding-top:120px;
     background-repeat:no-repeat;
     float:left;
     cursor:pointer;
@@ -292,7 +293,7 @@ ul#main_menu li a {
 
 .button {
     height:120px;
-    width:80px;
+    width:40px;
     float:left;
     background-repeat:no-repeat;
     background-position:0px 40px;
@@ -556,12 +557,13 @@ label:hover{
 
 .section{
 text-align:left;
-background-image:url('/static/under_header.png');
+background-image:url('/static/under_model.png');
 background-repeat: no-repeat;
 background-position: 0px 20px;
+padding-bottom:10px;
 padding-bottom:5px;
-height:30px;
-padding-left: 120px;
+height:40px;
+
 color:#7b9c0a;
 }
 
@@ -592,7 +594,7 @@ color:#7b9c0a;
     margin: 0 auto;
     padding: 0;
     width: 1000px;
-    margin-top:20px;
+    /* margin-top:20px; */
 }
 #features li  {
     float:left;
@@ -732,4 +734,8 @@ color:#7b9c0a;
     margin-left: 14px;
     float:right;
     cursor:auto !important;
+}
+
+#middle {
+    margin-top:-30px;
 }

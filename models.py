@@ -128,25 +128,25 @@ def getCatalogsKey(doc):
 
 
 models = [
-    {'name':u"Локалхост",
+    {'name':u"Пинг",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
 		 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':6500,
      "socket":"1155"
      },
-    {'name':u"Браузер",
+    {'name':u"Локалхост",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661', 'case':'19165',
 		 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':8500,
      "socket":"1155"
      },
-    {'name':u"Принтер",
+    {'name':u"Шейдер",
      'items':   {'mother':'19005', 'proc':'18984', 'video':'18802', 'ram':['17575'],'hdd':'10661',
 		 'case':'19165', 'displ':'15252', 'kbrd':'16499', 'mouse':'15976', 'sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':15200,
      "socket":"1155"
      },
-    {'name':u"Числодробилка",
+    {'name':u"Рендер",
      'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991',
 		 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':32000,
