@@ -30,8 +30,7 @@ h2 {
 
 
 #logo {
-    /* background-image:url('/static/alfa_rubic_new.png'); */
-    /* background-repeat:no-repeat; */
+
     height:40px;
     margin: 0;
     margin-bottom:10px;
@@ -50,7 +49,7 @@ h2 {
     height:325px;
     background:url('hp1.png');
     background-repeat:no-repeat;
-    background-position: 400px 60px;
+    background-position: 420px 70px;
 }
 .title {
        text-transform:uppercase;
@@ -64,12 +63,11 @@ p {
     margin-left:0px;
 }
 #first {
-    font-size:56px;
+    font-size:64px;
     line-height:44px;
     color:#696969;
-    margin-bottom:40px;
-    text-align:center;
-    margin-bottom:0px;
+    margin-bottom:30px;
+    text-align:left;
 }
 #second{
 
@@ -293,7 +291,7 @@ ul#main_menu li a {
 
 .button {
     height:120px;
-    width:40px;
+    width:60px;
     float:left;
     background-repeat:no-repeat;
     background-position:0px 40px;

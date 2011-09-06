@@ -242,6 +242,11 @@ def index(template, skin, request):
 		div.append(el[1])
 	for el in _template.root().find('leftbutton'):
 	    div.append(el)
+            last = el.getprevious()
+            style = last.get('style')
+            style += ';width:200px;'
+            last.set('style',style)
+            break
 	_skin.top = _template.top
 	_skin.middle = _template.middle
 	return skin.render()
