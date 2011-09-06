@@ -147,6 +147,8 @@ function calculatePin(component){
 	else{
 	    retval = 7.9;
 	}
+	console.log('calculated tamopin;');
+	console.log(retval);
     }
     return retval;
 }
@@ -615,7 +617,7 @@ function changeSocket(new_cats, body, direction){
 	}
 	var other_price = priceFromText(jgetPrice(other_body).text());
 	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
-	
+
 	var appropriate_other_component;
 	if (!appr_components[1])
 	    return false;
@@ -623,30 +625,6 @@ function changeSocket(new_cats, body, direction){
 	    appropriate_other_component = appr_components[1];
 	else
 	    appropriate_other_component = appr_components[0];
-
-	// var other_price = priceFromText(jgetPrice(other_body).text());
-	// var other_components = filterByCatalogs(_(choices).values(), other_catalogs, true);
-	// var diff = 1000000;
-	// var appropriate_other_component;
-	// var spare_diff = 1000000;
-	// var spare_appropriate_other_component;
-	// for (var i=0,l=other_components.length;i<l;i++){
-	//     var _diff = other_components[i].price - other_price;
-	//     if (Math.abs(_diff)<diff){
-	// 	if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
-	// 	    appropriate_other_component = other_components[i];
-	// 	    diff = Math.abs(_diff);
-	// 	}
-	//     }
-	//     if (Math.abs(_diff)<spare_diff){
-	// 	spare_appropriate_other_component = other_components[i];
-	// 	spare_diff = Math.abs(_diff);
-	//     }
-	// }
-	// if (!spare_appropriate_other_component)
-	//     return false;
-	// if (!appropriate_other_component)
-	//     appropriate_other_component = spare_appropriate_other_component;
 
 	var other_select = jgetSelect(other_body);
 	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
@@ -679,7 +657,7 @@ function cheaperBetter(){
 		doNotStress = true;
 		var body = jgetBody(select).click();
 
-		var select_val = select.val();		
+		var select_val = select.val();
 		var opts = fastGetOptionForChBe(select);
 		var opts_values = _(opts).map(function(o){return $(o).val();});
 		var current_option;
@@ -827,10 +805,6 @@ function installOptions(){
 function shadowCram(target){
     target.unbind('click');
     target.css({'cursor':'auto','color':"#444444"});
-    // var paint= function(e){
-    // 	$(e.target).css({'cursor':'auto','color':"#444444"});
-    // };
-    // target.mouseout(paint).mouseover(paint);
 }
 
 function changeRam(e, direction){
@@ -968,32 +942,47 @@ function getSortedPins(){
     return sorted;
 }
 
+
+function changeRamIfPossible(direction, highest, lowest){
+    console.log('highest-lowest:' + highest + lowest);
+    changeRam('e', direction);
+    return true;
+}
+
 function GCheaperGBeater(){
     $('#gcheaper').click(function(){
 			     var pins = getSortedPins();
+
 			     var actuals = _(pins).filter(function(x){return x['pin']!==8;});
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = actuals[0]['pin'];
 			     var highest = actuals[actuals.length-1]['pin'];
-			     
 			     if (highest-lowest>0.5){
 				 var old_component = new_model[actuals[actuals.length-1]['id']];
 				 var old_cats = getCatalogs(old_component);
+
+				 var model_component = filterByCatalogs(_(model).values(), old_cats)[0];
+				 var model_body = jgetBodyById(model_component['_id']);
+
+				 if (isRam(model_body)){
+				     // console.log('rampin');
+				     // var p = getRamPin(model_body)*old_component['count'];
+				     // console.log(p);
+				     // var c = 1;
+				     // if (old_component['count'])
+				     // 	 c = old_component['count'];				     
+				     if (changeRamIfPossible('down', highest, lowest))
+					 return;
+				 }
+
 				 var appr_components = getNearestComponent(old_component.price,
 									   old_cats, -1, false);
-				 
 				 // no appr component for that direction!
 				 if (!appr_components[0]){
 				     log('fail');
 				     return;
 				 }
-
 				 var appr_component = appr_components[0];
-				 var appr_cats = getCatalogs(appr_component);
-				 var model_component = filterByCatalogs(_(model).values(), appr_cats)[0];
-				 
-				 var model_body = jgetBodyById(model_component['_id']);
-				 
 				 var change = function(){
 				     var select = jgetSelect(model_body);
 				     var new_option = jgetOption(select, appr_component['_id']);
@@ -1002,7 +991,9 @@ function GCheaperGBeater(){
 				     componentChanged({'target':select[0]});
 				 };
 
-				 if ((isProc(model_body) || isMother(model_body)) 
+				 var appr_cats = getCatalogs(appr_component);
+
+				 if ((isProc(model_body) || isMother(model_body))
 				     && !isEqualCatalogs(appr_cats, old_cats)){
 				     confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
 						  function(){
@@ -1017,7 +1008,8 @@ function GCheaperGBeater(){
 				 else{
 				     // TODO! RAM
 				     change();
-				 }				 
+				 }
+
 			     }
 			 });
 
