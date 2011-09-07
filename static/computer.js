@@ -805,7 +805,7 @@ function shadowCram(target){
     target.css({'cursor':'auto','color':"#444444"});
 }
 
-function changeRam(e, direction){
+function changeRam(e, direction, silent){
     var ramselect = jgetSelectByRow($('#ram'));
     var component = choices[ramselect.val()];
     var count = 1;
@@ -884,13 +884,16 @@ function changeRam(e, direction){
 	new_count = count;
     }
     component['count'] = new_count;
-    componentChanged({'target':ramselect[0],'no_desc':true});
-    installRamCount();
 
-    if (max_count && max_count == new_count)
-	shadowCram($('#incram'));
-    if (new_count == 1){
-	shadowCram($('#decram'));
+    if (!silent){	
+	componentChanged({'target':ramselect[0],'no_desc':true});
+	installRamCount();
+
+	if (max_count && max_count == new_count)
+	    shadowCram($('#incram'));
+	if (new_count == 1){
+	    shadowCram($('#decram'));
+	}
     }
     return component;
 }
@@ -937,7 +940,7 @@ function manualChange(e){
 function getSortedPins(){
     var pins = [];
     for (var id in new_model){
-	pins.push({'id':id,'pin':calculatePin(new_model[id])});
+	pins.push({'_id':id,'pin':calculatePin(new_model[id])});
     }
     var sorted = Array.sort(pins,function(x1,x2){return x1['pin']-x2['pin'];});
     return sorted;
@@ -945,17 +948,23 @@ function getSortedPins(){
 
 
 function changeRamIfPossible(direction, highest, lowest, model_body, old_component){
-    log('highest-lowest:' + highest + lowest);
-    // if (old_component.count && old_component.count > 1){
-    // 	var new_component = _.clone(old_component);
-    // 	var incr = 1;	
-    // 	if (direction == 'down')
-    // 	    incr = -1;
-    // 	var new_pin = clone;	
-    // }
-    
-    changeRam('e', direction);
-    return true;
+    var retval = false;
+    if (direction == 'down' && old_component.count && old_component.count > 1){
+
+	var old_pin = calculatePin(old_component);
+	var old_count = old_component.count;
+	changeRam('e','down', true);
+	//log(old_pin + " - " + old_count);
+    	var new_pin = calculatePin(old_component);
+	//log(new_pin + " - " + old_component.count);
+	if (new_pin>= lowest){
+	    old_component.count = old_count;
+	    changeRam('e','down');
+	    log('changing!!!');
+	    retval = true;
+	}
+    }    
+    return retval;
 }
 
 function GCheaperGBeater(){
@@ -967,21 +976,17 @@ function GCheaperGBeater(){
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = actuals[0]['pin'];
 			     var highest = actuals[actuals.length-1]['pin'];
+			     log(perifery);
 			     if (highest-lowest>0.5){
-				 var old_component = new_model[actuals[actuals.length-1]['id']];
+				 var old_component = new_model[actuals[actuals.length-1]['_id']];
 				 var old_cats = getCatalogs(old_component);
 
-				 var model_component = filterByCatalogs(_(model).values(), old_cats)[0];
+				 var model_component = filterByCatalogs(_(model).values(),
+									old_cats)[0];
 				 var model_body = jgetBodyById(model_component['_id']);
-				 if (isRam(model_body)){
-				     // console.log('rampin');
-				     // var p = getRamPin(model_body)*old_component['count'];
-				     // console.log(p);
-				     // var c = 1;
-				     // if (old_component['count'])
-				     // 	 c = old_component['count'];				     
-				     
-				     if (!changeRamIfPossible('down', highest, lowest, model_body, old_component))
+				 if (isRam(model_body)){				     
+				     if (changeRamIfPossible('down', highest, 
+							     lowest, model_body, old_component))
 					 return;
 				 }
 
