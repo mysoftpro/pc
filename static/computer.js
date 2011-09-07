@@ -577,14 +577,21 @@ function jgetSocketOpositeBody(body){
 }
 
 
-function getNearestComponent(price, catalogs, direction, same_socket){
+function getNearestComponent(price, catalogs, direction, same_socket, _log){
     var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
     var diff = 1000000;
     var appr_component;
     var spare_diff = 1000000;
     var spare_appr_component;
+    if (_log)
+	log(other_components);
     for (var i=0,l=other_components.length;i<l;i++){
 	var _diff = other_components[i].price - price;
+	if (_log){
+	    log(_diff);
+	    log(direction);
+	}
+
 	if (Math.abs(_diff)<diff){
 	    if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
 		appr_component = other_components[i];
@@ -1023,7 +1030,6 @@ function GCheaperGBeater(){
 
 			     var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
 
-			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = pinned.first();
 			     var highest = pinned.last();
 
@@ -1036,7 +1042,41 @@ function GCheaperGBeater(){
 				 // changePinedComponent(old_component, highest, lowest, 'up');
 			     }
 			     else{
-				 log('kiki');
+				 var perifery = _(pins)
+						  .filter(function(x){return x['pin']==8;});
+
+				 perifery =perifery
+				     .sort(function(el1, el2){
+					       return choices[el1._id].price - choices[el2._id].price;
+					   });
+				 // perifery.reverse() for direction and +1. and 'up' in while!
+				 var to_change = choices[perifery.pop()._id];
+
+				 var appr_components = getNearestComponent(to_change.price,
+									   getCatalogs(to_change),
+									   -1, false);
+				 while (!appr_components[0] ){
+				     if (perifery.length == 0){
+					 // force change highest pin
+					 var old_component = new_model[highest['_id']];
+					 changePinedComponent(old_component, highest['pin'],
+							      lowest['pin'], 'down');
+					 return;
+				     }
+				     to_change = choices[perifery.pop()._id];
+				     appr_components = getNearestComponent(to_change.price,
+									   getCatalogs(to_change),
+									   -1, false);
+				 }
+				 var appr_component = appr_components[0];
+				 var model_component = filterByCatalogs(_(model).values(),
+									getCatalogs(to_change))[0];
+				 var model_body = jgetBodyById(model_component['_id']);
+				 var select = jgetSelect(model_body);
+				 var new_option = jgetOption(select, appr_component['_id']);
+				 select.val(new_option.val());
+				 jgetChosenTitle(select).text(new_option.text());
+				 componentChanged({'target':select[0]});
 			     }
 			 });
 }
