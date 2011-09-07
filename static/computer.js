@@ -129,7 +129,7 @@ function calculatePin(component){
 	var count = 1;
 	if (component['count']){
 	    count = component['count'];
-	}	    
+	}
 	retval = p*count;
 	if (retval <= 1)
 	    retval = 2.9;
@@ -147,7 +147,7 @@ function calculatePin(component){
 	    retval = 7.7;
 	else{
 	    retval = 7.9;
-	}	
+	}
     }
     return retval;
 }
@@ -885,7 +885,7 @@ function changeRam(e, direction, silent){
     }
     component['count'] = new_count;
 
-    if (!silent){	
+    if (!silent){
 	componentChanged({'target':ramselect[0],'no_desc':true});
 	installRamCount();
 
@@ -960,81 +960,92 @@ function changeRamIfPossible(direction, highest, lowest, model_body, old_compone
 	if (new_pin>= lowest){
 	    old_component.count = old_count;
 	    changeRam('e','down');
-	    log('changing!!!');
+	    //log('changing!!!');
 	    retval = true;
 	}
-    }    
+    }
     return retval;
 }
+
+
+function changePinedComponent(old_component, highest, lowest, direction){
+
+    var old_cats = getCatalogs(old_component);
+    var model_component = filterByCatalogs(_(model).values(),
+					   old_cats)[0];
+    var model_body = jgetBodyById(model_component['_id']);
+    if (isRam(model_body)){
+	if (changeRamIfPossible(direction, highest,
+				lowest, model_body, old_component))
+	    return;
+    }
+
+    var appr_components = getNearestComponent(old_component.price,
+					      old_cats, -1, false);
+    // no appr component for that direction!
+    if (!appr_components[0]){
+	log('fail');
+	return;
+    }
+    var appr_component = appr_components[0];
+    var change = function(){
+	var select = jgetSelect(model_body);
+	var new_option = jgetOption(select, appr_component['_id']);
+	select.val(new_option.val());
+	jgetChosenTitle(select).text(new_option.text());
+	componentChanged({'target':select[0]});
+    };
+
+    var appr_cats = getCatalogs(appr_component);
+
+    if ((isProc(model_body) || isMother(model_body))
+	&& !isEqualCatalogs(appr_cats, old_cats)){
+	confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
+		     function(){
+			 if (changeSocket(appr_cats, model_body, -1))
+			     change();
+			 else{
+			     new_option.remove();
+			 }
+		     },
+		     function(){});
+    }
+    else{
+	// TODO! RAM
+	change();
+    }
+}
+
 
 function GCheaperGBeater(){
     $('#gcheaper').click(function(){
 			     var pins = getSortedPins();
 
-			     var actuals = _(pins).filter(function(x){return x['pin']!==8;});
+			     var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
 
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
-			     var lowest = actuals[0]['pin'];
-			     var highest = actuals[actuals.length-1]['pin'];
-			     log(perifery);
-			     if (highest-lowest>0.5){
-				 var old_component = new_model[actuals[actuals.length-1]['_id']];
-				 var old_cats = getCatalogs(old_component);
+			     var lowest = pinned.first();
+			     var highest = pinned.last();
 
-				 var model_component = filterByCatalogs(_(model).values(),
-									old_cats)[0];
-				 var model_body = jgetBodyById(model_component['_id']);
-				 if (isRam(model_body)){				     
-				     if (changeRamIfPossible('down', highest, 
-							     lowest, model_body, old_component))
-					 return;
-				 }
-
-				 var appr_components = getNearestComponent(old_component.price,
-									   old_cats, -1, false);
-				 // no appr component for that direction!
-				 if (!appr_components[0]){
-				     log('fail');
-				     return;
-				 }
-				 var appr_component = appr_components[0];
-				 var change = function(){
-				     var select = jgetSelect(model_body);
-				     var new_option = jgetOption(select, appr_component['_id']);
-				     select.val(new_option.val());
-				     jgetChosenTitle(select).text(new_option.text());
-				     componentChanged({'target':select[0]});
-				 };
-
-				 var appr_cats = getCatalogs(appr_component);
-
-				 if ((isProc(model_body) || isMother(model_body))
-				     && !isEqualCatalogs(appr_cats, old_cats)){
-				     confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-						  function(){
-						      if (changeSocket(appr_cats, model_body, -1))
-							  change();
-						      else{
-							  new_option.remove();
-						      }
-						  },
-						  function(){});
-				 }
-				 else{
-				     // TODO! RAM
-				     change();
-				 }
-
+			     if (highest.pin-lowest.pin>0.5){
+				 var old_component = new_model[highest['_id']];
+				 changePinedComponent(old_component, highest['pin'],
+						      lowest['pin'], 'down');
+				 // for better
+				 // var old_component = new_model[0]['_id']];
+				 // changePinedComponent(old_component, highest, lowest, 'up');
+			     }
+			     else{
+				 log('kiki');
 			     }
 			 });
-
 }
 
 
 $(function(){
       try{
 	  $('select').chosen().change(manualChange);//componentChanged
-	  new_model = _.clone(model);	  
+	  new_model = _.clone(model);
 	  installBodies();
 	  cheaperBetter();
 	  reset();
@@ -1043,12 +1054,12 @@ $(function(){
 	  installRamCount();
 	  changeRam('e','mock');
 	  //shadowCram($('#decram'));
-	  
+
 	  $('#basepi').html($('#large_index').html());
 	  $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
-	  
+
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
