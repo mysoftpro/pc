@@ -107,8 +107,6 @@ var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
 function getRamPin(body){
 
     var text = jgetChosenTitle(jgetSelect(body)).text().replace('МВ','MB');//cyr to lat
-    log(text);
-    log(jgetSelect(body).val());
     var retval = 1;
     if (text.match('1024MB'))
 	retval = 1;
@@ -131,7 +129,6 @@ function calculatePin(component){
 	var count = 1;
 	if (component['count']){
 	    count = component['count'];
-	    console.log('!hascount');
 	}	    
 	retval = p*count;
 	if (retval <= 1)
@@ -817,7 +814,7 @@ function changeRam(e, direction){
     var new_count;
     var need_hide;
     var max_count;
-    if (direction == 'up'){
+    if (direction == 'up' || direction == 'mock'){
 	// refactor that: #mother
 	var body = $('#mother').find('td.body');
 	if (body.text().match('4DDR3'))
@@ -880,8 +877,11 @@ function changeRam(e, direction){
 	}
 	new_count = count + 1;
     }
-    else{
+    else if (direction == 'down'){
 	new_count = count - 1;
+    }
+    if (direction == 'mock'){
+	new_count = count;
     }
     component['count'] = new_count;
     componentChanged({'target':ramselect[0],'no_desc':true});
@@ -892,6 +892,7 @@ function changeRam(e, direction){
     if (new_count == 1){
 	shadowCram($('#decram'));
     }
+    return component;
 }
 
 function installRamCount(){
@@ -908,8 +909,7 @@ function installRamCount(){
 			      {
 				  pcs:pcs
 			      }));
-    // $('#incram').unbind('mouseover').unbind('mouseout').click(function(e){changeRam(e,'up');});
-    // $('#decram').unbind('mouseover').unbind('mouseout').click(function(e){changeRam(e,'down');});
+
     $('#incram').click(function(e){changeRam(e,'up');});
     $('#decram').click(function(e){changeRam(e,'down');});
 }
@@ -944,8 +944,16 @@ function getSortedPins(){
 }
 
 
-function changeRamIfPossible(direction, highest, lowest){
+function changeRamIfPossible(direction, highest, lowest, model_body, old_component){
     log('highest-lowest:' + highest + lowest);
+    // if (old_component.count && old_component.count > 1){
+    // 	var new_component = _.clone(old_component);
+    // 	var incr = 1;	
+    // 	if (direction == 'down')
+    // 	    incr = -1;
+    // 	var new_pin = clone;	
+    // }
+    
     changeRam('e', direction);
     return true;
 }
@@ -966,7 +974,6 @@ function GCheaperGBeater(){
 				 var model_component = filterByCatalogs(_(model).values(), old_cats)[0];
 				 var model_body = jgetBodyById(model_component['_id']);
 				 if (isRam(model_body)){
-				     console.log('raaaaaaaaaaaaaaaaaaaaaaam');
 				     // console.log('rampin');
 				     // var p = getRamPin(model_body)*old_component['count'];
 				     // console.log(p);
@@ -974,7 +981,7 @@ function GCheaperGBeater(){
 				     // if (old_component['count'])
 				     // 	 c = old_component['count'];				     
 				     
-				     if (!changeRamIfPossible('down', highest, lowest))
+				     if (!changeRamIfPossible('down', highest, lowest, model_body, old_component))
 					 return;
 				 }
 
@@ -1029,7 +1036,8 @@ $(function(){
 	  $('#descriptions').jScrollPane();
 	  installOptions();
 	  installRamCount();
-	  shadowCram($('#decram'));
+	  changeRam('e','mock');
+	  //shadowCram($('#decram'));
 	  
 	  $('#basepi').html($('#large_index').html());
 	  $('#baseprice').html($('#large_price').html());

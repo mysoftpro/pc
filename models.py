@@ -339,13 +339,15 @@ def renderComputer(components_choices, template, skin, model):
     tottal = 0
     components_json = {}
     viewlets = []
-
+    counted = {}
     for name,code in model['items'].items():
 	if code is None: continue
         count = 1
 	if type(code) is list:
             count = len(code)
             code = code[0]
+            counted.update({code:count})
+            
 	viewlet = deepcopy(original_viewlet)
 	component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
 	if component_doc is None:
@@ -408,7 +410,10 @@ def renderComputer(components_choices, template, skin, model):
 			    option.set('selected','selected')
 			_options.append((option, r['doc']['price']))
 			r['doc'] = cleanDoc(r['doc'])
-			components_json.update({r['doc']['_id']:r['doc']})
+                        _id = r['doc']['_id']
+                        if  _id in counted:
+                            r['doc'].update({'count':counted[_id]})
+			components_json.update({_id:r['doc']})
 		    appendOptions(_options, option_group)
 		    options.append((option_group, 0))
 	else:
@@ -420,7 +425,10 @@ def renderComputer(components_choices, template, skin, model):
 		if row['id'] == component_doc['_id']:
 		    option.set('selected','selected')
 		row['doc'] = cleanDoc(row['doc'])
-		components_json.update({row['doc']['_id']:row['doc']})
+                _id = row['doc']['_id']
+                if  _id in counted:
+                    row['doc'].update({'count':counted[_id]})                    
+		components_json.update({_id:row['doc']})
 
 	appendOptions(options, select)
 	viewlets.append((parts[name],viewlet,descr))
