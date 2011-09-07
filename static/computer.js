@@ -961,7 +961,6 @@ function changeRamIfPossible(direction, highest, lowest, model_body, old_compone
     var retval = false;
     if (old_component.count){	
 	var counters = changeRam('e',direction, true);
-	log(counters);
 	old_component.count = counters.count;
 	if (counters.count != counters.new_count 
 	    && counters.new_count !=0 
@@ -976,7 +975,7 @@ function changeRamIfPossible(direction, highest, lowest, model_body, old_compone
 }
 
 
-function changePinedComponent(old_component, highest, lowest, direction){
+function changePinedComponent(old_component, pins, highest, lowest, direction, stop){
 
     var old_cats = getCatalogs(old_component);
     var model_component = filterByCatalogs(_(model).values(),
@@ -996,7 +995,10 @@ function changePinedComponent(old_component, highest, lowest, direction){
 					      old_cats, -1, false);
     // no appr component for that direction!
     if (!appr_components[0]){
-	log('fail');
+	log('failz');
+	log(stop);
+	if (!stop)
+	    changePeriferyComponent(pins, highest, lowest, direction, 'stop');
 	return;
     }
     var appr_component = appr_components[0];
@@ -1028,62 +1030,88 @@ function changePinedComponent(old_component, highest, lowest, direction){
     }
 }
 
+function changePeriferyComponent(pins, highest, lowest, direction, stop){
+    var deltas = {'up':+1,'down':-1};
+    var perifery = _(pins)
+	.filter(function(x){return x['pin']==8;});
+
+    perifery =perifery
+	.sort(function(el1, el2){
+		  return choices[el1._id].price - choices[el2._id].price;
+	      });
+    perifery = _(perifery).filter(function(el){return !el['_id'].match('no');});
+    // perifery.reverse() for direction and +1. and 'up' in while!
+    log(perifery);
+    if (direction == 'up')
+	perifery = perifery.reverse();
+    var to_change = choices[perifery.pop()._id];
+    // HERE IS THE BUG SOMEWHERE.
+    // HAS 2 components in perifery. 1 of em is cheapeast.
+    // another could be decresed, but 'no_perifery' in log!!!
+    log('to_change');
+    log(to_change);
+    //log(jgetBodyById(model_component['_id']);)
+    var appr_components = getNearestComponent(to_change.price,
+					      getCatalogs(to_change),
+					      deltas[direction], false);
+    while (!appr_components[0] ){
+	if (perifery.length == 0){
+	    // force change highest pin
+	    var old_component = new_model[highest['_id']];
+	    log('no perifery!');
+	    log(stop);
+	    if (!stop)
+		changePinedComponent(old_component, pins, highest['pin'],
+				     lowest['pin'], direction, 'stop');
+	    return;
+	}
+	to_change = choices[perifery.pop()._id];
+	appr_components = getNearestComponent(to_change.price,
+					      getCatalogs(to_change),
+					      deltas['direction'], false);
+    }
+    var appr_component = appr_components[0];
+    var model_component = filterByCatalogs(_(model).values(),
+					   getCatalogs(to_change))[0];
+    var model_body = jgetBodyById(model_component['_id']);
+    var select = jgetSelect(model_body);
+    var new_option = jgetOption(select, appr_component['_id']);
+    select.val(new_option.val());
+    jgetChosenTitle(select).text(new_option.text());
+    componentChanged({'target':select[0]});
+}
+
+
 
 function GCheaperGBeater(){
-    $('#gcheaper').click(function(){
-			     var pins = getSortedPins();
-
-			     var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
-
-			     var lowest = pinned.first();
-			     var highest = pinned.last();
-
-			     if (highest.pin-lowest.pin>0.5){
-				 var old_component = new_model[highest['_id']];
-				 changePinedComponent(old_component, highest['pin'],
-						      lowest['pin'], 'down');
-				 // for better
-				 // var old_component = new_model[0]['_id']];
-				 // changePinedComponent(old_component, highest, lowest, 'up');
-			     }
-			     else{
-				 var perifery = _(pins)
-						  .filter(function(x){return x['pin']==8;});
-
-				 perifery =perifery
-				     .sort(function(el1, el2){
-					       return choices[el1._id].price - choices[el2._id].price;
-					   });
-				 // perifery.reverse() for direction and +1. and 'up' in while!
-				 var to_change = choices[perifery.pop()._id];
-
-				 var appr_components = getNearestComponent(to_change.price,
-									   getCatalogs(to_change),
-									   -1, false);
-				 while (!appr_components[0] ){
-				     if (perifery.length == 0){
-					 // force change highest pin
-					 var old_component = new_model[highest['_id']];
-					 changePinedComponent(old_component, highest['pin'],
-							      lowest['pin'], 'down');
-					 return;
-				     }
-				     to_change = choices[perifery.pop()._id];
-				     appr_components = getNearestComponent(to_change.price,
-									   getCatalogs(to_change),
-									   -1, false);
-				 }
-				 var appr_component = appr_components[0];
-				 var model_component = filterByCatalogs(_(model).values(),
-									getCatalogs(to_change))[0];
-				 var model_body = jgetBodyById(model_component['_id']);
-				 var select = jgetSelect(model_body);
-				 var new_option = jgetOption(select, appr_component['_id']);
-				 select.val(new_option.val());
-				 jgetChosenTitle(select).text(new_option.text());
-				 componentChanged({'target':select[0]});
-			     }
-			 });
+    var _GCheaperGBeater = function(direction){
+	var pins = getSortedPins();
+	var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
+	var lowest = pinned.first();
+	var highest = pinned.last();
+	if (direction == 'up'){
+	    log('before');
+	    log(highest);
+	    log(lowest);
+	    var _lowest = lowest;
+	    lowest = highest;
+	    highest = lowest;
+	    log('after');
+	    log(highest);
+	    log(lowest);
+	}
+	if (highest.pin-lowest.pin>0.5){
+	    var old_component = new_model[highest['_id']];
+	    changePinedComponent(old_component, pins, highest['pin'],
+				 lowest['pin'], direction);
+	}
+	else{
+	    changePeriferyComponent(pins, highest, lowest, direction);
+	}
+    };
+    $('#gcheaper').click(function(e){_GCheaperGBeater('down');});
+    // CHANGE STRATEGY FOR BETTER!!!
+    $('#gbetter').click(function(e){_GCheaperGBeater('up');});
 }
 
 
