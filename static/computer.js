@@ -146,9 +146,7 @@ function calculatePin(component){
 	    retval = 7.7;
 	else{
 	    retval = 7.9;
-	}
-	console.log('calculated tamopin;');
-	console.log(retval);
+	}	
     }
     return retval;
 }

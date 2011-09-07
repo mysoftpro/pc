@@ -147,7 +147,7 @@ models = [
      "socket":"1155"
      },
     {'name':u"Рендер",
-     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['17970','17970','17970','17970'],'hdd':'16991',
+     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['19356','19356'],'hdd':'16991',
 		 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':32000,
      "socket":"1155"
@@ -342,7 +342,10 @@ def renderComputer(components_choices, template, skin, model):
 
     for name,code in model['items'].items():
 	if code is None: continue
-	if type(code) is list: code = code[0]
+        count = 1
+	if type(code) is list:
+            count = len(code)
+            code = code[0]
 	viewlet = deepcopy(original_viewlet)
 	component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
 	if component_doc is None:
@@ -351,6 +354,8 @@ def renderComputer(components_choices, template, skin, model):
 	    if component_doc['stock1'] == 0:
 		component_doc = replaceComponent(code, choices[name], name, model['socket'])
 	component_doc = makePrice(component_doc)
+        if count>1:
+            component_doc.update({'count':count})
 	tr = viewlet.find("tr")
 	tr.set('id',name)
 	body = viewlet.xpath("//td[@class='body']")[0]
