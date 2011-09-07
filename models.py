@@ -147,7 +147,7 @@ models = [
      "socket":"1155"
      },
     {'name':u"Рендер",
-     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['19356','19356'],'hdd':'16991',
+     'items':   {'mother':'19162', 'proc':'18137', 'video':'18994', 'ram':['19356','19356','19356','19356'],'hdd':'16991',
 		 'case':'18219', 'displ':'15606', 'kbrd':'16499', 'mouse':'15976','sound':None, 'lan':None, 'windows':'14439', 'audio':"8610"},
      'price':32000,
      "socket":"1155"

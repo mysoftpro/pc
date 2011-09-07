@@ -107,6 +107,8 @@ var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
 function getRamPin(body){
 
     var text = jgetChosenTitle(jgetSelect(body)).text().replace('МВ','MB');//cyr to lat
+    log(text);
+    log(jgetSelect(body).val());
     var retval = 1;
     if (text.match('1024MB'))
 	retval = 1;
@@ -126,10 +128,12 @@ function calculatePin(component){
     }
     if (isRam(body)){
 	var p = getRamPin(body);
-	var c = 1;
-	if (component['count'])
-	    c = component['count'];
-	retval = p*c;
+	var count = 1;
+	if (component['count']){
+	    count = component['count'];
+	    console.log('!hascount');
+	}	    
+	retval = p*count;
 	if (retval <= 1)
 	    retval = 2.9;
 	else if (retval == 2)
@@ -418,13 +422,12 @@ function installBodies(){
 			   if (!init && $('#ramcount').length == 0)
 			       installRamCount();
 		       });
-    //what a fuck is that?
+    //what a fuck is that? ff caches select values? chosen sucks?
     for (var j=0,l=bodies.length;j<l;j++){
 	var b = $(bodies.get(j));
 	var select = jgetSelect(b);
-	if (select.val() !== b.attr('id')){
-	    select.val(b.attr('id'));
-	}
+	select.val(b.attr('id'));
+	jgetChosenTitle(select).text(b.text());
     }
     bodies.first().click();
     init = false;
@@ -772,10 +775,10 @@ function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
 	var _id = target.val();
-	if (_(['oinstalling','odelivery','obuild']).any(function(el){return el == _id;})){
-	    recalculate();
-	}
-	else{
+	// if (_(['oinstalling','odelivery','obuild']).any(function(el){return el == _id;})){
+	//     recalculate();
+	// }
+	// else{
 	    // var tr = $('#' + _id.substring(1,_id.length));
 	    // var op = tr.find('option').first();
 	    // var select = jgetSelect(tr.children().first());
@@ -794,7 +797,7 @@ function installOptions(){
 	    else{
 		jgetReset(jgetBody(select)).click();
 	    }
-	}
+	//}
     }
     $('#options input').change(substructAdd);
 }
@@ -942,7 +945,7 @@ function getSortedPins(){
 
 
 function changeRamIfPossible(direction, highest, lowest){
-    console.log('highest-lowest:' + highest + lowest);
+    log('highest-lowest:' + highest + lowest);
     changeRam('e', direction);
     return true;
 }
@@ -952,6 +955,7 @@ function GCheaperGBeater(){
 			     var pins = getSortedPins();
 
 			     var actuals = _(pins).filter(function(x){return x['pin']!==8;});
+
 			     var perifery = _(pins).filter(function(x){return x['pin']==8;});
 			     var lowest = actuals[0]['pin'];
 			     var highest = actuals[actuals.length-1]['pin'];
@@ -961,15 +965,16 @@ function GCheaperGBeater(){
 
 				 var model_component = filterByCatalogs(_(model).values(), old_cats)[0];
 				 var model_body = jgetBodyById(model_component['_id']);
-
 				 if (isRam(model_body)){
+				     console.log('raaaaaaaaaaaaaaaaaaaaaaam');
 				     // console.log('rampin');
 				     // var p = getRamPin(model_body)*old_component['count'];
 				     // console.log(p);
 				     // var c = 1;
 				     // if (old_component['count'])
 				     // 	 c = old_component['count'];				     
-				     if (changeRamIfPossible('down', highest, lowest))
+				     
+				     if (!changeRamIfPossible('down', highest, lowest))
 					 return;
 				 }
 
@@ -1017,7 +1022,7 @@ function GCheaperGBeater(){
 $(function(){
       try{
 	  $('select').chosen().change(manualChange);//componentChanged
-	  new_model = _.clone(model);
+	  new_model = _.clone(model);	  
 	  installBodies();
 	  cheaperBetter();
 	  reset();
@@ -1025,10 +1030,12 @@ $(function(){
 	  installOptions();
 	  installRamCount();
 	  shadowCram($('#decram'));
-	  recalculate();
+	  
 	  $('#basepi').html($('#large_index').html());
 	  $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
+	  recalculate();
+	  
 	  // $('#donotask').change(function(e){
 	  // 			    if ($(e.target).is(':checked')){
 	  // 				doNotAsk = true;
