@@ -902,7 +902,7 @@ function changeRam(e, direction, silent){
 	    shadowCram($('#decram'));
 	}
     }
-    return component;
+    return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
 function installRamCount(){
@@ -955,19 +955,20 @@ function getSortedPins(){
 
 
 function changeRamIfPossible(direction, highest, lowest, model_body, old_component){
+    // TODO! artificial intelligence :) check PIN and ...
+    // if count undefined or 1, check if possible to incr/dec
+    // ram by changing planks, and their ammout (think about 8->6 or 4X1->2X2->1X4
     var retval = false;
-    if (direction == 'down' && old_component.count && old_component.count > 1){
-
-	var old_pin = calculatePin(old_component);
-	var old_count = old_component.count;
-	changeRam('e','down', true);
-	//log(old_pin + " - " + old_count);
-    	var new_pin = calculatePin(old_component);
-	//log(new_pin + " - " + old_component.count);
-	if (new_pin>= lowest){
-	    old_component.count = old_count;
-	    changeRam('e','down');
-	    //log('changing!!!');
+    if (old_component.count){	
+	var counters = changeRam('e',direction, true);
+	log(counters);
+	old_component.count = counters.count;
+	if (counters.count != counters.new_count 
+	    && counters.new_count !=0 
+	    && ((counters.max_count && counters.new_count<=counters.max_count)
+		|| !counters.max_count))
+	{
+	    changeRam('e',direction);
 	    retval = true;
 	}
     }
@@ -985,6 +986,10 @@ function changePinedComponent(old_component, highest, lowest, direction){
 	if (changeRamIfPossible(direction, highest,
 				lowest, model_body, old_component))
 	    return;
+	else{
+	    log('fuck!');
+	    log(highest + ' - ' + lowest);
+	}
     }
 
     var appr_components = getNearestComponent(old_component.price,
