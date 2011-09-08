@@ -625,6 +625,8 @@ function changeSocket(new_cats, body, direction){
 	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
 
 	var appropriate_other_component;
+	log("++++++++++++++++++++++++++++++");
+	log(appr_components);
 	if (!appr_components[1])
 	    return false;
 	if (!appr_components[0])
@@ -1037,10 +1039,11 @@ function changePinedComponent(old_component, pins, no_perifery){
 	&& !isEqualCatalogs(appr_cats, old_cats)){
 	confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
 		     function(){
-			 if (changeSocket(appr_cats, model_body, -1))
+			 if (changeSocket(appr_cats, model_body, pins.delta))
 			     change();
 			 else{
-			     new_option.remove();
+			     log(model_body);
+			     //new_option.remove();
 			 }
 		     },
 		     function(){});
@@ -1051,6 +1054,21 @@ function changePinedComponent(old_component, pins, no_perifery){
     return true;
 }
 
+
+function changePinnedForced(pins){
+    var old_component = new_model[pins.highest['_id']];
+    var pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');
+    if (!pinnedChanged){
+	while(pins.pinned.length > 0){
+	    pins.highest = pins.pinned.pop();
+	    old_component = new_model[pins.highest['_id']];
+	    if(changePinedComponent(old_component, pins, 'no_perifery'))
+		break;
+	}
+    }
+}
+
+
 function changePeriferyComponent(pins){
 
     var to_change = choices[pins.perifery.pop()._id];
@@ -1058,16 +1076,7 @@ function changePeriferyComponent(pins){
 					      pins.delta, false);
     while (!appr_components[0] ){
 	if (pins.perifery.length == 0){
-	    var old_component = new_model[pins.highest['_id']];	    
-	    var pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');	    
-	    if (!pinnedChanged){
-		while(pins.pinned.length > 0){
-		    pins.highest = pins.pinned.pop();
-		    old_component = new_model[pins.highest['_id']];
-		    if(changePinedComponent(old_component, pins, 'no_perifery'))
-			break;
-		}
-	    }
+	    changePinnedForced(pins);
 	    return;
 	}
 	to_change = choices[pins.perifery.pop()._id];
@@ -1088,9 +1097,11 @@ function changePeriferyComponent(pins){
 
 
 function GCheaperGBeater(){
-    var _GCheaperGBeater = function(direction){
+
+    var GCheaper = function(e){
+	var direction = 'down';
 	var pins = getSortedPins(direction);
-	if (pins.highest.pin-pins.lowest.pin>0.5){	    
+	if (pins.highest.pin-pins.lowest.pin>0.5){
 	    var old_component = new_model[pins.highest['_id']];
 	    changePinedComponent(old_component, pins);
 	}
@@ -1098,9 +1109,13 @@ function GCheaperGBeater(){
 	    changePeriferyComponent(pins);
 	}
     };
-    $('#gcheaper').click(function(e){_GCheaperGBeater('down');});
-    // CHANGE STRATEGY FOR BETTER!!!
-    $('#gbetter').click(function(e){_GCheaperGBeater('up');});
+    var GBetter = function(e){
+	var direction = 'up';
+	var pins = getSortedPins(direction);
+	changePinnedForced(pins);
+    };
+    $('#gcheaper').click(GCheaper);
+    $('#gbetter').click(GBetter);
 }
 
 
