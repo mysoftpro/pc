@@ -629,11 +629,12 @@ function reset(){
 			  var target = $(e.target);
 			  var select = jgetSelect(target);
 			  var body = jgetBody(select);
-			  var _id = body.attr('id');
-
+			  var _id = body.attr('id');			  
 			  var new_component = model[_id];
 			  var old_component= choices[select.val()];
 			  changeComponent(body, new_component, old_component);
+			  _.delay(function(){jgetPrice(body).css('background-color','transparent');},
+				 300);
 		     });
 }
 
