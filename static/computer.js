@@ -6,6 +6,8 @@
 // model ids are equal to td.body ids. they are untoched also
 // new model ids are equal to select.val()
 var log = console.log;
+
+
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
@@ -416,8 +418,11 @@ function installBodies(){
 				   _body.prev().hide();
 			       }
 			   }
-			   if (!init && $('#ramcount').length == 0)
+			   if (!init && $('#ramcount').length == 0){
 			       installRamCount();
+			       changeRam('e','mock');
+			   }
+
 		       });
     //what a fuck is that? ff caches select values? chosen sucks?
     for (var j=0,l=bodies.length;j<l;j++){
@@ -577,21 +582,17 @@ function jgetSocketOpositeBody(body){
 }
 
 
-function getNearestComponent(price, catalogs, direction, same_socket, _log){
+function getNearestComponent(price, catalogs, direction, same_socket){
     var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
     var diff = 1000000;
     var appr_component;
     var spare_diff = 1000000;
     var spare_appr_component;
-    if (_log)
-	log(other_components);
+
     for (var i=0,l=other_components.length;i<l;i++){
 	var _diff = other_components[i].price - price;
-	if (_log){
-	    log(_diff);
-	    log(direction);
-	}
-
+	if (_diff == 0)
+	    continue;
 	if (Math.abs(_diff)<diff){
 	    if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
 		appr_component = other_components[i];
@@ -895,7 +896,6 @@ function changeRam(e, direction, silent){
     if (!silent){
 	componentChanged({'target':ramselect[0],'no_desc':true});
 	installRamCount();
-
 	if (max_count && max_count == new_count)
 	    shadowCram($('#incram'));
 	if (new_count == 1){
@@ -919,7 +919,6 @@ function installRamCount(){
 			      {
 				  pcs:pcs
 			      }));
-
     $('#incram').click(function(e){changeRam(e,'up');});
     $('#decram').click(function(e){changeRam(e,'down');});
 }
@@ -959,11 +958,11 @@ function changeRamIfPossible(direction, highest, lowest, model_body, old_compone
     // if count undefined or 1, check if possible to incr/dec
     // ram by changing planks, and their ammout (think about 8->6 or 4X1->2X2->1X4
     var retval = false;
-    if (old_component.count){	
+    if (old_component.count){
 	var counters = changeRam('e',direction, true);
 	old_component.count = counters.count;
-	if (counters.count != counters.new_count 
-	    && counters.new_count !=0 
+	if (counters.count != counters.new_count
+	    && counters.new_count !=0
 	    && ((counters.max_count && counters.new_count<=counters.max_count)
 		|| !counters.max_count))
 	{
@@ -984,22 +983,18 @@ function changePinedComponent(old_component, pins, highest, lowest, direction, s
     if (isRam(model_body)){
 	if (changeRamIfPossible(direction, highest,
 				lowest, model_body, old_component))
-	    return;
-	else{
-	    log('fuck!');
-	    log(highest + ' - ' + lowest);
-	}
+	    return true;
     }
 
     var appr_components = getNearestComponent(old_component.price,
 					      old_cats, -1, false);
     // no appr component for that direction!
     if (!appr_components[0]){
-	log('failz');
+	log('done');
 	log(stop);
 	if (!stop)
 	    changePeriferyComponent(pins, highest, lowest, direction, 'stop');
-	return;
+	return false;
     }
     var appr_component = appr_components[0];
     var change = function(){
@@ -1028,6 +1023,7 @@ function changePinedComponent(old_component, pins, highest, lowest, direction, s
 	// TODO! RAM
 	change();
     }
+    return true;
 }
 
 function changePeriferyComponent(pins, highest, lowest, direction, stop){
@@ -1040,35 +1036,28 @@ function changePeriferyComponent(pins, highest, lowest, direction, stop){
 		  return choices[el1._id].price - choices[el2._id].price;
 	      });
     perifery = _(perifery).filter(function(el){return !el['_id'].match('no');});
-    // perifery.reverse() for direction and +1. and 'up' in while!
-    log(perifery);
     if (direction == 'up')
 	perifery = perifery.reverse();
     var to_change = choices[perifery.pop()._id];
-    // HERE IS THE BUG SOMEWHERE.
-    // HAS 2 components in perifery. 1 of em is cheapeast.
-    // another could be decresed, but 'no_perifery' in log!!!
-    log('to_change');
-    log(to_change);
-    //log(jgetBodyById(model_component['_id']);)
     var appr_components = getNearestComponent(to_change.price,
 					      getCatalogs(to_change),
 					      deltas[direction], false);
     while (!appr_components[0] ){
 	if (perifery.length == 0){
-	    // force change highest pin
 	    var old_component = new_model[highest['_id']];
-	    log('no perifery!');
-	    log(stop);
-	    if (!stop)
+	    if (!stop){
+		log('o yeah!');
+		log(pins);
+		log(highest);
 		changePinedComponent(old_component, pins, highest['pin'],
 				     lowest['pin'], direction, 'stop');
+	    }		
 	    return;
 	}
 	to_change = choices[perifery.pop()._id];
 	appr_components = getNearestComponent(to_change.price,
 					      getCatalogs(to_change),
-					      deltas['direction'], false);
+					      deltas[direction], false);
     }
     var appr_component = appr_components[0];
     var model_component = filterByCatalogs(_(model).values(),
@@ -1090,15 +1079,9 @@ function GCheaperGBeater(){
 	var lowest = pinned.first();
 	var highest = pinned.last();
 	if (direction == 'up'){
-	    log('before');
-	    log(highest);
-	    log(lowest);
 	    var _lowest = lowest;
 	    lowest = highest;
-	    highest = lowest;
-	    log('after');
-	    log(highest);
-	    log(lowest);
+	    highest = _lowest;
 	}
 	if (highest.pin-lowest.pin>0.5){
 	    var old_component = new_model[highest['_id']];
@@ -1124,7 +1107,7 @@ $(function(){
 	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
-	  installRamCount();
+	  //installRamCount();
 	  changeRam('e','mock');
 	  //shadowCram($('#decram'));
 
