@@ -106,9 +106,8 @@ function _jgetBodyById(_id){
 }
 var jgetBodyById = _.memoize(_jgetBodyById, function(_id){return _id;});
 
-function getRamPin(body){
-
-    var text = jgetChosenTitle(jgetSelect(body)).text().replace('МВ','MB');//cyr to lat
+function getRamFromText(text){
+    text = text.replace('МВ','MB');//cyr to lat
     var retval = 1;
     if (text.match('1024MB'))
 	retval = 1;
@@ -127,7 +126,8 @@ function calculatePin(component){
 	retval = Math.log(component.price/Course)*2.1-5;
     }
     if (isRam(body)){
-	var p = getRamPin(body);
+	var text = jgetChosenTitle(jgetSelect(body)).text();
+	var p = getRamFromText(text);
 	var count = 1;
 	if (component['count']){
 	    count = component['count'];
@@ -814,7 +814,7 @@ function shadowCram(target){
 }
 
 
-function getMaxRamFromMother(body){
+function _geRamSlotsFromMother(body){
     var max_count,new_count;
     if (body.text().match('4DDR3'))
 	max_count = 4;
@@ -876,6 +876,7 @@ function getMaxRamFromMother(body){
     }
     return max_count;
 }
+var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother, function(body){return body.attr('id');});
 
 function changeRam(e, direction, silent){
     var ramselect = jgetSelectByRow($('#ram'));
@@ -887,8 +888,9 @@ function changeRam(e, direction, silent){
     var need_hide;
     var max_count;
     if (direction == 'up' || direction == 'mock'){
-	var body = $('#mother').find('td.body');
-	max_count = getMaxRamFromMother(body);
+	var mother_select = jgetSelectByRow($('#mother'));
+	var mother_body = jgetBody(mother_select);
+	max_count = geRamSlotsFromMother(mother_body);
 	new_count = count + 1;
     }
     else if (direction == 'down'){
@@ -988,22 +990,59 @@ function getSortedPins(direction){
 }
 
 
-function changeRamIfPossible(direction, old_component){
+function changeRamIfPossible(old_component, pins){
     // TODO! artificial intelligence :) check PIN and ...
     // if count undefined or 1, check if possible to incr/dec
     // ram by changing planks, and their ammout (think about 8->6 or 4X1->2X2->1X4
+
     var retval = false;
     if (old_component.count){
-	var counters = changeRam('e',direction, true);
+	var counters = changeRam('e',pins.direction, true);
 	old_component.count = counters.count;
 	if (counters.count != counters.new_count
 	    && counters.new_count !=0
 	    && ((counters.max_count && counters.new_count<=counters.max_count)
 		|| !counters.max_count))
 	{
-	    changeRam('e',direction);
+	    changeRam('e',pins.direction);
 	    retval = true;
 	}
+	else{
+	    // #1 max ram installed
+	    // #2 min ram installed. nothing to do. possible some
+	    // combinations of count but is is not here
+	    if (counters.max_count && counters.new_count> counters.max_count){
+		var appr_components = getNearestComponent(old_component.price,
+							  getCatalogs(old_component),
+							  pins.delta, false);
+
+		if (appr_components[0]){
+		    var new_component = appr_components[0];
+		    if (!new_component.count)
+			new_component['count'] = 1;
+		    var ram_select = jgetSelectByRow($('#ram'));
+		    var ram_body = jgetBody(ram_select);
+		    var text = jgetChosenTitle(jgetSelect(ram_body)).text();
+		    var ramvolume = getRamFromText(text);
+		    var tottal_ram = ramvolume*counters.count;
+		    log(tottal_ram);
+		    var new_option = jgetOption(ram_select, new_component['_id']);
+		    var new_ramvolume = getRamFromText(new_option.text());
+		    if (pins.direction == 'up'){
+			var new_tottalram = new_ramvolume*new_component.count;
+			while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
+			    new_component.count +=1;
+			    new_tottalram = new_ramvolume*new_component.count;
+			    //thats all! just install new count to choices!
+			    //component will be changed later!
+			}
+		    }		    
+		}
+	    }
+	}
+    }
+    else{
+	//#1
     }
     return retval;
 }
@@ -1016,7 +1055,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 					   old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
     if (isRam(model_body)){
-	if (changeRamIfPossible(pins.direction, old_component))
+	if (changeRamIfPossible(old_component, pins))
 	    return true;
     }
     var appr_components = getNearestComponent(old_component.price,
@@ -1035,6 +1074,8 @@ function changePinedComponent(old_component, pins, no_perifery){
 	select.val(new_option.val());
 	jgetChosenTitle(select).text(new_option.text());
 	componentChanged({'target':select[0]});
+	if(isRam(model_body))
+	    changeRam('e', 'mock');
     };
 
     var appr_cats = getCatalogs(appr_component);
