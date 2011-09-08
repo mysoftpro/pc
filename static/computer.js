@@ -813,6 +813,70 @@ function shadowCram(target){
     target.css({'cursor':'auto','color':"#444444"});
 }
 
+
+function getMaxRamFromMother(body){
+    var max_count,new_count;
+    if (body.text().match('4DDR3'))
+	max_count = 4;
+    if (!max_count && body.text().match('2DDR3'))
+	max_count = 2;
+
+    if (!max_count && body.text().match('4 x 1.5V'))
+	max_count = 4;
+    if (!max_count && body.text().match('2 x 1.5V'))
+	max_count = 2;
+
+    if (!max_count && body.text().match('4 DIMM DDR3'))
+	max_count = 4;
+    if (!max_count && body.text().match('2 DIMM DDR3'))
+	max_count = 2;
+
+    if (!max_count){
+	// refactor that: 0
+	var descr = jgetDescrByIndex(0);
+	if (descr.text().match('4 x DDR3 DIMM'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('2 x DDR3 DIMM'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('Memory 4 x DIMM'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('Memory 2 x DIMM'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('DDR3\n4 szt.'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('DDR3\n2 szt.'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('Количество слотов памяти[ \t]*4'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('Количество слотов памяти[ \t]*2'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('Количество разъемов DDR3 4'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('Количество разъемов DDR3 2'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('4 x 1.5V DDR3'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('2 x 1.5V DDR3'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('Four 240-pin DDR3 SDRAM'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('Two 240-pin DDR3 SDRAM'))
+	    max_count = 2;
+
+	if (!max_count && descr.text().match('DDR3 4 szt.'))
+	    max_count = 4;
+	if (!max_count && descr.text().match('DDR3 2 szt.'))
+	    max_count = 2;
+    }
+    return max_count;
+}
+
 function changeRam(e, direction, silent){
     var ramselect = jgetSelectByRow($('#ram'));
     var component = choices[ramselect.val()];
@@ -823,66 +887,8 @@ function changeRam(e, direction, silent){
     var need_hide;
     var max_count;
     if (direction == 'up' || direction == 'mock'){
-	// refactor that: #mother
 	var body = $('#mother').find('td.body');
-	if (body.text().match('4DDR3'))
-	    max_count = 4;
-	if (!max_count && body.text().match('2DDR3'))
-	    max_count = 2;
-
-	if (!max_count && body.text().match('4 x 1.5V'))
-	    max_count = 4;
-	if (!max_count && body.text().match('2 x 1.5V'))
-	    max_count = 2;
-
-	if (!max_count && body.text().match('4 DIMM DDR3'))
-	    max_count = 4;
-	if (!max_count && body.text().match('2 DIMM DDR3'))
-	    max_count = 2;
-
-	if (!max_count){
-	    // refactor that: 0
-	    var descr = jgetDescrByIndex(0);
-	    if (descr.text().match('4 x DDR3 DIMM'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('2 x DDR3 DIMM'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('Memory 4 x DIMM'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('Memory 2 x DIMM'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('DDR3\n4 szt.'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('DDR3\n2 szt.'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('Количество слотов памяти[ \t]*4'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('Количество слотов памяти[ \t]*2'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('Количество разъемов DDR3 4'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('Количество разъемов DDR3 2'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('4 x 1.5V DDR3'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('2 x 1.5V DDR3'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('Four 240-pin DDR3 SDRAM'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('Two 240-pin DDR3 SDRAM'))
-		max_count = 2;
-
-	    if (!max_count && descr.text().match('DDR3 4 szt.'))
-		max_count = 4;
-	    if (!max_count && descr.text().match('DDR3 2 szt.'))
-		max_count = 2;
-	}
+	max_count = getMaxRamFromMother(body);
 	new_count = count + 1;
     }
     else if (direction == 'down'){
@@ -1063,9 +1069,9 @@ function changePinnedForced(pins){
 	    pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');
 	    if(pinnedChanged){
 		break;
-	    }		
+	    }
 	}
-    }    
+    }
     return pinnedChanged;
 }
 
@@ -1113,7 +1119,7 @@ function GCheaperGBeater(){
     var GBetter = function(e){
 	var direction = 'up';
 	var pins = getSortedPins(direction);
-	if (!changePinnedForced(pins))	    	
+	if (!changePinnedForced(pins))
 	    changePeriferyComponent(pins);
     };
     $('#gcheaper').click(GCheaper);
