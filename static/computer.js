@@ -625,8 +625,6 @@ function changeSocket(new_cats, body, direction){
 	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
 
 	var appropriate_other_component;
-	log("++++++++++++++++++++++++++++++");
-	log(appr_components);
 	if (!appr_components[1])
 	    return false;
 	if (!appr_components[0])
@@ -1042,7 +1040,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 			 if (changeSocket(appr_cats, model_body, pins.delta))
 			     change();
 			 else{
-			     log(model_body);
+			     //log(model_body);
 			     //new_option.remove();
 			 }
 		     },
@@ -1062,10 +1060,13 @@ function changePinnedForced(pins){
 	while(pins.pinned.length > 0){
 	    pins.highest = pins.pinned.pop();
 	    old_component = new_model[pins.highest['_id']];
-	    if(changePinedComponent(old_component, pins, 'no_perifery'))
+	    pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');
+	    if(pinnedChanged){
 		break;
+	    }		
 	}
-    }
+    }    
+    return pinnedChanged;
 }
 
 
@@ -1112,7 +1113,8 @@ function GCheaperGBeater(){
     var GBetter = function(e){
 	var direction = 'up';
 	var pins = getSortedPins(direction);
-	changePinnedForced(pins);
+	if (!changePinnedForced(pins))	    	
+	    changePeriferyComponent(pins);
     };
     $('#gcheaper').click(GCheaper);
     $('#gbetter').click(GBetter);
