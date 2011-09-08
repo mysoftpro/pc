@@ -1009,6 +1009,36 @@ function changeRamIfPossible(old_component, pins){
 }
 
 
+
+function changeComponent(body, new_component, old_component, delta){
+ 
+    var change = function(){
+	var select = jgetSelect(body);
+	var new_option = jgetOption(select, new_component['_id']);
+	select.val(new_option.val());
+	jgetChosenTitle(select).text(new_option.text());
+	componentChanged({'target':select[0]});
+	if(isRam(body))
+	    changeRam('e', 'mock');
+    };
+    
+    var new_cats = getCatalogs(new_component);
+
+    if ((isProc(body) || isMother(body))
+	&& !isEqualCatalogs(new_cats, getCatalogs(old_component))){
+	confirmPopup(function(){
+			 if (changeSocket(new_cats, body, delta))
+			     change();
+		     },
+		     function(){});
+    }
+    else{
+	change();
+    }   
+}
+
+
+
 function changePinedComponent(old_component, pins, no_perifery){
 
     var old_cats = getCatalogs(old_component);
@@ -1029,33 +1059,34 @@ function changePinedComponent(old_component, pins, no_perifery){
 	return false;
     }
     var appr_component = appr_components[0];
-    var change = function(){
-	var select = jgetSelect(model_body);
-	var new_option = jgetOption(select, appr_component['_id']);
-	select.val(new_option.val());
-	jgetChosenTitle(select).text(new_option.text());
-	componentChanged({'target':select[0]});
-	if(isRam(model_body))
-	    changeRam('e', 'mock');
-    };
+    
+    // var change = function(){
+    // 	var select = jgetSelect(model_body);
+    // 	var new_option = jgetOption(select, appr_component['_id']);
+    // 	select.val(new_option.val());
+    // 	jgetChosenTitle(select).text(new_option.text());
+    // 	componentChanged({'target':select[0]});
+    // 	if(isRam(model_body))
+    // 	    changeRam('e', 'mock');
+    // };
 
-    var appr_cats = getCatalogs(appr_component);
+    // var appr_cats = getCatalogs(appr_component);
 
-    if ((isProc(model_body) || isMother(model_body))
-	&& !isEqualCatalogs(appr_cats, old_cats)){
-	confirmPopup(function(){
-			 if (changeSocket(appr_cats, model_body, pins.delta))
-			     change();
-			 else{
-			     //log(model_body);
-			     //new_option.remove();
-			 }
-		     },
-		     function(){});
-    }
-    else{
-	change();
-    }
+    // if ((isProc(model_body) || isMother(model_body))
+    // 	&& !isEqualCatalogs(appr_cats, old_cats)){
+    // 	confirmPopup(function(){
+    // 			 if (changeSocket(appr_cats, model_body, pins.delta))
+    // 			     change();
+    // 			 else{
+    // 			     //log(model_body);
+    // 			     //new_option.remove();
+    // 			 }
+    // 		     },
+    // 		     function(){});
+    // }
+    // else{
+    // 	change();
+    // }
     return true;
 }
 
