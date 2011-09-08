@@ -96,7 +96,7 @@ function _jgetBuild(){
 var jgetBuild = _.memoize(_jgetBuild,function(){return 0;});
 
 function _jgetWindows(){
-    return $('#owindows');
+    return $('#installing');
 }
 var jgetWindows = _.memoize(_jgetWindows, function(){return 0;});
 
@@ -173,12 +173,20 @@ function recalculate(){
 	tottal +=300;
     }
     var lp = jgetLargePrice();
-    lp.text(tottal);
-    blink(lp, '#222');
+    var old_tottal = parseInt(jgetLargePrice().text());
+    if (tottal != old_tottal){
+	lp.text(tottal);
+	blink(lp, '#222');	
+    }
+    
     var lowest = Array.sort(pins,function(x1,x2){return x1-x2;})[0];
     var pin = jgetLargePin();
-    pin.text(Math.round(lowest*10)/10);
-    blink(pin, '#222');
+    var old_pin = parseFloat(jgetLargePin().text());
+    var new_pin = Math.round(lowest*10)/10;
+    if (new_pin != old_pin){
+	pin.text(new_pin);
+	blink(pin, '#222');	
+    }    
 }
 
 function getCatalogs(component){
@@ -780,29 +788,25 @@ function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
 	var _id = target.val();
-	// if (_(['oinstalling','odelivery','obuild']).any(function(el){return el == _id;})){
-	//     recalculate();
-	// }
-	// else{
-	    // var tr = $('#' + _id.substring(1,_id.length));
-	    // var op = tr.find('option').first();
-	    // var select = jgetSelect(tr.children().first());
+	log(_id);
+	if (_id == 'oinstalling' || _id == 'obuild'){
+	    recalculate();
+	    return;
+	}
+	var op = jgetPeriferyOp(_id);
+	var select = op.parent();
 
-	    var op = jgetPeriferyOp(_id);
-	    var select = op.parent();
+	if (select[0].tagName == 'OPTGROUP')
+	    select = select.parent();
 
-	    if (select[0].tagName == 'OPTGROUP')
-		select = select.parent();
-
-	    if (!target.is(':checked')){
-		select.val(op.val());
-		jgetChosenTitle(select).text(op.text());
-		componentChanged({'target':select[0],'no_desc':true});
-	    }
-	    else{
-		jgetReset(jgetBody(select)).click();
-	    }
-	//}
+	if (!target.is(':checked')){
+	    select.val(op.val());
+	    jgetChosenTitle(select).text(op.text());
+	    componentChanged({'target':select[0],'no_desc':true});
+	}
+	else{
+	    jgetReset(jgetBody(select)).click();
+	}
     }
     $('#options input').change(substructAdd);
 }
