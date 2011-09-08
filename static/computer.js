@@ -176,17 +176,17 @@ function recalculate(){
     var old_tottal = parseInt(jgetLargePrice().text());
     if (tottal != old_tottal){
 	lp.text(tottal);
-	blink(lp, '#222');	
+	blink(lp, '#222');
     }
-    
+
     var lowest = Array.sort(pins,function(x1,x2){return x1-x2;})[0];
     var pin = jgetLargePin();
     var old_pin = parseFloat(jgetLargePin().text());
     var new_pin = Math.round(lowest*10)/10;
     if (new_pin != old_pin){
 	pin.text(new_pin);
-	blink(pin, '#222');	
-    }    
+	blink(pin, '#222');
+    }
 }
 
 function getCatalogs(component){
@@ -505,7 +505,7 @@ var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return s
 
 var doNotAsk = false;
 
-function confirmPopup(message, success, fail){
+function confirmPopup(success, fail){
 
     success();
     // if (doNotAsk){
@@ -659,77 +659,48 @@ var doNotStress = false;
 // may be instead of jgetBody, just return catalogs, and part?
 function cheaperBetter(){
     chbeQueue = [];
-    function _cheaperBetter(prev_next){
-	function handler(e){
-	    try{
+    function _cheaperBetter(e, direction){//prev_next
+	e.preventDefault();
+	var target = $(e.target);
+	var select = jgetSelect(target);
 
-		e.preventDefault();
-		var target = $(e.target);
-		var select = jgetSelect(target);
-
-		// do not stress users!
-		doNotStress = true;
-		var body = jgetBody(select).click();
-
-		var select_val = select.val();
-		var opts = fastGetOptionForChBe(select);
-		var opts_values = _(opts).map(function(o){return $(o).val();});
-		var current_option;
-		for(var i=0,l=opts.length;i<l;i++){
-		    var op = $(opts[i]);
-		    if (op.val() == select_val){
-			current_option = op;
-			break;
-		    }
-		}
-		var current_option_val = $(current_option).val();
-		var index = opts_values.indexOf(current_option_val);
-		var new_index = prev_next(i);
-		if (new_index < 0 || new_index>=opts_values.length)
-		    return;
-		var new_option = $(opts[new_index]);
-
-		var new_option_val = new_option.val();
-		var current_cats = getCatalogs(choices[current_option_val]);
-		var new_cats = getCatalogs(choices[new_option_val]);
+	// do not stress users!
+	doNotStress = true;
+	var body = jgetBody(select).click();
+	var old_component = choices[select.val()];
+	var appr_components = getNearestComponent(old_component.price,
+						  getCatalogs(old_component),
+						  direction, false);
 
 
-		var change = function(){
-		    select.val(new_option.val());
-		    jgetChosenTitle(select).text(new_option.text());
-		    componentChanged({'target':select[0]});
-		};
-		if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
-		    // TODO! check what is changed. proc or mother. it is easy to do it by obtaining body, then part name from model_parts
-		    // by body id. than it is possible to get cyr name for the component from parts_names
-		    // IF VIDEO IS JUST - just do change()!
-		    confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-				 function(){
-				     // if (isMother){
-				     // 	 var ramselect = jgetSelectByRow($('#ram'));
-				     // 	 var rambody = jgetBody(ramselect);
-				     // 	 var ram= new_model[ramselect.val()];
-				     // 	 if (ram['count'] && ram['count']<)
-				     // }
-				     if (changeSocket(new_cats, jgetBody(select), prev_next(0)))
-					 change();
-				     else{
-					 new_option.remove();
-				     }
-				 },
-				 function(){});
-		}
-		else{
-		    change();
-		}
-	    } catch (x) {
-		log(x);
-	    }
+	if (!appr_components[0])
+	    return;
+	var new_component = appr_components[0];
+	var new_cats = getCatalogs(new_component);
+	var new_option = jgetOption(select, new_component['_id']);
+
+	var change = function(){
+	    select.val(new_option.val());
+	    jgetChosenTitle(select).text(new_option.text());
+	    componentChanged({'target':select[0]});
+	};
+	if ((isProc(body) || isMother(body)) 
+	    && !isEqualCatalogs(getCatalogs(old_component), new_cats)){
+	    confirmPopup(function(){
+			     if (changeSocket(new_cats, jgetBody(select), direction))
+				 change();
+			     else{
+				 new_option.remove();
+			     }
+			 },
+			 function(){});
 	}
-	return handler;
+	else{
+	    change();
+	}
     }
-    $('.cheaper').click(_cheaperBetter(function(i){return i-1;}));
-    $('.better').click(_cheaperBetter(function(i){return i+1;}));
+    $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
+    $('.better').click(function(e){_cheaperBetter(e,1);});
 }
 
 
@@ -761,8 +732,7 @@ function reset(){
 			      componentChanged({'target':_select[0],'component_color':'transparent'});
 			  }
 			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
-			      confirmPopup("Cокет процессора отличается от сокета выбранной сейчас материнской платы.",
-					   function(){
+			      confirmPopup(function(){
 					       var other_body = jgetSocketOpositeBody(body)[0];
 					       change(jgetSelect(other_body));
 					       change(select);
@@ -943,8 +913,7 @@ function manualChange(e){
     var current_cats = getCatalogs(filterByCatalogs(_(new_model).values(), new_cats)[0]);
     //var current_cats = getCatalogs(new_model[select.val()]);
     if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
-	confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-		     function(){
+	confirmPopup(function(){
 			 if (changeSocket(new_cats, body, -1))
 			     componentChanged(e);
 		     },
@@ -1074,8 +1043,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 
     if ((isProc(model_body) || isMother(model_body))
 	&& !isEqualCatalogs(appr_cats, old_cats)){
-	confirmPopup("Вы выбрали сокет процессора, не совместимый с сокетом материнской платы.",
-		     function(){
+	confirmPopup(function(){
 			 if (changeSocket(appr_cats, model_body, pins.delta))
 			     change();
 			 else{
