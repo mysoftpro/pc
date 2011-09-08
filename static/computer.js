@@ -1,77 +1,9 @@
-// like this code? i`ll such develop for you! just call +79114691892
-// model, new_model => { 19165={...}, 17575={...}, 10661={...}, ещё...}
-// model_parts { 19165="case", 17575="ram", 10661="hdd", ещё...}
-// parts_names => { sound="Звуковая карта", lan="Сетевая карта", ram="Память", ещё...}
-// model is stayed untached. only new model is changed.
-// model ids are equal to td.body ids. they are untoched also
-// new model ids are equal to select.val()
 var log = console.log;
-
 
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
-
-// var masked = false;
-
-// function makeMask(action, _closing){
-//     function _makeMask(e){
-// 	try{
-// 	    if (e)
-// 		e.preventDefault();
-// 	    var maskHeight = $(document).height();
-// 	    var maskWidth = $(window).width();
-// 	    $('#mask').css({'width':maskWidth,'height':maskHeight})
-// 		.fadeIn(400)
-// 		.fadeTo("slow",0.9);
-// 	    var winH = $(window).scrollTop();
-// 	    var winW = $(window).width();
-
-// 	    var details = $('#details');
-
-// 	    var _left = winW/2-details.width()/2;
-// 	    var _top;
-// 	    if (winH == 0)
-// 		_top = 80;
-// 	    else
-// 		_top = winH+80;
-// 	    details.css('top', _top);
-// 	    details.css('left', _left);
-
-// 	    action();
-
-// 	    function closing(){
-// 	    }
-// 	    details.fadeIn(600, closing);
-// 	    masked = true;
-// 	    $('#details.close').click(function (e) {
-// 					  e.preventDefault();
-// 					  $('#mask').hide();
-// 					  details.hide();
-// 					  masked = false;
-// 					  _closing();
-// 				      });
-// 	    $('#mask').click(function () {
-// 				 $(this).hide();
-// 				 details.hide();
-// 				 masked = false;
-// 				 _closing();
-// 		     });
-
-// 	    $(document.documentElement).keyup(function (event) {
-// 						  if (event.keyCode == '27') {
-// 						      $('#mask').click();
-// 						  }
-// 					      });
-// 	}
-// 	catch (e){
-// 	    log(e);
-// 	}
-//     }
-//     return _makeMask;
-// }
-
 
 function blink($target, bcolor){
     $target.css('background-color','#7B9C0A');
@@ -208,9 +140,12 @@ function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
 				     var cats = getCatalogs(c).slice(0, catalogs.length);
 				     // this func is used for models and for choices
-				     // _sli = 2 allow to get specific part from model, by part catalogs
-				     // ["7363", "7388", "7449"] - with _sli = 2 will return all mothers(["7363", "7388"] )
-				     // from model. if not limit _sli - it is possible to return all mothers 1155 from choices
+				     // _sli = 2 allow to get specific part from model,
+				     //  by part catalogs
+				     // ["7363", "7388", "7449"] - with _sli = 2 will return 
+				     // all mothers(["7363", "7388"] )
+				     // from model. if not limit _sli - it is possible to 
+				     //return all mothers 1155 from choices
 				     var _sli = 2;
 				     if (no_slice)
 					 _sli = cats.length;
@@ -671,33 +606,10 @@ function cheaperBetter(){
 	var appr_components = getNearestComponent(old_component.price,
 						  getCatalogs(old_component),
 						  direction, false);
-
-
 	if (!appr_components[0])
 	    return;
 	var new_component = appr_components[0];
-	var new_cats = getCatalogs(new_component);
-	var new_option = jgetOption(select, new_component['_id']);
-
-	var change = function(){
-	    select.val(new_option.val());
-	    jgetChosenTitle(select).text(new_option.text());
-	    componentChanged({'target':select[0]});
-	};
-	if ((isProc(body) || isMother(body)) 
-	    && !isEqualCatalogs(getCatalogs(old_component), new_cats)){
-	    confirmPopup(function(){
-			     if (changeSocket(new_cats, jgetBody(select), direction))
-				 change();
-			     else{
-				 new_option.remove();
-			     }
-			 },
-			 function(){});
-	}
-	else{
-	    change();
-	}
+	changeComponent(body, new_component, old_component);
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
     $('.better').click(function(e){_cheaperBetter(e,1);});
@@ -719,31 +631,9 @@ function reset(){
 			  var body = jgetBody(select);
 			  var _id = body.attr('id');
 
-			  var component_after_reset = model[_id];
-			  var component_before_reset = choices[select.val()];
-			  var cats_after_reset = getCatalogs(component_after_reset);
-			  var cats_before_reset = getCatalogs(component_before_reset);
-			  function change(_select){
-			      var __body = jgetBody(_select);
-			      var __id = __body.attr('id');
-			      _select.val(__id);
-			      jgetChosenTitle(_select).text(jgetOption(_select, __id).text());
-			      __body.click();
-			      componentChanged({'target':_select[0],'component_color':'transparent'});
-			  }
-			  if ((isProc(body) || isMother(body)) &&  !isEqualCatalogs(cats_after_reset, cats_before_reset)){
-			      confirmPopup(function(){
-					       var other_body = jgetSocketOpositeBody(body)[0];
-					       change(jgetSelect(other_body));
-					       change(select);
-					   },
-					   function(){});
-			  }
-			  else{
-			      change(select);
-			  }
-
-
+			  var new_component = model[_id];
+			  var old_component= choices[select.val()];
+			  changeComponent(body, new_component, old_component);
 		     });
 }
 
@@ -909,19 +799,10 @@ function installRamCount(){
 function manualChange(e){
     var select = $(e.target);
     var body = jgetBody(select);
-    var new_cats = getCatalogs(choices[select.val()]);
-    var current_cats = getCatalogs(filterByCatalogs(_(new_model).values(), new_cats)[0]);
-    //var current_cats = getCatalogs(new_model[select.val()]);
-    if ((isProc(body) || isMother(body)) && !isEqualCatalogs(current_cats, new_cats)){
-	confirmPopup(function(){
-			 if (changeSocket(new_cats, body, -1))
-			     componentChanged(e);
-		     },
-		     function(){});
-    }
-    else{
-	componentChanged(e);
-    }
+    var new_component = choices[select.val()];
+    var old_component = filterByCatalogs(_(new_model).values(),
+					 getCatalogs(new_component))[0];
+    changeComponent(body, new_component, old_component);
 }
 
 function getSortedPins(direction){
@@ -1010,8 +891,8 @@ function changeRamIfPossible(old_component, pins){
 
 
 
-function changeComponent(body, new_component, old_component, delta){
- 
+function changeComponent(body, new_component, old_component){
+
     var change = function(){
 	var select = jgetSelect(body);
 	var new_option = jgetOption(select, new_component['_id']);
@@ -1021,20 +902,20 @@ function changeComponent(body, new_component, old_component, delta){
 	if(isRam(body))
 	    changeRam('e', 'mock');
     };
-    
+
     var new_cats = getCatalogs(new_component);
 
     if ((isProc(body) || isMother(body))
 	&& !isEqualCatalogs(new_cats, getCatalogs(old_component))){
 	confirmPopup(function(){
-			 if (changeSocket(new_cats, body, delta))
+			 if (changeSocket(new_cats, body, new_component.price-old_component.price))
 			     change();
 		     },
 		     function(){});
     }
     else{
 	change();
-    }   
+    }
 }
 
 
@@ -1059,34 +940,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 	return false;
     }
     var appr_component = appr_components[0];
-    
-    // var change = function(){
-    // 	var select = jgetSelect(model_body);
-    // 	var new_option = jgetOption(select, appr_component['_id']);
-    // 	select.val(new_option.val());
-    // 	jgetChosenTitle(select).text(new_option.text());
-    // 	componentChanged({'target':select[0]});
-    // 	if(isRam(model_body))
-    // 	    changeRam('e', 'mock');
-    // };
-
-    // var appr_cats = getCatalogs(appr_component);
-
-    // if ((isProc(model_body) || isMother(model_body))
-    // 	&& !isEqualCatalogs(appr_cats, old_cats)){
-    // 	confirmPopup(function(){
-    // 			 if (changeSocket(appr_cats, model_body, pins.delta))
-    // 			     change();
-    // 			 else{
-    // 			     //log(model_body);
-    // 			     //new_option.remove();
-    // 			 }
-    // 		     },
-    // 		     function(){});
-    // }
-    // else{
-    // 	change();
-    // }
+    changeComponent(model_body, appr_component, old_component);
     return true;
 }
 
@@ -1176,13 +1030,6 @@ $(function(){
 	  $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
-
-	  // $('#donotask').change(function(e){
-	  // 			    if ($(e.target).is(':checked')){
-	  // 				doNotAsk = true;
-	  // 			    }
-	  // 			});
-
       } catch (x) {
 	  log(x);
       }
