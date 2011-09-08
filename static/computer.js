@@ -943,13 +943,41 @@ function manualChange(e){
     }
 }
 
-function getSortedPins(){
+function getSortedPins(direction){
+
     var pins = [];
     for (var id in new_model){
 	pins.push({'_id':id,'pin':calculatePin(new_model[id])});
     }
-    var sorted = Array.sort(pins,function(x1,x2){return x1['pin']-x2['pin'];});
-    return sorted;
+
+    pins = Array.sort(pins,function(x1,x2){return x1['pin']-x2['pin'];});
+    var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
+
+    var lowest = pinned.first();
+    var highest = pinned.last();
+
+    var perifery = _(pins).filter(function(x){return x['pin']==8;});
+    perifery =perifery
+	.sort(function(el1, el2){
+		  return choices[el1._id].price - choices[el2._id].price;
+	      });
+    perifery = _(perifery).filter(function(el){return !el['_id'].match('no');});
+    var delta = -1;
+    if (direction == 'up'){
+	delta = 1;
+	perifery = perifery.reverse();
+	pinned = _(pinned.reverse());
+	lowest = pinned.first();
+	highest = pinned.last();
+    }
+    return {
+	pins:pins,
+	highest:highest,
+	lowest:lowest,
+	pinned:pinned.toArray(),
+	perifery:perifery,
+	delta:delta
+    };
 }
 
 
@@ -974,26 +1002,24 @@ function changeRamIfPossible(direction, highest, lowest, model_body, old_compone
 }
 
 
-function changePinedComponent(old_component, pins, highest, lowest, direction, stop){
+function changePinedComponent(old_component, pins, no_perifery){
 
     var old_cats = getCatalogs(old_component);
     var model_component = filterByCatalogs(_(model).values(),
 					   old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
     if (isRam(model_body)){
-	if (changeRamIfPossible(direction, highest,
-				lowest, model_body, old_component))
+	if (changeRamIfPossible(pins.direction, pins.highest,
+				pins.lowest, model_body, old_component))
 	    return true;
     }
-
     var appr_components = getNearestComponent(old_component.price,
-					      old_cats, -1, false);
+					      old_cats, pins.delta, false);
     // no appr component for that direction!
     if (!appr_components[0]){
-	log('done');
-	log(stop);
-	if (!stop)
-	    changePeriferyComponent(pins, highest, lowest, direction, 'stop');
+	if (!no_perifery){
+	    changePeriferyComponent(pins);
+	}
 	return false;
     }
     var appr_component = appr_components[0];
@@ -1020,44 +1046,35 @@ function changePinedComponent(old_component, pins, highest, lowest, direction, s
 		     function(){});
     }
     else{
-	// TODO! RAM
 	change();
     }
     return true;
 }
 
-function changePeriferyComponent(pins, highest, lowest, direction, stop){
-    var deltas = {'up':+1,'down':-1};
-    var perifery = _(pins)
-	.filter(function(x){return x['pin']==8;});
+function changePeriferyComponent(pins){
 
-    perifery =perifery
-	.sort(function(el1, el2){
-		  return choices[el1._id].price - choices[el2._id].price;
-	      });
-    perifery = _(perifery).filter(function(el){return !el['_id'].match('no');});
-    if (direction == 'up')
-	perifery = perifery.reverse();
-    var to_change = choices[perifery.pop()._id];
-    var appr_components = getNearestComponent(to_change.price,
-					      getCatalogs(to_change),
-					      deltas[direction], false);
+    var to_change = choices[pins.perifery.pop()._id];
+    var appr_components = getNearestComponent(to_change.price,getCatalogs(to_change),
+					      pins.delta, false);
     while (!appr_components[0] ){
-	if (perifery.length == 0){
-	    var old_component = new_model[highest['_id']];
-	    if (!stop){
-		log('o yeah!');
-		log(pins);
-		log(highest);
-		changePinedComponent(old_component, pins, highest['pin'],
-				     lowest['pin'], direction, 'stop');
-	    }		
+	if (pins.perifery.length == 0){
+	    var old_component = new_model[pins.highest['_id']];	    
+	    var pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');	    
+	    if (!pinnedChanged){
+		while(pins.pinned.length > 0){
+		    log('while');
+		    pins.highest = pins.pinned.pop();
+		    old_component = new_model[pins.highest['_id']];
+		    log(old_component);
+		    if(changePinedComponent(old_component, pins, 'no_perifery'))
+			break;
+		}
+	    }
 	    return;
 	}
-	to_change = choices[perifery.pop()._id];
-	appr_components = getNearestComponent(to_change.price,
-					      getCatalogs(to_change),
-					      deltas[direction], false);
+	to_change = choices[pins.perifery.pop()._id];
+	appr_components = getNearestComponent(to_change.price,getCatalogs(to_change),
+					      pins.delta, false);
     }
     var appr_component = appr_components[0];
     var model_component = filterByCatalogs(_(model).values(),
@@ -1074,22 +1091,13 @@ function changePeriferyComponent(pins, highest, lowest, direction, stop){
 
 function GCheaperGBeater(){
     var _GCheaperGBeater = function(direction){
-	var pins = getSortedPins();
-	var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
-	var lowest = pinned.first();
-	var highest = pinned.last();
-	if (direction == 'up'){
-	    var _lowest = lowest;
-	    lowest = highest;
-	    highest = _lowest;
-	}
-	if (highest.pin-lowest.pin>0.5){
-	    var old_component = new_model[highest['_id']];
-	    changePinedComponent(old_component, pins, highest['pin'],
-				 lowest['pin'], direction);
+	var pins = getSortedPins(direction);
+	if (pins.highest.pin-pins.lowest.pin>0.5){	    
+	    var old_component = new_model[pins.highest['_id']];
+	    changePinedComponent(old_component, pins);
 	}
 	else{
-	    changePeriferyComponent(pins, highest, lowest, direction);
+	    changePeriferyComponent(pins);
 	}
     };
     $('#gcheaper').click(function(e){_GCheaperGBeater('down');});
