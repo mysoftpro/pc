@@ -991,9 +991,6 @@ function getSortedPins(direction){
 
 
 function changeRamIfPossible(old_component, pins){
-    // TODO! artificial intelligence :) check PIN and ...
-    // if count undefined or 1, check if possible to incr/dec
-    // ram by changing planks, and their ammout (think about 8->6 or 4X1->2X2->1X4
 
     var retval = false;
     if (old_component.count){
@@ -1008,18 +1005,14 @@ function changeRamIfPossible(old_component, pins){
 	    retval = true;
 	}
 	else{
-	    // #1 max ram installed
-	    // #2 min ram installed. nothing to do. possible some
-	    // combinations of count but is is not here
-	    if (counters.max_count && counters.new_count> counters.max_count){
+	    //if (counters.max_count && counters.new_count> counters.max_count){
 		var appr_components = getNearestComponent(old_component.price,
 							  getCatalogs(old_component),
 							  pins.delta, false);
 
 		if (appr_components[0]){
 		    var new_component = appr_components[0];
-		    if (!new_component.count)
-			new_component['count'] = 1;
+		    new_component['count'] = 1;
 		    var ram_select = jgetSelectByRow($('#ram'));
 		    var ram_body = jgetBody(ram_select);
 		    var text = jgetChosenTitle(jgetSelect(ram_body)).text();
@@ -1028,21 +1021,16 @@ function changeRamIfPossible(old_component, pins){
 		    log(tottal_ram);
 		    var new_option = jgetOption(ram_select, new_component['_id']);
 		    var new_ramvolume = getRamFromText(new_option.text());
-		    if (pins.direction == 'up'){
-			var new_tottalram = new_ramvolume*new_component.count;
-			while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
-			    new_component.count +=1;
-			    new_tottalram = new_ramvolume*new_component.count;
-			    //thats all! just install new count to choices!
-			    //component will be changed later!
-			}
-		    }		    
+
+		    var new_tottalram = new_ramvolume*new_component.count;
+		    while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
+			new_component.count +=1;
+			new_tottalram = new_ramvolume*new_component.count;
+			//thats all! just install new count to choices!
+			//component will be changed later!
+		    }
 		}
-	    }
 	}
-    }
-    else{
-	//#1
     }
     return retval;
 }
