@@ -594,18 +594,25 @@ var doNotStress = false;
 // may be instead of jgetBody, just return catalogs, and part?
 function cheaperBetter(){
     chbeQueue = [];
-    function _cheaperBetter(e, direction){//prev_next
+    function _cheaperBetter(e, delta){//prev_next
 	e.preventDefault();
+	var direction = 'down';
+	if (delta > 0)
+	    direction = 'up';
 	var target = $(e.target);
 	var select = jgetSelect(target);
 
 	// do not stress users!
 	doNotStress = true;
-	var body = jgetBody(select).click();
+	var body = jgetBody(select);
 	var old_component = choices[select.val()];
+	if (isRam(body) 
+	    && changeRamIfPossible(old_component, direction))
+		return;
+	body.click();
 	var appr_components = getNearestComponent(old_component.price,
 						  getCatalogs(old_component),
-						  direction, false);
+						  delta, false);
 	if (!appr_components[0])
 	    return;
 	var new_component = appr_components[0];
@@ -649,7 +656,6 @@ function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
 	var _id = target.val();
-	log(_id);
 	if (_id == 'oinstalling' || _id == 'obuild'){
 	    recalculate();
 	    return;
@@ -845,25 +851,27 @@ function getSortedPins(direction){
 }
 
 
-function changeRamIfPossible(old_component, pins){
-
+function changeRamIfPossible(old_component, direction){
+    var delta = 1;
+    if (direction == 'down')
+	delta = -1;
     var retval = false;
     if (old_component.count){
-	var counters = changeRam('e',pins.direction, true);
+	var counters = changeRam('e',direction, true);
 	old_component.count = counters.count;
 	if (counters.count != counters.new_count
 	    && counters.new_count !=0
 	    && ((counters.max_count && counters.new_count<=counters.max_count)
 		|| !counters.max_count))
 	{
-	    changeRam('e',pins.direction);
+	    changeRam('e',direction);
 	    retval = true;
 	}
 	else{
 	    //if (counters.max_count && counters.new_count> counters.max_count){
 		var appr_components = getNearestComponent(old_component.price,
 							  getCatalogs(old_component),
-							  pins.delta, false);
+							  delta, false);
 
 		if (appr_components[0]){
 		    var new_component = appr_components[0];
@@ -873,7 +881,6 @@ function changeRamIfPossible(old_component, pins){
 		    var text = jgetChosenTitle(jgetSelect(ram_body)).text();
 		    var ramvolume = getRamFromText(text);
 		    var tottal_ram = ramvolume*counters.count;
-		    log(tottal_ram);
 		    var new_option = jgetOption(ram_select, new_component['_id']);
 		    var new_ramvolume = getRamFromText(new_option.text());
 
@@ -927,10 +934,8 @@ function changePinedComponent(old_component, pins, no_perifery){
     var model_component = filterByCatalogs(_(model).values(),
 					   old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
-    if (isRam(model_body)){
-	if (changeRamIfPossible(old_component, pins))
+    if (isRam(model_body) && changeRamIfPossible(old_component, pins.direction))
 	    return true;
-    }
     var appr_components = getNearestComponent(old_component.price,
 					      old_cats, pins.delta, false);
     // no appr component for that direction!
