@@ -976,12 +976,13 @@ function getSortedPins(direction){
 	lowest:lowest,
 	pinned:pinned.toArray(),
 	perifery:perifery,
-	delta:delta
+	delta:delta,
+	direction:direction
     };
 }
 
 
-function changeRamIfPossible(direction, highest, lowest, model_body, old_component){
+function changeRamIfPossible(direction, old_component){
     // TODO! artificial intelligence :) check PIN and ...
     // if count undefined or 1, check if possible to incr/dec
     // ram by changing planks, and their ammout (think about 8->6 or 4X1->2X2->1X4
@@ -1009,8 +1010,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 					   old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
     if (isRam(model_body)){
-	if (changeRamIfPossible(pins.direction, pins.highest,
-				pins.lowest, model_body, old_component))
+	if (changeRamIfPossible(pins.direction, old_component))
 	    return true;
     }
     var appr_components = getNearestComponent(old_component.price,
@@ -1062,10 +1062,8 @@ function changePeriferyComponent(pins){
 	    var pinnedChanged = changePinedComponent(old_component, pins, 'no_perifery');	    
 	    if (!pinnedChanged){
 		while(pins.pinned.length > 0){
-		    log('while');
 		    pins.highest = pins.pinned.pop();
 		    old_component = new_model[pins.highest['_id']];
-		    log(old_component);
 		    if(changePinedComponent(old_component, pins, 'no_perifery'))
 			break;
 		}
