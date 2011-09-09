@@ -178,8 +178,7 @@ function componentChanged(maybe_event){
 	var body = jgetBody(target);
 	var select = jgetSelect(body);
 	var new_option = jgetOption(select, new_id);
-	var new_name = new_option.text();
-
+	var new_name = new_option.text().replace(/[0-9 ]+р/,'');
 	if (new_name.match('нет'))
 	    new_name = 'нет';
 
@@ -195,11 +194,13 @@ function componentChanged(maybe_event){
 
 	recalculate();
 
-	if (isRam(body) && new_name.length>60){
-	    new_name = new_name.substring(0,60);
+	if (isRam(body)){
+	    body.text(new_name.substring(0,60));
 	}
-
-	body.html(new_name.substring(0,80));
+	else{
+	    body.text(new_name.substring(0,80));    
+	}
+	
 
 	var mult = 1;
 	// may be just count is changed
@@ -553,9 +554,13 @@ function jgetSocketOpositeBody(body){
 function getNearestComponent(price, catalogs, delta, same_socket){
     var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
     var diff = 1000000;
-    var appr_component;
+    var component;
+    // var minus_component;
+    // var plus_component;
+    // var minus_diff;
+    // var plus_diff;
     var spare_diff = 1000000;
-    var spare_appr_component;
+    var spare_component;
 
     for (var i=0,l=other_components.length;i<l;i++){
 	var _diff = other_components[i].price - price;
@@ -563,16 +568,16 @@ function getNearestComponent(price, catalogs, delta, same_socket){
 	    continue;
 	if (Math.abs(_diff)<diff){
 	    if ((_diff < 0 && delta < 0) || (_diff > 0 && delta > 0)){
-		appr_component = other_components[i];
+		component = other_components[i];
 		diff = Math.abs(_diff);
 	    }
 	}
 	if (Math.abs(_diff)<spare_diff){
-		spare_appr_component = other_components[i];
+		spare_component = other_components[i];
 	    spare_diff = Math.abs(_diff);
 	}
     }
-    return [appr_component, spare_appr_component];
+    return [component, spare_component];
 }
 
 
@@ -599,7 +604,7 @@ function changeSocket(component, body, direction){
 	new_component = appr_components[1];
     else
 	new_component = appr_components[0];
-    
+
     changeComponent(other_body, new_component, old_component, 'nosocket');
     return true;
 }
@@ -916,6 +921,32 @@ function changeRamIfPossible(old_component, direction){
 }
 
 
+function shadowCheBe(_delta, body, component){
+    
+    var next_components = getNearestComponent(component.price,
+					      getCatalogs(component),
+					      _delta,
+					      false);
+    var next = body.next().next().next();
+    var previous = next.next();
+    function swap(){
+	var _next = next;
+	next = previous;
+	previous = _next;
+    }
+    var retval = false;
+    if (_delta>0)
+	swap();
+    if (!next_components[0]){
+	next.css({'opacity':'0.5','cursor':'default'});
+	next.children().css({'cursor':'default'});
+	retval = true;
+    }
+    previous.css({'opacity':'1.0','cursor':'pointer'});
+    previous.children().css({'cursor':'pointer'});
+    return retval;
+}
+
 
 function changeComponent(body, new_component, old_component, nosocket){
     var new_cats = getCatalogs(new_component);
@@ -931,35 +962,14 @@ function changeComponent(body, new_component, old_component, nosocket){
 	    componentChanged({'target':select[0],'no_desc':true});
 	if(isRam(body))
 	    changeRam('e', 'mock');
-	var next_components = getNearestComponent(new_component.price,
-						  new_cats,
-						  delta,
-						  false);
-	var next = body.next().next().next();
-	var previous = next.next();
-	function swap(){
-	    var _next = next;
-	    next = previous;
-	    previous = _next;
-	}
-	log(delta);
-	// if (delta == 0){
-	    
-	// }
-	if (delta>0)
-	    swap();
-	// else if (delta == 0 && next_components[1].price > new_component.price)
-	//     swap();
-	log(new_component);
-	log(old_component);
-	if (!next_components[0]){
-	    next.css({'opacity':'0.5','cursor':'default'});
-	    next.children().css({'cursor':'default'});
-	}
-	log(next_components);
-	previous.css({'opacity':'1.0','cursor':'pointer'});
-	previous.children().css({'cursor':'pointer'});
 
+	
+	if (delta != 0)
+	    shadowCheBe(delta, body, new_component);
+	else{
+	    if (!shadowCheBe(1, body, new_component))
+		shadowCheBe(-1, body, new_component);
+	}
     };
 
 
