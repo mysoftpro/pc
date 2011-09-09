@@ -1097,6 +1097,7 @@ $(function(){
 	  $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
+          $('#greset').click(function(){window.location.reload();});	  
       } catch (x) {
 	  log(x);
       }
