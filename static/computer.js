@@ -176,8 +176,9 @@ function componentChanged(maybe_event){
 	var target = $(maybe_event.target);
 	var new_id = target.val();
 	var body = jgetBody(target);
-
-	var new_name = target.find('option[value="'+target.val() + '"]').text();
+	var select = jgetSelect(body);
+	var new_option = jgetOption(select, new_id);
+	var new_name = new_option.text();
 
 	if (new_name.match('нет'))
 	    new_name = 'нет';
@@ -198,11 +199,7 @@ function componentChanged(maybe_event){
 	    new_name = new_name.substring(0,60);
 	}
 
-	body.html(new_name);
-
-	var component_color = '#404040';
-	if (maybe_event['component_color'])
-	    component_color = maybe_event['component_color'];
+	body.html(new_name.substring(0,80));
 
 	var mult = 1;
 	// may be just count is changed
@@ -210,13 +207,12 @@ function componentChanged(maybe_event){
 	    mult = new_component['count'];
 	jgetPrice(body).text(new_component.price*mult + ' р');
 
-	blink(jgetPrice(body), component_color);
+	blink(jgetPrice(body), '#404040');
 
 	var pin = calculatePin(new_component);
 	if (pin != 8){
 	    jgetPin(body).text(pin);
 	}
-
 
 	setPerifery(new_id, false);
 	setPerifery(old_id, true);
@@ -917,14 +913,11 @@ function changeRamIfPossible(old_component, direction){
 
 
 function changeComponent(body, new_component, old_component, nosocket){
-    log(changeComponent);
-    log(nosocket);
     var change = function(){
 	var select = jgetSelect(body);
 	var new_option = jgetOption(select, new_component['_id']);
 	select.val(new_option.val());
 	jgetChosenTitle(select).text(new_option.text());
-	//componentChanged({'target':select[0]});
 	if (!nosocket)
 	    componentChanged({'target':select[0]});
 	else
@@ -952,6 +945,15 @@ function changeComponent(body, new_component, old_component, nosocket){
     else{
 	change();
     }
+    
+// function shadowChBe(body, direction){
+//     var target = body.next().next().next();
+//     if (direction == 'up')
+// 	target = target.next();
+//     target.css({'opacity':'0.4','cursor':'default'});
+//     target.children().css({'cursor':'default'});
+// }
+
 }
 
 
