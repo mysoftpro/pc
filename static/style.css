@@ -568,6 +568,10 @@ color:#7b9c0a;
 .reset{
     padding-right:0px;
     text-align:right;
+    background-image:url('/static/reset_small.png');
+    background-repeat:no-repeat;
+    background-position: -1px 5px;
+    padding-left:24px;
 }
 
 #options{

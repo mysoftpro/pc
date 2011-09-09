@@ -189,13 +189,11 @@ function componentChanged(maybe_event){
 	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
 	var old_id = old_component['_id'];
 
-	// when recalculating ram, it is not needed to delete component
-	// because possible only count is changed
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
 	recalculate();
-	// TODO short names
+
 	if (isRam(body) && new_name.length>60){
 	    new_name = new_name.substring(0,60);
 	}
@@ -389,6 +387,8 @@ function installBodies(){
 	else{
 	    jgetPin(b).text('');
 	}
+	var te = b.text();
+	b.text(te.substring(0,80));
     }
     bodies.first().click();
     init = false;
@@ -576,39 +576,31 @@ function getNearestComponent(price, catalogs, direction, same_socket){
 }
 
 
-function changeSocket(new_cats, body, direction){
-    try{
-	var other_body_map = jgetSocketOpositeBody(body);
-	var other_body = other_body_map[0];
-	var mapping = other_body_map[1];
+function changeSocket(component, body, direction){
 
-	var other_catalogs;
-	for (var i=0,l=mapping.length;i<l;i++){
-	    if (isEqualCatalogs(mapping[i][0], new_cats)){
-		other_catalogs = mapping[i][1];
-		break;
-	    }
+    var other_body_map = jgetSocketOpositeBody(body);
+    var other_body = other_body_map[0];
+    var mapping = other_body_map[1];
+
+    var other_catalogs;
+    for (var i=0,l=mapping.length;i<l;i++){
+	if (isEqualCatalogs(mapping[i][0], getCatalogs(component))){
+	    other_catalogs = mapping[i][1];
+	    break;
 	}
-	var other_price = priceFromText(jgetPrice(other_body).text());
-	var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
-
-	var appropriate_other_component;
-	if (!appr_components[1])
-	    return false;
-	if (!appr_components[0])
-	    appropriate_other_component = appr_components[1];
-	else
-	    appropriate_other_component = appr_components[0];
-
-	var other_select = jgetSelect(other_body);
-	var other_option = jgetOption(other_select, appropriate_other_component['_id']);
-	other_select.val(other_option.val());
-	jgetChosenTitle(other_select).text(other_option.text());
-	componentChanged({'target':other_select[0],'no_desc':true});
-	return true;
-    } catch (x) {
-	log(x);
     }
+    var other_price = priceFromText(jgetPrice(other_body).text());
+    var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
+
+    var new_component;
+    if (!appr_components[1])
+	return false;
+    if (!appr_components[0])
+	new_component = appr_components[1];
+    else
+	new_component = appr_components[0];
+    changeComponent(other_body, new_component, component, 'nosocket');    
+    return true;
 }
 
 
@@ -924,33 +916,43 @@ function changeRamIfPossible(old_component, direction){
 
 
 
-function changeComponent(body, new_component, old_component){
-
+function changeComponent(body, new_component, old_component, nosocket){
+    log(changeComponent);
+    log(nosocket);
     var change = function(){
 	var select = jgetSelect(body);
 	var new_option = jgetOption(select, new_component['_id']);
 	select.val(new_option.val());
 	jgetChosenTitle(select).text(new_option.text());
-	componentChanged({'target':select[0]});
+	//componentChanged({'target':select[0]});
+	if (!nosocket)
+	    componentChanged({'target':select[0]});
+	else
+	    componentChanged({'target':select[0],'no_desc':true});
 	if(isRam(body))
 	    changeRam('e', 'mock');
     };
 
     var new_cats = getCatalogs(new_component);
-
-    if ((isProc(body) || isMother(body))
-	&& !isEqualCatalogs(new_cats, getCatalogs(old_component))){
-	confirmPopup(function(){
-			 if (changeSocket(new_cats, body, new_component.price-old_component.price))
-			     change();
-		     },
-		     function(){});
+    if (!nosocket){
+	
+	if ((isProc(body) || isMother(body))
+	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){
+	    confirmPopup(function(){
+			     if (changeSocket(new_component, body,
+					      new_component.price-old_component.price))
+				 change();
+			 },
+			 function(){});
+	}
+	else{
+	    change();
+	}
     }
     else{
 	change();
     }
 }
-
 
 
 function changePinedComponent(old_component, pins, no_perifery){
@@ -964,7 +966,7 @@ function changePinedComponent(old_component, pins, no_perifery){
     var appr_components = getNearestComponent(old_component.price,
 					      old_cats, pins.delta, false);
     // no appr component for that direction!
-    if (!appr_components[0]){
+    if (!appr_components[0]){	
 	if (!no_perifery){
 	    changePeriferyComponent(pins);
 	}
