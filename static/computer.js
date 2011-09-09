@@ -346,10 +346,10 @@ function installBodies(){
 		     var _id = target.attr('id');
 		     for (var i=0,l=bodies.length;i<l;i++){
 			 var _body = $(bodies.get(i));
-
+			 var select_block = jgetSelectBlock(_body);
 			 if (_body.attr('id') == _id){
 			     _body.hide();
-			     var select_block = _body.prev().show();
+			     select_block.show();
 			     if (doNotStress){
 				 doNotStress = false;
 			     }
@@ -358,9 +358,9 @@ function installBodies(){
 				 changeDescription(i,select.val(), true);
 			     }
 			 }
-			 else{
+			 else{			     
 			     _body.show();
-			     _body.prev().hide();
+			     select_block.hide();
 			 }
 		     }
 		     if (!init && $('#ramcount').length == 0){
@@ -407,6 +407,10 @@ function jgetSelect(target){
     return jgetSelectByRow(target);
 }
 
+function _jgetSelectBlock(body){
+    return body.prev();
+}
+var jgetSelectBlock = _.memoize(_jgetSelectBlock,function(body){return body.attr('id');});
 
 function _jgetBody(select){
     return select.parent().next();
