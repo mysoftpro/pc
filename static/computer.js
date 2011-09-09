@@ -56,6 +56,9 @@ function calculatePin(component){
     var body = jgetBodyById(old_component['_id']);
     if (isProc(body) || isMother(body) || isVideo(body)){
 	retval = Math.log(component.price/Course)*2.1-5;
+	retval = Math.round(retval*10)/10;
+	if (retval > 7.9)
+	    retval = 7.9;
     }
     if (isRam(body)){
 	var text = jgetChosenTitle(jgetSelect(body)).text();
@@ -111,10 +114,9 @@ function recalculate(){
 	blink(lp, '#222');
     }
 
-    var lowest = Array.sort(pins,function(x1,x2){return x1-x2;})[0];
     var pin = jgetLargePin();
     var old_pin = parseFloat(jgetLargePin().text());
-    var new_pin = Math.round(lowest*10)/10;
+    var new_pin = Array.sort(pins,function(x1,x2){return x1-x2;})[0];//
     if (new_pin != old_pin){
 	pin.text(new_pin);
 	blink(pin, '#222');
@@ -193,7 +195,7 @@ function componentChanged(maybe_event){
 	new_model[new_id] = new_component;
 
 	recalculate();
-
+	// TODO short names
 	if (isRam(body) && new_name.length>60){
 	    new_name = new_name.substring(0,60);
 	}
@@ -211,6 +213,12 @@ function componentChanged(maybe_event){
 	jgetPrice(body).text(new_component.price*mult + ' р');
 
 	blink(jgetPrice(body), component_color);
+
+	var pin = calculatePin(new_component);
+	if (pin != 8){
+	    jgetPin(body).text(pin);
+	}
+
 
 	setPerifery(new_id, false);
 	setPerifery(old_id, true);
@@ -337,42 +345,50 @@ function changeDescription(index, _id, show, data){
 function installBodies(){
     var init = true;
     var bodies = jgetBodies();
-	  bodies.click(function(e){
-			   if(e.target.tagName != 'TD')
-			       return;
-			   var target = $(e.target);
-			   var _id = target.attr('id');
-			   for (var i=0,l=bodies.length;i<l;i++){
-			       var _body = $(bodies.get(i));
+    bodies.click(function(e){
+		     if(e.target.tagName != 'TD')
+			 return;
+		     var target = $(e.target);
+		     var _id = target.attr('id');
+		     for (var i=0,l=bodies.length;i<l;i++){
+			 var _body = $(bodies.get(i));
 
-			       if (_body.attr('id') == _id){
-				   _body.hide();
-				   var select_block = _body.prev().show();
-				   if (doNotStress){
-				       doNotStress = false;
-				   }
-				   else{
-				       var select = jgetSelect(_body);
-				       changeDescription(i,select.val(), true);
-				   }
-			       }
-			       else{
-				   _body.show();
-				   _body.prev().hide();
-			       }
-			   }
-			   if (!init && $('#ramcount').length == 0){
-			       installRamCount();
-			       changeRam('e','mock');
-			   }
+			 if (_body.attr('id') == _id){
+			     _body.hide();
+			     var select_block = _body.prev().show();
+			     if (doNotStress){
+				 doNotStress = false;
+			     }
+			     else{
+				 var select = jgetSelect(_body);
+				 changeDescription(i,select.val(), true);
+			     }
+			 }
+			 else{
+			     _body.show();
+			     _body.prev().hide();
+			 }
+		     }
+		     if (!init && $('#ramcount').length == 0){
+			 installRamCount();
+			 changeRam('e','mock');
+		     }
 
-		       });
+		 });
     //what a fuck is that? ff caches select values? chosen sucks?
     for (var j=0,l=bodies.length;j<l;j++){
 	var b = $(bodies.get(j));
 	var select = jgetSelect(b);
 	select.val(b.attr('id'));
 	jgetChosenTitle(select).text(b.text());
+	
+	var pin = calculatePin(new_model[b.attr('id')]);
+	if (pin != 8){
+	    jgetPin(b).text(pin);
+	}
+	else{
+	    jgetPin(b).text('');
+	}
     }
     bodies.first().click();
     init = false;
@@ -408,6 +424,15 @@ function _jgetPrice(body){
 }
 
 var jgetPrice = _.memoize(_jgetPrice, function(body){return body.attr('id');});
+
+
+function _jgetPin(body){
+    return body.next().next();
+}
+
+var jgetPin = _.memoize(_jgetPin, function(body){return body.attr('id');});
+
+
 
 
 function _jgetReset(body){
