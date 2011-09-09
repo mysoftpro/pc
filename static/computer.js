@@ -550,7 +550,7 @@ function jgetSocketOpositeBody(body){
 }
 
 
-function getNearestComponent(price, catalogs, direction, same_socket){
+function getNearestComponent(price, catalogs, delta, same_socket){
     var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
     var diff = 1000000;
     var appr_component;
@@ -562,7 +562,7 @@ function getNearestComponent(price, catalogs, direction, same_socket){
 	if (_diff == 0)
 	    continue;
 	if (Math.abs(_diff)<diff){
-	    if ((_diff < 0 && direction < 0) || (_diff > 0 && direction > 0)){
+	    if ((_diff < 0 && delta < 0) || (_diff > 0 && delta > 0)){
 		appr_component = other_components[i];
 		diff = Math.abs(_diff);
 	    }
@@ -937,15 +937,26 @@ function changeComponent(body, new_component, old_component, nosocket){
 						  false);
 	var next = body.next().next().next();
 	var previous = next.next();
-	if (delta>0){
+	function swap(){
 	    var _next = next;
 	    next = previous;
 	    previous = _next;
 	}
+	log(delta);
+	// if (delta == 0){
+	    
+	// }
+	if (delta>0)
+	    swap();
+	// else if (delta == 0 && next_components[1].price > new_component.price)
+	//     swap();
+	log(new_component);
+	log(old_component);
 	if (!next_components[0]){
 	    next.css({'opacity':'0.5','cursor':'default'});
 	    next.children().css({'cursor':'default'});
 	}
+	log(next_components);
 	previous.css({'opacity':'1.0','cursor':'pointer'});
 	previous.children().css({'cursor':'pointer'});
 
