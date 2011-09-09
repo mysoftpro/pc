@@ -144,9 +144,9 @@ function filterByCatalogs(components, catalogs, no_slice){
 				     // this func is used for models and for choices
 				     // _sli = 2 allow to get specific part from model,
 				     //  by part catalogs
-				     // ["7363", "7388", "7449"] - with _sli = 2 will return 
+				     // ["7363", "7388", "7449"] - with _sli = 2 will return
 				     // all mothers(["7363", "7388"] )
-				     // from model. if not limit _sli - it is possible to 
+				     // from model. if not limit _sli - it is possible to
 				     //return all mothers 1155 from choices
 				     var _sli = 2;
 				     if (no_slice)
@@ -358,7 +358,7 @@ function installBodies(){
 				 changeDescription(i,select.val(), true);
 			     }
 			 }
-			 else{			     
+			 else{
 			     _body.show();
 			     select_block.hide();
 			 }
@@ -375,7 +375,7 @@ function installBodies(){
 	var select = jgetSelect(b);
 	select.val(b.attr('id'));
 	jgetChosenTitle(select).text(b.text());
-	
+
 	var pin = calculatePin(new_model[b.attr('id')]);
 	if (pin != 8){
 	    jgetPin(b).text(pin);
@@ -581,16 +581,16 @@ function changeSocket(component, body, direction){
     var other_body_map = jgetSocketOpositeBody(body);
     var other_body = other_body_map[0];
     var mapping = other_body_map[1];
-
+    var cats = getCatalogs(component);
     var other_catalogs;
     for (var i=0,l=mapping.length;i<l;i++){
-	if (isEqualCatalogs(mapping[i][0], getCatalogs(component))){
+	if (isEqualCatalogs(mapping[i][0], cats)){
 	    other_catalogs = mapping[i][1];
 	    break;
 	}
     }
-    var other_price = priceFromText(jgetPrice(other_body).text());
-    var appr_components = getNearestComponent(other_price, other_catalogs, direction, true);
+    var old_component = choices[jgetSelect(other_body).val()];
+    var appr_components = getNearestComponent(old_component.price, other_catalogs, direction, true);
 
     var new_component;
     if (!appr_components[1])
@@ -599,7 +599,8 @@ function changeSocket(component, body, direction){
 	new_component = appr_components[1];
     else
 	new_component = appr_components[0];
-    changeComponent(other_body, new_component, component, 'nosocket');    
+    
+    changeComponent(other_body, new_component, old_component, 'nosocket');
     return true;
 }
 
@@ -623,7 +624,7 @@ function cheaperBetter(){
 	doNotStress = true;
 	var body = jgetBody(select);
 	var old_component = choices[select.val()];
-	if (isRam(body) 
+	if (isRam(body)
 	    && changeRamIfPossible(old_component, direction))
 		return;
 	body.click();
@@ -653,7 +654,7 @@ function reset(){
 			  var target = $(e.target);
 			  var select = jgetSelect(target);
 			  var body = jgetBody(select);
-			  var _id = body.attr('id');			  
+			  var _id = body.attr('id');
 			  var new_component = model[_id];
 			  var old_component= choices[select.val()];
 			  changeComponent(body, new_component, old_component);
@@ -917,6 +918,8 @@ function changeRamIfPossible(old_component, direction){
 
 
 function changeComponent(body, new_component, old_component, nosocket){
+    var new_cats = getCatalogs(new_component);
+    var delta = new_component.price-old_component.price;
     var change = function(){
 	var select = jgetSelect(body);
 	var new_option = jgetOption(select, new_component['_id']);
@@ -928,36 +931,40 @@ function changeComponent(body, new_component, old_component, nosocket){
 	    componentChanged({'target':select[0],'no_desc':true});
 	if(isRam(body))
 	    changeRam('e', 'mock');
+	var next_components = getNearestComponent(new_component.price,
+						  new_cats,
+						  delta,
+						  false);
+	var next = body.next().next().next();
+	var previous = next.next();
+	if (delta>0){
+	    var _next = next;
+	    next = previous;
+	    previous = _next;
+	}
+	if (!next_components[0]){
+	    next.css({'opacity':'0.5','cursor':'default'});
+	    next.children().css({'cursor':'default'});
+	}
+	previous.css({'opacity':'1.0','cursor':'pointer'});
+	previous.children().css({'cursor':'pointer'});
+
     };
 
-    var new_cats = getCatalogs(new_component);
+
     if (!nosocket){
-	
 	if ((isProc(body) || isMother(body))
 	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){
 	    confirmPopup(function(){
 			     if (changeSocket(new_component, body,
-					      new_component.price-old_component.price))
+					      delta))
 				 change();
 			 },
 			 function(){});
-	}
-	else{
-	    change();
+	    return;
 	}
     }
-    else{
-	change();
-    }
-    
-// function shadowChBe(body, direction){
-//     var target = body.next().next().next();
-//     if (direction == 'up')
-// 	target = target.next();
-//     target.css({'opacity':'0.4','cursor':'default'});
-//     target.children().css({'cursor':'default'});
-// }
-
+    change();
 }
 
 
@@ -972,7 +979,7 @@ function changePinedComponent(old_component, pins, no_perifery){
     var appr_components = getNearestComponent(old_component.price,
 					      old_cats, pins.delta, false);
     // no appr component for that direction!
-    if (!appr_components[0]){	
+    if (!appr_components[0]){
 	if (!no_perifery){
 	    changePeriferyComponent(pins);
 	}
