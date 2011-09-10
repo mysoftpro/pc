@@ -105,7 +105,10 @@ guider.createGuider({
 	  var sign = '+=';	  
 	  if (target.attr('id') == 'ourcomments')
 	      sign = '-=';
-	  var manu = descr.find('.manu');
+	  var container = $('#descriptions');
+	  container.data('jScrollPanePosition', 0);
+	  container.css('top','0');
+	  var manu = descr.find('.manu');	  
 	  manu.animate({'margin-left':sign + 1000}, 500);
       }
       $('.inactive').click(swapTabs);
