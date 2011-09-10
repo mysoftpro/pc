@@ -91,25 +91,26 @@ guider.createGuider({
 	  target.unbind('click');
 	  active.click(swapTabs);
 
-	  var bodies = $('td.body');
-	  var current_body, current_index;
-	  for (var i=0,l=bodies.length;i<l;i++){
-	      var body = $(bodies.get(i));
-	      if (!body.is(':visible')){
-		  current_body = body;
-		  current_index = i;
-		  break;
-	      }
-	  }
-	  var descr = $($('.description').get(current_index));
+	  // var bodies = $('td.body');
+	  // var current_body, current_index;
+	  // for (var i=0,l=bodies.length;i<l;i++){
+	  //     var body = $(bodies.get(i));
+	  //     if (!body.is(':visible')){
+	  // 	  current_body = body;
+	  // 	  current_index = i;
+	  // 	  break;
+	  //     }
+	  // }
+	  //var descr = $($('.description').get(current_index));
 	  var sign = '+=';
 	  if (target.attr('id') == 'ourcomments')
 	      sign = '-=';
 	  var container = $('#descriptions');
 	  container.data('jScrollPanePosition', 0);
 	  container.css('top','0');
-	  var manu = descr.find('.manu');
-	  manu.animate({'margin-left':sign + 1000}, 500);
+	  $('.description').animate({'margin-left':sign + 912}, 400);
+	  // var manu = descr.find('.manu');
+	  // manu.animate({'margin-left':sign + 1000}, 500);
       }
       $('.inactive').click(swapTabs);
       var ours = $('.our');
