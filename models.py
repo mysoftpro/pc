@@ -260,8 +260,13 @@ def index(template, skin, request):
 
 
 parts = {'mother':0, 'proc':10, 'video':20, 'hdd':30, 'ram':40, 'case':50, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'windows':110, 'kbrd':120, 'mouse':130, 'audio':140}
-parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус','sound':u'Звуковая карта',
-	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
+parts_names = {'proc':u'Процессор', 'ram':u'Память', 
+               'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус',
+               'sound':u'Звуковая карта',
+	       'lan':u'Сетевая карта', 
+               'mother':u'Материнская плата','displ':u'Монитор', 
+               'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь',
+               'windows':u'ОС'}
 
 
 
@@ -338,7 +343,6 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     components= components_choices_descriptions[0]
     choices = components_choices_descriptions[1]
     our_descriptions = components_choices_descriptions[2]
-
     model_json = {}
     model_parts = {}
     tottal = 0
@@ -380,9 +384,9 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	our = etree.Element('div')
 	our.set('class','our')
 	our.text = u'нет рекоммендаций'
+        
 	if name in our_descriptions:
 	    our.text = our_descriptions[name]
-
 	clear = etree.Element('div')
 	clear.set('style','clear:both;')
 	clear.text = ''
@@ -648,18 +652,16 @@ def fillOurDescriptions(result_choices, model):
 	keys.append('d-' + name + '-' + code)
     d = couch.listDoc(keys=keys,include_docs=True)
     def fill(res):
-        print "aaaaaaaaaaaaaaaaaaaaaaaa"
-        print res
 	named = {}
 	for r in res['rows']:
             if 'error' in r: continue
-	    parts = r.key.split('-')
+	    parts = r['key'].split('-')
             _name = parts[1]
             if _name in named:
-                named[name] += r['doc']['descr']
+                named[name] += r['doc']['desc']
             else:
-                named.update({_name:r['doc']['descr']})
-	return (result_choices[0],result_choices[1],models[0], named)
+                named.update({_name:r['doc']['desc']})
+	return (result_choices[0],result_choices[1],named)
     return d.addCallback(fill)
 
 def computer(template, skin, request):
