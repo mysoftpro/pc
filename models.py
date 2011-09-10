@@ -242,11 +242,11 @@ def index(template, skin, request):
 		div.append(el[1])
 	for el in _template.root().find('leftbutton'):
 	    div.append(el)
-            last = el.getprevious()
-            style = last.get('style')
-            style += ';width:200px;'
-            last.set('style',style)
-            break
+	    last = el.getprevious()
+	    style = last.get('style')
+	    style += ';width:200px;'
+	    last.set('style',style)
+	    break
 	_skin.top = _template.top
 	_skin.middle = _template.middle
 	return skin.render()
@@ -264,6 +264,9 @@ parts_names = {'proc':u'Процессор', 'ram':u'Память', 'video':u'В
 	       'lan':u'Сетевая карта', 'mother':u'Материнская плата','displ':u'Монитор', 'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь' }
 
 
+
+def getOurComponentText(name):
+    return u""" Проверка ла бла ля кля любава овавав."""
 
 def replaceComponent(code, choices, name, socket):
     flatten = []
@@ -298,7 +301,7 @@ def replaceComponent(code, choices, name, socket):
     next_el = deepcopy(flatten[_next])
     return next_el
 
-def renderComputer(components_choices, template, skin, model):
+def renderComputer(components_choices_descriptions, template, skin, model):
 
     def makeOption(row):
 	try:
@@ -331,8 +334,10 @@ def renderComputer(components_choices, template, skin, model):
     template.top.find('div').find('h2').text = model['name']
 
     original_viewlet = template.root().find('componentviewlet')
-    components= components_choices[0]
-    choices = components_choices[1]
+
+    components= components_choices_descriptions[0]
+    choices = components_choices_descriptions[1]
+    our_descriptions = components_choices_descriptions[2]
 
     model_json = {}
     model_parts = {}
@@ -342,12 +347,12 @@ def renderComputer(components_choices, template, skin, model):
     counted = {}
     for name,code in model['items'].items():
 	if code is None: continue
-        count = 1
+	count = 1
 	if type(code) is list:
-            count = len(code)
-            code = code[0]
-            counted.update({code:count})
-            
+	    count = len(code)
+	    code = code[0]
+	    counted.update({code:count})
+
 	viewlet = deepcopy(original_viewlet)
 	component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
 	if component_doc is None:
@@ -356,8 +361,8 @@ def renderComputer(components_choices, template, skin, model):
 	    if component_doc['stock1'] == 0:
 		component_doc = replaceComponent(code, choices[name], name, model['socket'])
 	component_doc = makePrice(component_doc)
-        if count>1:
-            component_doc.update({'count':count})
+	if count>1:
+	    component_doc.update({'count':count})
 	tr = viewlet.find("tr")
 	tr.set('id',name)
 	body = viewlet.xpath("//td[@class='body']")[0]
@@ -366,9 +371,25 @@ def renderComputer(components_choices, template, skin, model):
 
 	descr = etree.Element('div')
 	descr.set('class','description')
+	descr.text = ''
+
+	manu = etree.Element('div')
+	manu.set('class','manu')
+	manu.text = ''
+
+	our = etree.Element('div')
+	our.set('class','our')
+	our.text = u'нет рекоммендаций'
+	if name in our_descriptions:
+	    our.text = our_descriptions[name]
+
+	clear = etree.Element('div')
+	clear.set('style','clear:both;')
+	clear.text = ''
+
+
 	d_comments = ''
 	d_name = ''
-	descr.text = ''
 	if 'description' in component_doc:
 	    d_name = component_doc['description']['name']
 	    d_comments = component_doc['description']['comments']
@@ -377,9 +398,13 @@ def renderComputer(components_choices, template, skin, model):
 		    img = etree.Element('img')
 		    img.set('src', '/image/' + component_doc['_id'] + '/' + i + '.jpg')
 		    img.set('align','right')
-		    descr.text += etree.tostring(img)#cgi.escape(etree.tostring(img))
+		    manu.text += etree.tostring(img)
 
-	descr.text += d_name + d_comments
+	manu.text += d_name + d_comments
+
+	descr.append(manu);
+	descr.append(our)
+	descr.append(clear)
 
 	tottal += component_doc['price']
 
@@ -410,9 +435,9 @@ def renderComputer(components_choices, template, skin, model):
 			    option.set('selected','selected')
 			_options.append((option, r['doc']['price']))
 			r['doc'] = cleanDoc(r['doc'])
-                        _id = r['doc']['_id']
-                        if  _id in counted:
-                            r['doc'].update({'count':counted[_id]})
+			_id = r['doc']['_id']
+			if  _id in counted:
+			    r['doc'].update({'count':counted[_id]})
 			components_json.update({_id:r['doc']})
 		    appendOptions(_options, option_group)
 		    options.append((option_group, 0))
@@ -425,9 +450,9 @@ def renderComputer(components_choices, template, skin, model):
 		if row['id'] == component_doc['_id']:
 		    option.set('selected','selected')
 		row['doc'] = cleanDoc(row['doc'])
-                _id = row['doc']['_id']
-                if  _id in counted:
-                    row['doc'].update({'count':counted[_id]})                    
+		_id = row['doc']['_id']
+		if  _id in counted:
+		    row['doc'].update({'count':counted[_id]})
 		components_json.update({_id:row['doc']})
 
 	appendOptions(options, select)
@@ -448,7 +473,7 @@ def renderComputer(components_choices, template, skin, model):
 						    ';var parts_names=',simplejson.dumps(parts_names),
 						    ';var mother_to_proc_mapping=',simplejson.dumps(mother_to_proc_mapping),
 						    ';var proc_to_mother_mapping=',simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
-                                                    ';var Course=',str(Course),';'
+						    ';var Course=',str(Course),';'
 						    ))
     # template.top.xpath("//span[@id='large_price']")[0].text = unicode(tottal +800)
     # template.top.xpath("//strong[@id='baseprice']")[0].text = unicode(tottal + 800)
@@ -475,7 +500,7 @@ def fillChoices(result):
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     defs = []
     defs.append(defer.DeferredList([
-                # couch.openView(designID,
+		# couch.openView(designID,
 		# 				   'catalogs',
 		# 				   include_docs=True, key=mothers_1366, stale=False)
 		# 		    .addCallback(lambda res: ("LGA1366",res)),
@@ -512,9 +537,9 @@ def fillChoices(result):
 						   include_docs=True,key=procs_1156, stale=False)
 						   .addCallback(lambda res:('LGA1156',res)),
 				    # couch.openView(designID,
-				    #     	   'catalogs',
-				    #     	   include_docs=True,key=procs_1366, stale=False)
-				    #     	   .addCallback(lambda res:('LGA1366',res)),
+				    #	  	   'catalogs',
+				    #	  	   include_docs=True,key=procs_1366, stale=False)
+				    #	  	   .addCallback(lambda res:('LGA1366',res)),
 				    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True,key=procs_am23, stale=False)
@@ -613,6 +638,30 @@ def fillChoices(result):
     #TODO - this callbaqck to the higher level
     return defer.DeferredList(defs).addCallback(makeDict).addCallback(lambda choices: (result, choices))
 
+def fillOurDescriptions(result_choices, model):
+    keys = []
+    for name, code in model['items'].items():
+        if code is None: continue
+        if type(code) is list:
+	    code = code[0]
+	keys.append('d-' + name)
+	keys.append('d-' + name + '-' + code)
+    d = couch.listDoc(keys=keys,include_docs=True)
+    def fill(res):
+        print "aaaaaaaaaaaaaaaaaaaaaaaa"
+        print res
+	named = {}
+	for r in res['rows']:
+            if 'error' in r: continue
+	    parts = r.key.split('-')
+            _name = parts[1]
+            if _name in named:
+                named[name] += r['doc']['descr']
+            else:
+                named.update({_name:r['doc']['descr']})
+	return (result_choices[0],result_choices[1],models[0], named)
+    return d.addCallback(fill)
+
 def computer(template, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
     _models = [m for m in models if m['name'] == name]
@@ -620,5 +669,6 @@ def computer(template, skin, request):
     keys = [c for c in getModelComponents(model) if c is not None]
     d = couch.listDoc(keys=keys,include_docs=True)
     d.addCallback(fillChoices)
+    d.addCallback(fillOurDescriptions, model)
     d.addCallback(renderComputer, template, skin, model)
     return d

@@ -1,5 +1,5 @@
 $(function(){
-    $('#tips').click(function(e){			
+    $('#tips').click(function(e){
 			 e.preventDefault();
 			 guider.createGuider({
 						attachTo: "#mother",
@@ -81,15 +81,32 @@ guider.createGuider({
 		     });
 
 
-      
+
       function swapTabs(e){
 	  var active = $('.active');
 	  var target = $(e.target);
 	  var klass = target.attr('class');
 	  target.attr('class', active.attr('class'));
-	  active.attr('class', klass);			       
+	  active.attr('class', klass);
 	  target.unbind('click');
 	  active.click(swapTabs);
+
+	  var bodies = $('td.body');
+	  var current_body, current_index;
+	  for (var i=0,l=bodies.length;i<l;i++){
+	      var body = $(bodies.get(i));
+	      if (!body.is(':visible')){
+		  current_body = body;
+		  current_index = i;
+		  break;
+	      }
+	  }
+	  var descr = $($('.description').get(current_index));
+	  var sign = '+=';	  
+	  if (target.attr('id') == 'ourcomments')
+	      sign = '-=';
+	  var manu = descr.find('.manu');
+	  manu.animate({'margin-left':sign + 1000}, 500);
       }
       $('.inactive').click(swapTabs);
 });

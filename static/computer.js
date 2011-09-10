@@ -198,9 +198,9 @@ function componentChanged(maybe_event){
 	    body.text(new_name.substring(0,60));
 	}
 	else{
-	    body.text(new_name.substring(0,80));    
+	    body.text(new_name.substring(0,80));
 	}
-	
+
 
 	var mult = 1;
 	// may be just count is changed
@@ -315,14 +315,14 @@ function changeDescription(index, _id, show, data){
 		_text += data['name'] + data['comments'];
 	    }
 	    else
-		_text = descr.text();
+		_text = descr.find('.manu').text();
 	    if (_text == '')
 		_text = 'к сожалению описание не предоставлено поставщиком';
 	    descriptions_cached[_id] = treatDescriptionText(_text);
 	}
 	if (!show)
 	    return;
-	descr.html(descriptions_cached[_id]);
+	descr.find('.manu').html(descriptions_cached[_id]);
 	descrptions.jScrollPaneRemove();
 	descr.show();
 	descrptions.jScrollPane();
@@ -922,7 +922,7 @@ function changeRamIfPossible(old_component, direction){
 
 
 function shadowCheBe(_delta, body, component){
-    
+
     var next_components = getNearestComponent(component.price,
 					      getCatalogs(component),
 					      _delta,
@@ -963,7 +963,7 @@ function changeComponent(body, new_component, old_component, nosocket){
 	if(isRam(body))
 	    changeRam('e', 'mock');
 
-	
+
 	if (delta != 0)
 	    shadowCheBe(delta, body, new_component);
 	else{
@@ -1097,7 +1097,7 @@ $(function(){
 	  $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
-          $('#greset').click(function(){window.location.reload();});	  
+	  $('#greset').click(function(){window.location.reload();});
       } catch (x) {
 	  log(x);
       }

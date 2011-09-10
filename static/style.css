@@ -742,3 +742,13 @@ color:#7b9c0a;
 #middle {
     margin-top:-30px;
 }
+
+.manu{
+    float:left;
+    width:900px;
+    min-height:320px;
+}
+.our{
+    float:left;
+    width:900px;
+}
