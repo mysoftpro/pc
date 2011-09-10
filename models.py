@@ -734,18 +734,25 @@ def fillModel(model):
     return d
 
 def computer(template, skin, request):
-    name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
-    _models = [m for m in models if m['name'] == name]
-    model = _models[0] if len(_models)>0 else models[0]
-    d = fillModel(model)
-    d1 = fillChoices()
-    d2 = fillOurDescriptions(model)
-    li = defer.DeferredList([d,d1,d2])
-    def equalize(_li):
-	res = []
-	for el in _li:
-	    res.append(el[1])
-	return res
-    li.addCallback(equalize)
-    li.addCallback(renderComputer, template, skin, model)
-    return li
+    print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    print request.path    
+    splitted = request.path.split('/')
+    if len(splitted) == 3:        
+        name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+        _models = [m for m in models if m['name'] == name]
+        model = _models[0] if len(_models)>0 else models[0]
+        d = fillModel(model)
+        d1 = fillChoices()
+        d2 = fillOurDescriptions(model)
+        li = defer.DeferredList([d,d1,d2])
+        def equalize(_li):
+            res = []
+            for el in _li:
+                res.append(el[1])
+            return res
+        li.addCallback(equalize)
+        li.addCallback(renderComputer, template, skin, model)
+        return li
+    else:
+        d = couch.openView()
+        

@@ -238,6 +238,7 @@ class Root(Resource):
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
 	self.putChild('computer', Desktop())
+	self.putChild('carts', Carts())
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
 	self.putChild('save', Save())
@@ -274,6 +275,20 @@ class Desktop(Resource):
 	self.static = CachedStatic(static_dir)
 	Resource.__init__(self, *args, **kwargs)
     def getChild(self, name, request):
+	return self.static.getChild("computer.html", request)
+
+# TODO!!!! / at the end of the name!!!
+class Carts(Resource):
+    def __init__(self, *args, **kwargs):
+	self.static = CachedStatic(static_dir)
+	Resource.__init__(self, *args, **kwargs)
+    def getChild(self, name, request):
+	splitted = request.path.split('/')
+	print splitted
+	if splitted[-1] == '':
+	    splitted = splitted[:-1]
+	if splitted[-1] != name:
+	    return self
 	return self.static.getChild("computer.html", request)
 
 
@@ -325,12 +340,11 @@ class Save(Resource):
 	request.write(simplejson.dumps(doc))
 	request.finish()
 
-
     def saveModel(self, user_doc, user_id, model, request):
-	
+
 	if user_doc.__class__ is Failure:
-            user_doc = {'_id':user_id, 'models':{}, 'date':str(date.today()).split('-')}
-	
+	    user_doc = {'_id':user_id, 'models':{}, 'date':str(date.today()).split('-')}
+
 	if not 'id' in model:
 	    d = couch.get('/_uuids?count=1')
 	    def addId(uuids):
@@ -340,9 +354,9 @@ class Save(Resource):
 	    d.addCallback(self.saveModel, user_id, model, request)
 	    return d
 	else:
-            model_id = model.pop('id')
-            user_doc['models'].update({model_id:model})
-            print user_doc
+	    model_id = model.pop('id')
+	    user_doc['models'].update({model_id:model})
+	    print user_doc
 	    d = couch.saveDoc(user_doc)
 	    d.addCallback(self.finish, request, model_id)
 	    return d
