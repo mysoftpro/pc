@@ -102,14 +102,19 @@ guider.createGuider({
 	      }
 	  }
 	  var descr = $($('.description').get(current_index));
-	  var sign = '+=';	  
+	  var sign = '+=';
 	  if (target.attr('id') == 'ourcomments')
 	      sign = '-=';
 	  var container = $('#descriptions');
 	  container.data('jScrollPanePosition', 0);
 	  container.css('top','0');
-	  var manu = descr.find('.manu');	  
+	  var manu = descr.find('.manu');
 	  manu.animate({'margin-left':sign + 1000}, 500);
       }
       $('.inactive').click(swapTabs);
+      var ours = $('.our');
+      for (var i=0,l=ours.length;i<l;i++){
+	  var o = $(ours.get(i));
+	  o.html(o.text());
+      }
 });
