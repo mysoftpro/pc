@@ -108,11 +108,12 @@ mother_to_proc_mapping= [
 
 
 def getCatalogsKey(doc):
-    cats = []
-    for c in doc['catalogs']:
-	cats.append(str(c['id']))
-    return cats
-
+    if type(doc['catalogs'][0]) is dict:
+        cats = []
+        for c in doc['catalogs']:
+            cats.append(str(c['id']))
+        return cats
+    return doc['catalogs']
 
 # def isMother(doc, cats=None):
 #     if cats is None:
@@ -185,21 +186,33 @@ def makePrice(doc):
     if getCatalogsKey(doc) == windows:
 	course = 1
     our_price = doc['price']*Margin*course
-    doc['price'] = int(str(round(our_price)).split('.')[0])
-    return doc
+    # doc['price'] = int(str(round(our_price)).split('.')[0])
+    return int(str(round(our_price)).split('.')[0])
 
 
-def cleanDoc(doc):
-    def pop(token):
-	if token in doc:
-	    doc.pop(token)
-    for t in ['text', '_attachments','description','flags','inCart','ordered','reserved','stock1', '_rev', 'warranty_type']:#
-	pop(t)
-    if 'catalogs' in doc:
-	for c in doc['catalogs']:
-	    if 'name' in c:
-		c.pop('name')
-    return doc
+def cleanDoc(doc, price):
+    new_doc = {}
+    for token in doc:
+        if token in ['id', 'text', '_attachments','description','flags','inCart',
+                     'ordered','reserved','stock1', '_rev', 'warranty_type']:
+            continue
+        if token == 'catalogs':
+            new_doc.update({token:getCatalogsKey(doc)})
+        else:
+            new_doc.update({token:doc[token]})
+    new_doc['price'] = price
+    return new_doc
+
+    # def pop(token):
+    #     if token in doc:
+    #         doc.pop(token)
+    # for t in ['text', '_attachments','description','flags','inCart','ordered','reserved','stock1', '_rev', 'warranty_type']:#
+    #     pop(t)
+    # if 'catalogs' in doc:
+    #     for c in doc['catalogs']:
+    #         if 'name' in c:
+    #     	c.pop('name')
+    # return doc
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
 	'static/compaq-presario-sg3440il-desktop-pc1.png',
@@ -275,14 +288,14 @@ def getOurComponentText(name):
 
 def replaceComponent(code, choices, name, socket):
     flatten = []
-
+    
     def sameCatalog(doc):
 	retval = True
 	if name in ['mother','proc']:
 	    retval = False
 	    cats = name + 's_' + socket
 	    real_cats = globals()[cats]
-	    retval = getCatalogsKey(doc) == real_cats
+            retval = getCatalogsKey(doc) == real_cats
 	return retval
 
     if type(choices) is list:
@@ -295,7 +308,7 @@ def replaceComponent(code, choices, name, socket):
 	for ch in choices['rows']:
 	    flatten.append(ch['doc'])
 
-    keys = [doc['id'] for doc in flatten]
+    keys = [doc['_id'] for doc in flatten]
     keys.append(code)
     keys = sorted(keys)
     _length = len(keys)
@@ -306,22 +319,40 @@ def replaceComponent(code, choices, name, socket):
     next_el = deepcopy(flatten[_next])
     return next_el
 
+
+
+
 def renderComputer(components_choices_descriptions, template, skin, model):
 
-    def makeOption(row):
-	try:
-	    option = etree.Element('option')
-	    if 'font' in row['doc']['text']:
-		row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-		row['doc'].update({'featured':True})
-	    option.text = row['doc']['text']
+    template.top.find('div').find('h2').text = model['name']
 
-	    option.text +=u' ' + unicode(row['doc']['price']) + u' р'
+    original_viewlet = template.root().find('componentviewlet')
 
-	    option.set('value',row['id'])
-	    return option
-	except:
-	    print row
+    components= components_choices_descriptions[0]
+    choices = components_choices_descriptions[1]
+    our_descriptions = components_choices_descriptions[2]
+    
+    model_json = {}
+    model_parts = {}
+    tottal = 0
+    components_json = {}
+    viewlets = []
+    counted = {}
+
+    def makeOption(row, price):
+	# try:
+            option = etree.Element('option')
+            if 'font' in row['doc']['text']:
+                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+                row['doc'].update({'featured':True})
+            option.text = row['doc']['text']
+
+            option.text +=u' ' + unicode(price) + u' р'
+
+            option.set('value',row['id'])
+            return option
+	# except:
+	#     print row
     def appendOptions(options, container):
 	for o in sorted(options, lambda x,y: x[1]-y[1]):
 	    container.append(o[0])
@@ -335,20 +366,19 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	    no_component_doc['text'] = u'нет'
 	    rows.insert(0,{'id':no_name, 'key':no_name,'doc':no_component_doc})
 
+    def addComponent(_options, _row, current_id):
+        _price= makePrice(_row['doc'])
+        _option = makeOption(_row, _price)
+        _options.append((_option, _price))
+        if _row['id'] == current_id:
+            _option.set('selected','selected')
+        _cleaned_doc = cleanDoc(_row['doc'], _price)
+        _id = _cleaned_doc['_id']
+        if _id in counted:
+            _cleaned_doc.update({'count':counted[_id]})
+        components_json.update({_id:_cleaned_doc})
 
-    template.top.find('div').find('h2').text = model['name']
 
-    original_viewlet = template.root().find('componentviewlet')
-
-    components= components_choices_descriptions[0]
-    choices = components_choices_descriptions[1]
-    our_descriptions = components_choices_descriptions[2]
-    model_json = {}
-    model_parts = {}
-    tottal = 0
-    components_json = {}
-    viewlets = []
-    counted = {}
     for name,code in model['items'].items():
 	if code is None: continue
 	count = 1
@@ -364,7 +394,8 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	else:
 	    if component_doc['stock1'] == 0:
 		component_doc = replaceComponent(code, choices[name], name, model['socket'])
-	component_doc = makePrice(component_doc)
+	# component_doc = makePrice(component_doc)
+        price = makePrice(component_doc)
 	if count>1:
 	    component_doc.update({'count':count})
 	tr = viewlet.find("tr")
@@ -384,7 +415,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	our = etree.Element('div')
 	our.set('class','our')
 	our.text = u'нет рекоммендаций'
-        
+
 	if name in our_descriptions:
 	    our.text = our_descriptions[name]
 	clear = etree.Element('div')
@@ -410,54 +441,58 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	descr.append(our)
 	descr.append(clear)
 
-	tottal += component_doc['price']
+	tottal += price
 
-	component_doc = cleanDoc(component_doc)
-	model_json.update({component_doc['_id']:component_doc})
-	model_parts.update({component_doc['_id']:name})
+	cleaned_doc = cleanDoc(component_doc, price)
+        cleaned_doc['price'] = price
+	model_json.update({cleaned_doc['_id']:cleaned_doc})
+	model_parts.update({cleaned_doc['_id']:name})
 
 
 	#TODO! now. when replacement is taking place, it need to check mother and proc!
 
-	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(component_doc['price']) + u' р'
+	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price) + u' р'
 
 	select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
 
 	ch = choices[name]
 	options = []
 	if type(ch) is list:
-	    noComponent(name, component_doc, ch[0][1][1]['rows'])
+	    noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
 	    for el in ch:
 		if el[0]:
 		    option_group = etree.Element('optgroup')
 		    option_group.set('label', el[1][0])
 		    _options = []
 		    for r in el[1][1]['rows']:
-			r['doc'] = makePrice(r['doc'])
-			option = makeOption(r)
-			if r['id'] == component_doc['_id']:
-			    option.set('selected','selected')
-			_options.append((option, r['doc']['price']))
-			r['doc'] = cleanDoc(r['doc'])
-			_id = r['doc']['_id']
-			if  _id in counted:
-			    r['doc'].update({'count':counted[_id]})
-			components_json.update({_id:r['doc']})
+                        addComponent(_options, r, cleaned_doc['_id'])
+                        # price1 = makePrice(r['doc'])
+			# option = makeOption(r, price1)
+			# if r['id'] == cleaned_doc['_id']:
+			#     option.set('selected','selected')
+			# _options.append((option, price1))
+			# cleaned_doc1 = cleanDoc(r['doc'], price1)
+			# _id = cleaned_doc1['_id']
+			# if  _id in counted:
+			#     cleaned_doc1.update({'count':counted[_id]})
+			# components_json.update({_id:cleaned_doc1})
+
 		    appendOptions(_options, option_group)
 		    options.append((option_group, 0))
 	else:
-	    noComponent(name, component_doc, ch['rows'])
+	    noComponent(name, cleaned_doc, ch['rows'])
 	    for row in ch['rows']:
-		row['doc'] = makePrice(row['doc'])
-		option = makeOption(row)
-		options.append((option, row['doc']['price']))
-		if row['id'] == component_doc['_id']:
-		    option.set('selected','selected')
-		row['doc'] = cleanDoc(row['doc'])
-		_id = row['doc']['_id']
-		if  _id in counted:
-		    row['doc'].update({'count':counted[_id]})
-		components_json.update({_id:row['doc']})
+                addComponent(options, row, cleaned_doc['_id'])
+		# price1= makePrice(row['doc'])
+		# option = makeOption(row, price1)
+		# options.append((option, price1))
+		# if row['id'] == cleaned_doc['_id']:
+		#     option.set('selected','selected')
+		# cleaned_doc1 = cleanDoc(row['doc'], price1)
+		# _id = cleaned_doc1['_id']
+		# if  _id in counted:
+		#     cleaned_doc1.update({'count':counted[_id]})
+		# components_json.update({_id:cleaned_doc1})
 
 	appendOptions(options, select)
 	viewlets.append((parts[name],viewlet,descr))
@@ -498,10 +533,16 @@ def pr(some):
 
 
 printed = False
+gChoices = None
 
-
-def fillChoices(result):
+def fillChoices():
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
+    _gChoices = globals()['gChoices']
+    if _gChoices is not None:
+        d = defer.Deferred()
+        d.addCallback(lambda x: _gChoices)
+        d.callback(None)
+        return d
     defs = []
     defs.append(defer.DeferredList([
 		# couch.openView(designID,
@@ -638,11 +679,21 @@ def fillChoices(result):
 	for el in res:
 	    if el[0]:
 		new_res.update(el[1])
-	return new_res
-    #TODO - this callbaqck to the higher level
-    return defer.DeferredList(defs).addCallback(makeDict).addCallback(lambda choices: (result, choices))
+        globals()['gChoices'] = new_res
+	return globals()['gChoices'] #new_res
+    #TODO - this callback to the higher level
+    return defer.DeferredList(defs).addCallback(makeDict)#.addCallback(lambda choices: (result, choices))
 
-def fillOurDescriptions(result_choices, model):
+gDescriptions = None
+
+def fillOurDescriptions(model):
+    _gDescriptions = globals()['gDescriptions']
+    if _gDescriptions is not None:
+        d = defer.Deferred()
+        d.addCallback(lambda x: gDescriptions)
+        d.callback(None)
+        return d
+
     keys = []
     for name, code in model['items'].items():
         if code is None: continue
@@ -661,16 +712,42 @@ def fillOurDescriptions(result_choices, model):
                 named[name] += r['doc']['desc']
             else:
                 named.update({_name:r['doc']['desc']})
-	return (result_choices[0],result_choices[1],named)
+        globals()['gModels']  = named
+        print "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print named
+	return named
     return d.addCallback(fill)
+
+gModels = {}
+
+def fillModel(model):    
+    name = model['name']
+    if  name in globals()['gModels']:
+        d = defer.Deferred()
+        d.addCallback(lambda x: globals()['gModels'][name])
+        d.callback(None)
+        return d
+    keys = [c for c in getModelComponents(model) if c is not None]
+    d = couch.listDoc(keys=keys,include_docs=True)
+    def fill(res):
+        globals()['gModels'][name] = res
+        return res
+    d.addCallback(fill)
+    return d
 
 def computer(template, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
     _models = [m for m in models if m['name'] == name]
-    model = _models[0] if len(_models)>0 else models[0]
-    keys = [c for c in getModelComponents(model) if c is not None]
-    d = couch.listDoc(keys=keys,include_docs=True)
-    d.addCallback(fillChoices)
-    d.addCallback(fillOurDescriptions, model)
-    d.addCallback(renderComputer, template, skin, model)
-    return d
+    model = _models[0] if len(_models)>0 else models[0]    
+    d = fillModel(model)
+    d1 = fillChoices()
+    d2 = fillOurDescriptions(model)
+    li = defer.DeferredList([d,d1,d2])
+    def equalize(_li):
+        res = []
+        for el in _li:
+            res.append(el[1])
+        return res
+    li.addCallback(equalize)
+    li.addCallback(renderComputer, template, skin, model)
+    return li

@@ -124,7 +124,7 @@ function recalculate(){
 }
 
 function getCatalogs(component){
-    return _(component.catalogs).map(function(el){return el['id'];});
+    return component.catalogs;//_(component.catalogs).map(function(el){return el['id'];});
 }
 
 

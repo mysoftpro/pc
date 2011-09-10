@@ -155,31 +155,27 @@ class CachedStatic(File):
 
 	# 304 is here
 	physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
-	virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
+	# virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
 
-        if request.setLastModified(last_modified) is CACHED and (physical_name_in_cache or virtual_name_in_cache):                
+        if request.setLastModified(last_modified) is CACHED and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):                
             return ''
 
-	# cached gzip is here
-	# print "---------------------------------"
-	# print physical_name_in_cache
-	# print virtual_name_in_cache
 	if physical_name_in_cache:
 	    return _cached_statics[physical_name][1]
 
-	if virtual_name_in_cache:
-	    return _cached_statics[virtual_name][1]
+	# if virtual_name_in_cache:
+	#     return _cached_statics[virtual_name][1]
 
 	else:
-	    if '.html' in fileForReading.name or '.json' in fileForReading.name:
+            if '.html' in fileForReading.name or '.json' in fileForReading.name:
 		name_to_cache = physical_name
+                # DO NOT CACHE VIRTUAL NAMES. UNCOMMENT ALL TO CACHE EM
 		if len(virtual_name)>0:
 		    splitted = physical_name.split('\\')
 		    if len(splitted) == 0:
 			splitted = physical_name.split('/')
 		    if splitted[-1] != virtual_name:
-			name_to_cache = virtual_name
-
+			name_to_cache = None # virtual_name
 		d = self.renderTemplate(fileForReading, last_modified, request)
 		d.addCallback(self._gzip, name_to_cache, last_modified)
 		d.addCallback(self.render_GSIPPED, request)
@@ -202,7 +198,8 @@ class CachedStatic(File):
 	buff.seek(0)
 	gzipped = buff.read()
 	buff.close()
-	_cached_statics[_name] = (_time, gzipped)
+        if _name is not None:
+            _cached_statics[_name] = (_time, gzipped)
 	return gzipped
 
 
