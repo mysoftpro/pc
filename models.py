@@ -109,10 +109,10 @@ mother_to_proc_mapping= [
 
 def getCatalogsKey(doc):
     if type(doc['catalogs'][0]) is dict:
-        cats = []
-        for c in doc['catalogs']:
-            cats.append(str(c['id']))
-        return cats
+	cats = []
+	for c in doc['catalogs']:
+	    cats.append(str(c['id']))
+	return cats
     return doc['catalogs']
 
 # def isMother(doc, cats=None):
@@ -193,13 +193,13 @@ def makePrice(doc):
 def cleanDoc(doc, price):
     new_doc = {}
     for token in doc:
-        if token in ['id', 'text', '_attachments','description','flags','inCart',
-                     'ordered','reserved','stock1', '_rev', 'warranty_type']:
-            continue
-        if token == 'catalogs':
-            new_doc.update({token:getCatalogsKey(doc)})
-        else:
-            new_doc.update({token:doc[token]})
+	if token in ['id', 'text', '_attachments','description','flags','inCart',
+		     'ordered','reserved','stock1', '_rev', 'warranty_type']:
+	    continue
+	if token == 'catalogs':
+	    new_doc.update({token:getCatalogsKey(doc)})
+	else:
+	    new_doc.update({token:doc[token]})
     new_doc['price'] = price
     return new_doc
 
@@ -211,7 +211,7 @@ def cleanDoc(doc, price):
     # if 'catalogs' in doc:
     #     for c in doc['catalogs']:
     #         if 'name' in c:
-    #     	c.pop('name')
+    #	  	c.pop('name')
     # return doc
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
@@ -233,7 +233,7 @@ def renderModelForIndex(result, template, m, image_i):
     snippet = deepcopy(model_snippet.find('div'))
     snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
     a = snippet.find('.//a')
-    a.set('href','/desktop/%s' % m['name'])
+    a.set('href','/computer/%s' % m['name'])
     a.text=m['name']
     snippet.find('.//span').text=(unicode(m['price']) + u' р')
     return snippet
@@ -273,13 +273,13 @@ def index(template, skin, request):
 
 
 parts = {'mother':0, 'proc':10, 'video':20, 'hdd':30, 'ram':40, 'case':50, 'sound':70, 'lan':80, 'displ':90, 'audio':100, 'windows':110, 'kbrd':120, 'mouse':130, 'audio':140}
-parts_names = {'proc':u'Процессор', 'ram':u'Память', 
-               'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус',
-               'sound':u'Звуковая карта',
-	       'lan':u'Сетевая карта', 
-               'mother':u'Материнская плата','displ':u'Монитор', 
-               'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь',
-               'windows':u'ОС'}
+parts_names = {'proc':u'Процессор', 'ram':u'Память',
+	       'video':u'Видеокарта', 'hdd':u'Жесткий диск', 'case':u'Корпус',
+	       'sound':u'Звуковая карта',
+	       'lan':u'Сетевая карта',
+	       'mother':u'Материнская плата','displ':u'Монитор',
+	       'audio':u'Аудиосистема', 'kbrd':u'Клавиатура', 'mouse':u'Мышь',
+	       'windows':u'ОС'}
 
 
 
@@ -288,14 +288,14 @@ def getOurComponentText(name):
 
 def replaceComponent(code, choices, name, socket):
     flatten = []
-    
+
     def sameCatalog(doc):
 	retval = True
 	if name in ['mother','proc']:
 	    retval = False
 	    cats = name + 's_' + socket
 	    real_cats = globals()[cats]
-            retval = getCatalogsKey(doc) == real_cats
+	    retval = getCatalogsKey(doc) == real_cats
 	return retval
 
     if type(choices) is list:
@@ -331,7 +331,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     components= components_choices_descriptions[0]
     choices = components_choices_descriptions[1]
     our_descriptions = components_choices_descriptions[2]
-    
+
     model_json = {}
     model_parts = {}
     tottal = 0
@@ -341,16 +341,16 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 
     def makeOption(row, price):
 	# try:
-            option = etree.Element('option')
-            if 'font' in row['doc']['text']:
-                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-                row['doc'].update({'featured':True})
-            option.text = row['doc']['text']
+	    option = etree.Element('option')
+	    if 'font' in row['doc']['text']:
+		row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+		row['doc'].update({'featured':True})
+	    option.text = row['doc']['text']
 
-            option.text +=u' ' + unicode(price) + u' р'
+	    option.text +=u' ' + unicode(price) + u' р'
 
-            option.set('value',row['id'])
-            return option
+	    option.set('value',row['id'])
+	    return option
 	# except:
 	#     print row
     def appendOptions(options, container):
@@ -367,16 +367,16 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	    rows.insert(0,{'id':no_name, 'key':no_name,'doc':no_component_doc})
 
     def addComponent(_options, _row, current_id):
-        _price= makePrice(_row['doc'])
-        _option = makeOption(_row, _price)
-        _options.append((_option, _price))
-        if _row['id'] == current_id:
-            _option.set('selected','selected')
-        _cleaned_doc = cleanDoc(_row['doc'], _price)
-        _id = _cleaned_doc['_id']
-        if _id in counted:
-            _cleaned_doc.update({'count':counted[_id]})
-        components_json.update({_id:_cleaned_doc})
+	_price= makePrice(_row['doc'])
+	_option = makeOption(_row, _price)
+	_options.append((_option, _price))
+	if _row['id'] == current_id:
+	    _option.set('selected','selected')
+	_cleaned_doc = cleanDoc(_row['doc'], _price)
+	_id = _cleaned_doc['_id']
+	if _id in counted:
+	    _cleaned_doc.update({'count':counted[_id]})
+	components_json.update({_id:_cleaned_doc})
 
 
     for name,code in model['items'].items():
@@ -395,7 +395,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	    if component_doc['stock1'] == 0:
 		component_doc = replaceComponent(code, choices[name], name, model['socket'])
 	# component_doc = makePrice(component_doc)
-        price = makePrice(component_doc)
+	price = makePrice(component_doc)
 	if count>1:
 	    component_doc.update({'count':count})
 	tr = viewlet.find("tr")
@@ -444,7 +444,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	tottal += price
 
 	cleaned_doc = cleanDoc(component_doc, price)
-        cleaned_doc['price'] = price
+	cleaned_doc['price'] = price
 	model_json.update({cleaned_doc['_id']:cleaned_doc})
 	model_parts.update({cleaned_doc['_id']:name})
 
@@ -465,8 +465,8 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 		    option_group.set('label', el[1][0])
 		    _options = []
 		    for r in el[1][1]['rows']:
-                        addComponent(_options, r, cleaned_doc['_id'])
-                        # price1 = makePrice(r['doc'])
+			addComponent(_options, r, cleaned_doc['_id'])
+			# price1 = makePrice(r['doc'])
 			# option = makeOption(r, price1)
 			# if r['id'] == cleaned_doc['_id']:
 			#     option.set('selected','selected')
@@ -482,7 +482,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	else:
 	    noComponent(name, cleaned_doc, ch['rows'])
 	    for row in ch['rows']:
-                addComponent(options, row, cleaned_doc['_id'])
+		addComponent(options, row, cleaned_doc['_id'])
 		# price1= makePrice(row['doc'])
 		# option = makeOption(row, price1)
 		# options.append((option, price1))
@@ -539,10 +539,10 @@ def fillChoices():
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     _gChoices = globals()['gChoices']
     if _gChoices is not None:
-        d = defer.Deferred()
-        d.addCallback(lambda x: _gChoices)
-        d.callback(None)
-        return d
+	d = defer.Deferred()
+	d.addCallback(lambda x: _gChoices)
+	d.callback(None)
+	return d
     defs = []
     defs.append(defer.DeferredList([
 		# couch.openView(designID,
@@ -679,7 +679,7 @@ def fillChoices():
 	for el in res:
 	    if el[0]:
 		new_res.update(el[1])
-        globals()['gChoices'] = new_res
+	globals()['gChoices'] = new_res
 	return globals()['gChoices'] #new_res
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict)#.addCallback(lambda choices: (result, choices))
@@ -689,15 +689,15 @@ gDescriptions = None
 def fillOurDescriptions(model):
     _gDescriptions = globals()['gDescriptions']
     if _gDescriptions is not None:
-        d = defer.Deferred()
-        d.addCallback(lambda x: gDescriptions)
-        d.callback(None)
-        return d
+	d = defer.Deferred()
+	d.addCallback(lambda x: gDescriptions)
+	d.callback(None)
+	return d
 
     keys = []
     for name, code in model['items'].items():
-        if code is None: continue
-        if type(code) is list:
+	if code is None: continue
+	if type(code) is list:
 	    code = code[0]
 	keys.append('d-' + name)
 	keys.append('d-' + name + '-' + code)
@@ -705,49 +705,47 @@ def fillOurDescriptions(model):
     def fill(res):
 	named = {}
 	for r in res['rows']:
-            if 'error' in r: continue
+	    if 'error' in r: continue
 	    parts = r['key'].split('-')
-            _name = parts[1]
-            if _name in named:
-                named[name] += r['doc']['desc']
-            else:
-                named.update({_name:r['doc']['desc']})
-        globals()['gModels']  = named
-        print "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print named
+	    _name = parts[1]
+	    if _name in named:
+		named[name] += r['doc']['desc']
+	    else:
+		named.update({_name:r['doc']['desc']})
+	globals()['gModels']  = named
 	return named
     return d.addCallback(fill)
 
 gModels = {}
 
-def fillModel(model):    
+def fillModel(model):
     name = model['name']
     if  name in globals()['gModels']:
-        d = defer.Deferred()
-        d.addCallback(lambda x: globals()['gModels'][name])
-        d.callback(None)
-        return d
+	d = defer.Deferred()
+	d.addCallback(lambda x: globals()['gModels'][name])
+	d.callback(None)
+	return d
     keys = [c for c in getModelComponents(model) if c is not None]
     d = couch.listDoc(keys=keys,include_docs=True)
     def fill(res):
-        globals()['gModels'][name] = res
-        return res
+	globals()['gModels'][name] = res
+	return res
     d.addCallback(fill)
     return d
 
 def computer(template, skin, request):
     name = unicode(unquote_plus(request.path.split('/')[-1]), 'utf-8')
     _models = [m for m in models if m['name'] == name]
-    model = _models[0] if len(_models)>0 else models[0]    
+    model = _models[0] if len(_models)>0 else models[0]
     d = fillModel(model)
     d1 = fillChoices()
     d2 = fillOurDescriptions(model)
     li = defer.DeferredList([d,d1,d2])
     def equalize(_li):
-        res = []
-        for el in _li:
-            res.append(el[1])
-        return res
+	res = []
+	for el in _li:
+	    res.append(el[1])
+	return res
     li.addCallback(equalize)
     li.addCallback(renderComputer, template, skin, model)
     return li

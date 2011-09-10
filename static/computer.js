@@ -1,4 +1,5 @@
 var log = console.log;
+var uuid;
 
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
@@ -1098,6 +1099,27 @@ $(function(){
 	  GCheaperGBeater();
 	  recalculate();
 	  $('#greset').click(function(){window.location.reload();});
+	  $('#tocart').click(function(){
+				 var stored_model = {'components':[]};				 
+				 _(_(new_model)
+				     .keys()).each(function(e){
+						       stored_model['components'].push(e);
+						   });
+				 if (uuid)
+				     stored_model['id'] = uuid;
+				 $.ajax({
+					    url:'/save',
+					    data:{'model':JSON.stringify(stored_model)},
+					    success:function(data){
+						if (!data['id'])
+						    alert('Что пошло не так :(');
+						else{
+						    uuid = data['id'];
+						    alert('Получилось!');
+						}
+					    }
+					});
+			     });
       } catch (x) {
 	  log(x);
       }

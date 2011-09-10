@@ -21,8 +21,7 @@ from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
 from twisted.web.error import NoResource
-
-
+from twisted.python.failure import Failure
 from lxml import etree
 
 _cached_statics = {}
@@ -101,6 +100,7 @@ class CachedStatic(File):
 	return self.render_GET(request)
 
 
+
     def render_GET(self, request):
 	# request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	# print "---------------cached---------------------"
@@ -157,8 +157,8 @@ class CachedStatic(File):
 	physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
 	# virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
 
-        if request.setLastModified(last_modified) is CACHED and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):                
-            return ''
+	if request.setLastModified(last_modified) is CACHED and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):
+	    return ''
 
 	if physical_name_in_cache:
 	    return _cached_statics[physical_name][1]
@@ -167,9 +167,9 @@ class CachedStatic(File):
 	#     return _cached_statics[virtual_name][1]
 
 	else:
-            if '.html' in fileForReading.name or '.json' in fileForReading.name:
+	    if '.html' in fileForReading.name or '.json' in fileForReading.name:
 		name_to_cache = physical_name
-                # DO NOT CACHE VIRTUAL NAMES. UNCOMMENT ALL TO CACHE EM
+		# DO NOT CACHE VIRTUAL NAMES. UNCOMMENT ALL TO CACHE EM
 		if len(virtual_name)>0:
 		    splitted = physical_name.split('\\')
 		    if len(splitted) == 0:
@@ -198,8 +198,8 @@ class CachedStatic(File):
 	buff.seek(0)
 	gzipped = buff.read()
 	buff.close()
-        if _name is not None:
-            _cached_statics[_name] = (_time, gzipped)
+	if _name is not None:
+	    _cached_statics[_name] = (_time, gzipped)
 	return gzipped
 
 
@@ -237,9 +237,10 @@ class Root(Resource):
 	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
-	self.putChild('desktop', Desktop())
+	self.putChild('computer', Desktop())
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
+	self.putChild('save', Save())
 	self.host_url = host_url
 	self.cookies = []
 	reactor.callLater(0, self.collectCookies)
@@ -311,6 +312,62 @@ class Component(Resource):
 	d = couch.openDoc(_id)
 	d.addCallback(self.writeComponent, request)
 	return NOT_DONE_YET
+
+
+
+class Save(Resource):
+
+    def finish(self, user_doc, request, model_id):
+	print 'will finish'
+	request.setHeader('Content-Type', 'application/json;charset=utf-8')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+	doc = {'id':model_id}
+	request.write(simplejson.dumps(doc))
+	request.finish()
+
+
+    def saveModel(self, user_doc, user_id, model, request):
+	
+	if user_doc.__class__ is Failure:
+            user_doc = {'_id':user_id, 'models':{}, 'date':str(date.today()).split('-')}
+	
+	if not 'id' in model:
+	    d = couch.get('/_uuids?count=1')
+	    def addId(uuids):
+		model['id'] = simplejson.loads(uuids)['uuids'][0]
+		return user_doc
+	    d.addCallback(addId)
+	    d.addCallback(self.saveModel, user_id, model, request)
+	    return d
+	else:
+            model_id = model.pop('id')
+            user_doc['models'].update({model_id:model})
+            print user_doc
+	    d = couch.saveDoc(user_doc)
+	    d.addCallback(self.finish, request, model_id)
+	    return d
+
+    def pr(self, e):
+	print e
+
+    # def storeUser(self, error, user_id, model, request):
+    #     print "storeeeeeeeeeeeeeeeeeee!!"
+    #     user_doc = {'models':{}, 'date':str(date.today()).split('-')}
+    #     d = couch.saveDoc(user_doc, user_id)
+    #     d.addCallback(self.saveModel, model, request)
+    #     d.addErrback(self.pr)
+
+    def render_GET(self, request):
+	model = request.args.get('model', [None])[0]
+	if model is not None:
+	    jmodel = simplejson.loads(model)
+	    user_id = request.getCookie('pc_user')
+	    d = couch.openDoc(user_id)
+	    d.addCallback(self.saveModel, user_id, jmodel, request)
+	    d.addErrback(self.saveModel, user_id, jmodel, request)
+	    # d.addErrback(self.storeUser, user_id, jmodel, request)
+	    return NOT_DONE_YET
+	return 'fail'
 
 # http://localhost:5984/pc/18060/L0JlbnFfbGNkL1Y5MjAuanBn.jpg
 class ImageProxy(Resource):
