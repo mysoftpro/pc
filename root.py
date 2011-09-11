@@ -4,7 +4,6 @@ from twisted.web.xmlrpc import Proxy
 from twisted.python import log
 import sys
 from cStringIO import StringIO
-from StringIO import StringIO as SIO
 import gzip
 from twisted.web.resource import Resource, ForbiddenResource
 from twisted.web.static import File, getTypeAndEncoding
@@ -250,7 +249,7 @@ class Root(Resource):
 	d = couch.get('/_uuids?count=20')
 	def append(uuids):
 	    for uuid in simplejson.loads(uuids)['uuids']:
-		self.cookies.append(uuid)
+		self.cookies.append(uuid[26:])
 	d.addCallback(append)
 
     def getChild(self, name, request):
@@ -258,7 +257,8 @@ class Root(Resource):
 	if  user_cookie is None:
 	    cookie = self.cookies.pop()
 	    request.addCookie('pc_user',
-			      str(cookie), expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
+			      str(cookie),
+			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
 	    if len(self.cookies) < 10:
 		reactor.callLater(0, self.collectCookies)
 	u = str(request.URLPath())
@@ -332,34 +332,49 @@ class Component(Resource):
 
 class Save(Resource):
 
-    def finish(self, user_doc, request, model_id):
-	print 'will finish'
+    def finish(self, user_model, request):
+        model_doc = user_model[1]
+        user_doc = user_model[0]
+        if model_doc['_id'] not in user_doc['models']:
+            user_doc['models'].append(model_doc['_id'])
+	couch.saveDoc(model_doc)
+	couch.saveDoc(user_doc)
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	doc = {'id':model_id}
+	doc = {'id':model_doc['_id']}
 	request.write(simplejson.dumps(doc))
 	request.finish()
 
     def saveModel(self, user_doc, user_id, model, request):
-
+	def addId(uuids, _user, _model):
+	    _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
+	    return (_user,_model)
+        def updateComponents(_model, _user, new_model):
+            _model['components'] = new_model['components']
+            return (_user,_model)
+	# cases
+	# 1 no user doc
 	if user_doc.__class__ is Failure:
-	    user_doc = {'_id':user_id, 'models':{}, 'date':str(date.today()).split('-')}
-
-	if not 'id' in model:
+	    user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
 	    d = couch.get('/_uuids?count=1')
-	    def addId(uuids):
-		model['id'] = simplejson.loads(uuids)['uuids'][0]
-		return user_doc
-	    d.addCallback(addId)
-	    d.addCallback(self.saveModel, user_id, model, request)
+	    d.addCallback(addId, user_doc, model)
+	    d.addCallback(self.finish, request)
 	    return d
+	# 2a user doc but no model
+	if not 'id' in model:
+	    print "2A_______________________"
+            d = couch.get('/_uuids?count=1')
+	    d.addCallback(addId, user_doc, model)
+	    d.addCallback(self.finish, request)
+	    return d
+	# 2b user doc and model
 	else:
+            print "2B_______________________"
 	    model_id = model.pop('id')
-	    user_doc['models'].update({model_id:model})
-	    print user_doc
-	    d = couch.saveDoc(user_doc)
-	    d.addCallback(self.finish, request, model_id)
-	    return d
+	    d = couch.openDoc(model_id)
+            d.addCallback(updateComponents,user_doc, model)
+	    d.addCallback(self.finish, request)
+            return d
 
     def pr(self, e):
 	print e
