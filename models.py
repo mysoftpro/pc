@@ -96,16 +96,21 @@ audio_51 = ["7365","7389", "7462"]
 
 windows = ["7369","14570","14571"]
 
-mother_to_proc_mapping= [
-    (mothers_1155,procs_1155),
-    (mothers_1156,procs_1156),
-    (mothers_1366,procs_1366),
-    (mothers_775,procs_775),
-    (mothers_am23,procs_am23),
-    (mothers_fm1,procs_fm1)
-    ]
+mother_to_proc_mapping= [(mothers_1155,procs_1155),
+                         (mothers_1156,procs_1156),
+                         (mothers_1366,procs_1366),
+                         (mothers_775,procs_775),
+                         (mothers_am23,procs_am23),
+                         (mothers_fm1,procs_fm1)]
 
 
+socket_top_proc_mapping = {
+    "1155":procs_1155,
+    "1156":procs_1156,
+    "1366":procs_1366,
+    "775":procs_775,
+    "am23":procs_am23,
+    "fm1":procs_fm1}
 
 def getCatalogsKey(doc):
     if type(doc['catalogs'][0]) is dict:
@@ -287,6 +292,10 @@ def getOurComponentText(name):
     return u""" Проверка ла бла ля кля любава овавав."""
 
 def replaceComponent(code, choices, name, socket):
+    print "replacing!!!!!!!!!!!!!!!!!!!!!!!!"
+    print code
+    print name
+    print socket
     flatten = []
 
     def sameCatalog(doc):
@@ -734,13 +743,11 @@ def fillModel(model):
     return d
 
 def computer(template, skin, request):
-    print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    print request.path    
     splitted = request.path.split('/')
-    if len(splitted) == 3:        
-        name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-        _models = [m for m in models if m['name'] == name]
-        model = _models[0] if len(_models)>0 else models[0]
+    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+    # _models = [m for m in models if m['name'] == name]
+    # _model = _models[0] if len(_models)>0 else models[0]
+    def render(model):
         d = fillModel(model)
         d1 = fillChoices()
         d2 = fillOurDescriptions(model)
@@ -753,6 +760,12 @@ def computer(template, skin, request):
         li.addCallback(equalize)
         li.addCallback(renderComputer, template, skin, model)
         return li
-    else:
-        d = couch.openView()
+    model_names = {}
+    for m in models:
+        model_names.update({m['name']:m})
         
+    if name in model_names:        
+        return render(model_names[name])
+    else:
+        d = couch.open(name)
+    

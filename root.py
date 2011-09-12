@@ -15,7 +15,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import models, index, computer
+from pc.models import models, index, computer, socket_top_proc_mapping
 from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
@@ -236,8 +236,9 @@ class Root(Resource):
 	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
-	self.putChild('computer', Desktop())
-	self.putChild('carts', Carts())
+	self.putChild('computer', Computer())
+	# self.putChild('carts', Carts())
+        # self.putChild('desktop', Desktop())
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
 	self.putChild('save', Save())
@@ -270,7 +271,7 @@ class Root(Resource):
 
 
 
-class Desktop(Resource):
+class Computer(Resource):
     def __init__(self, *args, **kwargs):
 	self.static = CachedStatic(static_dir)
 	Resource.__init__(self, *args, **kwargs)
@@ -278,19 +279,29 @@ class Desktop(Resource):
 	return self.static.getChild("computer.html", request)
 
 # TODO!!!! / at the end of the name!!!
-class Carts(Resource):
-    def __init__(self, *args, **kwargs):
-	self.static = CachedStatic(static_dir)
-	Resource.__init__(self, *args, **kwargs)
-    def getChild(self, name, request):
-	splitted = request.path.split('/')
-	print splitted
-	if splitted[-1] == '':
-	    splitted = splitted[:-1]
-	if splitted[-1] != name:
-	    return self
-	return self.static.getChild("computer.html", request)
+# class Carts(Resource):
+#     def __init__(self, *args, **kwargs):
+# 	self.static = CachedStatic(static_dir)
+# 	Resource.__init__(self, *args, **kwargs)
+#     def getChild(self, name, request):
+# 	splitted = request.path.split('/')
+# 	if splitted[-1] == '':
+# 	    splitted = splitted[:-1]
+# 	if splitted[-1] != name:
+# 	    return self
+# 	return self.static.getChild("computer.html", request)
 
+# class Desktop(Resource):
+#     def __init__(self, *args, **kwargs):
+# 	self.static = CachedStatic(static_dir)
+# 	Resource.__init__(self, *args, **kwargs)
+#     def getChild(self, name, request):
+# 	splitted = request.path.split('/')
+# 	if splitted[-1] == '':
+# 	    splitted = splitted[:-1]
+# 	if splitted[-1] != name:
+# 	    return self
+# 	return self.static.getChild("computer.html", request)
 
 
 class CustomWriter(object):
@@ -349,8 +360,9 @@ class Save(Resource):
 	def addId(uuids, _user, _model):
 	    _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
 	    return (_user,_model)
-        def updateComponents(_model, _user, new_model):
-            _model['components'] = new_model['components']
+        def updateModel(_model, _user, new_model):
+            _model['items'] = new_model['items']
+            
             return (_user,_model)
 	# cases
 	# 1 no user doc
@@ -361,30 +373,21 @@ class Save(Resource):
 	    d.addCallback(self.finish, request)
 	    return d
 	# 2a user doc but no model
-	if not 'id' in model:
-	    print "2A_______________________"
+	if not 'id' in model:	    
             d = couch.get('/_uuids?count=1')
 	    d.addCallback(addId, user_doc, model)
 	    d.addCallback(self.finish, request)
 	    return d
 	# 2b user doc and model
 	else:
-            print "2B_______________________"
 	    model_id = model.pop('id')
 	    d = couch.openDoc(model_id)
-            d.addCallback(updateComponents,user_doc, model)
+            d.addCallback(updateModel,user_doc, model)
 	    d.addCallback(self.finish, request)
             return d
 
     def pr(self, e):
 	print e
-
-    # def storeUser(self, error, user_id, model, request):
-    #     print "storeeeeeeeeeeeeeeeeeee!!"
-    #     user_doc = {'models':{}, 'date':str(date.today()).split('-')}
-    #     d = couch.saveDoc(user_doc, user_id)
-    #     d.addCallback(self.saveModel, model, request)
-    #     d.addErrback(self.pr)
 
     def render_GET(self, request):
 	model = request.args.get('model', [None])[0]
