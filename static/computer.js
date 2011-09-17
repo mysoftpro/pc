@@ -6,6 +6,15 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
+function getPartName(_id){
+    var cats = getCatalogs(choices[_id]);
+    for (var i=0;i<cats.length;i++){
+	var may_be_name = parts_names[cats[i]];
+	if (may_be_name)
+	    return may_be_name;
+    }
+}
+
 function blink($target, bcolor){
     $target.css('background-color','#7B9C0A');
     _.delay(function(e){$target.css('background-color',bcolor);},200);
@@ -53,6 +62,10 @@ function getRamFromText(text){
 
 function calculatePin(component){
     var retval = 8;
+    if (component['_id'].match('no')){
+	return retval;
+    }
+	
     var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
     var body = jgetBodyById(old_component['_id']);
     if (isProc(body) || isMother(body) || isVideo(body)){
@@ -142,13 +155,6 @@ function isEqualCatalogs(cat1,cat2, sli){
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
 				     var cats = getCatalogs(c).slice(0, catalogs.length);
-				     // this func is used for models and for choices
-				     // _sli = 2 allow to get specific part from model,
-				     //  by part catalogs
-				     // ["7363", "7388", "7449"] - with _sli = 2 will return
-				     // all mothers(["7363", "7388"] )
-				     // from model. if not limit _sli - it is possible to
-				     //return all mothers 1155 from choices
 				     var _sli = 2;
 				     if (no_slice)
 					 _sli = cats.length;
@@ -257,7 +263,7 @@ function updateDescription(new_id, body_id, does_not_show){
 		   url:'/component',
 		   data:{'id':new_id},
 		   success:function(data){
-		       data['title'] = parts_names[model_parts[body_id]];
+		       data['title'] = getPartName(body_id);
 		       changeDescription(index, new_id, !does_not_show, data);
 		   }
 	       });
@@ -328,7 +334,7 @@ function changeDescription(index, _id, show, data){
 	descr.show();
 	descrptions.jScrollPane();
 	if (!data){
-	    var new_name = parts_names[model_parts[_id]];
+	    var new_name = getPartName(_id);
 	    var titles = jgetTitles();
 	    titles[0].text(new_name);
 	}
@@ -502,45 +508,51 @@ var jgetChosenTitle = _.memoize(_jgetChosenTitle, function(select){return select
 
 
 function _jgetProcBody(){
-    return  $('#proc').find('td.body');
+    return  $('#' + parts['proc']).find('td.body');
 }
 var jgetProcBody = _.memoize(_jgetProcBody, function(){return 0;});
 
 
 function _jgetMotherBody(){
-    return $('#mother').find('td.body');
+    return $('#' + parts['mother']).find('td.body');
 }
 
 var jgetMotherBody = _.memoize(_jgetMotherBody, function(){return 0;});
 
 
 function _isProc(body){
-    return body.parent().attr('id') == 'proc';
+    return body.parent().attr('id') == parts['proc'];
 }
 var isProc = _.memoize(_isProc, function(body){return body.attr('id');});
 
 function _isMother(body){
-    return body.parent().attr('id') == 'mother';
+    return body.parent().attr('id') == parts['mother'];
 }
 var isMother = _.memoize(_isMother, function(body){return body.attr('id');});
 
 
 function _isVideo(body){
-    return body.parent().attr('id') == 'video';
+    return body.parent().attr('id') == parts['video'];
 }
 var isVideo = _.memoize(_isVideo, function(body){return body.attr('id');});
 
 function _isRam(body){
-    return body.parent().attr('id') == 'ram';
+    return body.parent().attr('id') == parts['ram'];
 }
 var isRam = _.memoize(_isRam, function(body){return body.attr('id');});
 
 
+function _jgetPart(body){
+    return body.parent().attr('id');
+}
+var jgetPart = _.memoize(_jgetPart, function(body){return body.attr('id');});
+
+
 function jgetSocketOpositeBody(body){
-    var part = model_parts[body.attr('id')];
+    var part = getCatalogs(model[body.attr('id')])[1];
     var mapping;
     var other_body;
-    if (part == 'proc'){
+    if (part == parts['proc']){
 	mapping = proc_to_mother_mapping;
 	other_body = jgetMotherBody();
     }
@@ -595,6 +607,7 @@ function changeSocket(component, body, direction){
 	    break;
 	}
     }
+
     var old_component = choices[jgetSelect(other_body).val()];
     var appr_components = getNearestComponent(old_component.price, other_catalogs, direction, true);
 
@@ -671,7 +684,9 @@ function reset(){
 
 
 function _jgetPeriferyOp(_id){
-    var tr = $('#' + _id.substring(1,_id.length));
+    var part = _id.substring(1,_id.length);
+    var row_id = parts[part];
+    var tr = $('#' + row_id);
     return tr.find('option').first();
 }
 var jgetPeriferyOp = _.memoize(_jgetPeriferyOp, function(_id){return _id;});
@@ -774,7 +789,7 @@ function _geRamSlotsFromMother(body){
 var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother, function(body){return body.attr('id');});
 
 function changeRam(e, direction, silent){
-    var ramselect = jgetSelectByRow($('#ram'));
+    var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var component = choices[ramselect.val()];
     var count = 1;
     if (component['count'])
@@ -783,7 +798,7 @@ function changeRam(e, direction, silent){
     var need_hide;
     var max_count;
     if (direction == 'up' || direction == 'mock'){
-	var mother_select = jgetSelectByRow($('#mother'));
+	var mother_select = jgetSelectByRow($('#' + parts['mother']));
 	var mother_body = jgetBody(mother_select);
 	max_count = geRamSlotsFromMother(mother_body);
 	new_count = count + 1;
@@ -809,7 +824,7 @@ function changeRam(e, direction, silent){
 }
 
 function installRamCount(){
-    var ramselect = jgetSelectByRow($('#ram'));
+    var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var rambody = jgetBody(ramselect);
     rambody.text(rambody.text().substring(0,100));
     var component = new_model[ramselect.val()];
@@ -900,7 +915,7 @@ function changeRamIfPossible(old_component, direction){
 		if (appr_components[0]){
 		    var new_component = appr_components[0];
 		    new_component['count'] = 1;
-		    var ram_select = jgetSelectByRow($('#ram'));
+		    var ram_select = jgetSelectByRow($('#' + parts['ram']));
 		    var ram_body = jgetBody(ram_select);
 		    var text = jgetChosenTitle(jgetSelect(ram_body)).text();
 		    var ramvolume = getRamFromText(text);
@@ -1082,7 +1097,7 @@ function GCheaperGBeater(){
 
 
 $(function(){
-      try{
+      // try{
 	  $('select').chosen().change(manualChange);//componentChanged
 	  new_model = _.clone(model);
 	  installBodies();
@@ -1100,27 +1115,50 @@ $(function(){
 	  recalculate();
 	  $('#greset').click(function(){window.location.reload();});
 	  $('#tocart').click(function(){
-				 var stored_model = {'components':[]};				 
-				 _(_(new_model)
-				     .keys()).each(function(e){
-						       stored_model['components'].push(e);
-						   });
+				 var model_to_store = {};
+				 var items = {};
+				 for (_id in model){
+
+				     var new_model_comp = filterByCatalogs(_(new_model).values(),
+									   getCatalogs(model[_id]))[0];
+				     var body = jgetBodyById(_id);
+				     if (isMother(body)){
+					 model_to_store["mother_catalogs"] = getCatalogs(new_model_comp);
+				     }
+				     if (isProc(body)){
+					 model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
+				     }
+				     var to_store = null;
+				     if (new_model_comp.count){
+					 to_store = [];
+					 for (var i=0;i<new_model_comp.count;i++){
+					     to_store.push(new_model_comp['_id']);
+					 }
+				     }
+				     else{					 
+					 if (!new_model_comp['_id'].match('no'))
+					     to_store = new_model_comp['_id'];
+				     }
+				     var part = jgetPart(body);
+				     items[part] = to_store;				     
+				 }
+				 model_to_store['items'] = items;
 				 if (uuid)
-				     stored_model['id'] = uuid;
+				     model_to_store['id'] = uuid;				 
 				 $.ajax({
-					    url:'/save',
-					    data:{'model':JSON.stringify(stored_model)},
-					    success:function(data){
-						if (!data['id'])
-						    alert('Что пошло не так :(');
-						else{
-						    uuid = data['id'];
-						    alert('Получилось!');
-						}
-					    }
-					});
+				 	    url:'/save',
+				 	    data:{'model':JSON.stringify(model_to_store)},
+				 	    success:function(data){
+				 		if (!data['id'])
+				 		    alert('Что пошло не так :(');
+				 		else{
+				 		    uuid = data['id'];
+				 		    alert('Получилось!');
+				 		}
+				 	    }
+				 	});
 			     });
-      } catch (x) {
-	  log(x);
-      }
+      // } catch (x) {
+      // 	  log(x);
+      // }
   });

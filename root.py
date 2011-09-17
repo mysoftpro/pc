@@ -15,7 +15,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import models, index, computer, socket_top_proc_mapping
+from pc.models import index, computer
 from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
@@ -237,8 +237,6 @@ class Root(Resource):
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
 	self.putChild('computer', Computer())
-	# self.putChild('carts', Carts())
-        # self.putChild('desktop', Desktop())
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
 	self.putChild('save', Save())
@@ -267,42 +265,12 @@ class Root(Resource):
 	    return self.static.getChild(name, request)
 	return self
 
-
-
-
-
 class Computer(Resource):
     def __init__(self, *args, **kwargs):
 	self.static = CachedStatic(static_dir)
 	Resource.__init__(self, *args, **kwargs)
     def getChild(self, name, request):
 	return self.static.getChild("computer.html", request)
-
-# TODO!!!! / at the end of the name!!!
-# class Carts(Resource):
-#     def __init__(self, *args, **kwargs):
-# 	self.static = CachedStatic(static_dir)
-# 	Resource.__init__(self, *args, **kwargs)
-#     def getChild(self, name, request):
-# 	splitted = request.path.split('/')
-# 	if splitted[-1] == '':
-# 	    splitted = splitted[:-1]
-# 	if splitted[-1] != name:
-# 	    return self
-# 	return self.static.getChild("computer.html", request)
-
-# class Desktop(Resource):
-#     def __init__(self, *args, **kwargs):
-# 	self.static = CachedStatic(static_dir)
-# 	Resource.__init__(self, *args, **kwargs)
-#     def getChild(self, name, request):
-# 	splitted = request.path.split('/')
-# 	if splitted[-1] == '':
-# 	    splitted = splitted[:-1]
-# 	if splitted[-1] != name:
-# 	    return self
-# 	return self.static.getChild("computer.html", request)
-
 
 class CustomWriter(object):
     def __init__(self, viewName):
@@ -344,10 +312,10 @@ class Component(Resource):
 class Save(Resource):
 
     def finish(self, user_model, request):
-        model_doc = user_model[1]
-        user_doc = user_model[0]
-        if model_doc['_id'] not in user_doc['models']:
-            user_doc['models'].append(model_doc['_id'])
+	model_doc = user_model[1]
+	user_doc = user_model[0]
+	if model_doc['_id'] not in user_doc['models']:
+	    user_doc['models'].append(model_doc['_id'])
 	couch.saveDoc(model_doc)
 	couch.saveDoc(user_doc)
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
@@ -359,11 +327,13 @@ class Save(Resource):
     def saveModel(self, user_doc, user_id, model, request):
 	def addId(uuids, _user, _model):
 	    _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
+            _model['name'] = _model['_id']
 	    return (_user,_model)
-        def updateModel(_model, _user, new_model):
-            _model['items'] = new_model['items']
-            
-            return (_user,_model)
+	def updateModel(_model, _user, new_model):
+	    new_model['_id'] = _model['_id']
+            new_model['_rev'] = _model['_rev']
+            new_model['name'] = _model['_id']
+	    return (_user,_model)
 	# cases
 	# 1 no user doc
 	if user_doc.__class__ is Failure:
@@ -373,8 +343,8 @@ class Save(Resource):
 	    d.addCallback(self.finish, request)
 	    return d
 	# 2a user doc but no model
-	if not 'id' in model:	    
-            d = couch.get('/_uuids?count=1')
+	if not 'id' in model:
+	    d = couch.get('/_uuids?count=1')
 	    d.addCallback(addId, user_doc, model)
 	    d.addCallback(self.finish, request)
 	    return d
@@ -382,9 +352,9 @@ class Save(Resource):
 	else:
 	    model_id = model.pop('id')
 	    d = couch.openDoc(model_id)
-            d.addCallback(updateModel,user_doc, model)
+	    d.addCallback(updateModel,user_doc, model)
 	    d.addCallback(self.finish, request)
-            return d
+	    return d
 
     def pr(self, e):
 	print e
