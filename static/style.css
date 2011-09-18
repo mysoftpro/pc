@@ -40,6 +40,7 @@ h2 {
     float:right;
     z-index:9999;
     text-align:right;
+    margin-bottom:5px;
 }
 #banner1 {
     height:325px;
@@ -201,9 +202,9 @@ p {
     cursor:pointer;
 }
 
-#phone {    
+#phone {
     background-image:url("/static/phone.png");
-    font-size:32px;
+    font-size:28px;
     background-repeat:no-repeat;
     display:block;
     float:right;
@@ -218,7 +219,7 @@ ul#main_menu {
     display:block;
     margin:0;
     padding:0;
-    margin-top:40px;    
+    margin-top:40px;
 }
 ul#main_menu li {
 	margin: 0;
@@ -612,7 +613,7 @@ color:#7b9c0a;
     height:120px;
     border:1px solid #777;
     text-align:right;
-    
+
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
 
@@ -666,7 +667,7 @@ color:#7b9c0a;
     z-index:9999;
     background-color: #F5F5FF;
     background-image: -moz-linear-gradient(#FBFBFB, #830000);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#FBFBFB), to(#830000)); 
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FBFBFB), to(#830000));
     background-image: -webkit-linear-gradient(top, #FBFBFB, #830000);
     background-image: -o-linear-gradient(top, #FBFBFB, #830000);
     background-image: linear-gradient(top, #FBFBFB, #830000);
@@ -679,7 +680,7 @@ color:#7b9c0a;
     -webkit-border-top-left-radius: 15px;
 
     box-shadow: 0 5px 10px #AAAAAA;
-    -moz-box-shadow:0 5px 10px #AAAAAA; 
+    -moz-box-shadow:0 5px 10px #AAAAAA;
     -webkit-box-shadow: 0 5px 10px #AAAAAA;
     padding: 14px 10px;
 }
@@ -702,13 +703,13 @@ color:#7b9c0a;
     -webkit-border-bottom-left-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
 
-    
+
     background-color: #000000;
     background-image: -moz-linear-gradient(#F1F1FF, #000000);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#F1F1FF), to(#000000)); 
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#F1F1FF), to(#000000));
     background-image: -webkit-linear-gradient(top, #F1F1FF, #000000);
-    background-image: -o-linear-gradient(top, #F1F1FF, #000000); 
-    background-image: linear-gradient(top, #F1F1FF, #000000); 
+    background-image: -o-linear-gradient(top, #F1F1FF, #000000);
+    background-image: linear-gradient(top, #F1F1FF, #000000);
     box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
     -moz-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
     -webkit-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);

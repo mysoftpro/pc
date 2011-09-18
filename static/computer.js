@@ -1153,7 +1153,7 @@ $(function(){
 				 		    alert('Что пошло не так :(');
 				 		else{
 				 		    uuid = data['id'];
-				 		    alert('Получилось!');
+				 		    $('#modelname').text(data['id']);
 				 		}
 				 	    }
 				 	});
