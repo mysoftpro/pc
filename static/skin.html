@@ -13,20 +13,34 @@
       <body>
 	<div id="gradient_background">
 	  <div id="container">
-	    <a href="" id="phone">
-	      (8 4012) 33-26-07 
-	    </a>
+
 	    <h1 id="logo">
-	      <a href="http://buildpc.ru"><img src="/static/logo.png" alt="buildpc"/></a>
+	      <a href="http://buildpc.ru">
+		<img src="/static/logo.png" alt="buildpc"/>
+	      </a>
 	    </h1>
+	    <div id="links">
+	      <span id="operators">
+		<span id="beeline" ></span>
+		<span id="mts" ></span>
+		<span id="megafon" ></span>
+		<span id="city"></span>
+	      </span>
+	      <strong id="phone">
+		(8 4012) 33-26-07
+	      </strong>
+	      <span style="clear:both;"></span>
+	      <ul id="main_menu">
+		<li><a href="/comuters"><span class="hidden">Все модели</span></a></li>
+		<li><a href="/howtobuy"><span class="hidden">Как выбирать</span></a></li>
+		<li><a href="/howtobuy"><span class="hidden">Как покупать</span></a></li>
+		<li><a href="/warranty"><span class="hidden">Гарантии</span></a></li>
+	      </ul>
+	    </div>
+	    <div style="clear:both;"></div>
+
+
 	    <top/>
-	    <ul id="main_menu">
-	      <li class="home"><a href="/comuters"><span class="hidden">Десктопы</span></a></li>
-	      <li class="login"><a href="/notebooks"><span class="hidden">Ноутбуки</span></a></li>
-	      <li class="login"><a href="/othergoods"><span class="hidden">Другие товары</span></a></li>	      
-	      <li class="buy"><a href="/howtobuy"><span class="hidden">Как купить</span></a></li>
-	      <li class="company"><a href="/warranty"><span class="hidden">Гарантии</span></a></li>
-	    </ul>
 	  </div>
 	</div>
 	<middle/>
@@ -50,4 +64,16 @@
 	  </div>
 
       </div>
+      <script type="text/javascript">
+	
+	$(function(){
+	function swapPhone(text){
+	return function(e){$('#phone').text(text)};
+	}
+	$('#beeline').click(swapPhone('(8 905) 469-18-92'));
+	$('#mts').click(swapPhone('(8 911) 469-18-92'));
+	$('#megafon').click(swapPhone('(8 921) 469-18-92'));
+	$('#city').click(swapPhone('(8 4012) 33-26-07'));
+	});
+      </script>
   </body></html>

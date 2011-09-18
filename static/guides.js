@@ -2,15 +2,15 @@ $(function(){
     $('#tips').click(function(e){
 			 e.preventDefault();
 			 guider.createGuider({
-						attachTo: "#mother",
+						attachTo: "#7388",
 						description: "Список доступных компонентов откроется после повторного клика. Описание компонента смотрите ниже на странице.",
-						id: "list",
+						id: "mother",
 						position: 6,
 						width: 160
 					    }).show();
 
 			guider.createGuider({
-						attachTo: "#proc .body",
+						attachTo: "#7399 .body",
 						description: "Название выбранного компонента",
 						id: "body",
 						position: 7,
@@ -18,7 +18,7 @@ $(function(){
 					    }).show();
 
 			guider.createGuider({
-						attachTo: "#mother .cheaper",
+						attachTo: "#7388 .cheaper",
 						description: "Можно менять компоненты не открывая список.",
 						id: "cheaperBetter",
 						position: 6,
@@ -26,7 +26,7 @@ $(function(){
 					    }).show();
 
 			guider.createGuider({
-						attachTo: "#owindows",
+						attachTo: "#osoft",
 						description: "Некоторые опции можно отключить совсем.",
 						id: "options",
 						position: 6,
@@ -91,17 +91,6 @@ guider.createGuider({
 	  target.unbind('click');
 	  active.click(swapTabs);
 
-	  // var bodies = $('td.body');
-	  // var current_body, current_index;
-	  // for (var i=0,l=bodies.length;i<l;i++){
-	  //     var body = $(bodies.get(i));
-	  //     if (!body.is(':visible')){
-	  // 	  current_body = body;
-	  // 	  current_index = i;
-	  // 	  break;
-	  //     }
-	  // }
-	  //var descr = $($('.description').get(current_index));
 	  var sign = '+=';
 	  if (target.attr('id') == 'ourcomments')
 	      sign = '-=';
@@ -109,8 +98,7 @@ guider.createGuider({
 	  container.data('jScrollPanePosition', 0);
 	  container.css('top','0');
 	  $('.description').animate({'margin-left':sign + 912}, 400);
-	  // var manu = descr.find('.manu');
-	  // manu.animate({'margin-left':sign + 1000}, 500);
+
       }
       $('.inactive').click(swapTabs);
       var ours = $('.our');

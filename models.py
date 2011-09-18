@@ -413,11 +413,8 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     for name,code in model['items'].items():
 	component_doc = None
 	count = 0
-	# no_component = False
 	if code is None:
-	    # continue
 	    component_doc = noComponentFactory({})
-	    #no_component = True
 	else:
 
 	    if type(code) is list:

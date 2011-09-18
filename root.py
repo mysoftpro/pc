@@ -24,7 +24,7 @@ from twisted.python.failure import Failure
 from lxml import etree
 
 _cached_statics = {}
-global_cache = {}
+
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
@@ -236,10 +236,12 @@ class Root(Resource):
 	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
+        self.putChild('clear_cache',ClearCache())
 	self.putChild('computer', Computer())
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
 	self.putChild('save', Save())
+        
 	self.host_url = host_url
 	self.cookies = []
 	reactor.callLater(0, self.collectCookies)
@@ -393,3 +395,8 @@ class ImageProxy(Resource):
 	    return NoResource()
 
 	return self.proxy.getChild(path, request)
+
+class ClearCache(Resource):
+    def render_GET(self, request):
+        globals()['_cached_statics'] = {}
+        return "ok"
