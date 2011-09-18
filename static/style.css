@@ -755,3 +755,16 @@ color:#7b9c0a;
     float:left;
     width:900px;
 }
+
+#model_description {
+    padding:5px 5px 5px 0; 
+    color:#999;
+}
+
+#added{
+    display:none;
+}
+#description a {
+    margin-left:5px;
+    margin-right:5px;
+}

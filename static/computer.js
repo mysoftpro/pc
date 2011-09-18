@@ -1154,6 +1154,12 @@ $(function(){
 				 		else{
 				 		    uuid = data['id'];
 				 		    $('#modelname').text(data['id']);
+						    $('#model_description').html(
+							_.template($('#added').html(),
+								   {
+								       computer:data['id'],
+								       cart:$.cookie('pc_user')
+								   }));
 				 		}
 				 	    }
 				 	});

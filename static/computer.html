@@ -7,11 +7,11 @@
 	<span class="model_summary">Базовый индекс производительности <strong id="basepi">2.6</strong> </span>
 	<span style="clear:both;"></span>
     </div>
-    <div style="padding:5px 5px 5px 0; color:#999">
-      Отличный компьютер для интернет серфинга. Мощный процессор с hyperthreading позволит держать в браузере десятки
+    <div id="model_description">
+      Отличный компьютер для интернет серфинга.
+      Мощный процессор с hyperthreading позволит держать в браузере десятки
       открытых вкладок. Материнская плата поддержит совместимость на 3-4 года вперед.
     </div>
-
   </div>
 
   <div style="float:right;">
@@ -38,7 +38,7 @@
 	    <label for="osoft">Windows</label>
 	  </td>
 
-	  
+
 	  <td style="width:80px;">
 	    <input  id="oaudio" value="oaudio" type="checkbox" checked="checked"/>
 	    <label for="oaudio">колонки</label>
@@ -47,14 +47,14 @@
 	    <input  id="omouse" value="omouse" type="checkbox" checked="checked"/>
 	    <label for="omouse">мышь</label>
 	  </td>
-	 
-	    
+
+
 	  <td style="width:95px;">
 	    <input  id="okbrd" value="okbrd" type="checkbox" checked="checked"/>
 	    <label for="okbrd">клавиатура</label>
 	  </td>
 
-	  	  
+
 	</tr>
 	<tr>
 
@@ -68,7 +68,7 @@
 	    <input  id="oinstalling" value="oinstalling" type="checkbox" checked="checked" />
 	    <label for="oinstalling">Установка windows: 300р</label>
 
-	  </td>	  
+	  </td>
 	  <td >
 	    <input  id="odelivery" value="odelivery" type="checkbox" checked="checked" />
 	    <label for="odelivery">Доставка: 0р</label>
@@ -106,25 +106,17 @@
   <script type="text/javascript" src="/static/guider.js"></script>
   <script type="text/javascript" src="/static/computer.js"></script>
   <script type="text/javascript" src="/static/guides.js"></script>
-  
-  <!-- <div id="mask"></div> -->
-  <!-- <div id="details"> -->
-    
-  <!--   <h4 style="width:100%;text-align:center;">Материнская плата и процессор имеют разные сокеты!</h4> -->
-    
-  <!--   <div class="changeSocket" style="float:left;" id="doChange"> -->
-  <!--     Поменять сокет -->
-  <!--   </div> -->
-    
-  <!--   <div class="changeSocket" style="float:right;" id="doNotChange"> -->
-  <!--     Отменить выбор -->
-  <!--   </div>     -->
-  <!--   <div style="clear:both;"></div> -->
-  <!--   <div style="margin-left:80px;margin-top:20px;color:white;"><input id="donotask" type="checkbox" />  -->
-  <!--     Всегда менять сокет. -->
-  <!--     Больше не спрашивать меня. -->
-  <!--   </div> -->
-  <!-- </div> -->
+  <script type="text/javascript" src="/static/jquery.cookie.min.js"></script>
+  <div id="added">
+    <strong>Чтобы купить этот компьютер позвоните нам и назовите его номер</strong>
+    <br/>
+    Сссылка на этот компьютер: <a href="computer/{{computer}}">{{computer}}</a>
+    <input type="text" value="http://buildpc.ru/computer/{{computer}}"/>
+    <br/>
+    Сссылка на вашу корзину: <a href="models/{{cart}}">{{cart}}</a>
+    <input type="text" value="http://buildpc.ru/models/{{cart}}"/>
+
+  </div>
 </middle>
 
 
