@@ -22,6 +22,7 @@ from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
 from lxml import etree
+from copy import deepcopy
 
 _cached_statics = {}
 
@@ -38,13 +39,33 @@ static_hooks = {
 
 class Template(object):
 
-    def __init__(self, f=None):
-	# skin
-	if f is None:
-	    f = open(os.path.join(static_dir, 'skin.html'))
-	parser = etree.HTMLParser(encoding='utf-8')
-	self.tree = etree.parse(f, parser)
-	f.close()
+    def __init__(self, file_and_name=None):
+        print "init!!!!!!!!!!!!!!!!!"
+        print file_and_name
+        cache = globals()['_cached_statics']
+        _file = _name = None
+        if file_and_name is not None:
+            _file = file_and_name[0]
+            _name = file_and_name[1]
+        else:
+            _name = 'skin.html'
+        if _name is not None and _name in cache:
+            print "return from cache!!!!!!!!!!!!!!!!!!!!!!!"
+            if _file is not None:
+                _file.close()
+            self.tree = deepcopy(cache[_name])
+            print "okokoko"
+            print self.tree
+            return
+
+
+        if _file is None:
+            _file = open(os.path.join(static_dir, 'skin.html'))
+        parser = etree.HTMLParser(encoding='utf-8')
+        cache[_name] = etree.parse(_file, parser)
+        self.tree = deepcopy(cache[_name])        
+        print "____________________read skin file"
+        _file.close()
 
     def root(self):
 	return self.tree.getroot().find('body')
@@ -89,11 +110,9 @@ class Template(object):
 class CachedStatic(File):
 
     def __init__(self, *args, **kwargs):
-	File.__init__(self, *args, **kwargs)
+        print "init cached static!"
 	self.skin = Template()
-	# f = open(os.path.join(static_dir, 'skin.html'))
-	# self.skin = Template(f.read())
-	# f.close()
+	File.__init__(self, *args, **kwargs)
 
     def render(self, request):
 	return self.render_GET(request)
@@ -156,7 +175,7 @@ class CachedStatic(File):
 	physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
 	# virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
 
-	if request.setLastModified(last_modified) is CACHED and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):
+	if request.setLastModified(last_modified) is CACHED:#??? and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):
 	    return ''
 
 	if physical_name_in_cache:
@@ -212,7 +231,7 @@ class CachedStatic(File):
 	    short_name = fileForReading.name.split('\\')[-1]
 
 	if short_name in static_hooks:
-	    template = Template(f=fileForReading)
+	    template = Template((fileForReading,short_name))
 	    d = static_hooks[short_name](template, self.skin, request)
 	else:
 	    # just an empty snippet
@@ -235,7 +254,7 @@ class Root(Resource):
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
         self.putChild('clear_cache',ClearCache())
-	self.putChild('computer', Computer())
+	self.putChild('computer', Computer(self.static))
 	self.putChild('component', Component())
 	self.putChild('image', ImageProxy())
 	self.putChild('save', Save())
@@ -266,9 +285,9 @@ class Root(Resource):
 	return self
 
 class Computer(Resource):
-    def __init__(self, *args, **kwargs):
-	self.static = CachedStatic(static_dir)
-	Resource.__init__(self, *args, **kwargs)
+    def __init__(self, static):
+	self.static = static
+	Resource.__init__(self)
     def getChild(self, name, request):
 	return self.static.getChild("computer.html", request)
 
