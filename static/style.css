@@ -499,7 +499,6 @@ select{
 
 
 td.body{
-    height:30px;
     cursor:pointer;
     width:670px;
 }
@@ -641,7 +640,7 @@ color:#7b9c0a;
 
 
 .component_viewlet{
-    height:36px;
+    height:30px;
 }
 
 #mask {
@@ -720,7 +719,7 @@ color:#7b9c0a;
     cursor: pointer;
     margin-left: 14px;
     border: 1px solid #444;
-    padding:4px;
+    padding:2px;
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
     -webkit-border-top-left-radius: 5px;
@@ -729,16 +728,19 @@ color:#7b9c0a;
     -webkit-border-bottom-right-radius: 5px;
     background-color:#222;
     float:right;
+    font-size:10px;
+    
 }
 
 #ramcount {
     color:white !important;
     font-weight:bold;
     border: 1px solid #444;
-    padding:4px;
+    padding:2px;
     margin-left: 14px;
     float:right;
     cursor:auto !important;
+    font-size:10px;
 }
 
 #middle {

@@ -54,8 +54,8 @@ select.chzn-select {
   overflow: hidden;
   #D4D4D4-space: nowrap;
   position: relative;
-  height: 26px;
-  line-height: 26px;
+  height: 20px;/* 26px tretiy3*/
+  line-height: 20px;/* 26px tretiy3*/
   padding: 0 0 0 8px;
   color: black;/* #444; */
   text-decoration: none;
@@ -191,7 +191,7 @@ select.chzn-select {
   background-image: linear-gradient(top, #b3b3b3 0%,#767676 70%);
   color: #333;
   border: 1px solid #b4b4b4;
-  line-height: 13px;
+  line-height: 12px;
   padding: 3px 19px 3px 6px;
   margin: 3px 0 3px 5px;
   position: relative;
