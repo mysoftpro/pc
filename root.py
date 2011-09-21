@@ -212,8 +212,6 @@ class CachedStatic(File):
 	    short_name = fileForReading.name.split('\\')[-1]
 
 	if short_name in static_hooks:
-	    # parser = etree.HTMLParser(encoding='utf-8')
-	    # tree = etree.parse(fileForReading, parser)
 	    template = Template(f=fileForReading)
 	    d = static_hooks[short_name](template, self.skin, request)
 	else:

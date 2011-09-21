@@ -1,4 +1,3 @@
-var log = console.log;
 var uuid;
 
 _.templateSettings = {
@@ -229,7 +228,7 @@ function componentChanged(maybe_event){
 
 
     } catch (x) {
-	log(x);
+	console.log(x);
     }
 }
 
@@ -339,7 +338,7 @@ function changeDescription(index, _id, show, data){
 	    titles[0].text(new_name);
 	}
     } catch (x) {
-	log(x);
+	console.log(x);
     }
 }
 
@@ -465,7 +464,7 @@ function getOptionForChBe(select){
 	}
 	return opts;
     } catch (x) {
-	log(x);
+	console.log(x);
     }
 }
 
@@ -1109,8 +1108,8 @@ $(function(){
 	  changeRam('e','mock');
 	  //shadowCram($('#decram'));
 
-	  $('#basepi').html($('#large_index').html());
-	  $('#baseprice').html($('#large_price').html());
+	  // $('#basepi').html($('#large_index').html());
+	  // $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
 	  $('#greset').click(function(){window.location.reload();});
