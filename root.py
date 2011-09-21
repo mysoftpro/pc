@@ -39,14 +39,14 @@ static_hooks = {
 
 class Template(object):
 
-    def __init__(self, opened_file, name_to_cache):
+    def __init__(self, opened_file, name_to_cache, last_modified):
         cache = globals()['_cached_statics']
-        if name_to_cache in cache:
-            self.tree = deepcopy(cache[name_to_cache])
+        if name_to_cache in cache and cache[name_to_cache][0] == last_modified:
+            self.tree = deepcopy(cache[name_to_cache][1])
         else:
             parser = etree.HTMLParser(encoding='utf-8')
-            cache[name_to_cache] = etree.parse(opened_file, parser)
-            self.tree = deepcopy(cache[name_to_cache])
+            cache[name_to_cache] = (last_modified,etree.parse(opened_file, parser))
+            self.tree = deepcopy(cache[name_to_cache][1])
         opened_file.close()
 
     def root(self):
@@ -106,7 +106,6 @@ class Skin(Template):
 class CachedStatic(File):
 
     def __init__(self, *args, **kwargs):
-        print "init cached static!"
         self.skin = Skin()
         File.__init__(self, *args, **kwargs)
 
@@ -116,10 +115,6 @@ class CachedStatic(File):
 
 
     def render_GET(self, request):
-        # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        # print "---------------cached---------------------"
-        # print _cached_statics.keys()
-
         self.restat(False)
 
         if self.type is None:
@@ -170,6 +165,7 @@ class CachedStatic(File):
         # 304 is here
         physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
         # virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
+        
 
         if request.setLastModified(last_modified) is CACHED:#??? and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):
             return ''
@@ -227,7 +223,7 @@ class CachedStatic(File):
             short_name = fileForReading.name.split('\\')[-1]
 
         if short_name in static_hooks:
-            template = Template(fileForReading,short_name)
+            template = Template(fileForReading,short_name,last_modified)
             d = static_hooks[short_name](template, self.skin, request)
         else:
             # just an empty snippet
