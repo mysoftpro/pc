@@ -167,9 +167,14 @@ class CachedStatic(File):
         # virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
         
         if request.setLastModified(last_modified) is CACHED:#??? and physical_name_in_cache:#(physical_name_in_cache or virtual_name_in_cache):
+            print "304 aaaaaaaaaaaaaaaaaaaaaaammm!"
+            print physical_name
+            print physical_name_in_cache
+            print virtual_name
             return ''
 
         if physical_name_in_cache:
+            print "from cache!"
             return _cached_statics[physical_name][1]
         # if virtual_name_in_cache:
         #     return _cached_statics[virtual_name][1]

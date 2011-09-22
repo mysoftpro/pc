@@ -68,7 +68,7 @@ function calculatePin(component){
     if (component['_id'].match('no')){
 	return retval;
     }
-	
+
     var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
     var body = jgetBodyById(old_component['_id']);
     if (isProc(body) || isMother(body) || isVideo(body)){
@@ -1134,16 +1134,16 @@ $(function(){
 					     to_store.push(new_model_comp['_id']);
 					 }
 				     }
-				     else{					 
+				     else{
 					 if (!new_model_comp['_id'].match('no'))
 					     to_store = new_model_comp['_id'];
 				     }
 				     var part = jgetPart(body);
-				     items[part] = to_store;				     
+				     items[part] = to_store;
 				 }
 				 model_to_store['items'] = items;
 				 if (uuid)
-				     model_to_store['id'] = uuid;				 
+				     model_to_store['id'] = uuid;
 				 $.ajax({
 				 	    url:'/save',
 				 	    data:{'model':JSON.stringify(model_to_store)},
@@ -1159,6 +1159,18 @@ $(function(){
 								       computer:data['id'],
 								       cart:$.cookie('pc_user')
 								   }));
+						    var cart = $('#cart');
+						    if (cart){
+							var str_ammo = cart.text().match(/([0-9]+)/g);
+							var int_amo = parseInt(str_ammo)+1;
+							cart.text('Корзина('+int_amo+')');
+						    }
+						    else{
+							$('#main_menu').append(_template('<li><a href="/computers/{{computers}}">Корзина(1)</a></li>',
+											 {
+											     computers:$.cookie('pc_user')
+											 }));
+						    }
 				 		}
 				 	    }
 				 	});

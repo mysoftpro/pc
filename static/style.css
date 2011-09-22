@@ -177,7 +177,7 @@ p {
 
 #operators{
     display:block;
-    float:left;
+    float:right;
     width:90px;
     padding-top:10px;
 }
