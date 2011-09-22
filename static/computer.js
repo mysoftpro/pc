@@ -1169,10 +1169,27 @@ $(function(){
 						    }
 						    else{
 							$('#main_menu').append(_.template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
-											 {
-											     computers:$.cookie('pc_user')
-											 }));
+											  {
+											      computers:$.cookie('pc_user')
+											  }));
 						    }
+						    var input = $('#email');
+						    input.click(function(e){if (input.val()=='введите email')input.val('');});
+						    $('#emailbutton').click(function(e){
+										e.preventDefault();
+										$.ajax({
+											   url:'/sender',
+											   data: {uuid:uuid, email:input.val()},
+											   success:function(data){
+											       if (data == "ok"){
+												   input.val('получилось!');
+											       }
+											       else{
+												   input.val('не получилось :(');
+											       }
+											   }
+										       });
+									    });
 						    $('#tocart').text('Сохранить');
 				 		}
 				 	    }

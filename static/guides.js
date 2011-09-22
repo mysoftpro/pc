@@ -128,5 +128,5 @@ guider.createGuider({
       for (var i=0,l=ours.length;i<l;i++){
 	  var o = $(ours.get(i));
 	  o.html(o.text());
-      }
+      }      
 });

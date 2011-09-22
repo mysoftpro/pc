@@ -23,7 +23,7 @@ from twisted.web.error import NoResource
 from twisted.python.failure import Failure
 from lxml import etree
 from copy import deepcopy
-
+from pc.mail import Sender
 _cached_statics = {}
 
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
@@ -284,6 +284,7 @@ class Root(Cookable):
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
+        self.putChild('sender', Sender())
         self.host_url = host_url        
 
     def collectCookies(self):
@@ -356,8 +357,8 @@ class Save(Resource):
                               str(len(user_doc['models'])),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
-        # couch.saveDoc(model_doc)
-        # couch.saveDoc(user_doc)
+        couch.saveDoc(model_doc)
+        couch.saveDoc(user_doc)
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         doc = {'id':model_doc['_id']}
