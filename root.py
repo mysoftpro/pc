@@ -347,28 +347,19 @@ class Save(Resource):
         request.finish()
 
     def saveModel(self, user_doc, user_id, model, request):
-        print "yeaaaaaaaaaaaaaaaaaaaaah!"
-        print user_doc
         def addId(uuids, _user, _model):
-            print "adding uuid!"
             _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
             _model['author'] = _user['_id']
-            print _model['_id']
             return (_user,_model)
         def updateModel(_model, _user, new_model):
-            print "updating!!!!!!!!!!!!!"
-            print _model['author']
-            print _user['_id']
             # if _model author is _user: just updateModel
             # else - store new model with the parent_id of this model
             if _model['author'] == _user['_id']:
-                print "user change model!"
                 new_model['_id'] = _model['_id']
                 new_model['_rev'] = _model['_rev']
                 new_model['author'] = _user['_id']                
                 return (_user,_model)
             else:
-                print "installing parent"
                 new_model['parent'] = _model['_id']
                 _d = couch.get('/_uuids?count=1')
                 _d.addCallback(addId, _user, new_model)
@@ -376,7 +367,8 @@ class Save(Resource):
         # cases
         # 1 no user doc, no model
         if user_doc.__class__ is Failure:
-            print "case 1"
+            if 'id' in model:
+                model['parent'] = model.pop('id')
             user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
             d = couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
@@ -384,14 +376,12 @@ class Save(Resource):
             return d
         # 2a user doc but no model
         if not 'id' in model:
-            print "case 2!"
             d = couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
         # 2b user doc and model
         else:
-            print "case3!"
             model_id = model.pop('id')
             d = couch.openDoc(model_id)
             d.addCallback(updateModel,user_doc, model)
@@ -406,8 +396,6 @@ class Save(Resource):
         if model is not None:
             jmodel = simplejson.loads(model)
             user_id = request.getCookie('pc_user')
-            print "aaaaaaaaaaaaaaaaaaaaaabb"
-            print user_id
             d = couch.openDoc(user_id)
             d.addCallback(self.saveModel, user_id, jmodel, request)
             d.addErrback(self.saveModel, user_id, jmodel, request)
