@@ -763,3 +763,14 @@ def computer(template, skin, request):
 	d = couch.openDoc(name)
 	d.addCallback(render)
 	return d
+
+
+def computers(template,skin,request):
+    d = defer.Deferred()
+    def render(some):
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
+    d.addCallback(render)
+    d.callback(None)
+    return d

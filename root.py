@@ -15,7 +15,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer
+from pc.models import index, computer, computers
 from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
@@ -32,7 +32,8 @@ static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 static_hooks = {
     'index.html':index,
-    'computer.html':computer
+    'computer.html':computer,
+    'computers.html':computers
 }
 
 
@@ -281,6 +282,7 @@ class Root(Cookable):
         self.putChild('xml',XmlGetter())
         self.putChild('clear_cache',ClearCache())
         self.putChild('computer', Computer(self.static))
+        self.putChild('computers', Computers(self.static))
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
@@ -308,6 +310,20 @@ class Computer(Cookable):
     def getChild(self, name, request):
         Cookable.getChild(self, name, request)
         return self.static.getChild("computer.html", request)
+
+
+
+
+class Computers(Cookable):
+    def __init__(self, static):
+        Cookable.__init__(self)
+        self.static = static
+    def getChild(self, name, request):
+        print "aaaaaaaaaaaaaaaaaaaaaaaaamidafo"
+        print name
+        Cookable.getChild(self, name, request)
+        return self.static.getChild("computers.html", request)
+
 
 class CustomWriter(object):
     def __init__(self, viewName):
