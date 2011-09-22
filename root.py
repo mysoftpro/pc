@@ -214,6 +214,7 @@ class CachedStatic(File):
     def renderTemplate(self, fileForReading, last_modified, request):
 
         # Hoooooooooks
+        self.prepareSkin(request)
         short_name = None
         if '/' in fileForReading.name:
             short_name = fileForReading.name.split('/')[-1]
@@ -231,6 +232,18 @@ class CachedStatic(File):
         fileForReading.close()
         return d
 
+
+    def prepareSkin(self, request):
+        cart = request.getCookie('pc_cart')
+        if cart is not None:
+            menu = self.skin.tree.xpath("//ul[@id='main_menu']")[0]
+            cart_li = etree.Element('li')
+            cart_a = etree.Element('a')
+            cart_a.set('id','cart')
+            cart_a.text = u'Корзина('+cart+')'
+            cart_a.set('href','/computers/' + request.getCookie('pc_user'))
+            cart_li.append(cart_a)
+            menu.append(cart_li)
 
     def render_GSIPPED(self, gzipped, request):
         request.write(gzipped)
@@ -338,6 +351,10 @@ class Save(Resource):
         user_doc = user_model[0]
         if model_doc['_id'] not in user_doc['models']:
             user_doc['models'].append(model_doc['_id'])
+            request.addCookie('pc_cart',
+                              str(len(user_doc['models'])),
+                              expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                              path='/')
         couch.saveDoc(model_doc)
         couch.saveDoc(user_doc)
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
