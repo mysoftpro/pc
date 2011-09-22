@@ -767,9 +767,12 @@ def computer(template, skin, request):
 
 def computers(template,skin,request):
     d = defer.Deferred()
+    splitted = request.path.split('/')
+    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     def render(some):
         skin.top = template.top
         skin.middle = template.middle
+        skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top:0px')
         return skin.render()
     d.addCallback(render)
     d.callback(None)

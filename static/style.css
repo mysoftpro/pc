@@ -810,3 +810,10 @@ color:#7b9c0a;
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2), -1px -1px 1px rgba(0, 0, 0, 0.15);
     text-decoration:none;
 }
+
+.row{
+    height:150px;
+    width:1000px;
+    margin: 0 auto 0;
+    padding: 0;
+}
