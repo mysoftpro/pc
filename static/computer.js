@@ -1159,14 +1159,13 @@ $(function(){
 								       computer:data['id'],
 								       cart:$.cookie('pc_user')
 								   }));
-						    var cart = $('#cart');
+						    var cart = $.cookie('pc_cart');
 						    if (cart){
-							var str_ammo = cart.text().match(/([0-9]+)/g);
-							var int_amo = parseInt(str_ammo)+1;
-							cart.text('Корзина('+int_amo+')');
+							var int_amo = parseInt(cart);
+							$('#cart').text('Корзина('+int_amo+')');
 						    }
 						    else{
-							$('#main_menu').append(_template('<li><a href="/computers/{{computers}}">Корзина(1)</a></li>',
+							$('#main_menu').append(_template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
 											 {
 											     computers:$.cookie('pc_user')
 											 }));

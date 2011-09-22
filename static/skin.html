@@ -9,6 +9,15 @@
 	<link type="text/css" rel="stylesheet" media="all" href="/static/guider.css"/>
 	<link type="text/css" rel="stylesheet" media="all" href="/static/jScrollPane.css"/>
 	<script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
+	<script type="text/javascript" src="/static/jquery.cookie.min.js"></script>
+	<script type="text/javascript">
+	  $(function(){
+	  var cart = $.cookie('pc_cart');
+	  if (cart){
+	  $('#main_menu').append('<li><a id="cart" href="/computers/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
+	  }
+	  });
+	</script>
       </head>
       <body>
 	<div id="gradient_background">
