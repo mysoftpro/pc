@@ -1,3 +1,26 @@
+var showYa = function (_id, _link){
+    new Ya.share({
+                     element: _id,
+                     elementStyle: {
+                         'type': 'none',
+                         'border': false,
+                         'quickServices': ['vkontakte', 'odnoklassniki','facebook','twitter','lj','moimir','moikrug','liveinternet']
+                     },
+                     link:_link,
+                     title: 'buildpc.ru Просто купить компьютер',
+                     serviceSpecific: {
+                         twitter: {
+                             title: 'buildpc.ru Просто купить компьютер'
+                         }
+                     }
+                 });
+
+    if ($.browser.msie && $.browser.version < 9){
+        $('#' + container_id).corner('10px');
+        $('#' + button_id).corner('6px');
+    }
+};
+
 $(function(){
     $('#tips').click(function(e){
 			 e.preventDefault();

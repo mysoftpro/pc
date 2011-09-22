@@ -356,8 +356,8 @@ class Save(Resource):
                               str(len(user_doc['models'])),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
-        couch.saveDoc(model_doc)
-        couch.saveDoc(user_doc)
+        # couch.saveDoc(model_doc)
+        # couch.saveDoc(user_doc)
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         doc = {'id':model_doc['_id']}
@@ -373,13 +373,11 @@ class Save(Resource):
             # if _model author is _user: just updateModel
             # else - store new model with the parent_id of this model
             if _model['author'] == _user['_id']:
-                print "this is the autor!"
                 new_model['_id'] = _model['_id']
                 new_model['_rev'] = _model['_rev']
                 new_model['author'] = _user['_id']                
                 return (_user,_model)
             else:
-                print "he is not the author!"
                 new_model['parent'] = _model['_id']
                 _d = couch.get('/_uuids?count=1')
                 _d.addCallback(addId, _user, new_model)

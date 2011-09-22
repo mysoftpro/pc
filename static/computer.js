@@ -1153,26 +1153,27 @@ $(function(){
 				 		else{
 				 		    uuid = data['id'];
 				 		    $('#modelname').text(data['id']);
+						    var share_html = decodeURI($('#added').html());
+						    $('#added').html('');
 						    $('#model_description').html(
-							_.template($('#added').html(),
+							_.template(share_html,
 								   {
-								       computer:data['id'],
-								       cart:$.cookie('pc_user')
+								       computer:data['id']
 								   }));
+						    showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
 						    var cart_ammo = $.cookie('pc_cart');
 						    var cart_el = $('#cart');							
-						    if (cart_el.length>0){
-							console.log('oooooooooooooooooooop');
+						    if (cart_el.length>0){							
 							var int_amo = parseInt(cart_ammo);
 							cart_el.text('Корзина('+int_amo+')');
 						    }
 						    else{
-							console.log('uuuuuuuuuuuuuuuuuuuuuuuuuuups');
 							$('#main_menu').append(_.template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
 											 {
 											     computers:$.cookie('pc_user')
 											 }));
 						    }
+						    $('#tocart').text('Сохранить');
 				 		}
 				 	    }
 				 	});
