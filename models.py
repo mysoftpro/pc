@@ -506,7 +506,7 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('style',' margin: -40px auto;padding: 0;width:1000px')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
     return skin.render()
 
 

@@ -37,9 +37,15 @@ function _jgetBuild(){
 var jgetBuild = _.memoize(_jgetBuild,function(){return 0;});
 
 function _jgetWindows(){
-    return $('#installing');
+    return $('#oinstalling');
 }
 var jgetWindows = _.memoize(_jgetWindows, function(){return 0;});
+
+
+function _jgetDVD(){
+    return $('#odvd');
+}
+var jgetDVD = _.memoize(_jgetDVD, function(){return 0;});
 
 
 function _jgetBodyById(_id){
@@ -112,13 +118,14 @@ function recalculate(){
 	tottal += new_model[id].price*mult;
 	pins.push(calculatePin(new_model[id]));
     }
-    var bui = jgetBuild().is(':checked');
-    if (bui){
-	tottal += 500;
+    if (jgetBuild().is(':checked')){
+	tottal += 800;
     }
-    var win = jgetWindows().is(':checked');
-    if (win){
-	tottal +=300;
+    if (jgetWindows().is(':checked')){
+	tottal +=500;
+    }
+    if (jgetDVD().is(':checked')){
+	tottal +=1000;
     }
     var lp = jgetLargePrice();
     var old_tottal = parseInt(jgetLargePrice().text());
@@ -694,7 +701,7 @@ function installOptions(){
     function substructAdd(e){
 	var target = $(e.target);
 	var _id = target.val();
-	if (_id == 'oinstalling' || _id == 'obuild'){
+	if (_id == 'oinstalling' || _id == 'obuild' || _id=='odvd'){
 	    recalculate();
 	    return;
 	}
@@ -1104,12 +1111,7 @@ $(function(){
 	  reset();
 	  $('#descriptions').jScrollPane();
 	  installOptions();
-	  //installRamCount();
 	  changeRam('e','mock');
-	  //shadowCram($('#decram'));
-
-	  // $('#basepi').html($('#large_index').html());
-	  // $('#baseprice').html($('#large_price').html());
 	  GCheaperGBeater();
 	  recalculate();
 	  $('#greset').click(function(){window.location.reload();});
