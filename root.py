@@ -236,9 +236,31 @@ class CachedStatic(File):
         request.write(gzipped)
         request.finish()
 
-class Root(Resource):
-    def __init__(self, host_url, index_page):
+class Cookable(Resource):
+    def __init__(self):
+        self.cookies = []
+        reactor.callLater(0, self.collectCookies)
         Resource.__init__(self)
+    def collectCookies(self):
+        d = couch.get('/_uuids?count=20')
+        def append(uuids):
+            for uuid in simplejson.loads(uuids)['uuids']:
+                self.cookies.append(uuid[26:])
+        d.addCallback(append)
+    def getChild(self, name, request):
+        user_cookie = request.getCookie('pc_user')
+        if  user_cookie is None:
+            cookie = self.cookies.pop()
+            request.addCookie('pc_user',
+                              str(cookie),
+                              expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                              path='/')
+            if len(self.cookies) < 10:
+                reactor.callLater(0, self.collectCookies)
+
+class Root(Cookable):
+    def __init__(self, host_url, index_page):
+        Cookable.__init__(self)
         self.static = CachedStatic(static_dir)
         self.static.indexNames = [index_page]
         self.putChild('static',self.static)
@@ -248,10 +270,7 @@ class Root(Resource):
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
-
-        self.host_url = host_url
-        self.cookies = []
-        reactor.callLater(0, self.collectCookies)
+        self.host_url = host_url        
 
     def collectCookies(self):
         d = couch.get('/_uuids?count=20')
@@ -261,24 +280,18 @@ class Root(Resource):
         d.addCallback(append)
 
     def getChild(self, name, request):
-        user_cookie = request.getCookie('pc_user')
-        if  user_cookie is None:
-            cookie = self.cookies.pop()
-            request.addCookie('pc_user',
-                              str(cookie),
-                              expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
-            if len(self.cookies) < 10:
-                reactor.callLater(0, self.collectCookies)
+        Cookable.getChild(self, name, request)
         u = str(request.URLPath())
         if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
             return self.static.getChild(name, request)
         return self
 
-class Computer(Resource):
+class Computer(Cookable):
     def __init__(self, static):
+        Cookable.__init__(self)
         self.static = static
-        Resource.__init__(self)
     def getChild(self, name, request):
+        Cookable.getChild(self, name, request)
         return self.static.getChild("computer.html", request)
 
 class CustomWriter(object):
@@ -334,18 +347,36 @@ class Save(Resource):
         request.finish()
 
     def saveModel(self, user_doc, user_id, model, request):
+        print "yeaaaaaaaaaaaaaaaaaaaaah!"
+        print user_doc
         def addId(uuids, _user, _model):
+            print "adding uuid!"
             _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
-            _model['name'] = _model['_id']
+            _model['author'] = _user['_id']
+            print _model['_id']
             return (_user,_model)
         def updateModel(_model, _user, new_model):
-            new_model['_id'] = _model['_id']
-            new_model['_rev'] = _model['_rev']
-            new_model['name'] = _model['_id']
-            return (_user,_model)
+            print "updating!!!!!!!!!!!!!"
+            print _model['author']
+            print _user['_id']
+            # if _model author is _user: just updateModel
+            # else - store new model with the parent_id of this model
+            if _model['author'] == _user['_id']:
+                print "user change model!"
+                new_model['_id'] = _model['_id']
+                new_model['_rev'] = _model['_rev']
+                new_model['author'] = _user['_id']                
+                return (_user,_model)
+            else:
+                print "installing parent"
+                new_model['parent'] = _model['_id']
+                _d = couch.get('/_uuids?count=1')
+                _d.addCallback(addId, _user, new_model)
+                return _d
         # cases
-        # 1 no user doc
+        # 1 no user doc, no model
         if user_doc.__class__ is Failure:
+            print "case 1"
             user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
             d = couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
@@ -353,12 +384,14 @@ class Save(Resource):
             return d
         # 2a user doc but no model
         if not 'id' in model:
+            print "case 2!"
             d = couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
         # 2b user doc and model
         else:
+            print "case3!"
             model_id = model.pop('id')
             d = couch.openDoc(model_id)
             d.addCallback(updateModel,user_doc, model)
@@ -373,6 +406,8 @@ class Save(Resource):
         if model is not None:
             jmodel = simplejson.loads(model)
             user_id = request.getCookie('pc_user')
+            print "aaaaaaaaaaaaaaaaaaaaaabb"
+            print user_id
             d = couch.openDoc(user_id)
             d.addCallback(self.saveModel, user_id, jmodel, request)
             d.addErrback(self.saveModel, user_id, jmodel, request)

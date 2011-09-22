@@ -1,5 +1,3 @@
-var uuid;
-
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g

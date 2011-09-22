@@ -301,8 +301,18 @@ no_component_added = False
 
 def renderComputer(components_choices_descriptions, template, skin, model):
 
-    template.top.find('div').find('h2').text = model['name']
-
+    _name = ''
+    _uuid = '';
+    h2 =template.top.find('div').find('h2') 
+    if 'name' in model:
+        _name= model['name']
+    elif '_id' in model:
+        _name = model['_id']
+        _uuid = model.pop('_id')
+        for token in ('author','parent'):
+            if token in model:
+                model.pop(token)
+    h2.text = _name
     original_viewlet = template.root().find('componentviewlet')
 
     components= components_choices_descriptions[0]
@@ -478,7 +488,8 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 	description_container.append(viewlet[2])
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-						    ';var tottal=',unicode(tottal),
+						    ';var uuid=',simplejson.dumps(_uuid),
+                                                    ';var tottal=',unicode(tottal),
 						    ';var choices=',simplejson.dumps(components_json),
 						    ';var parts_names=',simplejson.dumps(parts_names),
 						    ';var mother_to_proc_mapping=',
@@ -706,18 +717,22 @@ def fillOurDescriptions(model):
 gModels = {}
 
 def fillModel(model):
-    name = model['name']
-    if  name in globals()['gModels']:
-	d = defer.Deferred()
-	d.addCallback(lambda x: globals()['gModels'][name])
-	d.callback(None)
-	return d
+    # cache standard models
+    if 'name' in model:
+        name = model['name']
+        if  name in globals()['gModels']:
+            d = defer.Deferred()
+            d.addCallback(lambda x: globals()['gModels'][name])
+            d.callback(None)
+            return d
     keys = [c for c in getModelComponents(model) if c is not None]
     d = couch.listDoc(keys=keys,include_docs=True)
     def fill(res):
 	globals()['gModels'][name] = res
 	return res
-    d.addCallback(fill)
+    # cache standard models
+    if 'name' in model:
+        d.addCallback(fill)
     return d
 
 def computer(template, skin, request):
