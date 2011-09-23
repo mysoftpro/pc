@@ -57,9 +57,9 @@ function getRamFromText(text){
     if (text.match('1024MB'))
 	retval = 1;
     else if (text.match('2048MB'))
-	retval = 2;
+    retval = 2;
     else if (text.match('4096MB'))
-	retval = 4;
+    retval = 4;
     return retval;
 }
 
@@ -88,17 +88,17 @@ function calculatePin(component){
 	if (retval <= 1)
 	    retval = 2.9;
 	else if (retval == 2)
-	    retval = 3.9;
+	retval = 3.9;
 	else if (retval == 3)
-	     retval = 4.9;
+	retval = 4.9;
 	else if (retval == 4)
-	    retval = 5.9;
+	retval = 5.9;
 	else if (retval == 6)
-	    retval = 6.7;
+	retval = 6.7;
 	else if (retval == 8)
-	    retval = 7.1;
+	retval = 7.1;
 	else if (retval == 12)
-	    retval = 7.7;
+	retval = 7.7;
 	else{
 	    retval = 7.9;
 	}
@@ -590,7 +590,7 @@ function getNearestComponent(price, catalogs, delta, same_socket){
 	    }
 	}
 	if (Math.abs(_diff)<spare_diff){
-		spare_component = other_components[i];
+	    spare_component = other_components[i];
 	    spare_diff = Math.abs(_diff);
 	}
     }
@@ -649,7 +649,7 @@ function cheaperBetter(){
 	var old_component = choices[select.val()];
 	if (isRam(body)
 	    && changeRamIfPossible(old_component, direction))
-		return;
+	    return;
 	body.click();
 	var appr_components = getNearestComponent(old_component.price,
 						  getCatalogs(old_component),
@@ -682,8 +682,8 @@ function reset(){
 			  var old_component= choices[select.val()];
 			  changeComponent(body, new_component, old_component);
 			  _.delay(function(){jgetPrice(body).css('background-color','transparent');},
-				 300);
-		     });
+				  300);
+		      });
 }
 
 
@@ -912,29 +912,29 @@ function changeRamIfPossible(old_component, direction){
 	}
 	else{
 	    //if (counters.max_count && counters.new_count> counters.max_count){
-		var appr_components = getNearestComponent(old_component.price,
-							  getCatalogs(old_component),
-							  delta, false);
+	    var appr_components = getNearestComponent(old_component.price,
+						      getCatalogs(old_component),
+						      delta, false);
 
-		if (appr_components[0]){
-		    var new_component = appr_components[0];
-		    new_component['count'] = 1;
-		    var ram_select = jgetSelectByRow($('#' + parts['ram']));
-		    var ram_body = jgetBody(ram_select);
-		    var text = jgetChosenTitle(jgetSelect(ram_body)).text();
-		    var ramvolume = getRamFromText(text);
-		    var tottal_ram = ramvolume*counters.count;
-		    var new_option = jgetOption(ram_select, new_component['_id']);
-		    var new_ramvolume = getRamFromText(new_option.text());
+	    if (appr_components[0]){
+		var new_component = appr_components[0];
+		new_component['count'] = 1;
+		var ram_select = jgetSelectByRow($('#' + parts['ram']));
+		var ram_body = jgetBody(ram_select);
+		var text = jgetChosenTitle(jgetSelect(ram_body)).text();
+		var ramvolume = getRamFromText(text);
+		var tottal_ram = ramvolume*counters.count;
+		var new_option = jgetOption(ram_select, new_component['_id']);
+		var new_ramvolume = getRamFromText(new_option.text());
 
-		    var new_tottalram = new_ramvolume*new_component.count;
-		    while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
-			new_component.count +=1;
-			new_tottalram = new_ramvolume*new_component.count;
-			//thats all! just install new count to choices!
-			//component will be changed later!
-		    }
+		var new_tottalram = new_ramvolume*new_component.count;
+		while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
+		    new_component.count +=1;
+		    new_tottalram = new_ramvolume*new_component.count;
+		    //thats all! just install new count to choices!
+		    //component will be changed later!
 		}
+	    }
 	}
     }
     return retval;
@@ -1016,7 +1016,7 @@ function changePinedComponent(old_component, pins, no_perifery){
 					   old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
     if (isRam(model_body) && changeRamIfPossible(old_component, pins.direction))
-	    return true;
+	return true;
     var appr_components = getNearestComponent(old_component.price,
 					      old_cats, pins.delta, false);
     // no appr component for that direction!
@@ -1100,102 +1100,111 @@ function GCheaperGBeater(){
 }
 
 
-$(function(){
-      // try{
-	  $('select').chosen().change(manualChange);//componentChanged
-	  new_model = _.clone(model);
-	  installBodies();
-	  cheaperBetter();
-	  reset();
-	  $('#descriptions').jScrollPane();
-	  installOptions();
-	  changeRam('e','mock');
-	  GCheaperGBeater();
-	  recalculate();
-	  $('#greset').click(function(){window.location.reload();});
-	  $('#tocart').click(function(){
-				 var model_to_store = {};
-				 var items = {};
-				 for (_id in model){
 
-				     var new_model_comp = filterByCatalogs(_(new_model).values(),
-									   getCatalogs(model[_id]))[0];
-				     var body = jgetBodyById(_id);
-				     if (isMother(body)){
-					 model_to_store["mother_catalogs"] = getCatalogs(new_model_comp);
-				     }
-				     if (isProc(body)){
-					 model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
-				     }
-				     var to_store = null;
-				     if (new_model_comp.count){
-					 to_store = [];
-					 for (var i=0;i<new_model_comp.count;i++){
-					     to_store.push(new_model_comp['_id']);
-					 }
-				     }
-				     else{
-					 if (!new_model_comp['_id'].match('no'))
-					     to_store = new_model_comp['_id'];
-				     }
-				     var part = jgetPart(body);
-				     items[part] = to_store;
-				 }
-				 model_to_store['items'] = items;
-				 if (uuid)
-				     model_to_store['id'] = uuid;
-				 $.ajax({
-				 	    url:'/save',
-				 	    data:{'model':JSON.stringify(model_to_store)},
-				 	    success:function(data){
-				 		if (!data['id'])
-				 		    alert('Что пошло не так :(');
-				 		else{
-				 		    uuid = data['id'];
-				 		    $('#modelname').text(data['id']);
-						    var share_html = decodeURI($('#added').html());
-						    $('#added').html('');
-						    $('#model_description').html(
-							_.template(share_html,
-								   {
-								       computer:data['id']
-								   }));
-						    showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
-						    var cart_ammo = $.cookie('pc_cart');
-						    var cart_el = $('#cart');							
-						    if (cart_el.length>0){							
-							var int_amo = parseInt(cart_ammo);
-							cart_el.text('Корзина('+int_amo+')');
-						    }
-						    else{
-							$('#main_menu').append(_.template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
-											  {
-											      computers:$.cookie('pc_user')
-											  }));
-						    }
-						    var input = $('#email');
-						    input.click(function(e){if (input.val()=='введите email')input.val('');});
-						    $('#emailbutton').click(function(e){
-										e.preventDefault();
-										$.ajax({
-											   url:'/sender',
-											   data: {uuid:uuid, email:input.val()},
-											   success:function(data){
-											       if (data == "ok"){
-												   input.val('получилось!');
-											       }
-											       else{
-												   input.val('не получилось :(');
-											       }
-											   }
-										       });
-									    });
-						    $('#tocart').text('Сохранить');
-				 		}
-				 	    }
-				 	});
-			     });
-      // } catch (x) {
-      // 	  log(x);
-      // }
+function to_cart(event){
+    var model_to_store = {};
+    var items = {};
+    for (_id in model){
+
+	var new_model_comp = filterByCatalogs(_(new_model).values(),
+					      getCatalogs(model[_id]))[0];
+	var body = jgetBodyById(_id);
+	if (isMother(body)){
+	    model_to_store["mother_catalogs"] = getCatalogs(new_model_comp);
+	}
+	if (isProc(body)){
+	    model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
+	}
+	var to_store = null;
+	if (new_model_comp.count){
+	    to_store = [];
+	    for (var i=0;i<new_model_comp.count;i++){
+		to_store.push(new_model_comp['_id']);
+	    }
+	}
+	else{
+	    if (!new_model_comp['_id'].match('no'))
+		to_store = new_model_comp['_id'];
+	}
+	var part = jgetPart(body);
+	items[part] = to_store;
+    }
+    model_to_store['items'] = items;
+    if (uuid)
+	model_to_store['id'] = uuid;
+    var to_send = {'model':JSON.stringify(model_to_store)};
+    if (document.location.href.match('edit'))
+	to_send['edit'] = 't';
+    $.ajax({
+	       url:'/save',
+	       data:to_send,
+	       success:to_cartSuccess
+	   });
+}
+var added_cached;
+
+function to_cartSuccess(data){
+    if (!data['id'])
+	alert('Что пошло не так :(');
+    else{
+	uuid = data['id'];
+	$('#modelname').text(data['id']);
+	if (!added_cached){
+	    added_cached = decodeURI($('#added').html());
+	    $('#added').html('');
+	}
+
+	$('#model_description').html(
+	    _.template(added_cached,
+		       {
+			   computer:data['id']
+		       }));
+	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
+	var cart_ammo = $.cookie('pc_cart');
+	var cart_el = $('#cart');
+	if (cart_el.length>0){
+	    var int_amo = parseInt(cart_ammo);
+	    cart_el.text('Корзина('+int_amo+')');
+	}
+	else{
+	    $('#main_menu').append(_.template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
+					      {
+						  computers:$.cookie('pc_user')
+					      }));
+	}
+	var input = $('#email');
+	input.click(function(e){if (input.val()=='введите email')input.val('');});
+	$('#emailbutton').click(function(e){
+				    e.preventDefault();
+				    $.ajax({
+					       url:'/sender',
+					       data: {uuid:uuid, email:input.val()},
+					       success:function(data){
+						   if (data == "ok"){
+						       input.val('получилось!');
+						   }
+						   else{
+						       input.val('не получилось :(');
+						   }
+					       }
+					   });
+				});	
+    }
+}
+
+$(function(){
+      $('select').chosen().change(manualChange);//componentChanged
+      new_model = _.clone(model);
+      installBodies();
+      cheaperBetter();
+      reset();
+      $('#descriptions').jScrollPane();
+      installOptions();
+      changeRam('e','mock');
+      GCheaperGBeater();
+      recalculate();
+      $('#greset').click(function(){window.location.reload();});
+      $('#tocart').click(to_cart);
+      if (document.location.href.match('edit'))
+	  $('#tocart').text('Сохранить');
   });

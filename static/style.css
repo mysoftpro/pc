@@ -816,4 +816,46 @@ color:#7b9c0a;
     width:1000px;
     margin: 0 auto 0;
     padding: 0;
+    margin-top:30px;
+}
+
+.computeritem{    
+    padding-top:180px;
+    max-width:122px;
+    overflow:visible;
+    background-repeat:no-repeat;
+    float:left;
+    cursor:pointer;
+}
+
+.computeritem h3 {
+    margin-top:30px;
+}
+
+.computers_description{
+    float:left;
+    margin-right:10px;
+    width:200px;
+}
+.computers_description h3{
+    color:#AAAAAA;
+    margin:0;
+}
+.computers_description ul{
+    margin-left: -20px;
+    color:#B9D3E1;
+    line-height:12px;
+    font-size:12px;
+}
+.computeritem .section{
+    width: 200px;
+    text-align:center;
+}
+
+#top .computeritem{
+    background-image:url('/static/localhost.png');
+}
+
+#middle .computeritem{
+    background-image:url('/static/localhost1.png');
 }
