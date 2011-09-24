@@ -307,17 +307,17 @@ def index(template, skin, request):
 	if i==len(imgs): i=0
 
     def _render(res,_template,_skin):
-	div = _template.middle.find('div')
+	div = _template.middle.xpath('//div[@id="computers_container"]')[0]
 	for el in res:
 	    if el[0]:
 		div.append(el[1])
-	for el in _template.root().find('leftbutton'):
-	    div.append(el)
-	    last = el.getprevious()
-	    style = last.get('style')
-	    style += ';width:200px;'
-	    last.set('style',style)
-	    break
+	# for el in _template.root().find('leftbutton'):
+	#     div.append(el)
+	#     last = el.getprevious()
+	#     style = last.get('style')
+	#     style += ';width:200px;'
+	#     last.set('style',style)
+	#     break
 	_skin.top = _template.top
 	_skin.middle = _template.middle
 	return skin.render()

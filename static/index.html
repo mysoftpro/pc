@@ -1,4 +1,19 @@
 <top>
+  <script type="text/javascript">
+    $(function(){
+    $('#next_button').click(function(e){    
+    $('#computers_container').animate({'margin-left':'-=220px'}, 400);
+    $('#previous_button').css({
+                           'background-image':"url('static/previous.png')",
+                           'cursor':"pointer"
+                              })
+                         .unbind('click')
+                         .click(function(){
+                          $('#computers_container').animate({'margin-left':'+=220px'}, 400);
+                          })
+    })
+    })
+  </script>
   <div class="panel" id="banner1">
 
     <h2 id="first" class="title">
@@ -19,10 +34,21 @@
 
 <middle>
   <div id="computers">
-
+    <div style="background-image:url('static/empty.png');cursor:inherit;" class="button" 
+	 id="previous_button">
+      &nbsp;
+    </div>
+    <div id="belt">      
+       <div id="computers_container">
+       </div>
+    </div>
+    <div style="background-image:url('static/next.png')" class="button" id="next_button">
+      &nbsp;
+    </div>
+    <div style="clear:both;"></div>
   </div>
 
-
+  
   <ul id="features">
     <li>
       <strong>Выбирайте любой компьютер</strong>
@@ -76,8 +102,5 @@
 </model>
 
 <leftbutton>
-  <div style="background-image:url('static/next.png')" class="button">
-      &nbsp;
-    </div>
-    <div style="clear:both;"></div>
+
 </leftbutton>

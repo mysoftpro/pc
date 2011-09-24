@@ -240,8 +240,15 @@ ul#main_menu li a {
     padding: 0;
     text-alig:n left;
     width: 1000px;
+    height:170px;
 }
 
+#belt{
+    float:left;
+    max-width:880px;
+    overflow:hidden;
+    height:175px;
+}
 #other{
    margin: 0 auto 0;
    padding: 0;
@@ -263,12 +270,13 @@ ul#main_menu li a {
 
 .indexitem
 {
-    width:240px;
+    width:205px;
     max-height:150px;
     padding-top:120px;
     background-repeat:no-repeat;
     float:left;
     cursor:pointer;
+    margin-left:15px;
 }
 .indexitem h3 {
     margin-top:30px;
@@ -729,7 +737,7 @@ color:#7b9c0a;
     background-color:#222;
     float:right;
     font-size:10px;
-    
+
 }
 
 #ramcount {
@@ -759,7 +767,7 @@ color:#7b9c0a;
 }
 
 #model_description {
-    padding:5px 5px 5px 0; 
+    padding:5px 5px 5px 0;
     color:#999;
 }
 
@@ -787,7 +795,7 @@ color:#7b9c0a;
     padding:2px;
     width:228px;
 }
-#emailbutton{    
+#emailbutton{
     background-color: #AAAAAA;
 
     color:white;
@@ -819,7 +827,7 @@ color:#7b9c0a;
     margin-top:30px;
 }
 
-.computeritem{    
+.computeritem{
     padding-top:180px;
     max-width:122px;
     overflow:visible;
