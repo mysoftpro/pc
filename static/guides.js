@@ -88,14 +88,6 @@ $(function(){
 						position: 9,
 						width: 160
 					    }).show();
-guider.createGuider({
-						attachTo: "#baseprice",
-						description: "Цена и индекс производительности до ваших именений.",
-						id: "baseprice",
-						position: 6,
-						width: 160
-					    }).show();
-
 
 			 $('body').click(function(e){
 					     if ($(e.target).attr('id') == 'tips')return;
