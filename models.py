@@ -114,7 +114,9 @@ def getCatalogsKey(doc):
     return doc['catalogs']
 
 
-
+# TODO! models must be stored in db and cached HERE
+# to make opportunity to change the model without restart
+# change in db and than clear cache
 models = [
     {'name':u"Пинг",
      'url':u'ping',
@@ -245,6 +247,19 @@ def getModelComponents(model):
 	    yield v
 
 
+def nameForCode(code,model):
+    retval = None
+    for _name,_code in model['items'].items():
+        if type(_code) is list and code in _code:
+            retval = _name
+            break
+        elif  code == _code:
+            retval = _name
+            break        
+    return retval
+    
+
+
 Margin=1.2
 Course = 29.5
 
@@ -280,56 +295,6 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
 
 
 
-
-
-def renderModelForIndex(result, template, m, image_i):
-    # CACHE ALL MODELS HERE!!!
-    tree = template.root()
-    m.update({'item_docs':result})
-    model_snippet = tree.find('model')
-
-    snippet = deepcopy(model_snippet.find('div'))
-    snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
-    a = snippet.find('.//a')
-    a.set('href','/computer/%s' % m['url'])
-    a.text=m['name']
-    snippet.find('.//span').text=(unicode(m['price']) + u' р')
-    return snippet
-
-def index(template, skin, request):
-    i = 0
-    defs = []
-    for m in models:
-	d = couch.listDoc(keys=[c for c in getModelComponents(m)],include_docs=True)
-	d.addCallback(renderModelForIndex, template, m, i)
-	defs.append(d)
-	i+=1
-	if i==len(imgs): i=0
-
-    def _render(res,_template,_skin):
-	div = _template.middle.xpath('//div[@id="computers_container"]')[0]
-	for el in res:
-	    if el[0]:
-		div.append(el[1])
-	# for el in _template.root().find('leftbutton'):
-	#     div.append(el)
-	#     last = el.getprevious()
-	#     style = last.get('style')
-	#     style += ';width:200px;'
-	#     last.set('style',style)
-	#     break
-	_skin.top = _template.top
-	_skin.middle = _template.middle
-	return skin.render()
-
-    d = defer.DeferredList(defs)
-    d.addCallback(_render, template, skin)
-    return d
-
-
-
-
-
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
 	 case:50, sound:70, network:80, displ:90,
 	 audio:100, soft:110,
@@ -345,14 +310,14 @@ parts_names = {proc:u'Процессор', ram:u'Память',
 
 
 
-def replaceComponent(code,all_choices,name, model):
-    choices = all_choices[name]
-
-    def sameCatalog(doc):
+def replaceComponent(code,model):    
+    name = nameForCode(code,model)
+    choices = globals()['gChoices'][name]
+    def sameCatalog(doc):                    
 	retval = True
-	if name == mother:
+	if mother==name:
 	    retval = model['mother_catalogs'] == getCatalogsKey(doc)
-	elif name == proc:
+	if proc==name:
 	    retval = model['proc_catalogs'] == getCatalogsKey(doc)
 	return retval
 
@@ -517,10 +482,10 @@ def renderComputer(components_choices_descriptions, template, skin, model):
 
 	    component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
 	    if component_doc is None:
-		component_doc = replaceComponent(code,choices,name, model)
+		component_doc = replaceComponent(code,model)
 	    else:
 		if component_doc['stock1'] == 0:
-		    component_doc = replaceComponent(code,choices,name, model)
+		    component_doc = replaceComponent(code,model)
 
 	if count >0:
 	    component_doc.update({'count':count})
@@ -849,7 +814,6 @@ def computer(template, skin, request):
 def computers(template,skin,request):
     d = defer.Deferred()
     splitted = request.path.split('/')
-    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     def render(some):
         skin.top = template.top
         skin.middle = template.middle
@@ -857,4 +821,59 @@ def computers(template,skin,request):
         return skin.render()
     d.addCallback(render)
     d.callback(None)
+    return d
+
+
+
+def renderModelForIndex(result, template, m, image_i):
+    
+    tree = template.root()
+    # CACHE ALL MODELS HERE!!!
+    # TODO! why? it is called every time?????
+    # it need to call components 1 a session as in choices
+    m.update({'item_docs':result['rows']})
+    model_snippet = tree.find('model')
+
+    snippet = deepcopy(model_snippet.find('div'))
+    snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
+    a = snippet.find('.//a')
+    a.set('href','/computer/%s' % m['url'])
+    a.text=m['name']
+    price_span = snippet.find('.//span')
+    price_span.set('id',m['url'])
+    tottal = 0
+    for row in m['item_docs']:
+        if row['doc'] is None:
+            row['doc'] = replaceComponent(row['id'],m)
+        tottal += makePrice(row['doc'])
+    price_span.text = str(tottal) + u' р'
+    return snippet
+
+def index(template, skin, request):
+    
+    if globals()['gChoices'] is None:
+        d = fillChoices()
+        d.addCallback(lambda some: index(template, skin, request))
+        return d                      
+    i = 0
+    defs = []
+    for m in models:
+	d = couch.listDoc(keys=[c for c in getModelComponents(m)],include_docs=True)
+	d.addCallback(renderModelForIndex, template, m, i)
+	defs.append(d)
+	i+=1
+	if i==len(imgs): i=0
+
+    def _render(res,_template,_skin):        
+	div = _template.middle.xpath('//div[@id="computers_container"]')[0]
+	for el in res:
+	    if el[0]:
+		div.append(el[1])	
+        _skin.top = _template.top
+	_skin.middle = _template.middle
+        
+	return skin.render()
+
+    d = defer.DeferredList(defs)
+    d.addCallback(_render, template, skin)
     return d
