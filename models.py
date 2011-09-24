@@ -52,7 +52,6 @@ so_dim = [components, ram,"16993"]
 hdd = "7406"
 satas = [components, hdd,"7673"]
 ides = [components, hdd,"7564"]
-case = [components, hdd,"7383"]
 
 case = "7383"
 case_400_650 = [components,case,"7459"]
@@ -118,6 +117,7 @@ def getCatalogsKey(doc):
 
 models = [
     {'name':u"Пинг",
+     'url':u'ping',
      'items':   {mother:'19005', proc:'18984', video:'18802', ram:['17575'],hdd:'10661',
 		 case:'19165',displ:'15252', kbrd:'16499', mouse:'15976',
 		 soft:'14439', audio:'8610'},
@@ -125,7 +125,8 @@ models = [
      "proc_catalogs":proc_1155,
      "mother_catalogs":mother_1155
      },
-    {'name':u"Локалхост",
+    {'name':u"Скролл",
+     'url':u'scroll',
      'items':   {mother:'19005', proc:'18984', video:'18802', ram:['17575'],
 		 hdd:'10661', case:'19165',displ:'15252', kbrd:'16499',
 		 mouse:'15976', soft:'14439', audio:"8610"},
@@ -133,7 +134,8 @@ models = [
      "proc_catalogs":proc_1155,
      "mother_catalogs":mother_1155
      },
-    {'name':u"Шейдер",
+    {'name':u"Локалхост",
+     'url':u'localhost',
      'items':   {mother:'19005', proc:'18984', video:'18802',
 		 ram:['17575'],hdd:'10661',
 		 case:'19165', displ:'15252', kbrd:'16499',
@@ -142,10 +144,91 @@ models = [
      "proc_catalogs":proc_1155,
      "mother_catalogs":mother_1155
      },
-    {'name':u"Рендер",
+    {'name':u"Чарт",
+     'url':u'chart',
      'items':   {mother:'19162', proc:'18137', video:'18994',
 		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 'case':'18219', 'displ':'15606', kbrd:'16499',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Целл",
+     'url':u'cell',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Сторадж",
+     'url':u'storage',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Зум",
+     'url':u'zoom',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Сплайн",
+     'url':u'spline',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Компайлер",
+     'url':u'compiler',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Шейд",
+     'url':u'shade',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Рендер",
+     'url':u'render',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
+		 mouse:'15976', soft:'14439', audio:'8610'},
+     'price':32000,
+     "proc_catalogs":proc_1155,
+     "mother_catalogs":mother_1155
+     },
+    {'name':u"Рейтрес",
+     'url':u'raytrace',
+     'items':   {mother:'19162', proc:'18137', video:'18994',
+		 ram:['19356','19356','19356','19356'],hdd:'16991',
+		 case:'18219', displ:'15606', kbrd:'16499',
 		 mouse:'15976', soft:'14439', audio:'8610'},
      'price':32000,
      "proc_catalogs":proc_1155,
@@ -208,7 +291,7 @@ def renderModelForIndex(result, template, m, image_i):
     snippet = deepcopy(model_snippet.find('div'))
     snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
     a = snippet.find('.//a')
-    a.set('href','/computer/%s' % m['name'])
+    a.set('href','/computer/%s' % m['url'])
     a.text=m['name']
     snippet.find('.//span').text=(unicode(m['price']) + u' р')
     return snippet
@@ -738,8 +821,6 @@ def fillModel(model):
 def computer(template, skin, request):
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    # _models = [m for m in models if m['name'] == name]
-    # _model = _models[0] if len(_models)>0 else models[0]
     def render(model):
 	d = fillModel(model)
 	d1 = fillChoices()
@@ -755,7 +836,7 @@ def computer(template, skin, request):
 	return li
     model_names = {}
     for m in models:
-	model_names.update({m['name']:m})
+	model_names.update({m['url']:m})
 
     if name in model_names:
 	return render(model_names[name])
