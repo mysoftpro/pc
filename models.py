@@ -98,153 +98,34 @@ microsoft = "14570"
 windows = [soft,microsoft,"14571"]
 
 mother_to_proc_mapping= [(mother_1155,proc_1155),
-			 (mother_1156,proc_1156),
-			 (mother_1366,proc_1366),
-			 (mother_775,proc_775),
-			 (mother_am23,proc_am23),
-			 (mother_fm1,proc_fm1)]
+                         (mother_1156,proc_1156),
+                         (mother_1366,proc_1366),
+                         (mother_775,proc_775),
+                         (mother_am23,proc_am23),
+                         (mother_fm1,proc_fm1)]
 
 
 def getCatalogsKey(doc):
     if type(doc['catalogs'][0]) is dict:
-	cats = []
-	for c in doc['catalogs']:
-	    cats.append(str(c['id']))
-	return cats
+        cats = []
+        for c in doc['catalogs']:
+            cats.append(str(c['id']))
+        return cats
     return doc['catalogs']
 
 
 # TODO! models must be stored in db and cached HERE
 # to make opportunity to change the model without restart
 # change in db and than clear cache
-models = [
-    {'name':u"Пинг",
-     'url':u'ping',
-     'items':   {mother:'19005', proc:'18984', video:'18802', ram:['17575'],hdd:'10661',
-		 case:'19165',displ:'15252', kbrd:'16499', mouse:'15976',
-		 soft:'14439', audio:'8610'},
-     'price':6500,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Скролл",
-     'url':u'scroll',
-     'items':   {mother:'19005', proc:'18984', video:'18802', ram:['17575'],
-		 hdd:'10661', case:'19165',displ:'15252', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:"8610"},
-     'price':8500,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Локалхост",
-     'url':u'localhost',
-     'items':   {mother:'19005', proc:'18984', video:'18802',
-		 ram:['17575'],hdd:'10661',
-		 case:'19165', displ:'15252', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':15200,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Чарт",
-     'url':u'chart',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Целл",
-     'url':u'cell',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Сторадж",
-     'url':u'storage',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Зум",
-     'url':u'zoom',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Сплайн",
-     'url':u'spline',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Компайлер",
-     'url':u'compiler',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Шейд",
-     'url':u'shade',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Рендер",
-     'url':u'render',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     },
-    {'name':u"Рейтрес",
-     'url':u'raytrace',
-     'items':   {mother:'19162', proc:'18137', video:'18994',
-		 ram:['19356','19356','19356','19356'],hdd:'16991',
-		 case:'18219', displ:'15606', kbrd:'16499',
-		 mouse:'15976', soft:'14439', audio:'8610'},
-     'price':32000,
-     "proc_catalogs":proc_1155,
-     "mother_catalogs":mother_1155
-     }
-]
+
 
 def getModelComponents(model):
     for k,v in model['items'].items():
-	if type(v) is list:
-	    for el in v:
-		yield el
-	else:
-	    yield v
+        if type(v) is list:
+            for el in v:
+                yield el
+        else:
+            yield v
 
 
 def nameForCode(code,model):
@@ -255,9 +136,9 @@ def nameForCode(code,model):
             break
         elif  code == _code:
             retval = _name
-            break        
+            break
     return retval
-    
+
 
 
 Margin=1.2
@@ -265,10 +146,10 @@ Course = 29.5
 
 def makePrice(doc):
     if doc['price'] == 0:
-	return 0
+        return 0
     course = Course
     if getCatalogsKey(doc) == windows:
-	course = 1
+        course = 1
     our_price = doc['price']*Margin*course
     # doc['price'] = int(str(round(our_price)).split('.')[0])
     return int(str(round(our_price)).split('.')[0])
@@ -277,60 +158,61 @@ def makePrice(doc):
 def cleanDoc(doc, price):
     new_doc = {}
     for token in doc:
-	if token in ['id', 'text', '_attachments','description','flags','inCart',
-		     'ordered','reserved','stock1', '_rev', 'warranty_type']:
-	    continue
-	if token == 'catalogs':
-	    new_doc.update({token:getCatalogsKey(doc)})
-	else:
-	    new_doc.update({token:doc[token]})
+        if token in ['id', 'text', '_attachments','description','flags','inCart',
+                     'ordered','reserved','stock1', '_rev', 'warranty_type']:
+            continue
+        if token == 'catalogs':
+            new_doc.update({token:getCatalogsKey(doc)})
+        else:
+            new_doc.update({token:doc[token]})
     new_doc['price'] = price
     return new_doc
 
 imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
-	'static/compaq-presario-sg3440il-desktop-pc1.png',
-	'static/dell-studio-hybrid-desktop-pc1.png',
-	'static/desktop-pc1.png'
-	]
+        'static/compaq-presario-sg3440il-desktop-pc1.png',
+        'static/dell-studio-hybrid-desktop-pc1.png',
+        'static/desktop-pc1.png'
+        ]
 
 
 
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
-	 case:50, sound:70, network:80, displ:90,
-	 audio:100, soft:110,
-	 kbrd:120, mouse:130, audio:140}
+         case:50, sound:70, network:80, displ:90,
+         audio:100, soft:110,
+         kbrd:120, mouse:130, audio:140}
 
 parts_names = {proc:u'Процессор', ram:u'Память',
-	       video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
-	       sound:u'Звуковая карта',
-	       network:u'Сетевая карта',
-	       mother:u'Материнская плата',displ:u'Монитор',
-	       audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
-	       soft:u'ОС'}
+               video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
+               sound:u'Звуковая карта',
+               network:u'Сетевая карта',
+               mother:u'Материнская плата',displ:u'Монитор',
+               audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
+               soft:u'ОС'}
 
 
 
-def replaceComponent(code,model):    
+
+def replaceComponent(code,model):
     name = nameForCode(code,model)
     choices = globals()['gChoices'][name]
-    def sameCatalog(doc):                    
-	retval = True
-	if mother==name:
-	    retval = model['mother_catalogs'] == getCatalogsKey(doc)
-	if proc==name:
-	    retval = model['proc_catalogs'] == getCatalogsKey(doc)
-	return retval
+    def sameCatalog(doc):
+        retval = True
+        if mother==name:
+            retval = model['mother_catalogs'] == getCatalogsKey(doc)
+        if proc==name:
+            retval = model['proc_catalogs'] == getCatalogsKey(doc)
+        return retval
 
     flatten = []
 
     if type(choices) is list:
-	for el in choices:
-	    if el[0]:
-		for ch in el[1][1]['rows']:
-		    flatten.append(ch['doc'])
+        for el in choices:
+            if el[0]:
+                for ch in el[1][1]['rows']:
+                    flatten.append(ch['doc'])
     else:
-	for ch in choices['rows']:
-	    flatten.append(ch['doc'])
+        for ch in choices['rows']:
+            flatten.append(ch['doc'])
 
     # TODO! sort em by price. not by code
     keys = [doc['_id'] for doc in flatten]
@@ -340,18 +222,17 @@ def replaceComponent(code,model):
     ind = keys.index(code)
     _next = ind+1
     if _next == _length:
-	_next = ind-1
+        _next = ind-1
     next_el = deepcopy(flatten[_next])
     return next_el
 
 
 no_component_added = False
 
-def renderComputer(components_choices_descriptions, template, skin, model):
-
+def renderComputer(model, template, skin):
     _name = ''
     _uuid = '';
-    h2 =template.top.find('div').find('h2') 
+    h2 =template.top.find('div').find('h2')
     if 'name' in model:
         _name= model['name']
     elif '_id' in model:
@@ -363,9 +244,11 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     h2.text = _name
     original_viewlet = template.root().find('componentviewlet')
 
-    components= components_choices_descriptions[0]
-    choices = components_choices_descriptions[1]
-    our_descriptions = components_choices_descriptions[2]
+    # components= components_choices_descriptions[0]
+    
+    choices = globals()['gChoices']
+    # choices = components_choices_descriptions[1]
+    # our_descriptions = components_choices_descriptions[2]
 
     model_json = {}
     tottal = 0
@@ -374,156 +257,151 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     counted = {}
 
     def makeOption(row, price):
-	# try:
-	    option = etree.Element('option')
-	    if 'font' in row['doc']['text']:
-		row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-		row['doc'].update({'featured':True})
-	    option.text = row['doc']['text']
+        # try:
+            option = etree.Element('option')
+            if 'font' in row['doc']['text']:
+                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+                row['doc'].update({'featured':True})
+            option.text = row['doc']['text']
 
-	    option.text +=u' ' + unicode(price) + u' р'
+            option.text +=u' ' + unicode(price) + u' р'
 
-	    option.set('value',row['id'])
-	    return option
-	# except:
-	#     print row
+            option.set('value',row['id'])
+            return option
+        # except:
+        #     print row
     def appendOptions(options, container):
-	for o in sorted(options, lambda x,y: x[1]-y[1]):
-	    container.append(o[0])
+        for o in sorted(options, lambda x,y: x[1]-y[1]):
+            container.append(o[0])
 
     def noComponentFactory(_doc):
-	no_name = 'no' + name
-	no_doc = deepcopy(_doc)
-	no_doc['_id'] = no_name
-	no_doc['price'] = 0
-	no_doc['text'] = u'нет'
-	return no_doc
+        no_name = 'no' + name
+        no_doc = deepcopy(_doc)
+        no_doc['_id'] = no_name
+        no_doc['price'] = 0
+        no_doc['text'] = u'нет'
+        return no_doc
 
 
     def noComponent(name, component_doc, rows):
         #hack!
-	component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+        component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
 
-	if globals()['no_component_added']:return
-	if name not in [mouse,kbrd,displ,soft,audio, network]: return
+        if globals()['no_component_added']:return
+        if name not in [mouse,kbrd,displ,soft,audio, network]: return
         no_doc = noComponentFactory(component_doc)
-	rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
+        rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
     def addComponent(_options, _row, current_id):
-	_price= makePrice(_row['doc'])
-	_option = makeOption(_row, _price)
-	_options.append((_option, _price))
-	if _row['id'] == current_id:
-	    _option.set('selected','selected')
-	_cleaned_doc = cleanDoc(_row['doc'], _price)
-	_id = _cleaned_doc['_id']
-	if _id in counted:
-	    _cleaned_doc.update({'count':counted[_id]})
-	components_json.update({_id:_cleaned_doc})
+        _price= makePrice(_row['doc'])
+        _option = makeOption(_row, _price)
+        _options.append((_option, _price))
+        if _row['id'] == current_id:
+            _option.set('selected','selected')
+        _cleaned_doc = cleanDoc(_row['doc'], _price)
+        _id = _cleaned_doc['_id']
+        if _id in counted:
+            _cleaned_doc.update({'count':counted[_id]})
+        components_json.update({_id:_cleaned_doc})
 
 
     def fillViewlet(_doc):
-	tr = viewlet.find("tr")
-	tr.set('id',name)
-	body = viewlet.xpath("//td[@class='body']")[0]
-	body.set('id',_doc['_id'])
-	body.text = re.sub('<font.*</font>', '',_doc['text'])
+        tr = viewlet.find("tr")
+        tr.set('id',name)
+        body = viewlet.xpath("//td[@class='body']")[0]
+        body.set('id',_doc['_id'])
+        body.text = re.sub('<font.*</font>', '',_doc['text'])
 
-	descr = etree.Element('div')
-	descr.set('class','description')
-	descr.text = ''
+        descr = etree.Element('div')
+        descr.set('class','description')
+        descr.text = ''
 
-	manu = etree.Element('div')
-	manu.set('class','manu')
-	manu.text = ''
+        manu = etree.Element('div')
+        manu.set('class','manu')
+        manu.text = ''
 
-	our = etree.Element('div')
-	our.set('class','our')
-	our.text = u'нет рекоммендаций'
+        our = etree.Element('div')
+        our.set('class','our')
+        our.text = u'нет рекоммендаций'
 
-	if name in our_descriptions:
-	    our.text = our_descriptions[name]
-	clear = etree.Element('div')
-	clear.set('style','clear:both;')
-	clear.text = ''
+        # if name in our_descriptions:
+        #     our.text = our_descriptions[name]
+        clear = etree.Element('div')
+        clear.set('style','clear:both;')
+        clear.text = ''
 
 
-	d_comments = ''
-	d_name = ''
-	if 'description' in _doc:
-	    d_name = _doc['description']['name']
-	    d_comments = _doc['description']['comments']
-	    if 'imgs' in _doc['description']:
-		for i in _doc['description']['imgs']:
-		    img = etree.Element('img')
-		    img.set('src', '/image/' + _doc['_id'] + '/' + i + '.jpg')
-		    img.set('align','right')
-		    manu.text += etree.tostring(img)
+        d_comments = ''
+        d_name = ''
+        if 'description' in _doc:
+            d_name = _doc['description']['name']
+            d_comments = _doc['description']['comments']
+            if 'imgs' in _doc['description']:
+                for i in _doc['description']['imgs']:
+                    img = etree.Element('img')
+                    img.set('src', '/image/' + _doc['_id'] + '/' + i + '.jpg')
+                    img.set('align','right')
+                    manu.text += etree.tostring(img)
 
-	manu.text += d_name + d_comments
+        manu.text += d_name + d_comments
 
-	descr.append(manu);
-	descr.append(our)
-	descr.append(clear)
-	return descr
+        descr.append(manu);
+        descr.append(our)
+        descr.append(clear)
+        return descr
 
 
     for name,code in model['items'].items():
-	component_doc = None
-	count = 0
-	if code is None:
-	    component_doc = noComponentFactory({})
-	else:
+        component_doc = None
+        count = 0
+        if code is None:
+            component_doc = noComponentFactory({})
+        else:
 
-	    if type(code) is list:
-		count = len(code)
-		code = code[0]
-		counted.update({code:count})
+            if type(code) is list:
+                count = len(code)
+                code = code[0]
+                counted.update({code:count})
 
-	    component_doc = [r['doc'] for r in components['rows'] if r['id'] == code][0]
-	    if component_doc is None:
-		component_doc = replaceComponent(code,model)
-	    else:
-		if component_doc['stock1'] == 0:
-		    component_doc = replaceComponent(code,model)
+            component_doc = findComponent(model,name)
 
-	if count >0:
-	    component_doc.update({'count':count})
+        if count >0:
+            component_doc.update({'count':count})
 
-	viewlet = deepcopy(original_viewlet)
-	descr = fillViewlet(component_doc)
+        viewlet = deepcopy(original_viewlet)
+        descr = fillViewlet(component_doc)
 
 
-	price = makePrice(component_doc)
+        price = makePrice(component_doc)
 
-	tottal += price
+        tottal += price
 
-	cleaned_doc = cleanDoc(component_doc, price)
-	cleaned_doc['price'] = price
-	model_json.update({cleaned_doc['_id']:cleaned_doc})
-	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price) + u' р'
+        cleaned_doc = cleanDoc(component_doc, price)
+        cleaned_doc['price'] = price
+        model_json.update({cleaned_doc['_id']:cleaned_doc})
+        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price) + u' р'
 
-	ch = choices[name]
-	options = []
-	if type(ch) is list:
-	    noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
-	    for el in ch:
-		if el[0]:
-		    option_group = etree.Element('optgroup')
-		    option_group.set('label', el[1][0])
-		    _options = []
-		    for r in el[1][1]['rows']:
-			addComponent(_options, r, cleaned_doc['_id'])
-		    appendOptions(_options, option_group)
-		    options.append((option_group, 0))
-	else:
-	    noComponent(name, cleaned_doc, ch['rows'])
-	    for row in ch['rows']:
-		addComponent(options, row, cleaned_doc['_id'])
+        ch = choices[name]
+        options = []
+        if type(ch) is list:
+            noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
+            for el in ch:
+                if el[0]:
+                    option_group = etree.Element('optgroup')
+                    option_group.set('label', el[1][0])
+                    _options = []
+                    for r in el[1][1]['rows']:
+                        addComponent(_options, r, cleaned_doc['_id'])
+                    appendOptions(_options, option_group)
+                    options.append((option_group, 0))
+        else:
+            noComponent(name, cleaned_doc, ch['rows'])
+            for row in ch['rows']:
+                addComponent(options, row, cleaned_doc['_id'])
 
-	select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
-	appendOptions(options, select)
-	viewlets.append((parts[name],viewlet,descr))
+        select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
+        appendOptions(options, select)
+        viewlets.append((parts[name],viewlet,descr))
 
 
     components_container = template.middle.xpath('//table[@id="components"]')[0]
@@ -532,35 +410,35 @@ def renderComputer(components_choices_descriptions, template, skin, model):
     globals()['no_component_added'] = True
 
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-	components_container.append(viewlet[1].find('tr'))
-	description_container.append(viewlet[2])
+        components_container.append(viewlet[1].find('tr'))
+        description_container.append(viewlet[2])
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-						    ';var uuid=',simplejson.dumps(_uuid),
+                                                    ';var uuid=',simplejson.dumps(_uuid),
                                                     ';var tottal=',unicode(tottal),
-						    ';var choices=',simplejson.dumps(components_json),
-						    ';var parts_names=',simplejson.dumps(parts_names),
-						    ';var mother_to_proc_mapping=',
-						    simplejson.dumps(mother_to_proc_mapping),
-						    ';var proc_to_mother_mapping=',
-						    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
-						    ';var Course=',str(Course),
-						    ';var parts=',simplejson.dumps({
-		    'ram':ram,
-		    'mother':mother,
-		    'proc':proc,
-		    'video':video,
-		    'kbrd':kbrd,
-		    'mouse':mouse,
-		    'audio':audio,
-		    'sound':sound,
-		    'hdd':hdd,
-		    'displ':displ,
-		    'network':network,
-		    'soft':soft,
-		    'case':case
-		    })
-						    ))
+                                                    ';var choices=',simplejson.dumps(components_json),
+                                                    ';var parts_names=',simplejson.dumps(parts_names),
+                                                    ';var mother_to_proc_mapping=',
+                                                    simplejson.dumps(mother_to_proc_mapping),
+                                                    ';var proc_to_mother_mapping=',
+                                                    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
+                                                    ';var Course=',str(Course),
+                                                    ';var parts=',simplejson.dumps({
+                    'ram':ram,
+                    'mother':mother,
+                    'proc':proc,
+                    'video':video,
+                    'kbrd':kbrd,
+                    'mouse':mouse,
+                    'audio':audio,
+                    'sound':sound,
+                    'hdd':hdd,
+                    'displ':displ,
+                    'network':network,
+                    'soft':soft,
+                    'case':case
+                    })
+                                                    ))
 
     skin.top = template.top
     skin.middle = template.middle
@@ -585,148 +463,148 @@ def fillChoices():
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     _gChoices = globals()['gChoices']
     if _gChoices is not None:
-	d = defer.Deferred()
-	d.addCallback(lambda x: _gChoices)
-	d.callback(None)
-	return d
+        d = defer.Deferred()
+        d.addCallback(lambda x: _gChoices)
+        d.callback(None)
+        return d
     defs = []
     defs.append(defer.DeferredList([
-		# couch.openView(designID,
-		# 				   'catalogs',
-		# 				   include_docs=True, key=mother_1366, stale=False)
-		# 		    .addCallback(lambda res: ("LGA1366",res)),
-		 		    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_1155, stale=False)
-				    .addCallback(lambda res: ("LGA1155",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_1156, stale=False)
-				    .addCallback(lambda res: ("LGA1166",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_775, stale=False)
-				    .addCallback(lambda res: ("LGA775",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_am23, stale=False)
-				    .addCallback(lambda res: ("AM2 3",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_fm1, stale=False)
-				    .addCallback(lambda res: ("FM1",res))
-				    ])
-		.addCallback(lambda res: {mother:res}))
+                # couch.openView(designID,
+                #                                  'catalogs',
+                #                                  include_docs=True, key=mother_1366, stale=False)
+                #                   .addCallback(lambda res: ("LGA1366",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_1155, stale=False)
+                                    .addCallback(lambda res: ("LGA1155",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_1156, stale=False)
+                                    .addCallback(lambda res: ("LGA1166",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_775, stale=False)
+                                    .addCallback(lambda res: ("LGA775",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_am23, stale=False)
+                                    .addCallback(lambda res: ("AM2 3",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_fm1, stale=False)
+                                    .addCallback(lambda res: ("FM1",res))
+                                    ])
+                .addCallback(lambda res: {mother:res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   "catalogs",
-						   include_docs=True,key=proc_1155, stale=False)
-				    .addCallback(lambda res:('LGA1155',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_1156, stale=False)
-						   .addCallback(lambda res:('LGA1156',res)),
-				    # couch.openView(designID,
-				    #	  	   'catalogs',
-				    #	  	   include_docs=True,key=proc_1366, stale=False)
-				    #	  	   .addCallback(lambda res:('LGA1366',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_am23, stale=False)
-				    .addCallback(lambda res:('AM2 3',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_775, stale=False)
-						   .addCallback(lambda res:('LGA7755',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=proc_fm1, stale=False)
-				    .addCallback(lambda res: ("FM1",res))
-				    ])
+                                                   "catalogs",
+                                                   include_docs=True,key=proc_1155, stale=False)
+                                    .addCallback(lambda res:('LGA1155',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_1156, stale=False)
+                                                   .addCallback(lambda res:('LGA1156',res)),
+                                    # couch.openView(designID,
+                                    #              'catalogs',
+                                    #              include_docs=True,key=proc_1366, stale=False)
+                                    #              .addCallback(lambda res:('LGA1366',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_am23, stale=False)
+                                    .addCallback(lambda res:('AM2 3',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_775, stale=False)
+                                                   .addCallback(lambda res:('LGA7755',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=proc_fm1, stale=False)
+                                    .addCallback(lambda res: ("FM1",res))
+                                    ])
 
-		.addCallback(lambda res: {proc:res}))
+                .addCallback(lambda res: {proc:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=geforce, stale=False)
-				    .addCallback(lambda res: (u"GeForce",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=radeon, stale=False)
-				    .addCallback(lambda res: (u"Radeon",res))])
-		.addCallback(lambda res: {video:res}))
+                                                   'catalogs',include_docs=True, key=geforce, stale=False)
+                                    .addCallback(lambda res: (u"GeForce",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=radeon, stale=False)
+                                    .addCallback(lambda res: (u"Radeon",res))])
+                .addCallback(lambda res: {video:res}))
 
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=ddr3, stale=False)
-		.addCallback(lambda res: {ram:res}))
+                               'catalogs',include_docs=True, key=ddr3, stale=False)
+                .addCallback(lambda res: {ram:res}))
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=satas, stale=False)
-		.addCallback(lambda res: {hdd:res}))
+                               'catalogs',include_docs=True, key=satas, stale=False)
+                .addCallback(lambda res: {hdd:res}))
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=windows, stale=False)
-		.addCallback(lambda res: {soft:res}))
+                               'catalogs',include_docs=True, key=windows, stale=False)
+                .addCallback(lambda res: {soft:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=case_400_650, stale=False)
-				    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
-				   couch.openView(designID,
-						  'catalogs',include_docs=True, key=case_exclusive, stale=False)
-				    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
-		.addCallback(lambda res: {case:res}))
+                                                   'catalogs',include_docs=True, key=case_400_650, stale=False)
+                                    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
+                                   couch.openView(designID,
+                                                  'catalogs',include_docs=True, key=case_exclusive, stale=False)
+                                    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
+                .addCallback(lambda res: {case:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=displ_19_20, stale=False)
-				    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=displ_22_26, stale=False)
-				    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
-		.addCallback(lambda res: {displ:res}))
+                                                   'catalogs',include_docs=True, key=displ_19_20, stale=False)
+                                    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=displ_22_26, stale=False)
+                                    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
+                .addCallback(lambda res: {displ:res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_a4, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_acme, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_chikony, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_game, stale=False)
-				    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
-		.addCallback(lambda res: {kbrd:res}))
+                                                   'catalogs',include_docs=True, key=kbrd_a4, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_acme, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_chikony, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_game, stale=False)
+                                    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
+                .addCallback(lambda res: {kbrd:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_a4, stale=False)
-				    .addCallback(lambda res: (u"Мыши A4Tech",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_game, stale=False)
-				    .addCallback(lambda res: (u"Игровые Мыши",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_acme, stale=False)
-				    .addCallback(lambda res: (u"Мыши Acme",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_genius, stale=False)
-				    .addCallback(lambda res: (u"Мыши Genius",res))])
-		.addCallback(lambda res: {mouse:res}))
+                                                   'catalogs',include_docs=True, key=mouse_a4, stale=False)
+                                    .addCallback(lambda res: (u"Мыши A4Tech",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_game, stale=False)
+                                    .addCallback(lambda res: (u"Игровые Мыши",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_acme, stale=False)
+                                    .addCallback(lambda res: (u"Мыши Acme",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_genius, stale=False)
+                                    .addCallback(lambda res: (u"Мыши Genius",res))])
+                .addCallback(lambda res: {mouse:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_20, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 2.0",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_21, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 2.1",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_51, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 5.1",res))])
-		.addCallback(lambda res: {audio:res}))
+                                                   'catalogs',include_docs=True, key=audio_20, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 2.0",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=audio_21, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 2.1",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=audio_51, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 5.1",res))])
+                .addCallback(lambda res: {audio:res}))
     def makeDict(res):
-	new_res = {}
-	for el in res:
-	    if el[0]:
-		new_res.update(el[1])
-	globals()['gChoices'] = new_res
-	return globals()['gChoices'] #new_res
+        new_res = {}
+        for el in res:
+            if el[0]:
+                new_res.update(el[1])
+        globals()['gChoices'] = new_res
+        return globals()['gChoices'] #new_res
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict)
 
@@ -735,31 +613,31 @@ gDescriptions = None
 def fillOurDescriptions(model):
     _gDescriptions = globals()['gDescriptions']
     if _gDescriptions is not None:
-	d = defer.Deferred()
-	d.addCallback(lambda x: gDescriptions)
-	d.callback(None)
-	return d
+        d = defer.Deferred()
+        d.addCallback(lambda x: gDescriptions)
+        d.callback(None)
+        return d
 
     keys = []
     for name, code in model['items'].items():
-	if code is None: continue
-	if type(code) is list:
-	    code = code[0]
-	keys.append('d-' + name)
-	keys.append('d-' + name + '-' + code)
+        if code is None: continue
+        if type(code) is list:
+            code = code[0]
+        keys.append('d-' + name)
+        keys.append('d-' + name + '-' + code)
     d = couch.listDoc(keys=keys,include_docs=True)
     def fill(res):
-	named = {}
-	for r in res['rows']:
-	    if 'error' in r: continue
-	    parts = r['key'].split('-')
-	    _name = parts[1]
-	    if _name in named:
-		named[name] += r['doc']['desc']
-	    else:
-		named.update({_name:r['doc']['desc']})
-	globals()['gModels']  = named
-	return named
+        named = {}
+        for r in res['rows']:
+            if 'error' in r: continue
+            parts = r['key'].split('-')
+            _name = parts[1]
+            if _name in named:
+                named[name] += r['doc']['desc']
+            else:
+                named.update({_name:r['doc']['desc']})
+        globals()['gModels']  = named
+        return named
     return d.addCallback(fill)
 
 gModels = {}
@@ -776,39 +654,47 @@ def fillModel(model):
     keys = [c for c in getModelComponents(model) if c is not None]
     d = couch.listDoc(keys=keys,include_docs=True)
     def fill(res):
-	globals()['gModels'][name] = res
-	return res
+        globals()['gModels'][name] = res
+        return res
     # cache standard models
     if 'name' in model:
         d.addCallback(fill)
     return d
 
 def computer(template, skin, request):
+    if globals()['gChoices'] is None:
+        d = fillChoices()
+        d.addCallback(lambda some: computer(template, skin, request))
+        return d
+    
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    def render(model):
-	d = fillModel(model)
-	d1 = fillChoices()
-	d2 = fillOurDescriptions(model)
-	li = defer.DeferredList([d,d1,d2])
-	def equalize(_li):
-	    res = []
-	    for el in _li:
-		res.append(el[1])
-	    return res
-	li.addCallback(equalize)
-	li.addCallback(renderComputer, template, skin, model)
-	return li
-    model_names = {}
-    for m in models:
-	model_names.update({m['url']:m})
+    d = couch.openDoc(name)
+    d.addCallback(renderComputer, template, skin)
+    return d
+    # def render(model):
+    #     d = fillModel(model)
+    #     d1 = fillChoices()
+    #     d2 = fillOurDescriptions(model)
+    #     li = defer.DeferredList([d,d1,d2])
+    #     def equalize(_li):
+    #         res = []
+    #         for el in _li:
+    #             res.append(el[1])
+    #         return res
+    #     li.addCallback(equalize)
+    #     li.addCallback(renderComputer, template, skin, model)
+    #     return li
+    # model_names = {}
+    # for m in models:
+    #     model_names.update({m['_id']:m})
 
-    if name in model_names:
-	return render(model_names[name])
-    else:
-	d = couch.openDoc(name)
-	d.addCallback(render)
-	return d
+    # if name in model_names:
+    #     return render(model_names[name])
+    # else:
+    #     d = couch.openDoc(name)
+    #     d.addCallback(render)
+    #     return d
 
 
 def computers(template,skin,request):
@@ -824,56 +710,66 @@ def computers(template,skin,request):
     return d
 
 
+def findComponent(model, name):
+    code = model['items'][name]
+    if type(code) is list:
+        code = code[0]
+    choices = globals()['gChoices'][name]
+    retval = None
+    if type(choices) is list:
+        for el in choices:
+            if el[0]:
+                for ch in el[1][1]['rows']:
+                    if ch['doc']['_id'] == code:
+                        retval = ch['doc']
+                        break
+    else:
+        for ch in choices['rows']:
+            if ch['doc']['_id'] == code:
+                retval = ch['doc']
+                break
+    if retval is None:
+        retval = replaceComponent(code,model)
+    else:
+        if retval['stock1'] == 0:
+            retval = replaceComponent(code,model)
+    return retval
 
-def renderModelForIndex(result, template, m, image_i):
-    
-    tree = template.root()
-    # CACHE ALL MODELS HERE!!!
-    # TODO! why? it is called every time?????
-    # it need to call components 1 a session as in choices
-    m.update({'item_docs':result['rows']})
-    model_snippet = tree.find('model')
 
-    snippet = deepcopy(model_snippet.find('div'))
-    snippet.set('style',"background-image:url('" + imgs[image_i] + "')")
-    a = snippet.find('.//a')
-    a.set('href','/computer/%s' % m['url'])
-    a.text=m['name']
-    price_span = snippet.find('.//span')
-    price_span.set('id',m['url'])
-    tottal = 0
-    for row in m['item_docs']:
-        if row['doc'] is None:
-            row['doc'] = replaceComponent(row['id'],m)
-        tottal += makePrice(row['doc'])
-    price_span.text = str(tottal) + u' р'
-    return snippet
 
 def index(template, skin, request):
-    
+
     if globals()['gChoices'] is None:
         d = fillChoices()
         d.addCallback(lambda some: index(template, skin, request))
-        return d                      
-    i = 0
-    defs = []
-    for m in models:
-	d = couch.listDoc(keys=[c for c in getModelComponents(m)],include_docs=True)
-	d.addCallback(renderModelForIndex, template, m, i)
-	defs.append(d)
-	i+=1
-	if i==len(imgs): i=0
+        return d
 
-    def _render(res,_template,_skin):        
-	div = _template.middle.xpath('//div[@id="computers_container"]')[0]
-	for el in res:
-	    if el[0]:
-		div.append(el[1])	
-        _skin.top = _template.top
-	_skin.middle = _template.middle
-        
-	return skin.render()
+    def render(result):
+        i = 0
+        models = [row['doc'] for row in result['rows']]
+        tree = template.root()
+        div = template.middle.xpath('//div[@id="computers_container"]')[0]
+        for m in models:
+            model_snippet = tree.find('model')
+            snippet = deepcopy(model_snippet.find('div'))
+            snippet.set('style',"background-image:url('" + imgs[i] + "')")
+            a = snippet.find('.//a')
+            a.set('href','/computer/%s' % m['_id'])
+            a.text=m['name']
+            price_span = snippet.find('.//span')
+            price_span.set('id',m['_id'])
+            tottal = 0            
+            for cat_name,code in m['items'].items():
+                component_doc = findComponent(m,cat_name)                
+                tottal += makePrice(component_doc)
+            price_span.text = str(tottal) + u' р'
+            div.append(snippet)            
+            i+=1
+            if i==len(imgs): i=0
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
 
-    d = defer.DeferredList(defs)
-    d.addCallback(_render, template, skin)
+    d = couch.openView(designID,'models',include_docs=True,stale=False)
+    d.addCallback(render)
     return d

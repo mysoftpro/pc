@@ -287,6 +287,7 @@ class Root(Cookable):
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
         self.putChild('sender', Sender())
+        # self.putChild('store_model', StoreModel())
         self.host_url = host_url        
 
     def collectCookies(self):
@@ -465,3 +466,11 @@ class ClearCache(Resource):
     def render_GET(self, request):
         globals()['_cached_statics'] = {}
         return "ok"
+
+
+# class StoreModel(Resource):
+#     def render_GET(self, request):
+#         from pc.models import models
+#         for m in models:
+#             d = couch.saveDoc(m)
+#         return "ok"
