@@ -1,5 +1,5 @@
 function(doc){
     if (doc['author']){
-	emit(doc['author'],doc);
+	emit(doc['author'],null);
     }
 }

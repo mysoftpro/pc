@@ -149,7 +149,7 @@ class CachedStatic(File):
                 raise
 
         physical_name = fileForReading.name
-        virtual_name = unquote_plus(request.path.split('/')[-1])
+        # virtual_name = unquote_plus(request.path.split('/')[-1])
 
         if 'jpg' in physical_name or 'gif' in physical_name or 'png' in physical_name or physical_name == 'jScrollPane.js':
             request.setHeader("Cache-Control", "max-age=290304000, public")
@@ -177,16 +177,17 @@ class CachedStatic(File):
 
         else:
             if '.html' in fileForReading.name or '.json' in fileForReading.name:
-                name_to_cache = physical_name
+                # name_to_cache = physical_name
                 # DO NOT CACHE VIRTUAL NAMES. UNCOMMENT ALL TO CACHE EM
-                if len(virtual_name)>0:
-                    splitted = physical_name.split('\\')
-                    if len(splitted) == 0:
-                        splitted = physical_name.split('/')
-                    if splitted[-1] != virtual_name:
-                        name_to_cache = None # virtual_name
+                # if len(virtual_name)>0:
+                #     splitted = physical_name.split('\\')
+                #     if len(splitted) == 0:
+                #         splitted = physical_name.split('/')
+                #     if splitted[-1] != virtual_name:
+                #         name_to_cache = None # virtual_name                
+                
                 d = self.renderTemplate(fileForReading, last_modified, request)
-                d.addCallback(self._gzip, name_to_cache, last_modified)
+                d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 return NOT_DONE_YET
             else:
@@ -319,9 +320,10 @@ class Computers(Cookable):
     def __init__(self, static):
         Cookable.__init__(self)
         self.static = static
-    def getChild(self, name, request):
-        print "aaaaaaaaaaaaaaaaaaaaaaaaamidafo"
-        print name
+    def getChild(self, name, request):        
+        print "moooooooiiiiiiiiiiiiiiiiiiiii"
+        print ""
+        print ""
         Cookable.getChild(self, name, request)
         return self.static.getChild("computers.html", request)
 
@@ -374,6 +376,9 @@ class Save(Resource):
                               str(len(user_doc['models'])),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
+        _date=str(date.today()).split('-')
+        user_doc['date'] = _date
+        model_doc['date'] = _date
         couch.saveDoc(model_doc)
         couch.saveDoc(user_doc)
         request.setHeader('Content-Type', 'application/json;charset=utf-8')

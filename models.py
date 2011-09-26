@@ -452,7 +452,7 @@ def pr(some):
     return some
 
 
-printed = False
+
 gChoices = None
 
 def fillChoices():
@@ -614,6 +614,9 @@ def computer(template, skin, request):
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+    # hack! just show em ping!
+    if len(name) == 0:
+        name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
     return d
@@ -624,10 +627,19 @@ def computers(template,skin,request):
         d.addCallback(lambda some: computers(template, skin, request))
         return d
 
-    # splitted = request.path.split('/')
+    splitted = request.path.split('/')
+    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
 
     def render(result):
-        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
+        models = [row['doc'] for row in result['rows']]
+        if len(name) == 0:
+            models = sorted(models,lambda x,y: x['order']-y['order'])
+        else:
+            def sort(m1,m2):
+                if u''.join(m1['date'])>u''.join(m2['date']):
+                    return 1
+                return -1
+            models = sorted(models,sort)
         tree = template.root()
         container = template.middle.xpath('//div[@id="models"]')[0]
         for m in models:
@@ -639,29 +651,49 @@ def computers(template,skin,request):
                 model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
             a = model_div.find('.//a')
             a.set('href','/computer/%s' % m['_id'])
-            a.text=m['name']
+            if 'name' in m:
+                a.text=m['name']
+            else:
+                a.text = m['_id']
             price_span = model_div.find('.//span')
             price_span.set('id',m['_id'])
             tottal = 0
+            componets = []
             for cat_name,code in m['items'].items():
                 component_doc = findComponent(m,cat_name)
                 tottal += makePrice(component_doc)
+                componets.append(component_doc)
             price_span.text = str(tottal) + u' р'
             container.append(model_div)
 
             description_div = divs[1]
             h3 = description_div.find('h3')
-            h3.text = m['title']
-            # h3.tail =m['description']
-            description_div.append(etree.fromstring(m['description']))
-            container.append(description_div)
-
+            if 'title' in m:
+                h3.text = m['title']
+            else:
+                h3.text = u'Пользовательская конфигурация'
+            if 'description' in m:
+                description_div.append(etree.fromstring(m['description']))
+            else:
+                ul = etree.Element('ul')
+                for c in componets:
+                    li = etree.Element('li')
+                    li.text = c['text']
+                    ul.append(li)
+                description_div.append(ul)
+                description_div.set('style','width:750px !important')
+            container.append(description_div)        
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
-
-    d = couch.openView(designID,'models',include_docs=True,stale=False)
-    d.addCallback(render)
+    
+    if len(name) == 0:
+        d = couch.openView(designID,'models',include_docs=True,stale=False)
+        d.addCallback(render)
+    else:
+        d = couch.openView(designID,'user_models',include_docs=True,stale=False, key=name)
+        d.addCallback(render)
+        
     return d
 
 
