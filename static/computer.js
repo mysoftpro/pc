@@ -347,6 +347,7 @@ function changeDescription(index, _id, show, data){
     }
 }
 
+var current_row;
 
 function installBodies(){
     var init = true;
@@ -360,6 +361,7 @@ function installBodies(){
 			 var _body = $(bodies.get(i));
 			 var select_block = jgetSelectBlock(_body);
 			 if (_body.attr('id') == _id){
+			     current_row = _body.parent().attr('id');
 			     _body.hide();
 			     select_block.show();
 			     if (doNotStress){

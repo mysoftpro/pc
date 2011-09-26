@@ -243,12 +243,8 @@ def renderComputer(model, template, skin):
                 model.pop(token)
     h2.text = _name
     original_viewlet = template.root().find('componentviewlet')
-
-    # components= components_choices_descriptions[0]
     
     choices = globals()['gChoices']
-    # choices = components_choices_descriptions[1]
-    # our_descriptions = components_choices_descriptions[2]
 
     model_json = {}
     tottal = 0
@@ -608,58 +604,7 @@ def fillChoices():
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict)
 
-gDescriptions = None
 
-def fillOurDescriptions(model):
-    _gDescriptions = globals()['gDescriptions']
-    if _gDescriptions is not None:
-        d = defer.Deferred()
-        d.addCallback(lambda x: gDescriptions)
-        d.callback(None)
-        return d
-
-    keys = []
-    for name, code in model['items'].items():
-        if code is None: continue
-        if type(code) is list:
-            code = code[0]
-        keys.append('d-' + name)
-        keys.append('d-' + name + '-' + code)
-    d = couch.listDoc(keys=keys,include_docs=True)
-    def fill(res):
-        named = {}
-        for r in res['rows']:
-            if 'error' in r: continue
-            parts = r['key'].split('-')
-            _name = parts[1]
-            if _name in named:
-                named[name] += r['doc']['desc']
-            else:
-                named.update({_name:r['doc']['desc']})
-        globals()['gModels']  = named
-        return named
-    return d.addCallback(fill)
-
-gModels = {}
-
-def fillModel(model):
-    # cache standard models
-    if 'name' in model:
-        name = model['name']
-        if  name in globals()['gModels']:
-            d = defer.Deferred()
-            d.addCallback(lambda x: globals()['gModels'][name])
-            d.callback(None)
-            return d
-    keys = [c for c in getModelComponents(model) if c is not None]
-    d = couch.listDoc(keys=keys,include_docs=True)
-    def fill(res):
-        globals()['gModels'][name] = res
-        return res
-    # cache standard models
-    if 'name' in model:
-        d.addCallback(fill)
-    return d
 
 def computer(template, skin, request):
     if globals()['gChoices'] is None:
@@ -672,30 +617,6 @@ def computer(template, skin, request):
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
     return d
-    # def render(model):
-    #     d = fillModel(model)
-    #     d1 = fillChoices()
-    #     d2 = fillOurDescriptions(model)
-    #     li = defer.DeferredList([d,d1,d2])
-    #     def equalize(_li):
-    #         res = []
-    #         for el in _li:
-    #             res.append(el[1])
-    #         return res
-    #     li.addCallback(equalize)
-    #     li.addCallback(renderComputer, template, skin, model)
-    #     return li
-    # model_names = {}
-    # for m in models:
-    #     model_names.update({m['_id']:m})
-
-    # if name in model_names:
-    #     return render(model_names[name])
-    # else:
-    #     d = couch.openDoc(name)
-    #     d.addCallback(render)
-    #     return d
-
 
 def computers(template,skin,request):
     d = defer.Deferred()

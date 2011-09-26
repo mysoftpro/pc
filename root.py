@@ -287,7 +287,7 @@ class Root(Cookable):
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
         self.putChild('sender', Sender())
-        # self.putChild('store_model', StoreModel())
+        self.putChild('select_helps', SelectHelpsProxy())
         self.host_url = host_url        
 
     def collectCookies(self):
@@ -462,15 +462,28 @@ class ImageProxy(Resource):
 
         return self.proxy.getChild(path, request)
 
+
+class SelectHelpsProxy(Resource):
+    def __init__(self, *args, **kwargs):
+        Resource.__init__(self, *args, **kwargs)
+        self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
+
+    def getChild(self, path, request):
+        last = request.uri.split('/')[-1]
+
+        # safety to not show couch internals
+        # just check that it endswith image extension and no parameters in it
+        if '?' in last or '&' in last:
+            return NoResource()
+        _help = 'sh-' in last
+        if not _help:
+            return NoResource()
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return self.proxy.getChild(last, request)
+
 class ClearCache(Resource):
     def render_GET(self, request):
         globals()['_cached_statics'] = {}
         return "ok"
 
-
-# class StoreModel(Resource):
-#     def render_GET(self, request):
-#         from pc.models import models
-#         for m in models:
-#             d = couch.saveDoc(m)
-#         return "ok"
