@@ -1,12 +1,12 @@
 <top>
   <script type="text/javascript">
     $(function(){
-    
+
     $('#next_button').click(function(e){
-    
+
     var last_pos = $('.indexitem').last().position();
     var first_pos = $('.indexitem').first().position();
-    
+
     if (first_pos.top != last_pos.top)
         $('#computers_container').animate({'margin-left':'-=220px'}, 300);
 
@@ -43,53 +43,51 @@
 
 <middle>
   <div id="computers">
-    <div style="background-image:url('static/empty.png');cursor:inherit;" class="button" 
-	 id="previous_button">
-      &nbsp;
-    </div>
-    <div id="belt">      
+    <div class="button" id="previous_button"></div>
+    <div id="belt">
        <div id="computers_container">
        </div>
     </div>
-    <div style="background-image:url('static/next.png')" class="button" id="next_button">
-      &nbsp;
+    <div class="button" id="next_button">
     </div>
-    <div style="clear:both;"></div>
+    <div  id="pricetext">
+      <em>Цена включает: системный блок, монитор, аудиосистему, клавиатуру, мышь.</em>
+    </div>
   </div>
 
-  
+
   <ul id="features">
     <li>
       <strong>Выбирайте любой компьютер</strong>
 
       <em>
-	Компьютеры укоплектованы всем необходимым для работы и развлечений.
+        Компьютеры укоплектованы всем необходимым для работы и развлечений.
       </em>
     </li>
     <li>
       <strong>Составьте свою конфигурацию</strong>
       <em>
-	Дешевле или лучше.
-	Все комплектующие снабжены описанием ценой и комментариями.
+        Дешевле или лучше.
+        Все комплектующие снабжены описанием ценой и комментариями.
       </em>
     </li>
     <li>
       <strong>Сохраняйте компьютер здесь</strong>
       <em>
-	<strong style="color:#b9d3e1">Регистрация не требуется.</strong> Отправьте ссылку друзьям и знакомым.
+        <strong style="color:#b9d3e1">Регистрация не требуется.</strong> Отправьте ссылку друзьям и знакомым.
       </em>
     </li>
     <li>
       <strong>Звоните нам для оформления заказа</strong>
       <em>
-	Ваш выбор всегда актуален.
-	Обновление цен и наличия на складе <strong style="color:#b9d3e1">23.08.2011 14:58</strong>
+        Ваш выбор всегда актуален.
+        Обновление цен и наличия на складе <strong style="color:#b9d3e1">23.08.2011 14:58</strong>
       </em>
     </li>
     <li>
       <strong>Принимайте свой компьютер</strong>
       <em>
-	Мы поможем подключить интернет и перенести данные со старого компьютера.
+        Мы поможем подключить интернет и перенести данные со старого компьютера.
       </em>
     </li>
   </ul>

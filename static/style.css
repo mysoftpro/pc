@@ -247,7 +247,7 @@ ul#main_menu li a {
     float:left;
     max-width:880px;
     overflow:hidden;
-    height:175px;
+    height:150px;
 }
 #other{
    margin: 0 auto 0;
@@ -752,7 +752,7 @@ color:#7b9c0a;
 }
 
 #middle {
-    margin-top:-30px;
+    margin-top:-20px;
 }
 
 .manu{
@@ -844,6 +844,7 @@ color:#7b9c0a;
     float:left;
     margin-right:10px;
     width:200px;
+    height:250px;
 }
 .computers_description h3{
     color:#AAAAAA;
@@ -866,4 +867,27 @@ color:#7b9c0a;
 
 #middle .computeritem{
     background-image:url('/static/localhost1.png');
+}
+#pricetext{
+    clear:both;
+}
+#pricetext em{
+    font-size:12px;
+    
+    padding-left:10px;
+}
+#next_button{
+    background-image:url('/static/next.png');
+}
+#previous_button{
+    background-image:url('/static/empty.png');
+    cursor:inherit;
+}
+#models_container{    
+    width:100%;
+}
+#models{
+    width:1000px;
+    margin-left:auto;
+    margin-right:auto;
 }
