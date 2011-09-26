@@ -21,6 +21,7 @@
                             $('#computers_container').animate({'margin-left':'+=220px'}, 300);
                           })
     })
+    $('.indexitem').click(function(e){document.location.href=$(e.target).find('a').attr('href');})
     })
   </script>
   <div class="panel" id="banner1">
@@ -51,7 +52,10 @@
     <div class="button" id="next_button">
     </div>
     <div  id="pricetext">
-      <em>Цена включает: системный блок, монитор, аудиосистему, клавиатуру, мышь.</em>
+      <em>
+	Цена кажлого компьютера включает: системный блок, монитор, аудиосистему, клавиатуру, мышь.
+	Чтобы составить свою конфигурацию кликайте на компьютер.
+      </em>
     </div>
   </div>
 
