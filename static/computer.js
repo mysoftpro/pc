@@ -1161,7 +1161,7 @@ function to_cartSuccess(data){
 		       {
 			   computer:data['id']
 		       }));
-	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
+	showYa('ya_share', 'http://buildpc.ru/computers/'+data['id']);
 	var cart_ammo = $.cookie('pc_cart');
 	var cart_el = $('#cart');
 	if (cart_el.length>0){

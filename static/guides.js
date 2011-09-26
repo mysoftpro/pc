@@ -17,11 +17,6 @@ var showYa = function (_id, _link){
                          }
                      }
                  });
-
-    if ($.browser.msie && $.browser.version < 9){
-        $('#' + container_id).corner('10px');
-        $('#' + button_id).corner('6px');
-    }
 };
 
 $(function()
