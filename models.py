@@ -681,19 +681,26 @@ def computers(template,skin,request):
                     li.text = c['text']
                     ul.append(li)
                 description_div.append(ul)
-                description_div.set('style','width:750px !important')
-            container.append(description_div)        
+                description_div.set('style','width:750px !important')                
+            container.append(description_div)
+
+        cart = deepcopy(template.root().find('top_cart'))
+        cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+        cart_divs = cart.findall('div')
+        for d in cart_divs:
+            template.top.append(d)            
+
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
-    
+
     if len(name) == 0:
         d = couch.openView(designID,'models',include_docs=True,stale=False)
         d.addCallback(render)
     else:
         d = couch.openView(designID,'user_models',include_docs=True,stale=False, key=name)
         d.addCallback(render)
-        
+
     return d
 
 

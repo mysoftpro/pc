@@ -1,5 +1,5 @@
 <top>
-  <div style="height:100px;"></div>
+
 </top>
 <middle>
   <div id="models_container">
@@ -26,3 +26,68 @@
   
 </div>
 </model>
+
+
+
+<top_model>
+<div>
+  <em>
+    Цена кажлого компьютера включает: системный блок, монитор, аудиосистему, клавиатуру, мышь.
+    Чтобы составить свою конфигурацию кликайте на компьютер.
+  </em>
+</div>
+</top_model>
+
+
+<top_cart>
+  <div id="cart_top">
+    <p>
+    Корзина "привязана" к вашему браузеру.
+    Чтобы попасть в свою корзину с другого браузера или компьютера, используйте ссылку приведенную
+    ниже. Отправьте эту ссылку друзьям и знакомым. 
+    Любой человек
+    может заказать в нашем магазине собранный вами компьютер.
+    </p>
+    <table>      
+      <tr>
+	<td>
+	  Сссылка на вашу корзину:
+	</td>	
+	<td colspan="2">
+	  <input id="cartlink" width="20" type="text"/>
+	</td>	
+      </tr>
+      <tr>
+	<td><span id="ya_share_cart"></span></td>
+	<td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
+	<td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
+      </tr>            
+    </table>
+    
+  </div>
+  <div id="added">    
+    <table>
+      <tr>
+	<td colspan="3">
+	  <strong>Чтобы купить этот компьютер позвоните нам и назовите его номер</strong>
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  Сссылка на этот компьютер:
+	</td>	
+	<td>
+	  <input width="20" type="text" value="http://buildpc.ru/computer/{{computer}}"/>
+	</td>
+	<td>
+	  <a href="/computer/{{computer}}" target="_blank">{{computer}}</a>
+	</td>
+      </tr>
+      <tr>
+	<td><span id="ya_share"></span></td>
+	<td><input id="email" type="text" value="введите email" name="email"></td>
+	<td><a id="emailbutton" class="emailbutton" href="">отправить</a></td>
+      </tr>            
+    </table>    
+  </div>    
+</top_cart>

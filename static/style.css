@@ -795,7 +795,7 @@ color:#7b9c0a;
     padding:2px;
     width:228px;
 }
-#emailbutton{
+.emailbutton{
     background-color: #AAAAAA;
 
     color:white;
@@ -890,4 +890,11 @@ color:#7b9c0a;
     width:1000px;
     margin-left:auto;
     margin-right:auto;
+}
+#cart_top{
+    height:150px;
+    margin-top:20px;
+}
+#cartlink{
+    width:265px;
 }
