@@ -1,3 +1,6 @@
+var filled_selects_helps = {    
+};
+
 var showYa = function (_id, _link){
     new Ya.share({
                      element: _id,
@@ -96,9 +99,9 @@ $(function()
                                            });
                        });
 
-
-
       function fillSelectHelps(action){
+	  if (fillSelectHelps[current_row])
+	      return action();
 	  $.ajax({
                      url:'/select_helps/sh-'+current_row,
 		     dataType: 'json',
@@ -109,17 +112,19 @@ $(function()
                              if (trs.get(i).id==current_row){
 				 var our = $($('.our').get(i));
                                  our.html(data.text);
+				 fillSelectHelps[current_row] = true;
                                  break;
                              }
                          }
                          action();
                      },
                      error:function(){
+			 fillSelectHelps[current_row] = true;
                          action();
                      }
                  });
       }
-
+      
       function swapTabs(e){
           var active = $('.active');
           var target = $(e.target);
