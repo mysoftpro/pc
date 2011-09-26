@@ -243,7 +243,7 @@ def renderComputer(model, template, skin):
                 model.pop(token)
     h2.text = _name
     original_viewlet = template.root().find('componentviewlet')
-    
+
     choices = globals()['gChoices']
 
     model_json = {}
@@ -611,7 +611,7 @@ def computer(template, skin, request):
         d = fillChoices()
         d.addCallback(lambda some: computer(template, skin, request))
         return d
-    
+
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     d = couch.openDoc(name)
@@ -619,16 +619,57 @@ def computer(template, skin, request):
     return d
 
 def computers(template,skin,request):
-    d = defer.Deferred()
-    splitted = request.path.split('/')
-    def render(some):
+    if globals()['gChoices'] is None:
+        d = fillChoices()
+        d.addCallback(lambda some: computers(template, skin, request))
+        return d
+
+    # splitted = request.path.split('/')
+
+    def render(result):
+        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
+        tree = template.root()
+        container = template.middle.xpath('//div[@id="models"]')[0]
+        for m in models:
+            model_snippet = tree.find('model')
+            divs = deepcopy(model_snippet.findall('div'))
+            model_div = divs[0]
+            # snippet.set('style',"background-image:url('" + m[imgs[i] + "')")
+            if '_attachments' in m and 'icon.png' in m['_attachments']:
+                model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
+            a = model_div.find('.//a')
+            a.set('href','/computer/%s' % m['_id'])
+            a.text=m['name']
+            price_span = model_div.find('.//span')
+            price_span.set('id',m['_id'])
+            tottal = 0
+            for cat_name,code in m['items'].items():
+                component_doc = findComponent(m,cat_name)
+                tottal += makePrice(component_doc)
+            price_span.text = str(tottal) + u' р'
+            container.append(model_div)
+
+            description_div = divs[1]
+            h3 = description_div.find('h3')
+            h3.text = m['title']
+            # h3.tail =m['description']
+            description_div.append(etree.fromstring(m['description']))
+            container.append(description_div)
+
         skin.top = template.top
         skin.middle = template.middle
-        skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top:0px')
         return skin.render()
+
+    d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(render)
-    d.callback(None)
     return d
+
+
+
+
+
+
+
 
 
 def findComponent(model, name):
@@ -667,7 +708,8 @@ def index(template, skin, request):
 
     def render(result):
         i = 0
-        models = [row['doc'] for row in result['rows']]
+
+        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
         tree = template.root()
         div = template.middle.xpath('//div[@id="computers_container"]')[0]
         for m in models:
@@ -679,12 +721,12 @@ def index(template, skin, request):
             a.text=m['name']
             price_span = snippet.find('.//span')
             price_span.set('id',m['_id'])
-            tottal = 0            
+            tottal = 0
             for cat_name,code in m['items'].items():
-                component_doc = findComponent(m,cat_name)                
+                component_doc = findComponent(m,cat_name)
                 tottal += makePrice(component_doc)
             price_span.text = str(tottal) + u' р'
-            div.append(snippet)            
+            div.append(snippet)
             i+=1
             if i==len(imgs): i=0
         skin.top = template.top
