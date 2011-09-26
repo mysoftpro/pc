@@ -684,11 +684,17 @@ def computers(template,skin,request):
                 description_div.set('style','width:750px !important')                
             container.append(description_div)
 
-        cart = deepcopy(template.root().find('top_cart'))
-        cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
-        cart_divs = cart.findall('div')
-        for d in cart_divs:
-            template.top.append(d)            
+        if len(name)>0:
+            cart = deepcopy(template.root().find('top_cart'))
+            cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+            cart_divs = cart.findall('div')
+            for d in cart_divs:
+                template.top.append(d)
+        else:
+            header = deepcopy(template.root().find('top_models'))
+            header_divs = header.findall('div')
+            for d in header_divs:
+                template.top.append(d)
 
         skin.top = template.top
         skin.middle = template.middle

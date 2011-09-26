@@ -1207,6 +1207,9 @@ $(function(){
       recalculate();
       $('#greset').click(function(){window.location.reload();});
       $('#tocart').click(to_cart);
+      if (uuid)
+	  to_cartSuccess({'id':uuid});
       if (document.location.href.match('edit'))
 	  $('#tocart').text('Сохранить');
+      
   });
