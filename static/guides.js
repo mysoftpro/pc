@@ -98,45 +98,50 @@ $(function()
 
 
 
-                     function swapTabs(e){
-                         var active = $('.active');
-                         var target = $(e.target);
-                         var klass = target.attr('class');
-                         target.attr('class', active.attr('class'));
-                         active.attr('class', klass);
-                         target.unbind('click');
-                         active.click(swapTabs);
-
-                         if (target.attr('id') == 'ourcomments'){
-                             var container = $('#descriptions');
-                             container.data('jScrollPanePosition', 0);
-                             container.css('top','0');
-                             function animate(){
-                                 $('.description')
-                                                .animate({'margin-left':'-=912'}, 400);
+      function fillSelectHelps(action){
+	  $.ajax({
+                     url:'/select_helps/sh-'+current_row,
+		     dataType: 'json',
+                     success:function(data){					    
+                         var row_index;
+                         var trs = $('.component_viewlet');
+                         for (var i=0;i<trs.length;i++){
+                             if (trs.get(i).id==current_row){
+				 var our = $($('.our').get(i));
+                                 our.html(data.text);
+                                 break;
                              }
-                             $.ajax({
-                                        url:'/select_helps/sh-'+current_row,
-					dataType: 'json',
-                                        success:function(data){					    
-                                            var row_index;
-                                            var trs = $('.component_viewlet');
-                                            for (var i=0;i<trs.length;i++){
-                                                if (trs.get(i).id==current_row){
-						    var our = $($('.our').get(i));
-                                                    our.html(data.text);
-                                                    break;
-                                                }
-                                            }
-                                            animate();
-                                        },
-                                        error:function(){
-                                            animate();
-                                        }
-                                    });
                          }
-                         else
-                             $('.description').animate({'margin-left':'+=912'}, 400);
+                         action();
+                     },
+                     error:function(){
+                         action();
                      }
-                     $('.inactive').click(swapTabs);
+                 });
+      }
+
+      function swapTabs(e){
+          var active = $('.active');
+          var target = $(e.target);
+          var klass = target.attr('class');
+          target.attr('class', active.attr('class'));
+          active.attr('class', klass);
+          target.unbind('click');
+          active.click(swapTabs);
+
+          if (target.attr('id') == 'ourcomments'){
+              var container = $('#descriptions');
+              container.data('jScrollPanePosition', 0);
+              container.css('top','0');
+              function animate(){
+                  $('.description')
+                      .animate({'margin-left':'-=912'}, 400);
+              }
+	      fillSelectHelps(animate);                      
+          }
+          else
+              $('.description').animate({'margin-left':'+=912'}, 400);
+      }
+      $('.inactive').click(swapTabs);
+      $('.body').click(function(){fillSelectHelps(function(){});});
   });
