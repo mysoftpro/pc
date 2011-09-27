@@ -704,6 +704,7 @@ def computers(template,skin,request):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
         d.addCallback(render)
     else:
+        # TODO! listDoc. do not use view here!!!!!!!!!!!!!!
         d = couch.openView(designID,'user_models',include_docs=True,stale=False, key=name)
         d.addCallback(render)
 

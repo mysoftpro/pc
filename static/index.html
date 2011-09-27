@@ -21,7 +21,14 @@
                             $('#computers_container').animate({'margin-left':'+=220px'}, 300);
                           })
     })
-    $('.indexitem').click(function(e){document.location.href=$(e.target).find('a').attr('href');})
+    $('.indexitem').click(function(e){
+    var target = $(e.target);
+    var a = target.find('a');
+    if (a.length==0)
+    a = target.parent().find('a');
+    document.location.href=a.attr('href');
+
+    })
     })
   </script>
   <div class="panel" id="banner1">
