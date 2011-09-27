@@ -234,6 +234,7 @@ class XmlGetter(Resource):
         for i in images:
             if i[0]:
                 attachments.update(i[1])
+        print "adding image!!!!!!!!!!"
         d = couch.addAttachments(doc, attachments)
         d.addCallback(lambda _doc:couch.saveDoc(_doc))
         d.addErrback(self.pr)

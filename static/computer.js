@@ -730,64 +730,98 @@ function shadowCram(target){
 }
 
 
+
+
+function _getVideoFromMother(body){
+    var retval,_text;
+    
+    var descr = jgetDescrByIndex(0);
+    _text = descr.text();
+    if (descr.text().match('Интегрированная видеокарта[^t^a^k]*tak'))
+	retval = true;
+    if (!retval && descr.text().match('видеоядро'))
+	retval = true;
+    if (!retval && descr.text().match('Onboard Graphics\tNorth Bridge:'))
+	retval = true;
+    if (!retval && descr.text().match('Graphics:'))
+	retval = true;
+    if (!retval && descr.text().match('Графический интерфейс\t Интегрировано в APU:'))
+	retval = true;
+    if (!retval && descr.text().match('Тип интегрированной видеокарты'))
+	retval = true;
+    if (!retval && descr.text().match('Integrated Intel Graphics Media Accelerator'))
+	retval = true;
+    if (!retval && descr.text().match('Видео M/B\tIntel'))
+	retval = true;
+    if (!retval && descr.text().match('Встроенная графика'))
+	retval = true;
+    retval = retval && @descr.text().match('Интегрированный процессор[^n^i^e]*nie');
+    retval = retval && !descr.text().match('Встроенное видео[^Н^е^т]*Нет');
+    return retval;
+}
+
 function _geRamSlotsFromMother(body){
     var max_count,new_count;
-    if (body.text().match('4DDR3'))
+    var _text = body.text();
+    if (_text.match('4DDR3'))
 	max_count = 4;
-    if (!max_count && body.text().match('2DDR3'))
+    if (!max_count && _text.match('2DDR3'))
 	max_count = 2;
 
-    if (!max_count && body.text().match('4 x 1.5V'))
+    if (!max_count && _text.match('4 x 1.5V'))
 	max_count = 4;
-    if (!max_count && body.text().match('2 x 1.5V'))
+    if (!max_count && _text.match('2 x 1.5V'))
 	max_count = 2;
 
-    if (!max_count && body.text().match('4 DIMM DDR3'))
+    if (!max_count && _text.match('4 DIMM DDR3'))
 	max_count = 4;
-    if (!max_count && body.text().match('2 DIMM DDR3'))
+    if (!max_count && _text.match('2 DIMM DDR3'))
 	max_count = 2;
 
     if (!max_count){
 	// refactor that: 0
 	var descr = jgetDescrByIndex(0);
-	if (descr.text().match('4 x DDR3 DIMM'))
+	_text = descr.text();
+	if (_text.match('4 x DDR3 DIMM'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('2 x DDR3 DIMM'))
+	if (!max_count && _text.match('2 x DDR3 DIMM'))
 	    max_count = 2;
 
-	if (!max_count && descr.text().match('Memory 4 x DIMM'))
+	if (!max_count && _text.match('Memory 4 x DIMM'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('Memory 2 x DIMM'))
+	if (!max_count && _text.match('Memory 2 x DIMM'))
 	    max_count = 2;
 
-	if (!max_count && descr.text().match('DDR3\n4 szt.'))
+	if (!max_count && _text.match('DDR3\n4 szt.'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('DDR3\n2 szt.'))
+	if (!max_count && _text.match('DDR3\n2 szt.'))
 	    max_count = 2;
 
-	if (!max_count && descr.text().match('Количество слотов памяти[ \t]*4'))
+	if (!max_count && _text.match('Количество слотов памяти[ \t]*4'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('Количество слотов памяти[ \t]*2'))
+	if (!max_count && _text.match('Количество слотов памяти[ \t]*2'))
+	    max_count = 2;
+	if (!max_count && _text.match('Количество разъемов DDR3 4'))
+	    max_count = 4;
+	if (!max_count && _text.match('Количество разъемов DDR3 2'))
+	    max_count = 2;
+	if (!max_count && _text.match('Количество разъемов DDR3\t4'))
+	    max_count = 4;
+	if (!max_count && _text.match('Количество разъемов DDR3\t2'))
+	    max_count = 2;
+	if (!max_count && _text.match('4 x 1.5V DDR3'))
+	    max_count = 4;
+	if (!max_count && _text.match('2 x 1.5V DDR3'))
 	    max_count = 2;
 
-	if (!max_count && descr.text().match('Количество разъемов DDR3 4'))
+	if (!max_count && _text.match('Four 240-pin DDR3 SDRAM'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('Количество разъемов DDR3 2'))
+	if (!max_count && _text.match('Two 240-pin DDR3 SDRAM'))
 	    max_count = 2;
 
-	if (!max_count && descr.text().match('4 x 1.5V DDR3'))
+	if (!max_count && _text.match('DDR3 4 szt.'))
 	    max_count = 4;
-	if (!max_count && descr.text().match('2 x 1.5V DDR3'))
-	    max_count = 2;
-
-	if (!max_count && descr.text().match('Four 240-pin DDR3 SDRAM'))
-	    max_count = 4;
-	if (!max_count && descr.text().match('Two 240-pin DDR3 SDRAM'))
-	    max_count = 2;
-
-	if (!max_count && descr.text().match('DDR3 4 szt.'))
-	    max_count = 4;
-	if (!max_count && descr.text().match('DDR3 2 szt.'))
+	if (!max_count && _text.match('DDR3 2 szt.'))
 	    max_count = 2;
     }
     return max_count;
