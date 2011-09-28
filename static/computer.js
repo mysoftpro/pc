@@ -65,12 +65,16 @@ function getRamFromText(text){
 
 function calculatePin(component){
     var retval = 8;
+    var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
+    var body = jgetBodyById(old_component['_id']);
+
     if (component['_id'].match('no')){
+	if (isVideo(body)){
+	    retval = 2.8;
+	}
 	return retval;
     }
 
-    var old_component = filterByCatalogs(_(model).values(), getCatalogs(component))[0];
-    var body = jgetBodyById(old_component['_id']);
     if (isProc(body) || isMother(body) || isVideo(body)){
 	retval = Math.log(component.price/Course)*2.1-5;
 	retval = Math.round(retval*10)/10;
@@ -241,7 +245,7 @@ function componentChanged(maybe_event){
 		componentChanged({'target':video_select[0],'no_desc':true});
 	    }
 	}
-	
+
 
 
     } catch (x) {
