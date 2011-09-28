@@ -284,7 +284,7 @@ def renderComputer(model, template, skin):
         component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
 
         if globals()['no_component_added']:return
-        if name not in [mouse,kbrd,displ,soft,audio, network]: return
+        if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
         no_doc = noComponentFactory(component_doc)
         rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 

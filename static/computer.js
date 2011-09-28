@@ -231,6 +231,18 @@ function componentChanged(maybe_event){
 
 	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
 
+	//check video!
+	if (isMother(body)){
+	    var video_select = jgetSelectByRow($('#' + parts['video']));
+	    if (video_select.val().match('no') && !getVideoFromMother(body)){
+		var first_option = $(video_select.find('option')[1]);
+		video_select.val(first_option.val());
+		jgetChosenTitle(video_select).text(first_option.text());
+		componentChanged({'target':video_select[0],'no_desc':true});
+	    }
+	}
+	
+
 
     } catch (x) {
 	console.log(x);
@@ -734,7 +746,6 @@ function shadowCram(target){
 
 function _getVideoFromMother(body){
     var retval,_text;
-    
     var descr = jgetDescrByIndex(0);
     _text = descr.text();
     if (descr.text().match('Интегрированная видеокарта[^t^a^k]*tak'))
@@ -755,10 +766,15 @@ function _getVideoFromMother(body){
 	retval = true;
     if (!retval && descr.text().match('Встроенная графика'))
 	retval = true;
-    retval = retval && @descr.text().match('Интегрированный процессор[^n^i^e]*nie');
+    retval = retval && !descr.text().match('Интегрированный процессор[^n^i^e]*nie');
     retval = retval && !descr.text().match('Встроенное видео[^Н^е^т]*Нет');
     return retval;
 }
+
+var getVideoFromMother = _.memoize(_getVideoFromMother,
+	  function(body){
+	      return jgetSelect(body).val();
+	  });
 
 function _geRamSlotsFromMother(body){
     var max_count,new_count;
@@ -826,7 +842,10 @@ function _geRamSlotsFromMother(body){
     }
     return max_count;
 }
-var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother, function(body){return body.attr('id');});
+var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother,
+				     function(body){
+					 return jgetSelect(body).val();
+				     });
 
 function changeRam(e, direction, silent){
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
@@ -1224,7 +1243,7 @@ function to_cartSuccess(data){
 						   }
 					       }
 					   });
-				});	
+				});
     }
 }
 
@@ -1245,5 +1264,5 @@ $(function(){
 	  to_cartSuccess({'id':uuid});
       if (document.location.href.match('edit'))
 	  $('#tocart').text('Сохранить');
-      
+
   });
