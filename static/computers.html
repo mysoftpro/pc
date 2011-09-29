@@ -1,9 +1,9 @@
 <top>
 </top>
 <middle>
+  <script type="text/javascript"></script>
   <div id="models_container">
-    <div id="models">
-
+    <div id="models">      
     </div>
     <div style="clear:both;"></div>
   </div>
@@ -32,12 +32,49 @@
 
 <top_models>
   <div id="models_top">
+    <script type="text/javascript">
+      $(function(){
+      $('#pricetext input').prop('checked','checked');
+    $('#pricetext input').click(function(e){
+    var target = $(e.target);
+    if (target.is(':checked'))
+    target.next().css('background-image',"url('/static/checkbox.png')");
+    else
+    target.next().css('background-image',"url('/static/checkbox_empty.png')");
 
-      <em>
-	Цена кажлого компьютера включает: системный блок, монитор, аудиосистему, клавиатуру, мышь.
-	Чтобы составить свою конфигурацию кликайте на компьютер.
-      </em>
+    var no_soft = !$('#isoft').is(':checked');
+    var no_displ = !$('#idisplay').is(':checked');
+    var no_audio = !$('#iaudio').is(':checked');
+    var no_input = !$('#iinput').is(':checked');
+
+    for (var mid in prices){
+    new_price = prices[mid]['total'];
+    if (no_soft)
+    new_price -= prices[mid]['soft']+800;
+    if (no_displ)
+    new_price -= prices[mid]['displ'];
+    if (no_audio)
+    new_price -= prices[mid]['audio'];
+    if (no_input)
+    new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
+    $('#'+mid).text(new_price + ' р');
+    }
+    })
+      })
+    </script>
+    <h1>Модели компьютеров</h1>
+    <div  id="pricetext" style="padding-left:0px;">
+      <em>Цена включает:</em>
+      <input checked="checked" type="checkbox" id="idisplay"/>
+      <label for="idisplay">монитор</label>
+      <input checked="checked" type="checkbox" id="isoft"/>
+      <label for="isoft">Windows с установкой</label>
+      <input checked="checked" type="checkbox" id="iaudio"/>
+      <label for="iaudio">аудио систему</label>
+      <input checked="checked" type="checkbox" id="iinput"/>
+      <label for="iinput">мышь и клавиатуру</label>
     </div>
+  </div>
   </div>
 </top_models>
 
@@ -45,29 +82,33 @@
 <top_cart>
   <div id="cart_top">
     <p>
-    Корзина "привязана" к вашему браузеру.
-    Чтобы попасть в свою корзину с другого браузера или компьютера, используйте ссылку приведенную
-    ниже. Отправьте эту ссылку друзьям и знакомым.
-    Любой человек
-    может заказать в нашем магазине собранный вами компьютер.
+      Все корзины анонимны.
+      Они не удаляются с сайта.
+      <br/>
+      Сохраните ссылку на корзину.
+      <br/>
+      Отправьте эту ссылку друзьям и знакомым.
+      <br/>
+      Любой человек
+      может заказать в нашем магазине собранный вами компьютер.
     </p>
     <table style="float:left;">
       <tr>
-        <td>
-          Сссылка на вашу корзину:
-        </td>
-        <td colspan="2">
-          <input id="cartlink" width="20" type="text"/>
-        </td>
+	<td>
+	  <strong class="red">Сссылка на эту корзину:</strong>
+	</td>
+	<td colspan="2">
+	  <input id="cartlink" width="20" type="text"/>
+	</td>
       </tr>
       <tr>
-        <td><span id="ya_share_cart"></span></td>
-        <td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
-        <td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
+	<td><span id="ya_share_cart"></span></td>
+	<td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
+	<td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
       </tr>
     </table>
-    <div style="float:left;margin-left:30px;width:500px;">
-      Чтобы купить любой компьютер, просто <strong style="color:white;">позвоните нам</strong> и назовите его номер.
+    <div id="cartcall">
+      Чтобы купить любой компьютер, просто <strong class="red">позвоните нам</strong> и назовите его номер.
       Чтобы посмотреть описание компонентов и изменить кофигурацию - кликайте на компьютер.
     </div>
     <div style="clear:both;"></div>

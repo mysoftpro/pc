@@ -437,7 +437,7 @@ def renderComputer(model, template, skin):
 						    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
 						    ';var installprice=',str(INSTALLING_PRICE),
 						    ';var buildprice=',str(BUILD_PRICE),
-                                                    ';var dvdoprice=',str(DVD_PRICE),
+						    ';var dvdoprice=',str(DVD_PRICE),
 						    ';var Course=',str(Course),
 						    ';var parts=',simplejson.dumps(parts_aliases)
 						    ))
@@ -648,6 +648,18 @@ def computers(template,skin,request):
 	    models = sorted(models,sort)
 	tree = template.root()
 	container = template.middle.xpath('//div[@id="models"]')[0]
+
+	json_prices = {}
+	aliasses_reverted = {}
+	for k,v in parts_aliases.items():
+	    aliasses_reverted.update({v:k})
+	def updatePrice(_id, catalogs, required_catalogs, price):
+	    if catalogs == required_catalogs:
+		if _id in json_prices:
+		    json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
+		else:
+		    json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
+
 	for m in models:
 	    model_snippet = tree.find('model')
 	    divs = deepcopy(model_snippet.findall('div'))
@@ -667,9 +679,17 @@ def computers(template,skin,request):
 	    componets = []
 	    for cat_name,code in m['items'].items():
 		component_doc = findComponent(m,cat_name)
-		total += makePrice(component_doc)
+		price = makePrice(component_doc)
+		total += price
+		updatePrice(m['_id'],cat_name,displ,price)
+		updatePrice(m['_id'],cat_name,soft,price)
+		updatePrice(m['_id'],cat_name,audio,price)
+		updatePrice(m['_id'],cat_name,mouse,price)
+		updatePrice(m['_id'],cat_name,kbrd,price)
 		componets.append(component_doc)
+	    total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
 	    price_span.text = str(total) + u' р'
+            json_prices[m['_id']]['total'] = total
 	    container.append(model_div)
 
 	    description_div = divs[1]
@@ -697,11 +717,11 @@ def computers(template,skin,request):
 	    for d in cart_divs:
 		template.top.append(d)
 	else:
+            template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
 	    header = deepcopy(template.root().find('top_models'))
 	    header_divs = header.findall('div')
 	    for d in header_divs:
-		template.top.append(d)
-
+		template.top.append(d)        
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()
@@ -763,9 +783,9 @@ def index(template, skin, request):
 	i = 0
 	json_prices = {}
 	aliasses_reverted = {}
-        for k,v in parts_aliases.items():
-            aliasses_reverted.update({v:k})
-        def updatePrice(_id, catalogs, required_catalogs, price):
+	for k,v in parts_aliases.items():
+	    aliasses_reverted.update({v:k})
+	def updatePrice(_id, catalogs, required_catalogs, price):
 	    if catalogs == required_catalogs:
 		if _id in json_prices:
 		    json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
@@ -791,16 +811,16 @@ def index(template, skin, request):
 		total += price
 		updatePrice(m['_id'],cat_name,displ,price)
 		updatePrice(m['_id'],cat_name,soft,price)
-                updatePrice(m['_id'],cat_name,audio,price)
-                updatePrice(m['_id'],cat_name,mouse,price)
-                updatePrice(m['_id'],cat_name,kbrd,price)
+		updatePrice(m['_id'],cat_name,audio,price)
+		updatePrice(m['_id'],cat_name,mouse,price)
+		updatePrice(m['_id'],cat_name,kbrd,price)
 	    total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
-            price_span.text = str(total) + u' р'
-            json_prices[m['_id']]['total'] = total
+	    price_span.text = str(total) + u' р'
+	    json_prices[m['_id']]['total'] = total
 	    div.append(snippet)
 	    i+=1
 	    if i==len(imgs): i=0
-        template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()
