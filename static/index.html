@@ -8,18 +8,18 @@
     var first_pos = $('.indexitem').first().position();
 
     if (first_pos.top != last_pos.top)
-        $('#computers_container').animate({'margin-left':'-=220px'}, 300);
+	$('#computers_container').animate({'margin-left':'-=220px'}, 300);
 
 
     $('#previous_button').css({
-                           'background-image':"url('static/previous.png')",
-                           'cursor':"pointer"
-                              })
-                         .unbind('click')
-                         .click(function(){
-                           if ($('#computers_container').css('margin-left') != '0px')
-                            $('#computers_container').animate({'margin-left':'+=220px'}, 300);
-                          })
+			   'background-image':"url('static/previous.png')",
+			   'cursor':"pointer"
+			      })
+			 .unbind('click')
+			 .click(function(){
+			   if ($('#computers_container').css('margin-left') != '0px')
+			    $('#computers_container').animate({'margin-left':'+=220px'}, 300);
+			  })
     })
     $('.indexitem').click(function(e){
     var target = $(e.target);
@@ -27,8 +27,31 @@
     if (a.length==0)
     a = target.parent().find('a');
     document.location.href=a.attr('href');
-
     })
+
+    $('#pricetext input').prop('checked','checked');
+    $('#pricetext input').click(function(e){
+    var no_soft = !$('#isoft').is(':checked');
+    var no_displ = !$('#idisplay').is(':checked');
+    var no_audio = !$('#iaudio').is(':checked');
+    var no_input = !$('#iinput').is(':checked');
+
+    for (var mid in prices){
+    mprice =
+    new_price = prices[mid]['total'];
+    if (no_soft)
+    new_price -= prices[mid]['soft']+800;
+    if (no_displ)
+    new_price -= prices[mid]['displ'];
+    if (no_audio)
+    new_price -= prices[mid]['audio'];
+    if (no_input)
+    new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
+    $('#'+mid).text(new_price + ' р');
+    }
+    })
+
+
     })
   </script>
   <div class="panel" id="banner1">
@@ -37,7 +60,7 @@
       Купить компьютер просто
     </h2>
     <p id="second">
-      Мы подготовили для Вас <a href="computers/" style="color:#7B9C0A">12 моделей</a> компьютеров в разной конфигурации.
+      В нашем магазине <a href="computers/" style="color:#7B9C0A">12 моделей</a> компьютеров в разной конфигурации.
     </p>
     <p id="third">
       В каждом из этих компьютеров можно с гарантированной совместимостью менять любые компоненты прямо здесь на сайте.
@@ -59,11 +82,16 @@
     <div class="button" id="next_button">
     </div>
     <div  id="pricetext">
-      
-      <input checked="checked" type="checkbox" id="includedisplay"/>
-      <label for="includedisplay">цена с монитором</label>
-      <input checked="checked" type="checkbox" id="includeos"/>
-      <label for="includeos">цена с Windows</label>
+      <em>Цена включает:</em>
+      <input checked="checked" type="checkbox" id="idisplay"/>
+      <label for="idisplay">монитор</label>
+      <input checked="checked" type="checkbox" id="isoft"/>
+      <label for="isoft">Windows с установкой</label>
+      <input checked="checked" type="checkbox" id="iaudio"/>
+      <label for="iaudio">аудио систему</label>
+      <input checked="checked" type="checkbox" id="iinput"/>
+      <label for="iinput">мышь и клавиатуру</label>
+
     </div>
   </div>
 
@@ -73,37 +101,38 @@
       <strong>Выбирайте любой компьютер</strong>
 
       <em>
-        Компьютеры укоплектованы всем необходимым для работы и развлечений.
+	Компьютеры укоплектованы всем необходимым для работы и развлечений.
       </em>
     </li>
     <li>
       <strong>Составьте свою конфигурацию</strong>
       <em>
-        Дешевле или лучше.
-        Все комплектующие снабжены описанием ценой и комментариями.
+	Дешевле или лучше.
+	Все комплектующие снабжены описанием ценой и комментариями.
       </em>
     </li>
     <li>
       <strong>Сохраняйте компьютер здесь</strong>
       <em>
-        <strong style="color:#b9d3e1">Регистрация не требуется.</strong> Отправьте ссылку друзьям и знакомым.
+	<strong style="color:#b9d3e1">Регистрация не требуется.</strong> Отправьте ссылку друзьям и знакомым.
       </em>
     </li>
     <li>
       <strong>Звоните нам для оформления заказа</strong>
       <em>
-        Ваш выбор всегда актуален.
-        Обновление цен и наличия на складе <strong style="color:#b9d3e1">23.08.2011 14:58</strong>
+	Ваш выбор всегда актуален.
+	Обновление цен и наличия на складе <strong style="color:#b9d3e1">23.08.2011 14:58</strong>
       </em>
     </li>
     <li>
       <strong>Принимайте свой компьютер</strong>
       <em>
-        Мы поможем подключить интернет и перенести данные со старого компьютера.
+	Мы поможем подключить интернет и перенести данные со старого компьютера.
       </em>
     </li>
   </ul>
   <span style="clear:both;"></span>
+  <script type="text/javascript"></script>
 </middle>
 
 

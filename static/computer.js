@@ -757,15 +757,6 @@ function installOptions(){
 	else{
 	    jgetReset(jgetBody(select)).click();
 	}
-
-	// if (_id == 'osoft'){
-	//     if (target.is(':checked')){
-	// 	$("#oinstalling").removeAttr('disabled');		
-	//     }
-	//     else{
-	// 	$("#oinstalling").prop('disabled','disabled');
-	//     }
-	// }
     }
     $('#options input').change(substructAdd);
 }
