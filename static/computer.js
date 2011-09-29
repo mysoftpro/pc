@@ -185,6 +185,28 @@ function setPerifery(_id, value){
 	jgetPerifery(_id).prop('checked', value);
 }
 
+
+function fillOmitOptions(new_component,old_component){
+
+    function fill(component,value){
+	if (component['_id'].match('no')){
+	    for (var part in parts){
+		if (component['_id'] == 'no'+parts[part]){
+		    $('#o'+part).prop('checked',value);
+		}
+	    }
+	}
+    }
+    fill(new_component,false);
+    fill(old_component,true);
+    if (new_component['_id'] == 'no'+parts['soft']){
+	$("#oinstalling").prop('checked',false).prop('disabled','disabled');
+    }
+    if (old_component['_id'] == 'no'+parts['soft']){
+	$("#oinstalling").removeAttr('disabled');
+    }
+}
+
 function componentChanged(maybe_event){
     try{
 
@@ -207,12 +229,7 @@ function componentChanged(maybe_event){
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
-	if (new_component['_id'].match('no')){
-	    
-	}
-
-	if (new_component['_id'] == 'no'+parts['soft'])
-	    $("#oinstalling").prop('checked',false);
+	fillOmitOptions(new_component,old_component);
 
 	recalculate();
 
@@ -740,15 +757,15 @@ function installOptions(){
 	else{
 	    jgetReset(jgetBody(select)).click();
 	}
-	console.log(_id);
-	if (_id == 'osoft'){
-	    if (target.is(':checked')){
-		$("#oinstalling").removeAttr('disabled');		
-	    }
-	    else{
-		$("#oinstalling").prop('disabled','disabled');
-	    }
-	}
+
+	// if (_id == 'osoft'){
+	//     if (target.is(':checked')){
+	// 	$("#oinstalling").removeAttr('disabled');		
+	//     }
+	//     else{
+	// 	$("#oinstalling").prop('disabled','disabled');
+	//     }
+	// }
     }
     $('#options input').change(substructAdd);
 }
