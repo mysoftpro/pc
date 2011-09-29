@@ -638,7 +638,8 @@ def computers(template,skin,request):
 
     def render(result):
 	models = [row['doc'] for row in result['rows']]
-	if len(name) == 0:
+	this_is_cart = len(name) > 0
+	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
 	else:
 	    def sort(m1,m2):
@@ -649,12 +650,12 @@ def computers(template,skin,request):
 	tree = template.root()
 	container = template.middle.xpath('//div[@id="models"]')[0]
 
-        json_prices = {}
+	json_prices = {}
 	for m in models:
 	    model_snippet = tree.find('model')
 	    divs = deepcopy(model_snippet.findall('div'))
 	    model_div = divs[0]
-
+            
 	    if '_attachments' in m and 'icon.png' in m['_attachments']:
 		model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
 	    a = model_div.find('.//a')
@@ -665,41 +666,47 @@ def computers(template,skin,request):
 		a.text = m['_id']
 	    price_span = model_div.find('.//span')
 	    price_span.set('id',m['_id'])
-            
-            componets = []
-            buildPrices(m, components, json_prices, price_span)
-	    container.append(model_div)
+
+	    _components = buildPrices(m, json_prices, price_span)
+	    
+            if not this_is_cart:
+                info = etree.Element('div')
+		info.set('class','info')
+                model_div.append(info)
+
+            container.append(model_div)
 
 	    description_div = divs[1]
+
+            ul = etree.Element('ul')
+            for c in _components:
+                li = etree.Element('li')
+                li.text = c['text']
+                ul.append(li)
+            description_div.append(ul)
+
 	    h3 = description_div.find('h3')
-	    if 'title' in m:
+	    if not this_is_cart:
 		h3.text = m['title']
+                description_div.append(etree.fromstring(m['description']))
+                ul.set('style','display:none')
 	    else:
-		h3.text = u'Пользовательская конфигурация'
-	    if 'description' in m:
-		description_div.append(etree.fromstring(m['description']))
-	    else:
-		ul = etree.Element('ul')
-		for c in componets:
-		    li = etree.Element('li')
-		    li.text = c['text']
-		    ul.append(li)
-		description_div.append(ul)
+                h3.text = u'Пользовательская конфигурация'
 		description_div.set('style','width:750px !important')
 	    container.append(description_div)
 
-	if len(name)>0:
+	if this_is_cart>0:
 	    cart = deepcopy(template.root().find('top_cart'))
 	    cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
 	    cart_divs = cart.findall('div')
 	    for d in cart_divs:
 		template.top.append(d)
 	else:
-            template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+	    template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
 	    header = deepcopy(template.root().find('top_models'))
 	    header_divs = header.findall('div')
 	    for d in header_divs:
-		template.top.append(d)        
+		template.top.append(d)
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()
@@ -751,30 +758,33 @@ def findComponent(model, name):
 
 
 
-def buildPrices(model, components, json_prices, price_span):
+def buildPrices(model, json_prices, price_span):
     aliasses_reverted = {}
     total = 0
+    __components = []
     for k,v in parts_aliases.items():
-        aliasses_reverted.update({v:k})
+	aliasses_reverted.update({v:k})
     def updatePrice(_id, catalogs, required_catalogs, price):
-        if catalogs == required_catalogs:
-            if _id in json_prices:
-                json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
-            else:
-                json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
+	if catalogs == required_catalogs:
+	    if _id in json_prices:
+		json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
+	    else:
+		json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
     for cat_name,code in model['items'].items():
-        component_doc = findComponent(model,cat_name)
-        price = makePrice(component_doc)
-        total += price
-        updatePrice(model['_id'],cat_name,displ,price)
-        updatePrice(model['_id'],cat_name,soft,price)
-        updatePrice(model['_id'],cat_name,audio,price)
-        updatePrice(model['_id'],cat_name,mouse,price)
-        updatePrice(model['_id'],cat_name,kbrd,price)
+	component_doc = findComponent(model,cat_name)
+	price = makePrice(component_doc)
+	total += price
+	updatePrice(model['_id'],cat_name,displ,price)
+	updatePrice(model['_id'],cat_name,soft,price)
+	updatePrice(model['_id'],cat_name,audio,price)
+	updatePrice(model['_id'],cat_name,mouse,price)
+	updatePrice(model['_id'],cat_name,kbrd,price)
+	__components.append((component_doc,parts[cat_name]))
     total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
     price_span.text = str(total) + u' р'
     json_prices[model['_id']]['total'] = total
+    return [c[0] for c in sorted(__components,lambda x,y:x[1]-y[1])]
 
 
 
@@ -787,21 +797,11 @@ def index(template, skin, request):
 
     def render(result):
 	i = 0
-	# json_prices = {}
-	# aliasses_reverted = {}
-	# for k,v in parts_aliases.items():
-	#     aliasses_reverted.update({v:k})
-	# def updatePrice(_id, catalogs, required_catalogs, price):
-	#     if catalogs == required_catalogs:
-	# 	if _id in json_prices:
-	# 	    json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
-	# 	else:
-	# 	    json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
 	models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
 	tree = template.root()
 	div = template.middle.xpath('//div[@id="computers_container"]')[0]
-        json_prices = {}
+	json_prices = {}
 	for m in models:
 	    model_snippet = tree.find('model')
 	    snippet = deepcopy(model_snippet.find('div'))
@@ -810,8 +810,8 @@ def index(template, skin, request):
 	    a.set('href','/computer/%s' % m['_id'])
 	    a.text=m['name']
 	    price_span = snippet.find('.//span')
-	    price_span.set('id',m['_id'])            
-            buildPrices(m, [], json_prices, price_span)
+	    price_span.set('id',m['_id'])
+	    buildPrices(m, json_prices, price_span)
 	    div.append(snippet)
 	    i+=1
 	    if i==len(imgs): i=0

@@ -82,15 +82,15 @@ var guider = (function(){
 
       var myHeight = myGuider.elem.innerHeight();
       var myWidth = myGuider.elem.innerWidth();
-
       if (myGuider.position === 0) {
         myGuider.elem.css("position", "absolute");
         myGuider.elem.css("top", ($(window).height() - myHeight) / 3 + $(window).scrollTop() + "px");
         myGuider.elem.css("left", ($(window).width() - myWidth) / 2 + $(window).scrollLeft() + "px");
+	  console.log('gg');
         return;
       }
-
       myGuider.attachTo = $(myGuider.attachTo);
+	
       var base = myGuider.attachTo.offset();
       var attachToHeight = myGuider.attachTo.innerHeight();
       var attachToWidth = myGuider.attachTo.innerWidth();
@@ -128,13 +128,13 @@ var guider = (function(){
 
     _guiderById: function(id) {
       if (typeof guider._guiders[id] === "undefined") {
-        throw "Cannot find guider with id " + id
+        throw "Cannot find guider with id " + id;
       }
       return guider._guiders[id];
     },
     
     _showOverlay: function() {
-      $("#guider_overlay").fadeIn("fast")
+      $("#guider_overlay").fadeIn("fast");
     },
     
     _hideOverlay: function() {

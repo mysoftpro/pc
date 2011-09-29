@@ -828,14 +828,17 @@ color:#7b9c0a;
 }
 
 .computeritem{
-    padding-top:180px;
     max-width:122px;
     overflow:visible;
     background-repeat:no-repeat;
     float:left;
-    cursor:pointer;
+    /* cursor:pointer; */
 }
-
+.computeritem h2 {
+    margin:0;
+    padding:0;
+    margin-top:180px;
+}
 .computeritem h3 {
     margin-top:30px;
 }
@@ -897,7 +900,7 @@ color:#7b9c0a;
     color: black;
 }
 #models_top{
-    height:120px;
+    height:130px;
     margin-top:20px;
 }
 
@@ -931,4 +934,23 @@ strong.red{
 #warranty{
     color:#b00606;
     font-size:22px;
+}
+
+.info{
+    font-weight:bold;
+    position: relative;
+    top: -220px;
+    cursor:pointer;
+    width:30px;
+    height:30px;    
+    background-image:url('/static/info.png');
+}
+.guider_description li {
+    font-size: 11px;
+    line-height: 11px;
+}
+.close {
+    color:#730606;
+    font-weight:bold;
+    cursor:pointer;
 }
