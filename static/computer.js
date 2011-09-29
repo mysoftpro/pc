@@ -207,6 +207,11 @@ function componentChanged(maybe_event){
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
+
+
+	if (new_component['_id'] == 'no'+parts['soft'])
+	    $("#oinstalling").prop('checked',false);
+
 	recalculate();
 
 	if (isRam(body)){
@@ -245,8 +250,6 @@ function componentChanged(maybe_event){
 		componentChanged({'target':video_select[0],'no_desc':true});
 	    }
 	}
-
-
 
     } catch (x) {
 	console.log(x);
@@ -734,6 +737,15 @@ function installOptions(){
 	}
 	else{
 	    jgetReset(jgetBody(select)).click();
+	}
+	console.log(_id);
+	if (_id == 'osoft'){
+	    if (target.is(':checked')){
+		$("#oinstalling").removeAttr('disabled');		
+	    }
+	    else{
+		$("#oinstalling").prop('disabled','disabled');
+	    }
 	}
     }
     $('#options input').change(substructAdd);
