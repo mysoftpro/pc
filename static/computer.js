@@ -121,10 +121,10 @@ function recalculate(){
 	pins.push(calculatePin(new_model[id]));
     }
     if (jgetBuild().is(':checked')){
-	tottal += 800;
+	tottal += buildprice;
     }
     if (jgetWindows().is(':checked')){
-	tottal +=500;
+	tottal +=installprice;
     }
     if (jgetDVD().is(':checked')){
 	tottal +=1000;
@@ -1268,5 +1268,6 @@ $(function(){
 	  to_cartSuccess({'id':uuid});
       if (document.location.href.match('edit'))
 	  $('#tocart').text('Сохранить');
-
+      $('#installprice').text(installprice+' р');
+      $('#buildprice').text(buildprice+' р');
   });

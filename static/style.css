@@ -870,12 +870,11 @@ color:#7b9c0a;
 }
 #pricetext{
     clear:both;
-}
-#pricetext em{
-    font-size:12px;
-    
     padding-left:10px;
+    font-size:12px;
+    padding-top:5px;
 }
+
 #next_button{
     background-image:url('/static/next.png');
 }
