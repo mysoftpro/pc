@@ -207,7 +207,9 @@ function componentChanged(maybe_event){
 	delete new_model[old_id];
 	new_model[new_id] = new_component;
 
-
+	if (new_component['_id'].match('no')){
+	    
+	}
 
 	if (new_component['_id'] == 'no'+parts['soft'])
 	    $("#oinstalling").prop('checked',false);
@@ -1264,7 +1266,9 @@ function to_cartSuccess(data){
 }
 
 $(function(){
-      $('select').chosen().change(manualChange);//componentChanged
+      $('#options input').prop('checked',true);
+      $('#options input').removeAttr('disabled');
+      $('select').chosen().change(manualChange);
       new_model = _.clone(model);
       installBodies();
       cheaperBetter();
