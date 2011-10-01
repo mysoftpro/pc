@@ -625,6 +625,7 @@ def computer(template, skin, request):
 	name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
+    d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
 def computers(template,skin,request):
@@ -637,7 +638,7 @@ def computers(template,skin,request):
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
 
     def render(result):
-	models = [row['doc'] for row in result['rows']]
+	models = [row['doc'] for row in result['rows'] if row['doc'] is not None]
 	this_is_cart = len(name) > 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
@@ -692,9 +693,10 @@ def computers(template,skin,request):
                 ul.set('style','display:none')
 	    else:
                 h3.text = u'Пользовательская конфигурация'
-		description_div.set('style','width:750px !important')
+		description_div.set('class','cart_description')
 	    container.append(description_div)
-
+        
+        _prices = 'undefined'
 	if this_is_cart>0:
 	    cart = deepcopy(template.root().find('top_cart'))
 	    cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
@@ -702,11 +704,12 @@ def computers(template,skin,request):
 	    for d in cart_divs:
 		template.top.append(d)
 	else:
-	    template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+	    _prices =simplejson.dumps(json_prices) + ';'
 	    header = deepcopy(template.root().find('top_models'))
 	    header_divs = header.findall('div')
 	    for d in header_divs:
 		template.top.append(d)
+        template.middle.find('script').text = 'var prices=' + _prices;
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()

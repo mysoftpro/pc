@@ -62,13 +62,13 @@ $(function(){
 			 $('#'+mid).text(new_price + ' р');
 		     }
 		 });
-      
+
       $('.info').click(function(e){
-			   var target = $(e.target );			   
+			   var target = $(e.target );
 			   var ul = $(document.createElement('ul'));
 			   ul.append(target.parent()
 				     .next().find('ul').html())
-			       .append('<div class="close">закрыть</div>');			   
+			       .append('<div class="close">закрыть</div>');
 			   ul.find('.close').click(function(_e){
 						       var _target = $(_e.target);
 						       while (_target.attr('class')!='guider')
@@ -76,10 +76,43 @@ $(function(){
 						       _target.remove();
 						   });
 			   guider.createGuider({
-                                                   attachTo: target,
-                                                   description: ul,
-                                                   position: 11,
-                                                   width: 500
-                                               }).show();
+						   attachTo: target,
+						   description: ul,
+						   position: 11,
+						   width: 500
+					       }).show();
 		       });
+      // $.cookie('pc_user')
+      var splitted = document.location.href.split('/');
+      var uuid = splitted[splitted.length-1].split('?')[0];
+      if (!prices && uuid === $.cookie('pc_user')){
+	  var links = $('a.modellink');
+	  for(var i=0;i<links.length;i++){
+	      var span = $(links.get(i)).next();
+	      var _id = span.attr('id');
+	      span.parent().css('width','450px');
+	      span.after('<a class="edit_links" href="">удалить</a>');
+	      span.next().click(function(e){
+				    e.preventDefault();
+				    $.ajax({
+					       url:'/delete?uuid='+_id,
+					       success:function(data){
+						   if (data == "ok"){
+						       var cart = $.cookie('pc_cart');
+						       var cart_ammo = parseInt(cart)-1;
+						       $.cookie('pc_cart', cart_ammo);
+						       $('#cart').text('Корзина(' + cart_ammo + ')');
+						       var target = $(e.target);
+						       while (target.attr('class')!='computeritem'){
+							   target = target.parent();
+						       }
+						       target.next().remove();
+						       target.remove();
+						   }
+					       }
+					   });
+				})
+		  .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');
+	  }
+      }
   });

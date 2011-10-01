@@ -237,16 +237,6 @@ class CachedStatic(File):
 
     def prepareSkin(self, request):
         pass
-        # cart = request.getCookie('pc_cart')
-        # if cart is not None:
-        #     menu = self.skin.tree.xpath("//ul[@id='main_menu']")[0]
-        #     cart_li = etree.Element('li')
-        #     cart_a = etree.Element('a')
-        #     cart_a.set('id','cart')
-        #     cart_a.text = u'Корзина('+cart+')'
-        #     cart_a.set('href','/computers/' + request.getCookie('pc_user'))
-        #     cart_li.append(cart_a)
-        #     menu.append(cart_li)
 
     def render_GSIPPED(self, gzipped, request):
         request.write(gzipped)
@@ -287,6 +277,7 @@ class Root(Cookable):
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
+        self.putChild('delete',Delete())
         self.putChild('sender', Sender())
         self.putChild('select_helps', SelectHelpsProxy())
         self.host_url = host_url        
@@ -443,6 +434,36 @@ class Save(Resource):
             # d.addErrback(self.storeUser, user_id, jmodel, request)
             return NOT_DONE_YET
         return 'fail'
+
+
+class Delete(Resource):
+    def render_GET(self, request):
+        uuid = request.args.get('uuid', [None])[0]
+        user_id = request.getCookie('pc_user')
+        model = couch.openDoc(uuid)
+        user = couch.openDoc(user_id)
+        ## TODO! delete model from user_doc['models']
+        ## (open user_doc and assign callback to deferred list)
+        def delete(user_model):
+            if not user_model[0][0] or not user_model[1][0]:
+                request.write('fail')
+                request.finish()
+                return
+            _user = user_model[0][1]
+            _model = user_model[1][1]
+            #TODO cart key!!!!
+            if _model['author'] == user_id:
+                couch.deleteDoc(uuid,_model['_rev'])
+                _user['models'] = [m for m in _user['models'] if m != _model['_id']]
+                couch.saveDoc(_user)
+                request.write('ok')
+                request.finish()
+            request.write('fail')
+            request.finish()
+        defer.DeferredList([user,model]).addCallback(delete)
+        return NOT_DONE_YET
+        
+
 
 # http://localhost:5984/pc/18060/L0JlbnFfbGNkL1Y5MjAuanBn.jpg
 class ImageProxy(Resource):

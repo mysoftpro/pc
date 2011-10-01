@@ -849,6 +849,13 @@ color:#7b9c0a;
     width:200px;
     height:250px;
 }
+.cart_description{
+    float:left;
+    margin-right:10px;
+    width:750px;
+    height:180px;
+    margin-bottom:50px;
+}
 .computers_description h3{
     color:#AAAAAA;
     margin:0;
@@ -858,6 +865,20 @@ color:#7b9c0a;
     color:#B9D3E1;
     line-height:12px;
     font-size:12px;
+}
+.computers_description h3{
+    color:#AAAAAA;
+    margin:0;
+}
+.cart_description ul{
+    margin-left: -20px;
+    color:#B9D3E1;
+    line-height:12px;
+    font-size:12px;
+}
+.cart_description h3{
+    color:#AAAAAA;
+    margin:0;
 }
 .computeritem .section{
     width: 205px;
@@ -890,7 +911,7 @@ color:#7b9c0a;
 #cart_top{
     height:150px;
     margin-top:20px;
-    margin-bottom:20px;
+    margin-bottom:40px;
 }
 #cartlink{
     width:265px;
@@ -953,4 +974,14 @@ strong.red{
     color:#730606;
     font-weight:bold;
     cursor:pointer;
+}
+.edit_links{
+    margin-left:10px;
+    font-size:12px;
+    color:white;    
+    padding:5px;
+    cursor:pointer !important;
+}
+.edit_links:hover{
+    color:#999 !important;
 }
