@@ -209,6 +209,14 @@ parts_aliases = {
     'case':case
     }
 
+def noComponentFactory(_doc, name):
+    no_name = 'no' + name
+    no_doc = deepcopy(_doc)
+    no_doc['_id'] = no_name
+    no_doc['price'] = 0
+    no_doc['text'] = parts_names[name] + u': нет'
+    return no_doc
+
 def replaceComponent(code,model):
     name = nameForCode(code,model)
     choices = globals()['gChoices'][name]
@@ -287,13 +295,13 @@ def renderComputer(model, template, skin):
 	for o in sorted(options, lambda x,y: x[1]-y[1]):
 	    container.append(o[0])
 
-    def noComponentFactory(_doc):
-	no_name = 'no' + name
-	no_doc = deepcopy(_doc)
-	no_doc['_id'] = no_name
-	no_doc['price'] = 0
-	no_doc['text'] = u'нет'
-	return no_doc
+    # def noComponentFactory(_doc):
+    #     no_name = 'no' + name
+    #     no_doc = deepcopy(_doc)
+    #     no_doc['_id'] = no_name
+    #     no_doc['price'] = 0
+    #     no_doc['text'] = u'нет'
+    #     return no_doc
 
 
     def noComponent(name, component_doc, rows):
@@ -302,7 +310,7 @@ def renderComputer(model, template, skin):
 
 	if globals()['no_component_added']:return
 	if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
-	no_doc = noComponentFactory(component_doc)
+	no_doc = noComponentFactory(component_doc, name)
 	rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
     def addComponent(_options, _row, current_id):
@@ -368,7 +376,7 @@ def renderComputer(model, template, skin):
 	component_doc = None
 	count = 0
 	if code is None:
-	    component_doc = noComponentFactory({})
+	    component_doc = noComponentFactory({}, name)
 	else:
 
 	    if type(code) is list:
@@ -680,6 +688,7 @@ def computers(template,skin,request):
 	    description_div = divs[1]
 
             ul = etree.Element('ul')
+            ul.set('class','description')
             for c in _components:
                 li = etree.Element('li')
                 li.text = c
@@ -735,6 +744,8 @@ def computers(template,skin,request):
 
 def findComponent(model, name):
     code = model['items'][name]
+    if code is None:
+        return noComponentFactory({},name)
     if type(code) is list:
 	code = code[0]
     choices = globals()['gChoices'][name]
@@ -751,6 +762,7 @@ def findComponent(model, name):
 	    if ch['doc']['_id'] == code:
 		retval = ch['doc']
 		break
+
     if retval is None:
 	retval = replaceComponent(code,model)
     else:
