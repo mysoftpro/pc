@@ -1275,8 +1275,22 @@ function to_cartSuccess(data){
 }
 
 $(function(){
-      $('#options input').prop('checked',true);
-      $('#options input').removeAttr('disabled');
+      var options = $('#options input');
+      options.removeAttr('disabled');
+      for (var i=0;i<options.length;i++){
+	  var op = $(options.get(i));
+	  op.prop('checked',true);
+	  var _id = op.attr('id');
+	  var part = _id.substring(1,_id.length);
+	  if (!part)
+	      continue;
+	  var no_part = 'no'+parts[part];
+	  if (model[no_part])
+	      op.prop('checked',false);
+      }
+      if (model['no'+parts['soft']])
+      	  $("#oinstalling").prop('checked',false).prop('disabled','disabled');
+
       $('select').chosen().change(manualChange);
       new_model = _.clone(model);
       installBodies();

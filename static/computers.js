@@ -122,7 +122,7 @@ $(function(){
 					  var lisize = parseInt(gui.find('li').css('font-size'));
 					  gui.find('li').css({
 								 'font-size':lisize+1+'px',
-								 'line-height':lisize+2+'px'
+								 'line-height':lisize+3+'px'
 							     });
 				      });
 	  ul.append('<div style="clear:both;"></div>');
