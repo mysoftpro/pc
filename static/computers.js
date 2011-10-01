@@ -62,7 +62,16 @@ $(function(){
 			 $('#'+mid).text(new_price + ' р');
 		     }
 		 });
-
+      var uls = $('ul.description');
+      for (var j=0;j<uls.length;j++){
+	  
+	  var ul = $(uls.get(j));
+	  var lis = ul.children();
+	  for (var i=0;i<lis.length;i++){
+	      var li = $(lis.get(i));
+	      li.html(li.text());
+	  }
+      }
       var guidermove = '<div class="guidermove guiderdiv">переместить'+
 	  '<a class="guiderup">вверх</a>' +
 	  '<a class="guiderdown">вниз</a>' +
@@ -80,11 +89,11 @@ $(function(){
 	  var data_ul = target.parent().next().find('ul');
 	  var ul = $(document.createElement('ul'));
 	  ul.append(data_ul.html());
-	  var lis = ul.children();
-	  for (var i=0;i<lis.length;i++){
-	      var li = $(lis.get(i));
-	      li.html(li.text());
-	  }
+	  // var lis = ul.children();
+	  // for (var i=0;i<lis.length;i++){
+	  //     var li = $(lis.get(i));
+	  //     li.html(li.text());
+	  // }
 	  ul.append('<div class="guiderclose guiderdiv">закрыть</div>');
 	  var guider_body = function(el){
 	      while (el.attr('class')!='guider')
