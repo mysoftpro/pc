@@ -143,31 +143,36 @@ $(function(){
       var uuid = splitted[splitted.length-1].split('?')[0];
       if (!prices && uuid === $.cookie('pc_user')){
 	  var links = $('a.modellink');
+
+	  function deleteUUID(_id){
+	      function _deleteUUID(e){
+		  e.preventDefault();
+		  $.ajax({
+			     url:'/delete?uuid='+_id,
+			     success:function(data){
+				 if (data == "ok"){
+				     var cart = $.cookie('pc_cart');
+				     var cart_ammo = parseInt(cart)-1;
+				     $.cookie('pc_cart', cart_ammo, { path: '/' });
+				     $('#cart').text('Корзина(' + cart_ammo + ')');
+				     var target = $(e.target);
+				     while (target.attr('class')!='computeritem'){
+					 target = target.parent();
+				     }
+				     target.next().remove();
+				     target.remove();
+				 }
+			     }
+			 });
+	      }
+	      return _deleteUUID;
+	  }
 	  for(var i=0;i<links.length;i++){
 	      var span = $(links.get(i)).next();
 	      var _id = span.attr('id');
 	      span.parent().css('width','450px');
 	      span.after('<a class="edit_links" href="">удалить</a>');
-	      span.next().click(function(e){
-				    e.preventDefault();
-				    $.ajax({
-					       url:'/delete?uuid='+_id,
-					       success:function(data){
-						   if (data == "ok"){
-						       var cart = $.cookie('pc_cart');
-						       var cart_ammo = parseInt(cart)-1;
-						       $.cookie('pc_cart', cart_ammo);
-						       $('#cart').text('Корзина(' + cart_ammo + ')');
-						       var target = $(e.target);
-						       while (target.attr('class')!='computeritem'){
-							   target = target.parent();
-						       }
-						       target.next().remove();
-						       target.remove();
-						   }
-					       }
-					   });
-				})
+	      span.next().click(deleteUUID(_id))
 		  .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');
 	  }
       }
