@@ -397,6 +397,7 @@ function installBodies(){
 		     var _id = target.attr('id');
 		     for (var i=0,l=bodies.length;i<l;i++){
 			 var _body = $(bodies.get(i));
+			 _body.html(_body.text());
 			 var select_block = jgetSelectBlock(_body);
 			 if (_body.attr('id') == _id){
 			     current_row = _body.parent().attr('id');

@@ -922,7 +922,7 @@ color:#7b9c0a;
 }
 #models_top{
     height:130px;
-    margin-top:20px;
+    margin-top:40px;
 }
 
 #pricetext{
@@ -970,11 +970,22 @@ strong.red{
     font-size: 11px;
     line-height: 11px;
 }
-.close {
-    color:#730606;
-    font-weight:bold;
+.guiderdiv{
+   color:#730606;
+   font-weight:bold;
+   cursor:pointer;
+   float:left;
+   margin-right:10px;
+}
+
+.guidermove a{
+    margin-left:5px;
     cursor:pointer;
 }
+.guiderzoom{
+
+}
+
 .edit_links{
     margin-left:10px;
     font-size:12px;
@@ -984,4 +995,8 @@ strong.red{
 }
 .edit_links:hover{
     color:#999 !important;
+}
+.guider_content ul {
+    padding-left: 10px;
+    padding-top: 5px;
 }
