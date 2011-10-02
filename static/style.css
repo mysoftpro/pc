@@ -780,6 +780,11 @@ color:#7b9c0a;
  margin: 0px auto;padding: 0;width:1000px;
  margin-top:-40px !important;
 }
+#model_description{
+    max-height:200px;
+    font-size:13px;
+    /* line-height:14px; */
+}
 
 #model_description strong {
     background-color: #730606;
@@ -791,7 +796,7 @@ color:#7b9c0a;
     background-color:#999;
     color:black;
     padding:2px;
-    width:228px;
+    width:150px;
 }
 .emailbutton{
     background-color: #AAAAAA;
