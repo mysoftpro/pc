@@ -280,6 +280,7 @@ class Root(Cookable):
         self.putChild('delete',Delete())
         self.putChild('sender', Sender())
         self.putChild('select_helps', SelectHelpsProxy())
+        self.putChild('admin',Admin())
         self.host_url = host_url        
 
     def collectCookies(self):
@@ -514,3 +515,28 @@ class ClearCache(Resource):
         globals()['_cached_statics'] = {}
         return "ok"
 
+from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
+from twisted.cred.checkers import FilePasswordDB
+from twisted.cred.portal import IRealm, Portal
+from zope.interface import implements
+from twisted.web.resource import IResource
+
+
+realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
+
+class Realm(object):
+    implements(IRealm)
+    def requestAvatar(self, avatarId, mind, *interfaces):
+        if IResource in interfaces:
+            return (IResource, File(realm_dir), lambda: None)
+        raise NotImplementedError()
+
+portal = Portal(Realm(), [FilePasswordDB('/home/aganzha/pswrds')])
+credentialFactory = DigestCredentialFactory("md5", "buildpc.ru")
+auth_wrapper = HTTPAuthSessionWrapper(portal, [credentialFactory])
+
+class Admin(Resource):
+    def render_GET(self, request):
+        return "<html><body><h1>No way!</h1></body></html>"
+    def getChild(self, name, request):
+        return auth_wrapper.getChildWithDefault(name, request)
