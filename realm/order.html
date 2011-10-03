@@ -4,14 +4,20 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
+    <script type="text/javascript" src="/static/underscore-min.js"></script>
     <script type="text/javascript" src="order.js"></script>
+    <style type="text/css">
+      table{margin-top:10px;}
+      td {padding:5px;}
+    </style>
   </head>
   <body>
-    <div>
-      <label for="orderid">Номер заказа</label>
-      <input type="text" id="orderid" value=""/>
+    <div>      
+      <label for="orderid">Номер:</label>
+      <input type="text" id="orderid" value="b5820c"/>
       <input type="submit" value="искать" id="submit"/>
     </div>
+    <table id="ordertable"></table>
   </body>
 </html>
 

@@ -1243,6 +1243,7 @@ function to_cartSuccess(data){
 		       {
 			   computer:data['id']
 		       }));
+	$('#computerlink').click(function(e){e.target.select();});
 	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
 	var cart_ammo = $.cookie('pc_cart');
 	var cart_el = $('#cart');

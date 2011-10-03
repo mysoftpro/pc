@@ -15,7 +15,8 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, computers
+from pc.models import index, computer, computers,\
+    noComponentFactory,makePrice,parts_names,parts
 from pc.catalog import XmlGetter
 from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
@@ -302,7 +303,7 @@ class Computer(Cookable):
 	self.static = static
     # show models if computer is not specified
     def render_GET(self, request):
-        return self.static.getChild("computers.html", request).render_GET(request)
+	return self.static.getChild("computers.html", request).render_GET(request)
 
     def getChild(self, name, request):
 	Cookable.getChild(self, name, request)
@@ -317,7 +318,7 @@ class Cart(Cookable):
 	self.static = static
     # show models if cart is not specified
     def render_GET(self, request):
-        return self.static.getChild("computers.html", request).render_GET(request)
+	return self.static.getChild("computers.html", request).render_GET(request)
 
     def getChild(self, name, request):
 	Cookable.getChild(self, name, request)
@@ -391,11 +392,12 @@ class Save(Resource):
 	def updateModel(_model, _user, new_model):
 	    # if _model author is _user: AND "EDIT" in request, just updateModel
 	    # else - store new model with the parent_id of this model
+	    # REMEBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
 	    if _model['author'] == _user['_id'] and request.args.get('edit', [None])[0] is not None:
 		new_model['_id'] = _model['_id']
 		new_model['_rev'] = _model['_rev']
 		new_model['author'] = _user['_id']
-		return (_user,_model)
+		return (_user,new_model)
 	    else:
 		new_model['parent'] = _model['_id']
 		_d = couch.get('/_uuids?count=1')
@@ -549,10 +551,10 @@ class AdminGate(Resource):
     def __init__(self, static):
 	Resource.__init__(self)
 	self.static = static
-	self.putChild('bui',Bui())
-	self.putChild('zui',Zui())
 	self.putChild('clear_cache',ClearCache())
-        self.putChild('couch',proxy.ReverseProxyResource('127.0.0.2', 5984, '/_utils', reactor=reactor))
+	self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
+							 '/_utils', reactor=reactor))
+	self.putChild('findorder', FindOrder())
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render_GET(request)
@@ -562,11 +564,65 @@ class AdminGate(Resource):
 	    return self.static.getChild(name, request)
 	return self
 
-class Bui(Resource):
-    def render_GET(self, request):
-	return "this is bui"
+class FindOrder(Resource):
+
+    def finish(self, result, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+	request.write(simplejson.dumps(result))
+	request.finish()
 
 
-class Zui(Resource):
+    def addComponents(self, model_user):
+
+	defs = []
+	def addCount(count):
+            def add(doc):
+                doc['count'] = count
+                return doc
+            return add
+        def addPrice():
+            def add(doc):
+                doc['ourprice'] = makePrice(doc)
+                return doc
+            return add
+        def addName(name):
+            def add(doc):
+                doc['humanname'] = name
+                return doc
+            return add
+        def addOrder(order):
+            def add(doc):
+                doc['order'] = order
+                return doc
+            return add
+
+	for k,v in model_user[0][1]['items'].items():
+	    component = None
+            if v is not None:
+		if type(v) is list:
+		    component = couch.openDoc(v[0])		    
+		    component.addCallback(addCount(len(v)))                    
+		else:
+		    component = couch.openDoc(v)
+	    else:
+		component = defer.Deferred()                
+		component.addCallback(lambda x: noComponentFactory({}, k))
+                component.callback(None)            
+            component.addCallback(addPrice())
+            component.addCallback(addName(parts_names[k]))
+            component.addCallback(addOrder(parts[k]))
+            defs.append(component)
+	li = defer.DeferredList(defs)
+	li.addCallback(lambda res: (model_user,res))
+        return li
+
+
     def render_GET(self, request):
-	return "zui zui zui zui"
+	_id = request.args.get('id')[0]
+	d = couch.openDoc(_id)
+	d1 = couch.openDoc(request.getCookie('pc_user'))
+	model_user = defer.DeferredList([d,d1])
+	model_user.addCallback(self.addComponents)
+	model_user.addCallback(self.finish, request)
+	return NOT_DONE_YET
