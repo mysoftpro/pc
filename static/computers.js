@@ -72,11 +72,11 @@ $(function(){
 	      li.html(li.text());
 	  }
       }
-      var guidermove = '<div class="guidermove guiderdiv">переместить'+
-	  '<a class="guiderup">вверх</a>' +
-	  '<a class="guiderdown">вниз</a>' +
-	  '<a class="guiderleft">влево</a>' +
-	  '<a class="guiderright">вправо</a>';
+      var guidermove = '<div class="guidermove">'+
+	  '<a class="guiderup guiderdiv">вверх</a>' +
+	  '<a class="guiderdown guiderdiv">вниз</a>' +
+	  '<a class="guiderleft guiderdiv">влево</a>' +
+	  '<a class="guiderright guiderdiv">вправо</a>';
       var guider_hours = {
 	  "guiderup":11,
 	  "guiderdown":6,
@@ -89,11 +89,6 @@ $(function(){
 	  var data_ul = target.parent().next().find('ul');
 	  var ul = $(document.createElement('ul'));
 	  ul.append(data_ul.html());
-	  // var lis = ul.children();
-	  // for (var i=0;i<lis.length;i++){
-	  //     var li = $(lis.get(i));
-	  //     li.html(li.text());
-	  // }
 	  ul.append('<div class="guiderclose guiderdiv">закрыть</div>');
 	  var guider_body = function(el){
 	      while (el.attr('class')!='guider')
@@ -113,10 +108,9 @@ $(function(){
 	      .children().click(function(e){
 				    var el = $(e.target);
 				    guider_body(el).remove();
-				    makeGuider(target,guider_hours[el.attr('class')]);
+				    makeGuider(target,guider_hours[el.attr('class').split(' ')[0]]);
 				});
 
-	  console.log();
 	  if (hour == 9){
 	      ul.find('div').css('float','right');
 	  }
@@ -125,8 +119,6 @@ $(function(){
 					  var target = $(e.target);
 					  var gui = guider_body(target);
 					  var width = parseInt(gui.css('width'));
-					  console.log(gui);
-					  console.log(width);
 					  gui.css('width',width+50+'px');
 					  var lisize = parseInt(gui.find('li').css('font-size'));
 					  gui.find('li').css({

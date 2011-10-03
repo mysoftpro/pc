@@ -649,7 +649,8 @@ def computers(template,skin,request):
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    this_is_cart = len(name) > 0 and name != 'computer'
+    # cart is only /cart/12345. for /cart and for /computer - all models are shown
+    this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
     def render(result):
 	models = [row['doc'] for row in result['rows'] if row['doc'] is not None]
 	if not this_is_cart:

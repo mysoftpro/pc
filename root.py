@@ -301,7 +301,7 @@ class Computer(Cookable):
     def __init__(self, static):
 	Cookable.__init__(self)
 	self.static = static
-    
+    # show models if computer is not specified
     def render_GET(self, request):
         return self.static.getChild("computers.html", request).render_GET(request)
 
@@ -316,6 +316,10 @@ class Cart(Cookable):
     def __init__(self, static):
 	Cookable.__init__(self)
 	self.static = static
+    # show models if cart is not specified
+    def render_GET(self, request):
+        return self.static.getChild("computers.html", request).render_GET(request)
+
     def getChild(self, name, request):
 	Cookable.getChild(self, name, request)
 	return self.static.getChild("computers.html", request)
