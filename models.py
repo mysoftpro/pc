@@ -255,6 +255,7 @@ def replaceComponent(code,model):
 no_component_added = False
 
 def renderComputer(model, template, skin):
+    print "______________________________!!"
     _name = ''
     _uuid = '';
     h2 =template.top.find('div').find('h2')
@@ -445,7 +446,11 @@ def renderComputer(model, template, skin):
 						    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
 						    ';var installprice=',str(INSTALLING_PRICE),
 						    ';var buildprice=',str(BUILD_PRICE),
-						    ';var dvdoprice=',str(DVD_PRICE),
+						    ';var dvdprice=',str(DVD_PRICE),
+
+                                                    ';var idvd=',simplejson.dumps(model['dvd']),
+                                                    ';var ibuilding=',simplejson.dumps(model['building']),
+                                                    ';var iinstalling=',simplejson.dumps(model['installing']),
 						    ';var Course=',str(Course),
 						    ';var parts=',simplejson.dumps(parts_aliases)
 						    ))
@@ -633,7 +638,7 @@ def computer(template, skin, request):
 	name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
-    d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
+    # d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
 def computers(template,skin,request):

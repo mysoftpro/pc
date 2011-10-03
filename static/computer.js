@@ -428,7 +428,6 @@ function installBodies(){
 	var select = jgetSelect(b);
 	select.val(b.attr('id'));
 	jgetChosenTitle(select).text(b.text());
-
 	var pin = calculatePin(new_model[b.attr('id')]);
 	if (pin != 8){
 	    jgetPin(b).text(pin);
@@ -1214,6 +1213,9 @@ function to_cart(event){
     model_to_store['items'] = items;
     if (uuid)
 	model_to_store['id'] = uuid;
+    model_to_store['installing'] = $('#oinstalling').is(':checked');
+    model_to_store['building'] = $('#obuild').is(':checked');
+    model_to_store['dvd'] = $('#odvd').is(':checked');
     var to_send = {'model':JSON.stringify(model_to_store)};
     if (document.location.href.match('edit'))
 	to_send['edit'] = 't';
@@ -1275,6 +1277,7 @@ function to_cartSuccess(data){
 }
 
 $(function(){
+      new_model = _.clone(model);
       var options = $('#options input');
       options.removeAttr('disabled');
       for (var i=0;i<options.length;i++){
@@ -1282,6 +1285,19 @@ $(function(){
 	  op.prop('checked',true);
 	  var _id = op.attr('id');
 	  var part = _id.substring(1,_id.length);
+	  if (_id =='odvd' && !idvd){
+	      op.prop('checked',false);
+	      continue;
+	  }	      
+	  if (_id =='oinstalling' && !iinstalling){
+	      op.prop('checked',false);
+	      continue;
+	  }
+	      
+	  if (_id =='obuild' && !ibuilding){
+	      op.prop('checked',false);
+	      continue;
+	  }	      
 	  if (!part)
 	      continue;
 	  var no_part = 'no'+parts[part];
@@ -1292,7 +1308,6 @@ $(function(){
       	  $("#oinstalling").prop('checked',false).prop('disabled','disabled');
 
       $('select').chosen().change(manualChange);
-      new_model = _.clone(model);
       installBodies();
       cheaperBetter();
       reset();

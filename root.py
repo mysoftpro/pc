@@ -427,6 +427,7 @@ class Save(Resource):
         model = request.args.get('model', [None])[0]
         if model is not None:
             jmodel = simplejson.loads(model)
+            # TODO validate fields to avoid hacks!
             user_id = request.getCookie('pc_user')
             d = couch.openDoc(user_id)
             d.addCallback(self.saveModel, user_id, jmodel, request)
