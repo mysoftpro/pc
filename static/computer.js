@@ -1243,7 +1243,7 @@ function to_cartSuccess(data){
 		       {
 			   computer:data['id']
 		       }));
-	showYa('ya_share', 'http://buildpc.ru/computers/'+data['id']);
+	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
 	var cart_ammo = $.cookie('pc_cart');
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
@@ -1251,9 +1251,9 @@ function to_cartSuccess(data){
 	    cart_el.text('Корзина('+int_amo+')');
 	}
 	else{
-	    $('#main_menu').append(_.template('<li><a id="cart" href="/computers/{{computers}}">Корзина(1)</a></li>',
+	    $('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
 					      {
-						  computers:$.cookie('pc_user')
+						  cart:$.cookie('pc_user')
 					      }));
 	}
 	var input = $('#email');

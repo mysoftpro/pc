@@ -14,7 +14,7 @@
 	  $(function(){
 	  var cart = $.cookie('pc_cart');
 	  if (cart){
-	  $('#main_menu').append('<li><a id="cart" href="/computers/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
+	  $('#main_menu').append('<li><a id="cart" href="/cart/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
 	  }
 	  });
 	</script>
@@ -40,7 +40,7 @@
 		<span id="city"></span>
 	      </span>
 	      <ul id="main_menu">
-		<li><a href="/computers/">Все модели</a></li>
+		<li><a href="/computer">Все модели</a></li>
 		<li><a href="/howtobuy">Как выбирать</a></li>
 		<li><a href="/howtobuy">Как покупать</a></li>
 		<li><a href="/warranty">Гарантии</a></li>
