@@ -649,10 +649,9 @@ def computers(template,skin,request):
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-
+    this_is_cart = len(name) > 0 and name != 'computer'
     def render(result):
 	models = [row['doc'] for row in result['rows'] if row['doc'] is not None]
-	this_is_cart = len(name) > 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
 	else:
@@ -728,9 +727,12 @@ def computers(template,skin,request):
 	skin.middle = template.middle
 	return skin.render()
 
-    if len(name) == 0:
-	d = couch.openView(designID,'models',include_docs=True,stale=False)
+    # RENDER MODELS HERE!!!
+    if not this_is_cart:
+	print "render models"
+        d = couch.openView(designID,'models',include_docs=True,stale=False)
 	d.addCallback(render)
+    # RENDER cart here!!!!
     else:
 	# TODO! listDoc. do not use view here!!!!!!!!!!!!!!
 	# d = couch.openView(designID,'user_models',include_docs=True,stale=False, key=name)
