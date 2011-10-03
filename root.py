@@ -271,7 +271,6 @@ class Root(Cookable):
 	self.static.indexNames = [index_page]
 	self.putChild('static',self.static)
 	self.putChild('xml',XmlGetter())
-	self.putChild('clear_cache',ClearCache())
 	self.putChild('computer', Computer(self.static))
 	self.putChild('cart', Cart(self.static))
 	self.putChild('component', Component())
@@ -552,9 +551,11 @@ class AdminGate(Resource):
 	self.static = static
 	self.putChild('bui',Bui())
 	self.putChild('zui',Zui())
-	# self.root = AdminRoot()
+	self.putChild('clear_cache',ClearCache())
+        self.putChild('couch',proxy.ReverseProxyResource('127.0.0.2', 5984, '/_utils', reactor=reactor))
+
     def render_GET(self, request):
-	return "Welcome admin"
+	return self.static.getChild('index.html', request).render_GET(request)
 
     def getChild(self, name, request):
 	if 'html' in name or 'js' in name:

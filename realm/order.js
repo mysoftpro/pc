@@ -1,0 +1,10 @@
+$(function(e){
+      $('#submit').click(function(e){
+			     $.ajax({
+					url:'findorder?id='+$('orderid').val(),
+					success:function(data){
+					    console.log(data);
+					}
+				    });
+			 });
+});
