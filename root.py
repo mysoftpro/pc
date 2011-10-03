@@ -528,7 +528,7 @@ class Realm(object):
     implements(IRealm)
     def requestAvatar(self, avatarId, mind, *interfaces):
         if IResource in interfaces:
-            return (IResource, File(realm_dir), lambda: None)
+            return (IResource, AdminActions(File(realm_dir)), lambda: None)
         raise NotImplementedError()
 
 portal = Portal(Realm(), [FilePasswordDB('/home/aganzha/pswrds')])
@@ -540,3 +540,15 @@ class Admin(Resource):
         return "<html><body><h1>No way!</h1></body></html>"
     def getChild(self, name, request):
         return auth_wrapper.getChildWithDefault(name, request)
+
+class AdminActions(Resource):
+    def __init__(self, static):
+        self.static = static
+        Resource.__init__(self)
+    def render_GET(self, request):
+        return "Welcome admin"
+
+    def getChild(self, name, request):
+        if 'html' in name or 'js' in name:
+            return self.static.getChild(name, request)
+        return self
