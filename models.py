@@ -218,7 +218,9 @@ def noComponentFactory(_doc, name):
     return no_doc
 
 def replaceComponent(code,model):
+
     name = nameForCode(code,model)
+
     choices = globals()['gChoices'][name]
     def sameCatalog(doc):
 	retval = True
@@ -233,11 +235,13 @@ def replaceComponent(code,model):
     if type(choices) is list:
 	for el in choices:
 	    if el[0]:
-		for ch in el[1][1]['rows']:
-		    flatten.append(ch['doc'])
+		for ch in el[1][1]['rows']:		    
+                    if sameCatalog(ch['doc']):
+                        flatten.append(ch['doc'])
     else:
 	for ch in choices['rows']:
-	    flatten.append(ch['doc'])
+            if sameCatalog(ch['doc']):
+                flatten.append(ch['doc'])
 
     # TODO! sort em by price. not by code
     keys = [doc['_id'] for doc in flatten]
@@ -249,6 +253,7 @@ def replaceComponent(code,model):
     if _next == _length:
 	_next = ind-1
     next_el = deepcopy(flatten[_next])
+
     return next_el
 
 
