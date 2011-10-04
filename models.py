@@ -356,19 +356,19 @@ def renderComputer(model, template, skin):
 	clear.text = ''
 
 
-	d_comments = ''
-	d_name = ''
-	if 'description' in _doc:
-	    d_name = _doc['description']['name']
-	    d_comments = _doc['description']['comments']
-	    if 'imgs' in _doc['description']:
-		for i in _doc['description']['imgs']:
-		    img = etree.Element('img')
-		    img.set('src', '/image/' + _doc['_id'] + '/' + i + '.jpg')
-		    img.set('align','right')
-		    manu.text += etree.tostring(img)
+	# d_comments = ''
+	# d_name = ''
+	# if 'description' in _doc:
+	#     d_name = _doc['description']['name']
+	#     d_comments = _doc['description']['comments']
+	#     if 'imgs' in _doc['description']:
+	# 	for i in _doc['description']['imgs']:
+	# 	    img = etree.Element('img')
+	# 	    img.set('src', '/image/' + _doc['_id'] + '/' + i + '.jpg')
+	# 	    img.set('align','right')
+	# 	    manu.text += etree.tostring(img)
 
-	manu.text += d_name + d_comments
+	# manu.text += d_name + d_comments
 
 	descr.append(manu);
 	descr.append(our)

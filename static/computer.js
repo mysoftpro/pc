@@ -248,7 +248,7 @@ function componentChanged(maybe_event){
 	jgetPrice(body).text(new_component.price*mult + ' р');
 
 	blink(jgetPrice(body), '#404040');
-	
+
 	var pin = calculatePin(new_component);
 	if (pin != 8){
 	    jgetPin(body).text(pin);
@@ -352,7 +352,7 @@ function changeDescription(index, _id, show, data){
 	var descrptions = jgetDescriptions();
 	var descr = jgetDescrByIndex(index);
 	if (show)
-	    descrptions.children().hide();
+	    descrptions.children().hide();	
 	if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
 	    var _text = '';
 	    if (data){
@@ -369,6 +369,10 @@ function changeDescription(index, _id, show, data){
 		_text = 'к сожалению описание не предоставлено поставщиком';
 	    descriptions_cached[_id] = treatDescriptionText(_text);
 	}
+	// else if (descriptions_cached[_id]==undefined){
+	//     console.log('updateDescription');
+	//     return updateDescription(_id, id, !show);
+	// }
 	if (!show)
 	    return;
 	descr.find('.manu').html(descriptions_cached[_id]);
@@ -409,8 +413,9 @@ function installBodies(){
 				 doNotStress = false;
 			     }
 			     else{
-				 var select = jgetSelect(_body);				 
-				 changeDescription(i,select.val(), true);
+				 var select = jgetSelect(_body);
+				 //changeDescription(i,select.val(), true);
+				 updateDescription(_id,_id);
 			     }
 			 }
 			 else{
@@ -421,14 +426,13 @@ function installBodies(){
 		     if (!init && $('#ramcount').length == 0){
 		     	 var ramcounts = changeRam('e','mock',true);
 			 installRamCount();
-			 if (ramcounts['max_count'] 
+			 if (ramcounts['max_count']
 			     && ramcounts['max_count'] == ramcounts['new_count'])
-			     shadowCram($('#incram'));			 
+			     shadowCram($('#incram'));
 			 if (ramcounts['new_count'] == 1){
 			     shadowCram($('#decram'));
 			 }
 		     }
-
 		 });
     //what a fuck is that? ff caches select values? chosen sucks?
     for (var j=0,l=bodies.length;j<l;j++){
@@ -914,7 +918,7 @@ function changeRam(e, direction, silent){
 	if (new_count == 1){
 	    shadowCram($('#decram'));
 	}
-    }    
+    }
     return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
@@ -1074,7 +1078,7 @@ function changeComponent(body, new_component, old_component, nosocket){
 	if(isRam(body)){
 	    changeRam('e', 'mock');
 	}
-	    
+
 
 
 	if (delta != 0)
