@@ -13,19 +13,34 @@ $(function(e){
 });
 var data;
 var rev;
+var phone;
+var comment;
 function fillForm(_data){
     data = _data;
+    var user,model,components;
+    if (data['_rev']){
+	rev = data['_rev'];
+	user = data['user'];
+	model = data['model'];
+	components = data['components'];
+	phone = data['phone'];
+	comment = data['comments'];
+    }
+    else {
+	user = data[0][1][1];
+	model = data[0][0][1];
+	components = _(data[1]).map(function(el){
+					return el[1];})
+	.sort(function(x,y){return x['order']-y['order'];});
+    }
 
-    var user = data[0][1][1];
-    var model = data[0][0][1];
+	
+
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
 				      {model:model['_id']}));
     $('#ordertable').append('<tr><td>Код</td><td>Компонент</td><td>Название</td>'+
 			   '<td>Шт</td><td>Цена</td><td>Наша цена</td><td>Склад</td></tr>');
 
-    var components = _(data[1]).map(function(el){
-					return el[1];})
-	.sort(function(x,y){return x['order']-y['order'];});
 
     for (var i=0;i<components.length;i++){
 
@@ -63,6 +78,10 @@ function fillForm(_data){
     d.append('<div><label for="comment">Комментарий</label><textarea id="comment"/></div>');
     d.append('<div><input type="submit" id="save" value="Cохранить"/></div>');
     $('#ordertable').after(d);
+    if (phone)
+	$('#phone').val(phone);
+    if (comment)
+	$('#comment').val(comment);
     $('#save').click(function(e){
 			 var to_store = {
 			     'components':components,

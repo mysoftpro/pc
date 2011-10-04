@@ -619,14 +619,20 @@ class FindOrder(Resource):
         return li
 
 
-    def render_GET(self, request):
-	_id = request.args.get('id')[0]
-	d = couch.openDoc(_id)
+    def getModel(self, error, _id, request):
+        d = couch.openDoc(_id)        
 	d1 = couch.openDoc(request.getCookie('pc_user'))
 	model_user = defer.DeferredList([d,d1])
 	model_user.addCallback(self.addComponents)
 	model_user.addCallback(self.finish, request)
-	return NOT_DONE_YET
+        return model_user
+
+    def render_GET(self, request):
+	_id = request.args.get('id')[0]
+        order_d = couch.openDoc('order_'+_id)        
+        order_d.addCallback(self.finish, request)
+        order_d.addErrback(self.getModel, _id, request)
+        return NOT_DONE_YET
 
 class StoreOrder(Resource):
     def finish(self, doc, request):
