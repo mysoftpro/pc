@@ -555,6 +555,7 @@ class AdminGate(Resource):
 	self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
 							 '/_utils', reactor=reactor))
 	self.putChild('findorder', FindOrder())
+        self.putChild('storeorder', StoreOrder())
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render_GET(request)
@@ -626,3 +627,17 @@ class FindOrder(Resource):
 	model_user.addCallback(self.addComponents)
 	model_user.addCallback(self.finish, request)
 	return NOT_DONE_YET
+
+class StoreOrder(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        order = request.args.get('order')[0]
+        jorder = simplejson.loads(order)
+        d = couch.saveDoc(jorder)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET

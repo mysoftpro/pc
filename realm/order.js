@@ -12,16 +12,17 @@ $(function(e){
 			 });
 });
 var data;
+var rev;
 function fillForm(_data){
     data = _data;
-    
+
     var user = data[0][1][1];
     var model = data[0][0][1];
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
 				      {model:model['_id']}));
     $('#ordertable').append('<tr><td>Код</td><td>Компонент</td><td>Название</td>'+
 			   '<td>Шт</td><td>Цена</td><td>Наша цена</td><td>Склад</td></tr>');
-    
+
     var components = _(data[1]).map(function(el){
 					return el[1];})
 	.sort(function(x,y){return x['order']-y['order'];});
@@ -30,13 +31,16 @@ function fillForm(_data){
 
 	var comp = components[i];
 	var tr = $(document.createElement('tr'));
+	var code = comp['_id'];
+	if (code.match('no'))
+	    code = '';
 	tr.append(_.template('<td><input value="{{code}}"/></td>',
-				      {code:comp['_id']}));
+				      {code:code}));
 	tr.append(_.template('<td>{{humanname}}</td>',
 				      {humanname:comp['humanname']}));
 	tr.append(_.template('<td>{{name}}</td>',
 				      {name:comp['text']}));
-	
+
 	var count = 1;
 	if (comp['count'])
 	    count = comp['count'];
@@ -53,4 +57,44 @@ function fillForm(_data){
 	$('#ordertable').append(tr);
     }
     $('input').click(function(e){e.target.select();});
+    var d = $(document.createElement('div'));
+    d.attr('id','comments');
+    d.append('<div><label for="phone">Телефон</label><input type="text" id="phone"/></div>');
+    d.append('<div><label for="comment">Комментарий</label><textarea id="comment"/></div>');
+    d.append('<div><input type="submit" id="save" value="Cохранить"/></div>');
+    $('#ordertable').after(d);
+    $('#save').click(function(e){
+			 var to_store = {
+			     'components':components,
+			     'model':model,
+			     'user':user,
+			     'comments':$('#comment').val(),
+			     'phone':$('#phone').val()
+			 };
+			 to_store['_id'] = 'order_'+model['_id'];
+			 if (rev)
+			     to_store['_rev'] = rev;
+			 $.ajax({
+				    url:'storeorder',
+				    type:'POST',
+				    datatype: "json",
+				    data:{'order':JSON.stringify(to_store)},
+				    success:function(_rev){
+					//alert(_rev);
+					rev =_rev;
+					alert('Получилось!');
+				    },
+				    error:function(er){
+					if (er.responseText
+					    .match('[0-9abcdef]+-[0-9abcdef]+$'))
+					{
+					    rev = er.responseText;
+					    alert('Получилось!');
+					}
+					else{
+					    alert('Что пошло не так! Не удается сохранить!');
+					}
+				    }
+				});
+		     });
 }
