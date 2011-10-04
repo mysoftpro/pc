@@ -248,7 +248,7 @@ function componentChanged(maybe_event){
 	jgetPrice(body).text(new_component.price*mult + ' р');
 
 	blink(jgetPrice(body), '#404040');
-
+	
 	var pin = calculatePin(new_component);
 	if (pin != 8){
 	    jgetPin(body).text(pin);
@@ -391,9 +391,11 @@ function installBodies(){
     var init = true;
     var bodies = jgetBodies();
     bodies.click(function(e){
-		     if(e.target.tagName != 'TD')
+		     if(e.target.tagName != 'TD' && e.target.tagName != 'FONT')
 			 return;
 		     var target = $(e.target);
+		     if (e.target.tagName == 'FONT')
+			 target = target.parent();
 		     var _id = target.attr('id');
 		     for (var i=0,l=bodies.length;i<l;i++){
 			 var _body = $(bodies.get(i));
@@ -407,7 +409,7 @@ function installBodies(){
 				 doNotStress = false;
 			     }
 			     else{
-				 var select = jgetSelect(_body);
+				 var select = jgetSelect(_body);				 
 				 changeDescription(i,select.val(), true);
 			     }
 			 }
@@ -417,8 +419,14 @@ function installBodies(){
 			 }
 		     }
 		     if (!init && $('#ramcount').length == 0){
+		     	 var ramcounts = changeRam('e','mock',true);
 			 installRamCount();
-			 changeRam('e','mock');
+			 if (ramcounts['max_count'] 
+			     && ramcounts['max_count'] == ramcounts['new_count'])
+			     shadowCram($('#incram'));			 
+			 if (ramcounts['new_count'] == 1){
+			     shadowCram($('#decram'));
+			 }
 		     }
 
 		 });
@@ -426,7 +434,8 @@ function installBodies(){
     for (var j=0,l=bodies.length;j<l;j++){
 	var b = $(bodies.get(j));
 	var select = jgetSelect(b);
-	select.val(b.attr('id'));
+	var _id = b.attr('id');
+	select.val(_id);
 	jgetChosenTitle(select).text(b.text());
 	var pin = calculatePin(new_model[b.attr('id')]);
 	if (pin != 8){
@@ -437,6 +446,8 @@ function installBodies(){
 	}
 	var te = b.text();
 	b.text(te.substring(0,80));
+	// if (j==0)
+	//     updateDescription(_id, _id);
     }
     bodies.first().click();
     init = false;
@@ -895,7 +906,6 @@ function changeRam(e, direction, silent){
 	new_count = count;
     }
     component['count'] = new_count;
-
     if (!silent){
 	componentChanged({'target':ramselect[0],'no_desc':true});
 	installRamCount();
@@ -904,14 +914,14 @@ function changeRam(e, direction, silent){
 	if (new_count == 1){
 	    shadowCram($('#decram'));
 	}
-    }
+    }    
     return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
 function installRamCount(){
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var rambody = jgetBody(ramselect);
-    rambody.text(rambody.text().substring(0,100));
+    rambody.text(jgetOption(ramselect,ramselect.val()).text().substring(0,100));
     var component = new_model[ramselect.val()];
     var pcs = 1;
     if (component['count']){
@@ -1061,8 +1071,10 @@ function changeComponent(body, new_component, old_component, nosocket){
 	    componentChanged({'target':select[0]});
 	else
 	    componentChanged({'target':select[0],'no_desc':true});
-	if(isRam(body))
+	if(isRam(body)){
 	    changeRam('e', 'mock');
+	}
+	    
 
 
 	if (delta != 0)
@@ -1289,16 +1301,16 @@ $(function(){
 	  if (_id =='odvd' && !idvd){
 	      op.prop('checked',false);
 	      continue;
-	  }	      
+	  }
 	  if (_id =='oinstalling' && !iinstalling){
 	      op.prop('checked',false);
 	      continue;
 	  }
-	      
+
 	  if (_id =='obuild' && !ibuilding){
 	      op.prop('checked',false);
 	      continue;
-	  }	      
+	  }
 	  if (!part)
 	      continue;
 	  var no_part = 'no'+parts[part];

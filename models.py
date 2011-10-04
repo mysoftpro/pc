@@ -351,8 +351,6 @@ def renderComputer(model, template, skin):
 	our.set('class','our')
 	our.text = u'нет рекоммендаций'
 
-	# if name in our_descriptions:
-	#     our.text = our_descriptions[name]
 	clear = etree.Element('div')
 	clear.set('style','clear:both;')
 	clear.text = ''
