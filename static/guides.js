@@ -98,7 +98,7 @@ $(function()
 	  if (fillSelectHelps[current_row])
 	      return action();
 	  $.ajax({
-                     url:'/select_helps/sh-'+current_row,
+                     url:'/select_helps/how_'+current_row,
 		     dataType: 'json',
                      success:function(data){					    
                          var row_index;
@@ -106,7 +106,7 @@ $(function()
                          for (var i=0;i<trs.length;i++){
                              if (trs.get(i).id==current_row){
 				 var our = $($('.our').get(i));
-                                 our.html(data.text);
+                                 our.html(data.html);
 				 fillSelectHelps[current_row] = true;
                                  break;
                              }

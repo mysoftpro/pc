@@ -99,7 +99,6 @@ function fillForm(_data){
 				    datatype: "json",
 				    data:{'order':JSON.stringify(to_store)},
 				    success:function(_rev){
-					//alert(_rev);
 					rev =_rev;
 					alert('Получилось!');
 				    },

@@ -89,10 +89,10 @@ proc_775 = [components,proc,"7451"]
 proc_am23 = [components,proc,"7700"]
 proc_fm1 =  [components,proc,"19257"]
 
-audio = "7365"
-audio_20 = [audio,"7389", "7447"]
-audio_21 = [audio,"7389", "7448"]
-audio_51 = [audio,"7389", "7462"]
+audio = "7389"
+audio_20 = [perifery,audio, "7447"]
+audio_21 = [perifery,audio, "7448"]
+audio_51 = [perifery,audio, "7462"]
 
 soft = "7369"
 microsoft = "14570"

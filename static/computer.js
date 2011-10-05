@@ -379,11 +379,11 @@ function changeDescription(index, _id, show, data){
 	descrptions.jScrollPaneRemove();
 	descr.show();
 	descrptions.jScrollPane();
-	if (!data){
-	    var new_name = getPartName(_id);
-	    var titles = jgetTitles();
-	    titles[0].text(new_name);
-	}
+
+	var new_name = getPartName(_id);
+	var titles = jgetTitles();
+	titles[0].text(new_name);
+
     } catch (x) {
 	console.log(x);
     }

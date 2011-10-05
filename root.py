@@ -452,7 +452,7 @@ class Delete(Resource):
 		request.finish()
 		return
 	    _user = user_model[0][1]
-	    _model = user_model[1][1]	    
+	    _model = user_model[1][1]
 	    if _model['author'] == user_id:
 		couch.deleteDoc(uuid,_model['_rev'])
 		_user['models'] = [m for m in _user['models'] if m != _model['_id']]
@@ -502,7 +502,7 @@ class SelectHelpsProxy(Resource):
 	# just check that it endswith image extension and no parameters in it
 	if '?' in last or '&' in last:
 	    return NoResource()
-	_help = 'sh-' in last
+	_help = 'how_' in last
 	if not _help:
 	    return NoResource()
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
@@ -513,7 +513,7 @@ def clear_cache():
     globals()['_cached_statics'] = {}
     _dir = globals()['static_dir']
     for f in os.listdir(_dir):
-        os.utime(os.path.join(_dir,f), None)
+	os.utime(os.path.join(_dir,f), None)
     from pc import models
     models.gChoices = None
     models.gChoices_flatten = {}
@@ -522,13 +522,13 @@ def clear_cache():
 
 class ClearCache(Resource):
     def render_GET(self, request):
-	clear_cache()	
-        return "ok"
+	clear_cache()
+	return "ok"
 
 class UpdatePrices(Resource):
     def render_GET(self,request):
-        updateOriginalModelPrices()
-        return "ok"
+	updateOriginalModelPrices()
+	return "ok"
 
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
@@ -561,12 +561,13 @@ class AdminGate(Resource):
 	Resource.__init__(self)
 	self.static = static
 	self.putChild('clear_cache',ClearCache())
-        self.putChild('update_prices',UpdatePrices())
-        self.putChild('edit_model', EditModel())
+	self.putChild('update_prices',UpdatePrices())
+	self.putChild('edit_model', EditModel())
 	self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
 							 '/_utils', reactor=reactor))
 	self.putChild('findorder', FindOrder())
-        self.putChild('storeorder', StoreOrder())
+	self.putChild('storeorder', StoreOrder())
+	self.putChild('storemodel', StoreModel())
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render_GET(request)
@@ -579,7 +580,7 @@ class AdminGate(Resource):
 class FindOrder(Resource):
 
     def finish(self, result, request):
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(result))
 	request.finish()
@@ -589,85 +590,104 @@ class FindOrder(Resource):
 
 	defs = []
 	def addCount(count):
-            def add(doc):
-                doc['count'] = count
-                return doc
-            return add
-        def addPrice():
-            def add(doc):
-                doc['ourprice'] = makePrice(doc)
-                return doc
-            return add
-        def addName(name):
-            def add(doc):
-                doc['humanname'] = name
-                return doc
-            return add
-        def addOrder(order):
-            def add(doc):
-                doc['order'] = order
-                return doc
-            return add
+	    def add(doc):
+		doc['count'] = count
+		return doc
+	    return add
+	def addPrice():
+	    def add(doc):
+		doc['ourprice'] = makePrice(doc)
+		return doc
+	    return add
+	def addName(name):
+	    def add(doc):
+		doc['humanname'] = name
+		return doc
+	    return add
+	def addOrder(order):
+	    def add(doc):
+		doc['order'] = order
+		return doc
+	    return add
 
 	for k,v in model_user[0][1]['items'].items():
 	    component = None
-            if v is not None:
+	    if v is not None:
 		if type(v) is list:
-		    component = couch.openDoc(v[0])		    
-		    component.addCallback(addCount(len(v)))                    
+		    component = couch.openDoc(v[0])
+		    component.addCallback(addCount(len(v)))
 		else:
 		    component = couch.openDoc(v)
 	    else:
-		component = defer.Deferred()                
+		component = defer.Deferred()
 		component.addCallback(lambda x: noComponentFactory({}, k))
-                component.callback(None)            
-            component.addCallback(addPrice())
-            component.addCallback(addName(parts_names[k]))
-            component.addCallback(addOrder(parts[k]))
-            defs.append(component)
+		component.callback(None)
+	    component.addCallback(addPrice())
+	    component.addCallback(addName(parts_names[k]))
+	    component.addCallback(addOrder(parts[k]))
+	    defs.append(component)
 	li = defer.DeferredList(defs)
 	li.addCallback(lambda res: (model_user,res))
-        return li
+	return li
 
 
     def getModel(self, error, _id, request):
-        d = couch.openDoc(_id)        
+	d = couch.openDoc(_id)
 	d1 = couch.openDoc(request.getCookie('pc_user'))
 	model_user = defer.DeferredList([d,d1])
 	model_user.addCallback(self.addComponents)
 	model_user.addCallback(self.finish, request)
-        return model_user
+	return model_user
 
     def render_GET(self, request):
 	_id = request.args.get('id')[0]
-        order_d = couch.openDoc('order_'+_id)        
-        order_d.addCallback(self.finish, request)
-        order_d.addErrback(self.getModel, _id, request)
-        return NOT_DONE_YET
+	order_d = couch.openDoc('order_'+_id)
+	order_d.addCallback(self.finish, request)
+	order_d.addErrback(self.getModel, _id, request)
+	return NOT_DONE_YET
 
 class StoreOrder(Resource):
     def finish(self, doc, request):
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        request.write(str(doc['rev']))
-        request.finish()
+	request.setHeader('Content-Type', 'application/json;charset=utf-8')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+	request.write(str(doc['rev']))
+	request.finish()
 
     def render_POST(self, request):
-        order = request.args.get('order')[0]
-        jorder = simplejson.loads(order)
-        d = couch.saveDoc(jorder)
-        d.addCallback(self.finish, request)
-        return NOT_DONE_YET
+	order = request.args.get('order')[0]
+	jorder = simplejson.loads(order)
+	d = couch.saveDoc(jorder)
+	d.addCallback(self.finish, request)
+	return NOT_DONE_YET
 
 
-class EditModel(Resource):    
+class StoreModel(Resource):
+    def storeModel(self, model, to_store, request):
+	for k,v in to_store['model'].items():
+	    if k in model:
+		model[k] = v
+	d = couch.saveDoc(model)
+	def finish(some):
+	    request.write('ok')
+	    request.finish()
+	d.addCallback(finish)
+	return d
+
+    def render_POST(self, request):
+	to_store = request.args.get('to_store')[0]
+	jto_store = simplejson.loads(to_store)
+	d = couch.openDoc(jto_store['_id'])
+	d.addCallback(self.storeModel, jto_store,request)
+	return NOT_DONE_YET
+
+
+
+class EditModel(Resource):
     def getChild(self, name, request):
-        static = CachedStatic(static_dir)
-        child = static.getChild("computer.html", request)
-        script = etree.Element('script')
-        script.set('type','text/javascript')
-        script.set('src','../edit_model.js')
-        child.skin.root().append(script)
+	static = CachedStatic(static_dir)
+	child = static.getChild("computer.html", request)
+	script = etree.Element('script')
+	script.set('type','text/javascript')
+	script.set('src','../edit_model.js')
+	child.skin.root().append(script)
 	return child
-        
-        
