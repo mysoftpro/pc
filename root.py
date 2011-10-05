@@ -446,16 +446,13 @@ class Delete(Resource):
 	user_id = request.getCookie('pc_user')
 	model = couch.openDoc(uuid)
 	user = couch.openDoc(user_id)
-	## TODO! delete model from user_doc['models']
-	## (open user_doc and assign callback to deferred list)
 	def delete(user_model):
 	    if not user_model[0][0] or not user_model[1][0]:
 		request.write('fail')
 		request.finish()
 		return
 	    _user = user_model[0][1]
-	    _model = user_model[1][1]
-	    #TODO cart key!!!!
+	    _model = user_model[1][1]	    
 	    if _model['author'] == user_id:
 		couch.deleteDoc(uuid,_model['_rev'])
 		_user['models'] = [m for m in _user['models'] if m != _model['_id']]
@@ -512,11 +509,21 @@ class SelectHelpsProxy(Resource):
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	return self.proxy.getChild(last, request)
 
-# TODO update parsed trees
+def clear_cache():
+    globals()['_cached_statics'] = {}
+    _dir = globals()['static_dir']
+    for f in os.listdir(_dir):
+        os.utime(os.path.join(_dir,f), None)
+    from pc import models
+    models.gChoices = None
+    models.gChoices_flatten = {}
+    d = models.fillChoices()
+    d.addCallback(lambda x: models.updateOriginalModelPrices())
+
 class ClearCache(Resource):
     def render_GET(self, request):
-	globals()['_cached_statics'] = {}
-	return "ok"
+	clear_cache()	
+        return "ok"
 
 class UpdatePrices(Resource):
     def render_GET(self,request):

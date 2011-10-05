@@ -87,7 +87,8 @@ class XmlGetter(Resource):
                     doc[k] = item[k]
         if component_changed:
             d = couch.addAttachments(doc, raw_doc, version=True)
-            # TODO! drop some later attachments!  if updates are every hour - store just 8 of them, for example
+            # TODO! drop some later attachments!  
+            # if updates are every hour - store just 8 of them, for example
             d.addCallback(lambda _doc:couch.saveDoc(_doc))
             d.addErrback(self.pr)
             return d
@@ -102,13 +103,7 @@ class XmlGetter(Resource):
                 couch.deleteDoc(row['id'], row['value']['rev'])
         # destroy cache here!
         from pc import root
-        root._cached_statics = {}
-        # TODO!!!! touch all html files!!!!!!!!!!
-        from pc import models
-        models.gChoices = None
-        models.gChoices_flatten = {}
-        models.fillChoices()
-        models.updateOriginalModelPrices()
+        root.clear_cache()
 
     def getItem(self, res, gen, codes):
         try:

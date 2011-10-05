@@ -137,11 +137,6 @@ def getCatalogsKey(doc):
     return doc['catalogs']
 
 
-# TODO! models must be stored in db and cached HERE
-# to make opportunity to change the model without restart
-# change in db and than clear cache
-
-
 def getModelComponents(model):
     for k,v in model['items'].items():
 	if type(v) is list:
@@ -288,8 +283,15 @@ def renderComputer(model, template, skin):
 	    if token in model:
 		model.pop(token)
     h2.text = _name
+    
+    if 'description' in model:
+        # try:
+            d = template.top.find('div').find('div')
+            d.text = ''
+            d.append(etree.fromstring(model['description']))
+        # except:
+        #     pass
     original_viewlet = template.root().find('componentviewlet')
-
     choices = globals()['gChoices']
 
     model_json = {}
@@ -761,9 +763,7 @@ def computers(template,skin,request):
 	d = couch.openView(designID,'models',include_docs=True,stale=False)
 	d.addCallback(render)
     # RENDER cart here!!!!
-    else:
-	# TODO! listDoc. do not use view here!!!!!!!!!!!!!!
-	# d = couch.openView(designID,'user_models',include_docs=True,stale=False, key=name)
+    else:	
 	d = couch.openDoc(name)
 	d.addCallback(lambda doc:couch.listDoc(keys=doc['models'], include_docs=True))
 	d.addCallback(render)

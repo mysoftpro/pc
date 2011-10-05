@@ -783,7 +783,12 @@ color:#7b9c0a;
 #model_description{
     max-height:200px;
     font-size:13px;
-    /* line-height:14px; */
+    padding:3px;
+}
+#model_description ul{
+    padding:0;
+    margin:0;
+    padding-left:20px;
 }
 
 #model_description strong {
