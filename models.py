@@ -108,6 +108,29 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
 			 (mother_fm1,proc_fm1)]
 
 
+def walkOnChoices(name = None, _filter=None):
+    walk_on = None
+    if name is not None:
+        walk_on =(c for c in globals()['gChoices'][name])
+    else:
+        walk_on = (kv[1] for kv in globals()['gChoices'])
+    if _filter is None:
+        _filter = lambda x: True
+        
+    for choices in walk_on:
+        if type(choices) is list:
+            for el in choices:
+                if el[0]:
+                    for ch in el[1][1]['rows']:		    
+                        if _filter(ch['doc']):
+                            yield ch['doc']
+        else:
+            for ch in choices['rows']:
+                if _filter(ch['doc']):
+                    yield ch['doc']
+
+
+
 def getCatalogsKey(doc):
     if type(doc['catalogs'][0]) is dict:
 	cats = []
@@ -221,7 +244,7 @@ def replaceComponent(code,model):
 
     name = nameForCode(code,model)
 
-    choices = globals()['gChoices'][name]
+    
     def sameCatalog(doc):
 	retval = True
 	if mother==name:
@@ -229,9 +252,9 @@ def replaceComponent(code,model):
 	if proc==name:
 	    retval = model['proc_catalogs'] == getCatalogsKey(doc)
 	return retval
-
+    choices = globals()['gChoices'][name]
     flatten = []
-
+    # walkOnChoices
     if type(choices) is list:
 	for el in choices:
 	    if el[0]:
@@ -253,14 +276,14 @@ def replaceComponent(code,model):
     if _next == _length:
 	_next = ind-1
     next_el = deepcopy(flatten[_next])
-
+    print "returniiiiiiiiiiiiiiiiing"
+    print str(next_el['_id'])
     return next_el
 
 
 no_component_added = False
 
 def renderComputer(model, template, skin):
-    print "______________________________!!"
     _name = ''
     _uuid = '';
     h2 =template.top.find('div').find('h2')
@@ -622,7 +645,7 @@ def fillChoices():
 	    if el[0]:
 		new_res.update(el[1])
 	globals()['gChoices'] = new_res
-	return globals()['gChoices'] #new_res
+	return globals()['gChoices']
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict)
 
