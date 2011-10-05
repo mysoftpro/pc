@@ -104,6 +104,11 @@ class XmlGetter(Resource):
         from pc import root
         root._cached_statics = {}
         # TODO!!!! touch all html files!!!!!!!!!!
+        from pc import models
+        models.gChoices = None
+        models.gChoices_flatten = {}
+        models.fillChoices()
+        models.updateOriginalModelPrices()
 
     def getItem(self, res, gen, codes):
         try:

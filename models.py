@@ -2,12 +2,10 @@
 from pc.couch import couch, designID
 from lxml import etree
 from twisted.internet import defer
-from string import Template
-from urllib import quote_plus, unquote_plus
 import simplejson
 import re
 from copy import deepcopy
-import cgi
+
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
