@@ -12,7 +12,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, computers,\
+from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,parts_names,parts,updateOriginalModelPrices
 from pc.catalog import XmlGetter
 from twisted.web import proxy
@@ -662,16 +662,35 @@ class StoreOrder(Resource):
 
 
 class StoreModel(Resource):
+    def finish(self, some, request):
+	request.write('ok')
+	request.finish()
+
+    def createHow(self, fail, _id, descr):
+        how = {'_id':_id, 'html':descr}
+        return couch.saveDoc(how)
+
+    def storeHow(self, how, description):
+	how['html'] = description
+	return couch.saveDoc(how)
+
     def storeModel(self, model, to_store, request):
 	for k,v in to_store['model'].items():
 	    if k in model:
 		model[k] = v
 	d = couch.saveDoc(model)
-	def finish(some):
-	    request.write('ok')
-	    request.finish()
-	d.addCallback(finish)
-	return d
+
+	names = sorted(parts.keys(),lambda x,y: parts[x]-parts[y])
+	defs = []
+	for name,descr in zip(names,to_store['hows']):            
+	    _d= couch.openDoc('how_'+name)
+            _d.addCallback(self.storeHow,descr)
+            _d.addErrback(self.createHow,descr,'how_'+name)
+	    defs.append(_d)
+        hows_d = defer.DeferredList(defs)
+	whole_d = defer.DeferredList((d,hows_d))
+        whole_d.addCallback(self.finish, request)
+	return whole_d
 
     def render_POST(self, request):
 	to_store = request.args.get('to_store')[0]

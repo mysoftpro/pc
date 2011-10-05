@@ -195,7 +195,7 @@ imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
 
 
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
-	 case:50, sound:70, network:80, displ:90,
+	 case:50, displ:90,
 	 audio:100, soft:110,
 	 kbrd:120, mouse:130, audio:140}
 
