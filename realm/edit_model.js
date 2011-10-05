@@ -1,28 +1,22 @@
 $(function(){
-      var bodies = $('.body');
-      for (var i=0;i<bodies.length;i++){
-	  $(bodies.get(i)).click();
-      }
-      bodies.last().click();
-      _.delay(function(){
-		  var description = $('#model_description');
-		  var textarea = $(document.createElement('textarea'));
-		  textarea.val(description.html());
-		  textarea.css('width','500px');
-		  description.html(textarea);
-		  textarea.css('height','110px');
-		  textarea.parent().css('height','115px');
-		  var ours = $('.our');
-		  for(var i=0;i<ours.length;i++){
-		      var our = $(ours.get(i));
-		      var _textarea = $(document.createElement('textarea'));
-		      _textarea.val(our.html());
-		      _textarea.css('width','900px');
-		      _textarea.css('height','600px');
-		      our.html('');
-		      our.html(_textarea);
-		  }
-	      },3000);
+      var description = $('#model_description');
+      var textarea = $(document.createElement('textarea'));
+      textarea.val(description.html());
+      textarea.css('width','500px');
+      description.html(textarea);
+      textarea.css('height','110px');
+      textarea.parent().css('height','115px');
+      $('.our')
+	  .css('cursor','pointer')
+	  .click(function(e){			  
+			  var our = $(e.target);
+			  if (our.attr('class')!='our')
+			      return;
+			  var _textarea = $(document.createElement('textarea'));
+			  _textarea.val(our.html());
+			  our.html(_textarea);
+			  our.unbind('click');
+		      });
       function store(){
 
 	  var model_to_store = {};
@@ -61,9 +55,14 @@ $(function(){
 	  model_to_store['description'] = $('#model_description textarea').val();
 	  var to_send = {'model':model_to_store};
 	  to_send['hows'] = [];
-	  var ours = $('.our textarea');
+	  var ours = $('.our');
 	  for (var i = 0;i<ours.length;i++){
-	      to_send['hows'].push($(ours.get(i)).val());
+	      var our = $(ours.get(i));
+	      var val = our.html();
+	      var _textarea = our.find('textarea');
+	      if (_textarea.length>0)
+		  val = _textarea.val();
+	      to_send['hows'].push(val);
 	  }
 	  to_send['_id'] = _(document.location.href.split('/')).last();
 	  $.ajax({
