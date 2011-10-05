@@ -5,7 +5,7 @@ from twisted.internet import defer
 import simplejson
 import re
 from copy import deepcopy
-
+from urllib import unquote_plus
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -238,43 +238,40 @@ def noComponentFactory(_doc, name):
     return no_doc
 
 def replaceComponent(code,model):
-
+    original_price = model['original_prices'][code]
     name = nameForCode(code,model)
     def sameCatalog(doc):
-	retval = True
-	if mother==name:
-	    retval = model['mother_catalogs'] == getCatalogsKey(doc)
-	if proc==name:
-	    retval = model['proc_catalogs'] == getCatalogsKey(doc)
-	return retval
+        retval = True
+        if mother==name:
+            retval = model['mother_catalogs'] == getCatalogsKey(doc)
+        if proc==name:
+            retval = model['proc_catalogs'] == getCatalogsKey(doc)
+        return retval
     choices = globals()['gChoices'][name]
     flatten = []
     if type(choices) is list:
-	for el in choices:
-	    if el[0]:
+        for el in choices:
+            if el[0]:
     	  	for ch in el[1][1]['rows']:
-		    if sameCatalog(ch['doc']):
-			flatten.append(ch['doc'])
+        	    if sameCatalog(ch['doc']):
+        		flatten.append(ch['doc'])
     else:
-	for ch in choices['rows']:
-	    if sameCatalog(ch['doc']):
-		flatten.append(ch['doc'])
-
-    # # TODO! sort em by price. not by code
-
+        for ch in choices['rows']:
+            if sameCatalog(ch['doc']):
+        	flatten.append(ch['doc'])
+    mock_component = noComponentFactory({},name)
+    mock_component['price'] = original_price
+    mock_component['_id'] = code
+    flatten.append(mock_component)
+    flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
     keys = [doc['_id'] for doc in flatten]
-    keys.append(code)
-    keys = sorted(keys)
     _length = len(keys)
     ind = keys.index(code)
     _next = ind+1
     if _next == _length:
-	_next = ind-1
+        _next = ind-1
     next_el = deepcopy(flatten[_next])
-    print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemm"
-    print globals()['gChoices_flatten'][next_el['_id']]
     return next_el
-
 
 no_component_added = False
 
@@ -318,14 +315,6 @@ def renderComputer(model, template, skin):
     def appendOptions(options, container):
 	for o in sorted(options, lambda x,y: x[1]-y[1]):
 	    container.append(o[0])
-
-    # def noComponentFactory(_doc):
-    #     no_name = 'no' + name
-    #     no_doc = deepcopy(_doc)
-    #     no_doc['_id'] = no_name
-    #     no_doc['price'] = 0
-    #     no_doc['text'] = u'нет'
-    #     return no_doc
 
 
     def noComponent(name, component_doc, rows):
