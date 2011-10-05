@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-from twisted.web.xmlrpc import Proxy
 
-from twisted.python import log
-import sys
 from cStringIO import StringIO
 import gzip
 from twisted.web.resource import Resource, ForbiddenResource
 from twisted.web.static import File, getTypeAndEncoding
-from twisted.internet import reactor, threads, defer
+from twisted.internet import reactor, defer
 from pc.jsmin import jsmin
 from twisted.web.server import NOT_DONE_YET
 import os
@@ -16,9 +13,8 @@ from pc.couch import couch
 import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,\
-    noComponentFactory,makePrice,parts_names,parts
+    noComponentFactory,makePrice,parts_names,parts,updateOriginalModelPrices
 from pc.catalog import XmlGetter
-from urllib import quote_plus, unquote_plus
 from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
@@ -516,10 +512,16 @@ class SelectHelpsProxy(Resource):
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	return self.proxy.getChild(last, request)
 
+# TODO update parsed trees
 class ClearCache(Resource):
     def render_GET(self, request):
 	globals()['_cached_statics'] = {}
 	return "ok"
+
+class UpdatePrices(Resource):
+    def render_GET(self,request):
+        updateOriginalModelPrices()
+        return "ok"
 
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
@@ -552,6 +554,7 @@ class AdminGate(Resource):
 	Resource.__init__(self)
 	self.static = static
 	self.putChild('clear_cache',ClearCache())
+        self.putChild('update_prices',UpdatePrices())
 	self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
 							 '/_utils', reactor=reactor))
 	self.putChild('findorder', FindOrder())

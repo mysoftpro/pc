@@ -109,25 +109,24 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
 
 
 def walkOnChoices(name = None, _filter=None):
-    walk_on = None
+    choices = None
     if name is not None:
-        walk_on =(c for c in globals()['gChoices'][name])
+	choices =globals()['gChoices'][name]
     else:
-        walk_on = (kv[1] for kv in globals()['gChoices'])
+	choices = (v for k,v in globals()['gChoices'].items())
     if _filter is None:
-        _filter = lambda x: True
-        
-    for choices in walk_on:
-        if type(choices) is list:
-            for el in choices:
-                if el[0]:
-                    for ch in el[1][1]['rows']:		    
-                        if _filter(ch['doc']):
-                            yield ch['doc']
-        else:
-            for ch in choices['rows']:
-                if _filter(ch['doc']):
-                    yield ch['doc']
+	_filter = lambda x: True
+
+    if type(choices) is dict:
+	for ch in choices['rows']:
+	    if _filter(ch['doc']):
+		yield ch['doc']
+    else:
+	for el in choices:
+	    if el[0]:
+		for ch in el[1][1]['rows']:
+		    if _filter(ch['doc']):
+			yield ch['doc']
 
 
 
@@ -243,8 +242,6 @@ def noComponentFactory(_doc, name):
 def replaceComponent(code,model):
 
     name = nameForCode(code,model)
-
-    
     def sameCatalog(doc):
 	retval = True
 	if mother==name:
@@ -254,19 +251,19 @@ def replaceComponent(code,model):
 	return retval
     choices = globals()['gChoices'][name]
     flatten = []
-    # walkOnChoices
     if type(choices) is list:
 	for el in choices:
 	    if el[0]:
-		for ch in el[1][1]['rows']:		    
-                    if sameCatalog(ch['doc']):
-                        flatten.append(ch['doc'])
+    	  	for ch in el[1][1]['rows']:
+		    if sameCatalog(ch['doc']):
+			flatten.append(ch['doc'])
     else:
 	for ch in choices['rows']:
-            if sameCatalog(ch['doc']):
-                flatten.append(ch['doc'])
+	    if sameCatalog(ch['doc']):
+		flatten.append(ch['doc'])
 
-    # TODO! sort em by price. not by code
+    # # TODO! sort em by price. not by code
+
     keys = [doc['_id'] for doc in flatten]
     keys.append(code)
     keys = sorted(keys)
@@ -276,8 +273,8 @@ def replaceComponent(code,model):
     if _next == _length:
 	_next = ind-1
     next_el = deepcopy(flatten[_next])
-    print "returniiiiiiiiiiiiiiiiing"
-    print str(next_el['_id'])
+    print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemm"
+    print globals()['gChoices_flatten'][next_el['_id']]
     return next_el
 
 
@@ -474,9 +471,9 @@ def renderComputer(model, template, skin):
 						    ';var buildprice=',str(BUILD_PRICE),
 						    ';var dvdprice=',str(DVD_PRICE),
 
-                                                    ';var idvd=',simplejson.dumps(model['dvd']),
-                                                    ';var ibuilding=',simplejson.dumps(model['building']),
-                                                    ';var iinstalling=',simplejson.dumps(model['installing']),
+						    ';var idvd=',simplejson.dumps(model['dvd']),
+						    ';var ibuilding=',simplejson.dumps(model['building']),
+						    ';var iinstalling=',simplejson.dumps(model['installing']),
 						    ';var Course=',str(Course),
 						    ';var parts=',simplejson.dumps(parts_aliases)
 						    ))
@@ -499,6 +496,23 @@ def pr(some):
 
 
 gChoices = None
+gChoices_flatten = {}
+
+def flatChoices(res):
+    for name,choices in globals()['gChoices'].items():
+	if type(choices) is list:
+	    for el in choices:
+		if el[0]:
+		    for ch in el[1][1]['rows']:
+				if 'description' in ch['doc']:
+				    ch['doc'].pop('description')
+				globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+	else:
+	    for ch in choices['rows']:
+		if 'description' in ch['doc']:
+		    ch['doc'].pop('description')
+		globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+
 
 def fillChoices():
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
@@ -645,6 +659,7 @@ def fillChoices():
 	    if el[0]:
 		new_res.update(el[1])
 	globals()['gChoices'] = new_res
+	flatChoices(new_res)
 	return globals()['gChoices']
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict)
@@ -695,7 +710,7 @@ def computers(template,skin,request):
 	    model_snippet = tree.find('model')
 	    divs = deepcopy(model_snippet.findall('div'))
 	    model_div = divs[0]
-            
+
 	    if '_attachments' in m and 'icon.png' in m['_attachments']:
 		model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
 	    a = model_div.find('.//a')
@@ -708,35 +723,35 @@ def computers(template,skin,request):
 	    price_span.set('id',m['_id'])
 
 	    _components = buildPrices(m, json_prices, price_span)
-	    
-            if not this_is_cart:
-                info = etree.Element('div')
-		info.set('class','info')
-                model_div.append(info)
 
-            container.append(model_div)
+	    if not this_is_cart:
+		info = etree.Element('div')
+		info.set('class','info')
+		model_div.append(info)
+
+	    container.append(model_div)
 
 	    description_div = divs[1]
 
-            ul = etree.Element('ul')
-            ul.set('class','description')
-            for c in _components:
-                li = etree.Element('li')
-                li.text = c
-                ul.append(li)
-            description_div.append(ul)
+	    ul = etree.Element('ul')
+	    ul.set('class','description')
+	    for c in _components:
+		li = etree.Element('li')
+		li.text = c
+		ul.append(li)
+	    description_div.append(ul)
 
 	    h3 = description_div.find('h3')
 	    if not this_is_cart:
 		h3.text = m['title']
-                description_div.append(etree.fromstring(m['description']))
-                ul.set('style','display:none')
+		description_div.append(etree.fromstring(m['description']))
+		ul.set('style','display:none')
 	    else:
-                h3.text = u'Пользовательская конфигурация'
+		h3.text = u'Пользовательская конфигурация'
 		description_div.set('class','cart_description')
 	    container.append(description_div)
-        
-        _prices = 'undefined'
+
+	_prices = 'undefined'
 	if this_is_cart>0:
 	    cart = deepcopy(template.root().find('top_cart'))
 	    cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
@@ -749,15 +764,14 @@ def computers(template,skin,request):
 	    header_divs = header.findall('div')
 	    for d in header_divs:
 		template.top.append(d)
-        template.middle.find('script').text = 'var prices=' + _prices;
+	template.middle.find('script').text = 'var prices=' + _prices;
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()
 
     # RENDER MODELS HERE!!!
     if not this_is_cart:
-	print "render models"
-        d = couch.openView(designID,'models',include_docs=True,stale=False)
+	d = couch.openView(designID,'models',include_docs=True,stale=False)
 	d.addCallback(render)
     # RENDER cart here!!!!
     else:
@@ -779,7 +793,7 @@ def computers(template,skin,request):
 def findComponent(model, name):
     code = model['items'][name]
     if code is None:
-        return noComponentFactory({},name)
+	return noComponentFactory({},name)
     if type(code) is list:
 	code = code[0]
     choices = globals()['gChoices'][name]
@@ -872,3 +886,21 @@ def index(template, skin, request):
     d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(render)
     return d
+
+
+def updateOriginalModelPrices():
+    def update(models):
+	for row in models['rows']:
+            model = row['doc']
+            model['original_prices'] = {}
+	    for name,code in model['items'].items():
+                if type(code) is list:
+                    code = code[0]
+                if code in globals()['gChoices_flatten']:
+                    component = globals()['gChoices_flatten'][code]                    
+                    model['original_prices'].update({code:component['price']})
+                else:
+                    model['original_prices'].update({code:99})
+            couch.saveDoc(model)
+    d = couch.openView(designID,'models',include_docs=True,stale=False)
+    d.addCallback(update)
