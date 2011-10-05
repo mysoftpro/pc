@@ -363,22 +363,6 @@ def renderComputer(model, template, skin):
 	clear = etree.Element('div')
 	clear.set('style','clear:both;')
 	clear.text = ''
-
-
-	# d_comments = ''
-	# d_name = ''
-	# if 'description' in _doc:
-	#     d_name = _doc['description']['name']
-	#     d_comments = _doc['description']['comments']
-	#     if 'imgs' in _doc['description']:
-	# 	for i in _doc['description']['imgs']:
-	# 	    img = etree.Element('img')
-	# 	    img.set('src', '/image/' + _doc['_id'] + '/' + i + '.jpg')
-	# 	    img.set('align','right')
-	# 	    manu.text += etree.tostring(img)
-
-	# manu.text += d_name + d_comments
-
 	descr.append(manu);
 	descr.append(our)
 	descr.append(clear)
@@ -466,7 +450,7 @@ def renderComputer(model, template, skin):
 						    ';var Course=',str(Course),
 						    ';var parts=',simplejson.dumps(parts_aliases)
 						    ))
-
+    
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')

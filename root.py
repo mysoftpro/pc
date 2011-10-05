@@ -562,6 +562,7 @@ class AdminGate(Resource):
 	self.static = static
 	self.putChild('clear_cache',ClearCache())
         self.putChild('update_prices',UpdatePrices())
+        self.putChild('edit_model', EditModel())
 	self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
 							 '/_utils', reactor=reactor))
 	self.putChild('findorder', FindOrder())
@@ -657,3 +658,16 @@ class StoreOrder(Resource):
         d = couch.saveDoc(jorder)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
+
+
+class EditModel(Resource):    
+    def getChild(self, name, request):
+        static = CachedStatic(static_dir)
+        child = static.getChild("computer.html", request)
+        script = etree.Element('script')
+        script.set('type','text/javascript')
+        script.set('src','../edit_model.js')
+        child.skin.root().append(script)
+	return child
+        
+        

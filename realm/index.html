@@ -3,13 +3,35 @@
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <style type="text/css">
+	#main li {margin-bottom:10px;}
+	#models li {margin:0;}
+      </style>
   </head>
   <body>
-    <ul>
-      <li style="margin-bottom:10px;"><a href="order.html">Оформить заказ</a></li>
+    <ul id="main">
+      <li><a href="order.html">Оформить заказ</a></li>
       <li><a href="clear_cache">Почистить кеш</a></li>
+      <li>
+	Редактировать модели
+	<ul id="models">
+	  <li><a href="edit_model/ping"> Пинг</a></li>
+	  <li><a href="edit_model/scroll"> Скролл</a></li>
+	  <li><a href="edit_model/localhost"> Локалхост</a></li>
+	  <li><a href="edit_model/chart"> Чарт</a></li>
+	  <li><a href="edit_model/cell"> Целл</a></li>
+	  <li><a href="edit_model/storage"> Сторадж</a></li>
+	  <li><a href="edit_model/zoom"> Зум</a></li>
+	  <li><a href="edit_model/spline"> Сплайн</a></li>
+	  <li><a href="edit_model/compiler"> Компайлер</a></li>
+	  <li><a href="edit_model/shade"> Шейд</a></li>
+	  <li><a href="edit_model/render"> Рендер</a></li>
+	  <li><a href="edit_model/raytrace"> Рейтрейс</a></li>
+	</ul>
+	</li>
+      
       <!-- <li><a href="update_prices">Обновить цены в моделях</a></li> -->
-      <li><a href="couch">CouchDB</a></li>
+      <!-- <li><a href="couch">CouchDB</a></li> -->
     </ul>
   </body>
 </html>
