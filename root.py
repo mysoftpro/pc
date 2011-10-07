@@ -385,6 +385,17 @@ class Save(Resource):
 	    _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
 	    _model['author'] = _user['_id']
 	    return (_user,_model)
+        def installOriginalPrices(_model):
+            from pc import models
+            _model['original_prices'] = {}
+            for name,code in _model['items'].items():
+                if type(code) is list:
+                    code = code[0]
+                if code in models.gChoices_flatten:
+                    component = models.gChoices_flatten[code]                    
+                    _model['original_prices'].update({code:component['price']})
+                else:
+                    _model['original_prices'].update({code:99})
 	def updateModel(_model, _user, new_model):
 	    # if _model author is _user: AND "EDIT" in request, just updateModel
 	    # else - store new model with the parent_id of this model
@@ -393,9 +404,10 @@ class Save(Resource):
 		new_model['_id'] = _model['_id']
 		new_model['_rev'] = _model['_rev']
 		new_model['author'] = _user['_id']
+                new_model['original_prices'] = _model['original_prices']
 		return (_user,new_model)
 	    else:
-		new_model['parent'] = _model['_id']
+		new_model['parent'] = _model['_id']                
 		_d = couch.get('/_uuids?count=1')
 		_d.addCallback(addId, _user, new_model)
 		return _d
@@ -404,13 +416,15 @@ class Save(Resource):
 	if user_doc.__class__ is Failure:
 	    if 'id' in model:
 		model['parent'] = model.pop('id')
+            installOriginalPrices(model)
 	    user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
 	    d = couch.get('/_uuids?count=1')
 	    d.addCallback(addId, user_doc, model)
 	    d.addCallback(self.finish, request)
 	    return d
 	# 2a user doc but no model
-	if not 'id' in model:
+	if not 'id' in model:            
+            installOriginalPrices(model)
 	    d = couch.get('/_uuids?count=1')
 	    d.addCallback(addId, user_doc, model)
 	    d.addCallback(self.finish, request)
