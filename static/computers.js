@@ -1,20 +1,20 @@
-var showYa = function (_id, _link){
-    new Ya.share({
-		     element: _id,
-		     elementStyle: {
-			 'type': 'none',
-			 'border': false,
-			 'quickServices': ['vkontakte', 'odnoklassniki','facebook','twitter','lj','moimir','moikrug','liveinternet']
-		     },
-		     link:_link,
-		     title: 'buildpc.ru Просто купить компьютер',
-		     serviceSpecific: {
-			 twitter: {
-			     title: 'buildpc.ru Просто купить компьютер'
-			 }
-		     }
-		 });
-};
+// var showYa = function (_id, _link){
+//     new Ya.share({
+// 		     element: _id,
+// 		     elementStyle: {
+// 			 'type': 'none',
+// 			 'border': false,
+// 			 'quickServices': ['vkontakte', 'odnoklassniki','facebook','twitter','lj','moimir','moikrug','liveinternet']
+// 		     },
+// 		     link:_link,
+// 		     title: 'buildpc.ru Просто купить компьютер',
+// 		     serviceSpecific: {
+// 			 twitter: {
+// 			     title: 'buildpc.ru Просто купить компьютер'
+// 			 }
+// 		     }
+// 		 });
+// };
 $(function(){
       showYa('ya_share_cart', 'http://buildpc.ru/computer/'+$.cookie('pc_user'));
       var input = $('#email_cart');
