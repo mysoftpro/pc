@@ -528,7 +528,10 @@ def clear_cache():
     globals()['_cached_statics'] = {}
     _dir = globals()['static_dir']
     for f in os.listdir(_dir):
-        os.utime(os.path.join(_dir,f), None)
+        try:
+            os.utime(os.path.join(_dir,f), None)
+        except:
+            pass
     from pc import models
     models.gChoices = None
     models.gChoices_flatten = {}
