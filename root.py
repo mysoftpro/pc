@@ -6,6 +6,7 @@ from twisted.web.resource import Resource, ForbiddenResource
 from twisted.web.static import File, getTypeAndEncoding
 from twisted.internet import reactor, defer
 from pc.jsmin import jsmin
+from pc import base36
 from twisted.web.server import NOT_DONE_YET
 import os
 from twisted.web.http import CACHED
@@ -408,7 +409,7 @@ class Save(Resource):
                 return (_user,new_model)
             else:
                 new_model['parent'] = _model['_id']
-                _d = couch.get('/_uuids?count=1')
+                _d = get_uuid()# couch.get('/_uuids?count=1')
                 _d.addCallback(addId, _user, new_model)
                 return _d
 
@@ -454,6 +455,12 @@ class Save(Resource):
             return NOT_DONE_YET
         return 'fail'
 
+
+def get_uuid():
+    d = defer.Deferred()
+    d.addCallback(lambda some: base36.gen_id())
+    d.callback(None)
+    return d
 
 class Delete(Resource):
     def render_GET(self, request):

@@ -1,0 +1,10 @@
+1 hour = 3600 sec
+1 day = 86400 sec
+1 year = 31536000 sec
+
+41 year fromn epoch
+
+time.time() - (41*31536000)
+
+
+int(round(time.time() - (41*31536000),1)*10) = 251116037
