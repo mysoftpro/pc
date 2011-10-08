@@ -762,26 +762,13 @@ def computers(template,skin,request):
 
 
 def findComponent(model, name):
-    code = model['items'][name]
+    """ ??? i have a flat choices now! why do i need that?"""    
+    code = model['items'][name]    
     if code is None:
-	return noComponentFactory({},name)
+        return noComponentFactory({},name)
     if type(code) is list:
-	code = code[0]
-    choices = globals()['gChoices'][name]
-    retval = None
-    if type(choices) is list:
-	for el in choices:
-	    if el[0]:
-		for ch in el[1][1]['rows']:
-		    if ch['doc']['_id'] == code:
-			retval = ch['doc']
-			break
-    else:
-	for ch in choices['rows']:
-	    if ch['doc']['_id'] == code:
-		retval = ch['doc']
-		break
-
+        code = code[0]
+    retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
     if retval is None:
 	retval = replaceComponent(code,model)
     else:
@@ -809,6 +796,7 @@ def buildPrices(model, json_prices, price_span):
         if type(code) is list:
             code = code[0]
 	component_doc = findComponent(model,cat_name)
+        code = component_doc['_id']
 	price = makePrice(component_doc)
 	total += price
 	# if model['_id'] == 'raytrace':
