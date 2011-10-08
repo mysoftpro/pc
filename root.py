@@ -246,7 +246,6 @@ class Cookable(Resource):
         Resource.__init__(self)
 
     def checkCookie(self, request):
-        print "yearrrrrrrrrrrrrrrrrrrh!"
         user_cookie = request.getCookie('pc_user')
         if  user_cookie is None:
             request.addCookie('pc_user',
