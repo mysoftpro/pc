@@ -7,7 +7,6 @@ function makeMask(action, _closing){
                 e.preventDefault();
             var maskHeight = $(document).height();
             var maskWidth = $(window).width();
-	    console.log($(document).height());
             $('#mask').css({'width':maskWidth,'height':maskHeight})
                 .fadeIn(400)
                 .fadeTo("slow",0.9);
@@ -26,18 +25,12 @@ function makeMask(action, _closing){
             details.css('left', _left);
 
             action();
-
+	    details.prepend('<div id="closem"></div><div style="clear:both;"></div>');
+	    $('#closem').click(function(e){$('#mask').click();});
             function closing(){
             }
             details.fadeIn(600, closing);
-            masked = true;
-            $('#details.close').click(function (e) {
-                                          e.preventDefault();
-                                          $('#mask').hide();
-                                          details.hide();
-                                          masked = false;
-                                          _closing();
-                                      });
+            masked = true;            
             $('#mask').click(function () {
                                  $(this).hide();
                                  details.hide();

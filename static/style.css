@@ -1023,6 +1023,15 @@ strong.red{
     float:right;
     cursor:pointer;
 }
+#closem{
+    background-image:url("/static/maskclose.png");
+    width:30px;
+    height:30px;
+    float:right;
+    cursor:pointer;
+    margin-bottom: 10px;
+    margin-top: -10px;
+}
 
 
 .popup
