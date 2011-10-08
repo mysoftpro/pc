@@ -168,9 +168,8 @@ def makePrice(doc):
     course = Course
     if getCatalogsKey(doc) == windows:
 	course = 1
-    our_price = doc['price']*Margin*course
-    # doc['price'] = int(str(round(our_price)).split('.')[0])
-    return int(str(round(our_price)).split('.')[0])
+    our_price = float(doc['price'])*Margin*course
+    return int(round(our_price/10))*10
 
 
 def cleanDoc(doc, price):
