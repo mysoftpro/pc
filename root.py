@@ -242,25 +242,18 @@ class CachedStatic(File):
 
 class Cookable(Resource):
     def __init__(self):
-        self.cookies = []
-        reactor.callLater(0, self.collectCookies)
+        self.cookies = []        
         Resource.__init__(self)
-    def collectCookies(self):
-        d = couch.get('/_uuids?count=20')
-        def append(uuids):
-            for uuid in simplejson.loads(uuids)['uuids']:
-                self.cookies.append(uuid[26:])
-        d.addCallback(append)
-    def getChild(self, name, request):
+
+    def checkCookie(self, request):
+        print "yearrrrrrrrrrrrrrrrrrrh!"
         user_cookie = request.getCookie('pc_user')
         if  user_cookie is None:
-            cookie = self.cookies.pop()
             request.addCookie('pc_user',
-                              str(cookie),
+                              base36.gen_id(),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
-            if len(self.cookies) < 10:
-                reactor.callLater(0, self.collectCookies)
+
 
 class Root(Cookable):
     def __init__(self, host_url, index_page):
@@ -280,15 +273,8 @@ class Root(Cookable):
         self.putChild('admin',Admin())
         self.host_url = host_url
 
-    def collectCookies(self):
-        d = couch.get('/_uuids?count=20')
-        def append(uuids):
-            for uuid in simplejson.loads(uuids)['uuids']:
-                self.cookies.append(uuid[26:])
-        d.addCallback(append)
-
     def getChild(self, name, request):
-        Cookable.getChild(self, name, request)
+        self.checkCookie(request)
         u = str(request.URLPath())
         if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
             return self.static.getChild(name, request)
@@ -298,12 +284,14 @@ class Computer(Cookable):
     def __init__(self, static):
         Cookable.__init__(self)
         self.static = static
+
     # show models if computer is not specified
     def render_GET(self, request):
+        self.checkCookie(request)
         return self.static.getChild("computers.html", request).render_GET(request)
 
-    def getChild(self, name, request):
-        Cookable.getChild(self, name, request)
+    def getChild(self, name, request):        
+        self.checkCookie(request)
         return self.static.getChild("computer.html", request)
 
 
@@ -315,10 +303,11 @@ class Cart(Cookable):
         self.static = static
     # show models if cart is not specified
     def render_GET(self, request):
+        self.checkCookie(request)
         return self.static.getChild("computers.html", request).render_GET(request)
 
     def getChild(self, name, request):
-        Cookable.getChild(self, name, request)
+        self.checkCookie(request)
         return self.static.getChild("computers.html", request)
 
 
@@ -383,7 +372,7 @@ class Save(Resource):
 
     def saveModel(self, user_doc, user_id, model, request):
         def addId(uuids, _user, _model):
-            _model['_id'] = simplejson.loads(uuids)['uuids'][0][26:]
+            _model['_id'] = uuids#simplejson.loads(uuids)['uuids'][0][26:]
             _model['author'] = _user['_id']
             return (_user,_model)
         def installOriginalPrices(_model):
@@ -420,14 +409,14 @@ class Save(Resource):
                 model['parent'] = model.pop('id')
             installOriginalPrices(model)
             user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
-            d = couch.get('/_uuids?count=1')
+            d = get_uuid()#couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
         # 2a user doc but no model
         if not 'id' in model:
             installOriginalPrices(model)
-            d = couch.get('/_uuids?count=1')
+            d = get_uuid()#couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
@@ -454,6 +443,7 @@ class Save(Resource):
             # d.addErrback(self.storeUser, user_id, jmodel, request)
             return NOT_DONE_YET
         return 'fail'
+
 
 
 def get_uuid():
