@@ -2,7 +2,7 @@ var masked = false;
 
 function makeMask(action, _closing){
     function _makeMask(e){
-        try{
+	try{
             if (e)
                 e.preventDefault();
             var maskHeight = $(document).height();
@@ -59,7 +59,7 @@ function makeMask(action, _closing){
 
 
 
-var myMessages = ['info','warning','error','success'];
+var myMessages = ['popups_info','popups_warning','popups_error','popups_success'];
 function hideAllMessages()
 {
                  var messagesHeights = new Array(); // this array will store height for each
