@@ -111,9 +111,6 @@ $(function(){
 				    makeGuider(target,guider_hours[el.attr('class').split(' ')[0]]);
 				});
 
-	  if (hour == 9){
-	      ul.find('div').css('float','right');
-	  }
 	  ul.append('<div class="guiderzoom guiderdiv">увеличить</div>');
 	  ul.find('.guiderzoom').click(function(e){
 					  var target = $(e.target);
@@ -131,8 +128,11 @@ $(function(){
 				  attachTo: target,
 				  description: ul,
 				  position: hour,
-				  width: 500
+				  width: 500,
+				  id:'ass'
 			      }).show();
+	  ul.parent().before('<div class="closeg"></div>');
+	  ul.parent().prev().click(function(e){$(e.target).parent().find('.guiderclose').click();});
       }
 
       $('.info').click(function(e){

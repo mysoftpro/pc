@@ -808,7 +808,12 @@ def buildPrices(model, json_prices, price_span):
 	component_doc = findComponent(model,cat_name)
 	price = makePrice(component_doc)
 	total += price
-	updatePrice(model['_id'],cat_name,displ,price)
+	# if model['_id'] == 'raytrace':
+        print "eeeeeeeeeeeeeeeeeeeeemm"
+        print model['_id']
+        print aliasses_reverted[cat_name]
+        print price
+        updatePrice(model['_id'],cat_name,displ,price)
 	updatePrice(model['_id'],cat_name,soft,price)
 	updatePrice(model['_id'],cat_name,audio,price)
 	updatePrice(model['_id'],cat_name,mouse,price)

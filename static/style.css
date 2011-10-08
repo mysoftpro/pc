@@ -929,7 +929,7 @@ color:#7b9c0a;
     color: black;
 }
 #models_top{
-    height:170px;
+    height:180px;
 }
 
 #pricetext{
@@ -1015,4 +1015,11 @@ strong.red{
     color: #BBBBBB;
     font-size: 16px;
     padding: 9px;
+}
+.closeg{
+    background-image:url("/static/guiderclose.png");
+    width:15px;
+    height:15px;
+    float:right;
+    cursor:pointer;
 }
