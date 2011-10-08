@@ -656,7 +656,7 @@ color:#7b9c0a;
     position:absolute;
     left:0;
     top:0;
-    z-index:9000;
+    z-index:9999;
     background-color:#555;
     display:none;
 }
@@ -1108,4 +1108,11 @@ strong.red{
     to {
 	background-position: -80px 0;
     }
+}
+
+.guider_description ul li{
+    cursor:pointer;
+}
+.guider_description ul li:hover{
+    color:#730606;
 }

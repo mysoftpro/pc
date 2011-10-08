@@ -7,6 +7,7 @@ function makeMask(action, _closing){
                 e.preventDefault();
             var maskHeight = $(document).height();
             var maskWidth = $(window).width();
+	    console.log($(document).height());
             $('#mask').css({'width':maskWidth,'height':maskHeight})
                 .fadeIn(400)
                 .fadeTo("slow",0.9);
@@ -51,7 +52,7 @@ function makeMask(action, _closing){
                                               });
         }
         catch (e){
-            log(e);
+            console.log(e);
         }
     }
     return _makeMask;
@@ -241,4 +242,7 @@ $(function()
       }
       $('.inactive').click(swapTabs);
       $('.body').click(function(){fillSelectHelps(function(){});});
+      
+      //$('.guider_description ul li')
+
   });

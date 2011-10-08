@@ -3,7 +3,7 @@
   font-family: arial;
   position: absolute;
   outline: none;
-  z-index: 100000005 !important;
+  z-index: 999 !important;
   padding: 0px 12px;
   width: 500px;
 
@@ -85,7 +85,7 @@
   display: none;
   background-image: url('guider_arrows.png');
   background-repeat: no-repeat;
-  z-index: 100000006 !important;
+  z-index: 999 !important;
 }
 
 .guider_arrow_right {

@@ -707,9 +707,10 @@ def computers(template,skin,request):
 
 	    ul = etree.Element('ul')
 	    ul.set('class','description')
-	    for c in _components:
+	    for text,code in _components.items():
 		li = etree.Element('li')
-		li.text = c
+		li.text = text
+                li.set('id',code)
 		ul.append(li)
 	    description_div.append(ul)
 
@@ -805,6 +806,8 @@ def buildPrices(model, json_prices, price_span):
 		json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
     for cat_name,code in model['items'].items():
+        if type(code) is list:
+            code = code[0]
 	component_doc = findComponent(model,cat_name)
 	price = makePrice(component_doc)
 	total += price
@@ -813,12 +816,16 @@ def buildPrices(model, json_prices, price_span):
 	updatePrice(model['_id'],cat_name,soft,price)
 	updatePrice(model['_id'],cat_name,audio,price)
 	updatePrice(model['_id'],cat_name,mouse,price)
-	updatePrice(model['_id'],cat_name,kbrd,price)
-	__components.append((component_doc['text'] + u' <strong>'+ unicode(price) + u' р</strong>',parts[cat_name]))
+	updatePrice(model['_id'],cat_name,kbrd,price)        
+	__components.append((component_doc['text'] + u' <strong>'+ unicode(price) + u' р</strong>',parts[cat_name], model['_id']+'_'+code))
     total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
     price_span.text = str(total) + u' р'
     json_prices[model['_id']]['total'] = total
-    return [c[0] for c in sorted(__components,lambda x,y:x[1]-y[1])]
+    sorted_components = [(c[0],c[2]) for c in sorted(__components,lambda x,y:x[1]-y[1])]
+    retval = {}
+    for k,v in sorted_components:
+        retval.update({k:v})
+    return retval
 
 
 
