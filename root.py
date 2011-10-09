@@ -160,7 +160,6 @@ class CachedStatic(File):
             self.type += ';charset=utf-8'
         request.setHeader('Content-Type', self.type)
         last_modified = self.getmtime()
-
         # 304 is here
         physical_name_in_cache = physical_name in _cached_statics and _cached_statics[physical_name][0] == last_modified
         # virtual_name_in_cache = virtual_name in _cached_statics and _cached_statics[virtual_name][0] == last_modified
@@ -271,6 +270,7 @@ class Root(Cookable):
         self.putChild('select_helps', SelectHelpsProxy())
         self.putChild('admin',Admin())
         self.host_url = host_url
+        self.putChild('5406ae5f1ec4.html',File(os.path.join(static_dir,'5406ae5f1ec4.html')))
 
     def getChild(self, name, request):
         self.checkCookie(request)
