@@ -1,69 +1,9 @@
-<top>
-  <script type="text/javascript">
-    $(function(){
-
-    $('#next_button').click(function(e){
-
-    var last_pos = $('.indexitem').last().position();
-    var first_pos = $('.indexitem').first().position();
-
-    if (first_pos.top != last_pos.top)
-	$('#computers_container').animate({'margin-left':'-=220px'}, 300);
-
-
-    $('#previous_button').css({
-			   'background-image':"url('static/previous.png')",
-			   'cursor':"pointer"
-			      })
-			 .unbind('click')
-			 .click(function(){
-			   if ($('#computers_container').css('margin-left') != '0px')
-			    $('#computers_container').animate({'margin-left':'+=220px'}, 300);
-			  })
-    })
-    $('.indexitem').click(function(e){
-    var target = $(e.target);
-    var a = target.find('a');
-    if (a.length==0)
-    a = target.parent().find('a');
-    document.location.href=a.attr('href');
-    })
-
-    $('#pricetext input').prop('checked','checked');
-    $('#pricetext input').click(function(e){
-    var target = $(e.target);
-    if (target.is(':checked'))
-    target.next().css('background-image',"url('/static/checkbox.png')");
-    else
-    target.next().css('background-image',"url('/static/checkbox_empty.png')");
-
-    var no_soft = !$('#isoft').is(':checked');
-    var no_displ = !$('#idisplay').is(':checked');
-    var no_audio = !$('#iaudio').is(':checked');
-    var no_input = !$('#iinput').is(':checked');
-
-    for (var mid in prices){
-    new_price = prices[mid]['total'];
-    if (no_soft)
-    new_price -= prices[mid]['soft']+800;
-    if (no_displ)
-    new_price -= prices[mid]['displ'];
-    if (no_audio)
-    new_price -= prices[mid]['audio'];
-    if (no_input)
-    new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
-    $('#'+mid).text(new_price + ' р');
-    }
-    })
-
-
-    })
-  </script>
-  <div class="panel" id="banner1">
-
-    <h2 id="first" class="title">
+<top>  
+  <div class="panel" id="face">
+    <h1 id="first" class="title">
       Купить компьютер просто
-    </h2>
+    </h1>
+    <div id="greetings">    
     <p id="second">
       В нашем магазине <a href="computer" style="color:#7B9C0A">12 моделей</a> компьютеров в разной конфигурации.
     </p>
@@ -73,7 +13,9 @@
     <p id="fourth">
       Вы сможете подобрать себе компьютер с оптимальным соотношением цена/производительность.
     </p>
-
+    </div>
+    <div id="greeting_banner"></div>
+    <div style="clear:both;"></div>
   </div>
 </top>
 
@@ -138,6 +80,9 @@
   </ul>
   <span style="clear:both;"></span>
   <script type="text/javascript"></script>
+  <script type="text/javascript" src="/static/index.js"></script>
+  
+
 </middle>
 
 

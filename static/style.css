@@ -43,11 +43,19 @@ h2 {
     margin-bottom:5px;
 }
 
-#banner1 {
+#face {
     height:325px;
+}
+#greetings{
+    float:left;
+}
+#greeting_banner{
     background:url('hp1.png');
     background-repeat:no-repeat;
-    background-position: 420px 70px;
+    /* background-position: 420px 70px; */
+    float:right;
+    width:558px;
+    height:261px;
 }
 .title {
        text-transform:uppercase;
@@ -66,6 +74,10 @@ p {
     color:#696969;
     margin-bottom:30px;
     text-align:left;
+    padding:0;
+    margin:0;
+    margin-top:10px;
+    margin-bottom:10px;
 }
 #second{
 
@@ -606,7 +618,7 @@ color:#7b9c0a;
     margin: 0 auto;
     padding: 0;
     width: 1000px;
-    /* margin-top:20px; */
+    margin-top:20px;
 }
 #features li  {
     float:left;
@@ -873,6 +885,7 @@ color:#7b9c0a;
     color:#B9D3E1;
     line-height:12px;
     font-size:12px;
+    margin-top: 0;
 }
 .computers_description h3{
     color:#AAAAAA;

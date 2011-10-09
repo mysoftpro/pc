@@ -6,5 +6,5 @@
 
 time.time() - (41*31536000)
 
-
 int(round(time.time() - (41*31536000),1)*10) = 251116037
+this is time in 0.1 secs from 01/01/2011
