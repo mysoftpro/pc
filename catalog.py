@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pc.secure import xml_source,xml_method, xml_login, xml_password
+from pc.secure import xml_source,xml_method, xml_login, xml_password, xml_key
 from lxml import etree
 from twisted.python import log
 import sys
@@ -8,7 +8,7 @@ from twisted.web.xmlrpc import Proxy
 import base64
 from cStringIO import StringIO
 from twisted.web.resource import Resource, ForbiddenResource
-from pc.couch import couch
+from pc.couch import couch, designID
 import simplejson
 from twisted.internet import reactor
 from twisted.web.client import Agent
@@ -18,6 +18,7 @@ from twisted.internet.protocol import Protocol
 from twisted.internet import defer
 import os
 from datetime import datetime
+from pc.mail import send_email
 
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
                         'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
@@ -43,6 +44,10 @@ class XmlGetter(Resource):
     def pr(self, fail):
         log.startLogging(sys.stdout)
         log.msg(fail)
+        send_email('admin@buildpc.ru',
+                   u'Ошибка обновления каталога', 
+                   unicode(fail),
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
 
     def storeWholeCatalog(self, res):
         src = base64.decodestring(res)
@@ -94,23 +99,33 @@ class XmlGetter(Resource):
             return d
 
     def cleanDocs(self, _all_docs, codes):
+        all_count = 0
+        deleted_count = 0
         for row in _all_docs['rows']:
             try:
                 int(row['id'])
             except ValueError:
                 continue
+            all_count +=1
             if row['id'] not in codes:
-                couch.deleteDoc(row['id'], row['value']['rev'])
+                couch.deleteDoc(row['id'], row['value'])
+                deleted_count +=1
         # destroy cache here!
         from pc import root
         root.clear_cache()
+        send_email('admin@buildpc.ru',
+                   u'Обновление wit-tech', 
+                   u'Всего позиций:' + unicode(all_count) + u', удалено позиций:' + unicode(deleted_count),
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
 
     def getItem(self, res, gen, codes):
         try:
             item = gen.next()
         except StopIteration:
-            _all = couch.listDoc()
+            # separate view            
+            _all = couch.openView(designID,'codes',stale=False) #couch.listDoc()
             _all.addCallback(self.cleanDocs, codes)
+            _all.addErrback(self.pr)
             return
         sio = StringIO()
         item_code = item.pop('code')
@@ -144,6 +159,9 @@ class XmlGetter(Resource):
         self.getItem(None, gen, set())
 
     def render_GET(self, request):
+        key = request.args.get('key', [None])[0]
+        if key is None or key != xml_key:
+            return "fail"
         proxy = Proxy(xml_source)
         op = request.args.get('op', [None])[0]
         if op is not None:

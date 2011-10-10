@@ -114,7 +114,7 @@ class Sender(Resource):
         send_email(recipient, u'Купить компьютер просто',  'http://buildpc.ru/computer/'+uuid)
 	return "ok"
 
-def send_email(recipient, subject, body, sender=u'Компьютерный магазин <mail@kalog.ru>'):
+def send_email(recipient, subject, body, sender=u'Компьютерный магазин <inbox@buildpc.ru>'):
     """Send an email.
 
     All arguments should be Unicode strings (plain ASCII works as well).

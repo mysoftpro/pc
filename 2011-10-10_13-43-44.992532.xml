@@ -7,7 +7,7 @@
         <item id="15413" code="15419" price="12.50" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Gembrid PCI Firewire 3+1 Soft + Cable</item>
         <item id="18775" code="18781" price="10.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Logilink PC0006, PCI interface card 3 x FireWire, cable,</item>
         <item id="13876" code="13882" price="14.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Logilink PC0013, PCI interface card, 1x lpt (paralel)</item>
-        <item id="18780" code="18786" price="16.00" stock1="1" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Logilink PC0018 MultiI/O 32-Bit PCI 2xCOM, 1xLPT</item>
+        <item id="18780" code="18786" price="16.00" stock1="2" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Logilink PC0018 MultiI/O 32-Bit PCI 2xCOM, 1xLPT</item>
         <item id="18784" code="18790" price="12.00" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  Logilink PC0028 PCI Interface card USB 2.0 4+1 VIA</item>
         <item id="18776" code="18782" price="15.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер  PCI Interface Card 1 x esata external, 2x SATA + 1x IDE internal, VIA 6421 Chipset</item>
         <item id="15433" code="15439" price="17.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер 4world PCI IDE ATA 133 x2 ITE8212</item>
@@ -47,18 +47,15 @@
     <catalog id="7384" name="Мониторы">
       <catalog id="7526" name="LCD 19-20''">
         <item id="19631" code="19637" price="103.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор Philips LED 196V3LAB 18.5''  DVI BLACK</item>
-        <item id="18914" code="18920" price="95.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!! Монитор Asus LED VW197D 18.5" 1366x768/5ms/DSub</item>
         <item id="19566" code="19572" price="78.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Acer V193HQV 18.5" 1366x768/5ms/5000:1/VGA</item>
-        <item id="19624" code="19630" price="82.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор AOC 931Swl 18,5" LCD wide 10000:1 5ms</item>
-        <item id="19628" code="19634" price="82.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор AOC N950Sw 18,5' LCD  wide 6 0000:1 5ms</item>
-        <item id="19096" code="19102" price="119.00" stock1="3" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus LED VH198D 19" 1440x900/5ms/DSub</item>
-        <item id="19545" code="19551" price="120.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus LED VW199D 19" 1366x768/5ms/DSub</item>
+        <item id="19624" code="19630" price="79.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор AOC 931Swl 18,5" LCD wide 10000:1 5ms</item>
+        <item id="19628" code="19634" price="75.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор AOC N950Sw 18,5' LCD  wide 6 0000:1 5ms</item>
+        <item id="19096" code="19102" price="112.00" stock1="3" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus LED VH198D 19" 1440x900/5ms/DSub</item>
+        <item id="18914" code="18920" price="90.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus LED VW197D 18.5" 1366x768/5ms/DSub</item>
+        <item id="19545" code="19551" price="115.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus LED VW199D 19" 1366x768/5ms/DSub</item>
         <item id="19565" code="19571" price="79.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор LG W1946S-BF 18.5" 1366x768/5ms/30000:1/VGA</item>
       </catalog>
       <catalog id="13209" name="LCD 22-27&quot;">
-        <item id="15600" code="15606" price="190.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор BenQ G2420HDBL 24"LED 5ml:1 DSUB/DVIBlack 5ms</item>
-        <item id="17699" code="17705" price="147.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор BenQ LED GL2240   21.5"/5ms/250 кд/м2</item>
-        <item id="19447" code="19453" price="250.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор BenQ EW2420 24"LED 20ml:1 DSUB/DVI/HDMI Black 8ms</item>
         <item id="19463" code="19469" price="147.00" stock1="1" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор BenQ LED GL2240M  21.5"/5ms/250 кд/м2, speakers</item>
         <item id="19449" code="19455" price="165.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор LG E2260T-PN 21.5"LED 5ml:1 DSUB/DVI/ 5ms  Black</item>
         <item id="19455" code="19461" price="160.00" stock1="1" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор LG E2260V-PN 21.5"LED 5ml:1 DSUB/DVI/ HDMI/5ms  Black</item>
@@ -71,6 +68,8 @@
         <item id="19622" code="19628" price="349.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;NEW!!!&lt;/font&gt; Монитор Philips 273E3LHSB 27'' LED DVI HDMI czarny carbon</item>
         <item id="19629" code="19635" price="177.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Acer LED V243HLAObmd 24'' 5ms 12000000:1 DVI</item>
         <item id="18451" code="18457" price="130.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор Asus VW227D 22" LCD wide 5ms 50000 :1   Black</item>
+        <item id="15600" code="15606" price="190.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор BenQ G2420HDBL 24"LED 5ml:1 DSUB/DVIBlack 5ms</item>
+        <item id="17699" code="17705" price="147.00" stock1="&gt;5" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор BenQ LED GL2240   21.5"/5ms/250 кд/м2</item>
         <item id="19633" code="19639" price="240.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Монитор BenQ LED VW2420H 24'' SLIM VA PANEL 5ms/20mln:1/hdmi/dvi/FullHD/BLACK</item>
         <item id="19621" code="19627" price="160.00" stock1="0" warranty_type="36 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор LG E2250T-PN 21.5" LED wide 5000000:1 DVI Pianoblack</item>
       </catalog>
@@ -85,7 +84,7 @@
         <item id="18149" code="18155" price="116.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i3-2100 3,10 Ghz BOX ( BX80623I52100 )</item>
         <item id="19098" code="19104" price="181.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i5-2310 2,9GHz BOX 6M LGA1155 BX80623I52310 BOX</item>
         <item id="18083" code="18089" price="219.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i5-2500K 3,3GHz BO 6MLGA1155 BX80623I52500K</item>
-        <item id="18033" code="18039" price="310.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i7-2600 3,40GHz BOX 8M LGA1155 BX80623I72600</item>
+        <item id="18033" code="18039" price="310.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i7-2600 3,40GHz BOX 8M LGA1155 BX80623I72600</item>
         <item id="18131" code="18137" price="318.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel CORE i7-2600K 3,40GHz BOX 8M LGA1155 BX80623I72600K</item>
         <item id="18978" code="18984" price="90.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel Pentium Dual Core G850 2.90GHz/3MB/1155 LGA/Box (BX80623G850)</item>
       </catalog>
@@ -96,6 +95,7 @@
         <item id="17658" code="17664" price="276.00" stock1="5" warranty_type="24 месяца" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СУПЕРЦЕНА!! &lt;/font&gt;Процессор Intel Core i7-950 3.06 GHz/cashe-8Mb/1366 LGA</item>
       </catalog>
       <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
+        <item id="19316" code="19322" price="36.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel  Celeron 430 1.8 GHz 64-bit socket LGA775, 800MHz, L2 cashe 512Kb box</item>
         <item id="11422" code="11428" price="46.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel  Celeron E3400 Dual-Core двухъядерный 2.6 GHz 64-bit/800/ Cashe L2-1024Kb/ LGA775, b</item>
         <item id="18130" code="18136" price="63.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel  Pentium E5700 Dual-Core 3.0 GHz/Wolfdale- 0.045/64-bit/800MHz/L2-2Mb/ 775LGA, MMX,</item>
         <item id="18986" code="18992" price="66.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор Intel  Pentium E6600 Dual-Core 3.06GHz 2M 1066MHz</item>
@@ -109,13 +109,13 @@
         <item id="18317" code="18323" price="107.00" stock1="10" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Desktop Phenom II X4 840 (3.2 GHz 2MB 95W AM3) Box</item>
         <item id="17950" code="17956" price="97.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X2 560 3,3GHz 7MB AM3 HDZ560WFGMBOX</item>
         <item id="16205" code="16211" price="139.00" stock1="13" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X4 965 BOX Black Edition (HDZ965F) 3.4 Ghz/ 2+6MB/Socket AM3</item>
-        <item id="16107" code="16113" price="165.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X6 1055T 2.8GHz cashe 6Mb  Socket AM3 (HDT55TFBGRBOX)</item>
+        <item id="16107" code="16113" price="165.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X6 1055T 2.8GHz cashe 6Mb  Socket AM3 (HDT55TFBGRBOX)</item>
         <item id="17597" code="17603" price="179.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X6 1075T 3.0GHz cashe 6Mb  Socket AM3 (HDT55TFBGRBOX)</item>
         <item id="16754" code="16760" price="199.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X6 1090T Black Edition 3.2GHz Socket AM3 Box, Кэш L2 512 Кб x6</item>
         <item id="17980" code="17986" price="205.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Phenom II X6 1100T Box 3.4GHz Socket AM3 Box, Кэш L2 512 Кб x6, работает на ч</item>
       </catalog>
       <catalog id="19257" name="SOCKET FM1">
-        <item id="19252" code="19258" price="117.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD  A6 X4 3650 FM1 100W 2,6GHz 4MB</item>
+        <item id="19252" code="19258" price="117.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;NEW!!! Процессор AMD  A6 X4 3650 FM1 100W 2,6GHz 4MB</item>
         <item id="19638" code="19644" price="82.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD A4 X2 3400 FM1 65W 2,7GHz 2MB AD3400OJGXBOX</item>
         <item id="19641" code="19647" price="94.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Процессор AMD Athlon II X4 631 2,6GHz 4MB FM1 AD631XWNGXBOX</item>
       </catalog>
@@ -158,7 +158,7 @@
     </catalog>
     <catalog id="7388" name="Материнские платы">
       <catalog id="17961" name="LGA1155">
-        <item id="19441" code="19447" price="56.38" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  AsRock H61M-S H61 S1155 2DDR3 USB2/LAN/6CH mATX</item>
+        <item id="19441" code="19447" price="56.38" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  AsRock H61M-S H61 S1155 2DDR3 USB2/LAN/6CH mATX</item>
         <item id="18821" code="18827" price="57.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  AsRock H61M-VS H61 S1155 2DDR3 USB2/LAN/6CH mATXN mATX</item>
         <item id="18998" code="19004" price="101.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  AsRock P67 PRO S1155 P67 4DDR3 RAID/GLAN/8CH ATX</item>
         <item id="18823" code="18829" price="122.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  AsRock Z68 PRO3-M Z68 S1155 4DDR3 USB3/F/R mATX</item>
@@ -170,8 +170,8 @@
         <item id="19485" code="19491" price="147.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  ASUS P8Z68-V LE S1155 Z68 4DDR3 RAID/USB3 ATX</item>
         <item id="19487" code="19493" price="127.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  ASUS P8Z68-V LX S1155 Z68 4DDR3 RAID/USB3/GLAN ATX</item>
         <item id="19411" code="19417" price="71.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-H61M-D2-B3 H61 S1155 2DDR3 DSub,DVI 4xSATA3Gb/s10xUSB2.0 MicroATX</item>
-        <item id="19166" code="19172" price="63.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-H61M-S2V-B3 H61 S1155 2DDR3 8CH Balk</item>
-        <item id="18289" code="18295" price="95.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-H67M-D2-B3 (H67/mATX) 2DDR3</item>
+        <item id="19166" code="19172" price="63.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-H61M-S2V-B3 H61 S1155 2DDR3 8CH Balk</item>
+        <item id="18289" code="18295" price="90.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-H67M-D2-B3 (H67/mATX) 2DDR3</item>
         <item id="19410" code="19416" price="96.48" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-HA65M-D2H-B3 /H61/2xDDR3/D-Sub,DVI-D,HDMI/4xSATA3Gb/s,2xSATA6Gb/s</item>
         <item id="19412" code="19418" price="94.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-HA65M-UD3H-B3 S1155 H61 DDR3 D-Sub,DVI-D,HDMI 4xSATA3Gb/s 2xSATA6Gb/s</item>
         <item id="18997" code="19003" price="107.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Gigabyte GA-P67A-D3-B3 P67 S1155 4DDR3 RAID/USB3 ATX</item>
@@ -201,7 +201,7 @@
       </catalog>
       <catalog id="7449" name="LGA775 Dual Core (процессоры Intel)">
         <item id="16759" code="16765" price="42.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  ASROCK G41M-VS3 775/G41/DDR3/mATX BULK</item>
-        <item id="18915" code="18921" price="45.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Asus P5G41T-M LX3/GB/SI / Intel G41+ICH7 / 1333FSB / DDR3 (Dual Channel) /</item>
+        <item id="18915" code="18921" price="47.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  Asus P5G41T-M LX3/GB/SI / Intel G41+ICH7 / 1333FSB / DDR3 (Dual Channel) /</item>
         <item id="19332" code="19338" price="48.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-G41MT-S2P / 1333/1066/800 MHz FSB / Intel G41+ICH7 / 2 x 1.5V DDR3 DI</item>
         <item id="19451" code="19457" price="65.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-P41T-D3P S775 G41 2DDR3 8CH/GLAN ATX</item>
         <item id="19453" code="19459" price="46.48" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  MSI G41M-P28 S775 G41 2DDR3 8CH/GLAN/DVI mATX</item>
@@ -223,7 +223,7 @@
         <item id="19490" code="19496" price="140.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  ASUS M5A99X EVO AM3 AMD990 4DDR3 RAID/8CH/GLAN/USB3.0 ATX</item>
         <item id="19614" code="19620" price="225.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  ASUS SABERTOOTH 990FX AM3+ AMD990FX 4DDR3 RAID/USB3 ATX</item>
         <item id="18792" code="18798" price="87.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-870A-USB3L AM3 AMD870 4DDR3 USB3.0 ATX</item>
-        <item id="17178" code="17184" price="103.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-880GMA-USB3 AM3/AMD880G/DDR3/mATX</item>
+        <item id="17178" code="17184" price="99.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-880GMA-USB3 AM3/AMD880G/DDR3/mATX</item>
         <item id="17244" code="17250" price="142.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-890GPA-UD3H AM3 AMD890GX USB3.0 ATX</item>
         <item id="19444" code="19450" price="108.06" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-970A-UD3 AM3+ AMD970 4DDR3 R/USB3 ATX</item>
         <item id="19191" code="19197" price="49.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата  GIGABYTE GA-M68MT-S2 AM3 GF7025/nF630a 2DDR3 mATX</item>
@@ -241,7 +241,7 @@
         <item id="18315" code="18321" price="73.91" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата GIGABYTE GA-MA770T-UD3 AM3 AMD770 4DDR3 RAID/FI ATX</item>
       </catalog>
       <catalog id="19238" name="SOCKET FM1">
-        <item id="19235" code="19241" price="100.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Материнская плата ASUS F1A75 FM1 AMD75  RAID/GL/mATX</item>
+        <item id="19235" code="19241" price="105.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;NEW!!! Материнская плата ASUS F1A75 FM1 AMD75  RAID/GL/mATX</item>
         <item id="19233" code="19239" price="84.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Материнская плата GIGABYTE GA-A75M-S2V FM1 AMD A75 2DDR3 USB3 mATX</item>
       </catalog>
       <catalog id="2899" name="Материнские платы с процессором">
@@ -373,9 +373,9 @@
         <item id="19431" code="19437" price="131.53" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;USB 3.0&lt;/font&gt; Внешний жесткий диск Platinum 3,5 inch HDD 2TB , Black USB 3.0</item>
         <item id="19433" code="19439" price="142.11" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;USB 3.0&lt;/font&gt; Внешний жесткий диск StoreJet 35 T3 3,5 inch HDD 2TB , Black USB 3.0</item>
         <item id="18773" code="18779" price="96.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СПЕЦЦЕНА&lt;/font&gt; Внешний жесткий диск A-Data 2,5 inch HDD 1TB CH94, USB 2.0</item>
-        <item id="16242" code="16248" price="57.23" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СПЕЦЦЕНА&lt;/font&gt; Внешний жесткий диск A-Data 2,5 inch HDD 500 GB CH94, Black USB 2.0</item>
+        <item id="16242" code="16248" price="57.23" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СПЕЦЦЕНА&lt;/font&gt; Внешний жесткий диск A-Data 2,5 inch HDD 500 GB CH94, Black USB 2.0</item>
         <item id="19336" code="19342" price="94.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск  Samsung 2,5 inch HDD 1TB S2-1000 USB 2 Black</item>
-        <item id="19314" code="19320" price="96.00" stock1="&gt;15" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск  WD 2,5 inch HDD 1ТБ ELEMENTS PORTABLE SE 2,5" USB2.0 BLACK</item>
+        <item id="19314" code="19320" price="96.00" stock1="&gt;10" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск  WD 2,5 inch HDD 1ТБ ELEMENTS PORTABLE SE 2,5" USB2.0 BLACK</item>
         <item id="18255" code="18261" price="65.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 500 GB SH02, pink colour portable hard drive USB 2.0</item>
         <item id="18256" code="18262" price="66.00" stock1="2" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 500 GB SH93, black colour portable hard drive USB 2.0</item>
         <item id="16226" code="16232" price="66.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 500 GB SH93, red colour portable hard drive USB 2.0</item>
@@ -383,7 +383,7 @@
         <item id="18319" code="18325" price="69.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 640 GB SH02, black colour portable hard drive USB 2.0</item>
         <item id="18322" code="18328" price="77.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 750 GB CH94, Black colour portable hard drive USB 2.0</item>
         <item id="18323" code="18329" price="78.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск A-Data 2,5 inch HDD 750 GB CH94, Blue colour portable hard drive USB 2.0</item>
-        <item id="16758" code="16764" price="93.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск Intenso 2,5 inch HDD 1TB MEMORYSTATION BLACK</item>
+        <item id="16758" code="16764" price="93.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск Intenso 2,5 inch HDD 1TB MEMORYSTATION BLACK</item>
         <item id="18924" code="18930" price="52.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск Intenso 2,5 inch HDD 320 GB, Piano Black USB 2.0</item>
         <item id="18987" code="18993" price="63.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск Intenso 2,5 inch HDD 500 GB PianoBlack</item>
         <item id="19415" code="19421" price="120.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Внешний жесткий диск I-Omega 3,5" HDD 2TB USB 2.0</item>
@@ -407,7 +407,7 @@
         <item id="15015" code="15021" price="21.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод LiteON DVDRW 24x SATA gen, black iHAS122-18</item>
         <item id="19595" code="19601" price="32.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод LiteOn DVDRW 8xSATA int slim tray black DS-8A5S</item>
         <item id="16916" code="16922" price="21.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод Optiarc AD-5260S-0B DVD+/-RW 20X DL SATA BULK BLACK</item>
-        <item id="18926" code="18932" price="25.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод Samsung SH-222AB/BEBE 22x SATA BLACK</item>
+        <item id="18926" code="18932" price="25.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод Samsung SH-222AB/BEBE 22x SATA BLACK</item>
         <item id="18730" code="18736" price="31.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Дисковод Sony Optiarc DVD-RW AD-7710H-01 SATA, 6X, Tray, Slim, Black</item>
       </catalog>
       <catalog id="7544" name="FDD USB">
@@ -421,9 +421,10 @@
     </catalog>
     <catalog id="7396" name="Видеокарты">
       <catalog id="17414" name="AGP VGA">
-        <item id="18645" code="18651" price="47.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GF6200 PNY AGP 512MB DDR2 64BIT D-Sub+DVI (Passive) LP BOX</item>
+        <item id="18645" code="18651" price="47.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GF6200 PNY AGP 512MB DDR2 64BIT D-Sub+DVI (Passive) LP BOX</item>
       </catalog>
       <catalog id="7607" name="GEFORCE PCI-E">
+        <item id="18030" code="18036" price="222.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!! Видеокарта GTX470 Palit  1280MB</item>
         <item id="18330" code="18336" price="410.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СУПЕРКАРТА!!&lt;/font&gt; Quadro FX1800 x16 768MB DDR3 192bit DVI-I+2xDisplayPort Bulk</item>
         <item id="18988" code="18994" price="348.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СУПЕРЦЕНА!!&lt;/font&gt; Видеокарта GTX570 PNY GTX570 1280MB DDR5 320bit 2xDVI+miniHDMI</item>
         <item id="18134" code="18140" price="35.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта 8400GS Palit 512MB PX DDR3 32BIT DVI+HDMI+DS BOX Passive</item>
@@ -451,7 +452,6 @@
         <item id="19177" code="19183" price="171.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX460 Palit SONIC 1GB DDR5 PX 256BIT DV/HD/DS</item>
         <item id="19639" code="19645" price="177.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX460 Palit V2 1GB DDR5 PX 192BIT DVI/HDMI/DS BOX</item>
         <item id="19172" code="19178" price="167.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX460SE Gigabyte 1GB DDR5 PX 256BIT 2DVI/mHD BOX</item>
-        <item id="18030" code="18036" price="245.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX470 Palit  1280MB</item>
         <item id="19618" code="19624" price="149.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX550Ti Gigabyte OC 1GB DDR5 192BIT 2xDVI+miniHDMI BOX</item>
         <item id="18818" code="18824" price="220.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX560 DCII ASUS 1024MB DDR5 256BIT 2DVI/HD</item>
         <item id="19457" code="19463" price="218.70" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта GTX560 MSI TWIN FROZR II / OC 1GB DDR5 2xDVI+mHDMI</item>
@@ -477,20 +477,21 @@
         <item id="18990" code="18996" price="215.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6870 XFX 1GB DDR5 256BIT 2xDVI+HDMI+2xMiniDisplayPort BOX</item>
         <item id="19479" code="19485" price="333.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6950 ASUS  DCII 2GB DDR5 256BIT 2DVI+4HDMI+2miniDisplayPort</item>
         <item id="19606" code="19612" price="309.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6950 MSI Twin Frozr 2GB DDR5 256BIT 2x DVI-I +1x D-Sub+1x HDMI+2x miniDP BOX</item>
+        <item id="19238" code="19244" price="289.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6950 Sapphire 2GB DDR5 256BIT 2DVI+HDMI+DP DIRT3</item>
         <item id="19171" code="19177" price="300.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6950 XFX Vapor Chamber 2GB DDR5 256BIT 2xDVI+2xMiniDP+HDMI</item>
         <item id="19466" code="19472" price="510.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Видеокарта HD6970 ASUS 2GB DDR5 256BIT 2xDVI+HDMI+2miniDisplayPort</item>
       </catalog>
     </catalog>
     <catalog id="7416" name="Блоки питания">
       <catalog id="7464" name="500+W">
-        <item id="18238" code="18244" price="20.00" stock1="240" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СПЕЦЦЕНА!!&lt;/font&gt; Блок питания 500W Deluxe ATX SECC</item>
+        <item id="18238" code="18244" price="20.00" stock1="238" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СПЕЦЦЕНА!!&lt;/font&gt; Блок питания 500W Deluxe ATX SECC</item>
         <item id="13553" code="13559" price="32.00" stock1="164" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;СУПЕРЦЕНА!!&lt;/font&gt; Блок питания 600W Deluxe ATX</item>
         <item id="10987" code="10993" price="49.00" stock1="0" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Блок питания  500W Chieftec GPA-500S8 ATX-2.3V Active PFC 12 cm fan &lt;BULK&gt;</item>
         <item id="18786" code="18792" price="68.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  600W ACE POWER /ATX v2.3/140mm FAN/ Active PFC</item>
         <item id="12147" code="12153" price="73.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  600W Chieftec CTG-600-80P-Bulk ATX</item>
-        <item id="5134" code="0280" price="80.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  650W FSP 120mm FAN rev.2.0 Active PFC PSU</item>
-        <item id="18310" code="18316" price="81.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  700W OCZ  StealthXStream 2 SLI 120 мм вентилятор ball-bearing</item>
-        <item id="19254" code="19260" price="204.70" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания 1350W Thermaltake Toughpower 1350W 80+ Silver Modular</item>
+        <item id="5134" code="0280" price="78.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  650W FSP 120mm FAN rev.2.0 Active PFC PSU</item>
+        <item id="18310" code="18316" price="77.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания  700W OCZ  StealthXStream 2 SLI 120 мм вентилятор ball-bearing</item>
+        <item id="19254" code="19260" price="199.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Блок питания 1350W Thermaltake Toughpower 1350W 80+ Silver Modular</item>
       </catalog>
     </catalog>
     <catalog id="7411" name="TV тюнеры">
@@ -509,7 +510,7 @@
         <item id="15984" code="15990" price="3.40" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Кабель Gembird HDMI-HDMI 1.8M</item>
         <item id="17435" code="17441" price="4.80" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Кабель Gembird HDMI-HDMI 1.8m 90''</item>
         <item id="18946" code="18952" price="4.60" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Кабель Gembird HDMI-HDMI 3M</item>
-        <item id="16956" code="16962" price="7.80" stock1="&gt;5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Кабель Gembird HDMI-HDMI MINI 1.8M</item>
+        <item id="16956" code="16962" price="7.80" stock1="4" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Кабель Gembird HDMI-HDMI MINI 1.8M</item>
       </catalog>
     </catalog>
     <catalog id="14606" name="Телевизоры">
@@ -518,7 +519,7 @@
         <item id="16403" code="16409" price="465.00" stock1="1" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Телевизор LG 32LD550 32" (81cm) Black/ Full HD 1920x1080/ 500cdqm/ 70000:1/ 2.4ms/ 100Hz/ USB (Mp3/J</item>
         <item id="16406" code="16412" price="640.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 32LE5500 LED 32" (81cm) Black/ Full HD 1920x1080/ 500cdqm/ 5000000:1/ 2.4ms/ 100Hz/ USB</item>
         <item id="19138" code="19144" price="345.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 32LK330 32" (81cm) Black/ HD Ready / 1366x768/ 70.000:1/ 5,2ms (GTG)/ USB2.0 (Mp3/Jpeg</item>
-        <item id="18532" code="18538" price="385.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 32LK430 32" (81cm) Black/ Full HD 1920x1080/ Picture Wizard/ Infinite Sound/ Clear woic</item>
+        <item id="18532" code="18538" price="385.00" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 32LK430 32" (81cm) Black/ Full HD 1920x1080/ Picture Wizard/ Infinite Sound/ Clear woic</item>
         <item id="19136" code="19142" price="455.00" stock1="1" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Телевизор LG 32LV2500 32" (81cm) Black/ 1366x768/ 1.000.000:1/ 4ms/ DviX HD/ USB2.0 (Mp3/Jpeg/DivX)/</item>
         <item id="18767" code="18773" price="525.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 32LV3550 LED 32" (81cm) Black/ LED Full HD 1920x1080/ 1.000.000:1/ 3,5ms/ USB2.0</item>
         <item id="18533" code="18539" price="655.00" stock1="1" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Телевизор LG 32LV375S LED 32" (81cm) Black/ Full HD 1920x1080/ 360cdqm/ 4.000.000:1/ 3.5ms/ 50Hz/ US</item>
@@ -544,7 +545,7 @@
         <item id="18768" code="18774" price="990.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Philips 40PFL6606H LED 40" (102cm)/ Black/ Full HD 1920x1080/ 400cdqm/ 500000:1/ 2ms/ 400H</item>
         <item id="19549" code="19555" price="595.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Philips 42PFL3606H 42" (107cm)/ Black/ Full HD 1920x1080/ 400cdqm/ 50.000:1/ 5ms/ DVB-C DV</item>
         <item id="19550" code="19556" price="1045.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Philips 42PFL7406K LED 42" (107cm)/ Silver/ Full HD 1920x1080/ 450cdqm/ 500.000:1/ 2ms/ 40</item>
-        <item id="19548" code="19554" price="899.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Philips 47PFL4606H LED 47" (119cm) / Black/ Full HD1920x1080/ 400cdqm/ 100.000/ 2ms/ 100H</item>
+        <item id="19548" code="19554" price="899.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Philips 47PFL4606H LED 47" (119cm) / Black/ Full HD1920x1080/ 400cdqm/ 100.000/ 2ms/ 100H</item>
       </catalog>
       <catalog id="7678" name="LCD ТВ Samsung">
         <item id="19339" code="19345" price="265.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-19D450G1W19" (48cm)/16:9/ 1366х768/ HDMI/ HD Ready</item>
@@ -552,7 +553,7 @@
         <item id="18882" code="18888" price="370.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-26D450G1W 26" (66cm)/ Black/ 16:9/ 1366х768/ HDMI/ HD Ready</item>
         <item id="16513" code="16519" price="499.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-32C550 32" (81cm)/ Black/ 16:9/ 1920x1080/ HDMI</item>
         <item id="18955" code="18961" price="445.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-32D450G1W 32" (81cm)/ Black/ 16:9/ 1366x768/ HDMI/</item>
-        <item id="18954" code="18960" price="545.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-32D550K1W 32" (81cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
+        <item id="18954" code="18960" price="545.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-32D550K1W 32" (81cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
         <item id="18956" code="18962" price="699.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-37D550K1W 32" (94cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
         <item id="18959" code="18965" price="755.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-40D550K1W 40" (102cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
         <item id="18960" code="18966" price="990.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung LE-46D550K1W 46" (115cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
@@ -563,21 +564,24 @@
         <item id="18957" code="18963" price="585.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-32D4003BW 32" (81cm)/ Black/ 16:9/ 1366х768/ HDMI/ HD Ready</item>
         <item id="18910" code="18916" price="689.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-32D4010NW 32" (81cm)/ White/ 16:9/ 1366х768/ HDMI/ HD Ready</item>
         <item id="19488" code="19494" price="690.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-32D5500RW 32" (81cm)/ Black/ 16:9/ 1920х1080/ HDMI/ FullHD</item>
-        <item id="18958" code="18964" price="1045.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-32D6510WS 32" (81cm)/ White/ 16:9/ 1920 x 1080/ HDMI/</item>
+        <item id="18958" code="18964" price="1045.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-32D6510WS 32" (81cm)/ White/ 16:9/ 1920 x 1080/ HDMI/</item>
         <item id="19144" code="19150" price="799.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-37D5000PW 37" (94cm)/ Black/ 16:9/ 1920 x 1080/ HDMI/</item>
-        <item id="16946" code="16952" price="1530.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-40C7000 3D (40" 102cm)/ Black/ 16:9/ 1920x1080/ HDMI</item>
+        <item id="16946" code="16952" price="1530.00" stock1="0" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-40C7000 3D (40" 102cm)/ Black/ 16:9/ 1920x1080/ HDMI</item>
         <item id="18911" code="18917" price="915.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-40D5003BW 40" (102cm)/ Black/ 16:9/ 1920х1080/ HDMI/ Full HD</item>
         <item id="18961" code="18967" price="1390.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-40D6510WS 3D 40" (102cm)/ White/ 16:9/ 1920х1080/ HDMI/</item>
         <item id="19489" code="19495" price="1645.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung UE-40D7000LS 3D 40" (102cm)/ Black/ 16:9/ 1920х1080/ HDMI/</item>
       </catalog>
+      <catalog id="14748" name="LCD ТВ Sharp">
+        <item id="19294" code="19300" price="565.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Sharp LC-42SH7 42" (107cm) Black/ Full HD 1920x1080/</item>
+      </catalog>
       <catalog id="18338" name="LCD ТВ Toshiba">
-        <item id="19265" code="19271" price="325.00" stock1="1" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Телевизор Toshiba 32AV833G 32" (81cm)/ Black/ HD Ready 1366 x 768 / DVB-T MPEG-4 (H.264)</item>
+        <item id="19265" code="19271" price="325.00" stock1="0" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Телевизор Toshiba 32AV833G 32" (81cm)/ Black/ HD Ready 1366 x 768 / DVB-T MPEG-4 (H.264)</item>
         <item id="19657" code="19663" price="445.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Toshiba 32EL833 LED 32" (81cm)/ Black/ HD Ready 1366 x 768 / DVB-T MPEG-4 (H.264)</item>
         <item id="19655" code="19661" price="499.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Toshiba 40LV833 40" (101cm)/ Black/ Full HD 1920x1080/ 450cdqm/ 50000:1/ 7.5 /</item>
       </catalog>
       <catalog id="7622" name="PDP ТВ">
         <item id="19019" code="19025" price="499.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 42PT353 HD Ready 600Hz</item>
-        <item id="19551" code="19557" price="725.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 50PV250 Full HD 600Hz</item>
+        <item id="19551" code="19557" price="725.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор LG 50PV250 Full HD 600Hz</item>
         <item id="19020" code="19026" price="1490.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Телевизор Samsung PS51D6900 3D Full HD</item>
       </catalog>
     </catalog>
@@ -596,7 +600,7 @@
         <item id="11292" code="11298" price="8.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление ACME Universal LCD wall mount LCD109/Black/13-30"inch (33-76cm)</item>
         <item id="11293" code="11299" price="8.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LCD/Plasma wall mount LCD111A/23-37"inch (58-94cm), No swivel or tilt</item>
         <item id="10683" code="10689" price="20.40" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LCD/Plazma wall bracket PLB102B/32-60"inch (81-152cm), No swivel or tilt</item>
-        <item id="10684" code="10690" price="35.00" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LCD/Plazma wall bracket PLB103B/Black/32-60"inch (81-152cm), Tilt</item>
+        <item id="10684" code="10690" price="35.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LCD/Plazma wall bracket PLB103B/Black/32-60"inch (81-152cm), Tilt</item>
         <item id="11294" code="11300" price="94.40" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LCD/Plazma wall bracket PLB110B/Silver/32-60"inch (81-152cm), Ti</item>
         <item id="17519" code="17525" price="11.60" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LED/LCD/Plazma wall bracket PLB114B/32-60"inch (81-152cm)</item>
         <item id="17520" code="17526" price="8.10" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Крепление Acme Universal LED/LCD/Plazma wall bracket PLB114S/23-37"inch (58-94cm)</item>
@@ -616,7 +620,7 @@
         <item id="17188" code="17194" price="195.00" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Asus O!Play HD2 USB 3.0/ TrueHD/ eSATA</item>
         <item id="14129" code="14135" price="95.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Asus O!Play HDP-R1 USB2.0/ eSATA</item>
         <item id="15476" code="15482" price="160.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Asus O!Play HDP-R3 Air</item>
-        <item id="17844" code="17850" price="79.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Asus O!Play Mini PAL/HDMI/USB</item>
+        <item id="17844" code="17850" price="79.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Asus O!Play Mini PAL/HDMI/USB</item>
         <item id="18520" code="18526" price="255.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер D-LINK DSM-380, Boxee Box Media Payer</item>
         <item id="19354" code="19360" price="375.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Dune HD Duo</item>
         <item id="19021" code="19027" price="450.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Медиа плеер Dune HD Max</item>
@@ -658,17 +662,14 @@
     </catalog>
     <catalog id="13662" name="Зеркальные цифровые камеры">
       <item id="15933" code="15939" price="860.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Canon EOS 550D EF-S 18-55 IS</item>
-      <item id="18589" code="18595" price="645.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt;Фотоаппарат Sony A390L DSLR, 14.2MP, DT 18-55mm</item>
       <item id="16878" code="16884" price="590.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon D3100 kit AF-S DX 18-55 f/3.5-5.6G ED II, 14.2 Mpixels, 3fps, 11 AF points, Full H</item>
       <item id="16879" code="16885" price="610.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon D3100 kit AF-S DX 18-55mm f/3.5-5.6G VR, 14.2 Mpixels, 3fps, 11 AF points, Full HD</item>
       <item id="19023" code="19029" price="999.00" stock1="&gt;5" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon D5100 Kit 18-105VR, 16.2Mp, 23.6 x 15.6 mm CMOS sensor, Vari-angle 3.0'' LCD, Full</item>
       <item id="18943" code="18949" price="925.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon D5100 Kit 18-55 VR, 16.2Mp, 23.6 x 15.6 mm CMOS sensor, Vari-angle 3.0'' LCD, Full</item>
       <item id="17972" code="17978" price="745.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Pentax K-R Black + DAL 18-55</item>
+      <item id="18589" code="18595" price="645.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Sony A390L DSLR, 14.2MP, DT 18-55mm</item>
     </catalog>
     <catalog id="7398" name="Компактные цифровые камеры">
-      <item id="18470" code="18476" price="82.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Nikon Coolpix L23 Blue</item>
-      <item id="18352" code="18358" price="115.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Nikon Coolpix S2500 Silver</item>
-      <item id="18485" code="18491" price="135.00" stock1="4" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Nikon Coolpix S3100 Yellow</item>
       <item id="18777" code="18783" price="79.00" stock1="1" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Olympus T-10 Black</item>
       <item id="18778" code="18784" price="79.00" stock1="2" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Olympus T-10 Silver</item>
       <item id="18774" code="18780" price="89.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;Спецпредложение &lt;/font&gt; Фотоаппарат Olympus VG-110 Black</item>
@@ -699,23 +700,26 @@
       <item id="13984" code="13990" price="95.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Kodak EasyShare C180 black Digital Camera 10.2Mpixel/ 3x optical zoom/ 2.4'' LCD</item>
       <item id="15893" code="15899" price="115.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Kodak EasyShare C182 Black Digital Camera 12.4Mpixel/ 3x optical zoom/ 3.0'' LCD/ Face d</item>
       <item id="15888" code="15894" price="120.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Kodak EasyShare C190 Blue Digital Camera 12.0Mpixel/ 5x optical zoom/ 2.7'' LCD/ IS with</item>
-      <item id="18403" code="18409" price="315.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L120 Black, 14.1Mpixels, NIKORR 21x zoom lens, 4x anti-blur, Hybrid VR, Cr</item>
-      <item id="18404" code="18410" price="315.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L120 Red, 14.1Mpixels, NIKORR 21x zoom lens, 4x anti-blur, Hybrid VR, Cris</item>
-      <item id="18469" code="18475" price="87.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Black, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, 2.7'' LCD</item>
-      <item id="18705" code="18711" price="87.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Pink, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'</item>
-      <item id="18870" code="18876" price="87.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Red, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'' L</item>
+      <item id="18403" code="18409" price="299.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L120 Black, 14.1Mpixels, NIKORR 21x zoom lens, 4x anti-blur, Hybrid VR, Cr</item>
+      <item id="18404" code="18410" price="299.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L120 Red, 14.1Mpixels, NIKORR 21x zoom lens, 4x anti-blur, Hybrid VR, Cris</item>
+      <item id="18469" code="18475" price="85.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Black, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, 2.7'' LCD</item>
+      <item id="18470" code="18476" price="85.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Blue</item>
+      <item id="18705" code="18711" price="85.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Pink, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'</item>
+      <item id="18870" code="18876" price="85.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Red, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'' L</item>
       <item id="19658" code="19664" price="89.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Silver + SD 4GB Sandisk</item>
-      <item id="18471" code="18477" price="87.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Silver, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'</item>
-      <item id="18678" code="18684" price="390.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix P300, 12.2Mpixels, NIKORR 4.2x zoom lens, 7x anti-blur, VR, 8fps, Full HD</item>
+      <item id="18471" code="18477" price="85.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix L23 Silver, 10.1Mpixels, NIKORR wide-angle 5x lens, 3x anti-blur, VR, 2.7'</item>
+      <item id="18678" code="18684" price="299.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix P300, 12.2Mpixels, NIKORR 4.2x zoom lens, 7x anti-blur, VR, 8fps, Full HD</item>
       <item id="18677" code="18683" price="545.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix P500, 12.1Mpixels, NIKORR 36x zoom lens, 7x anti-blur, Hybrid VR, 8fps, Fu</item>
       <item id="18351" code="18357" price="119.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S2500 Black, 12.1Mpixels, NIKORR 4x wide-angle zoom lens, 4x anti-blur, VR</item>
       <item id="18353" code="18359" price="119.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S2500 Red, 12.1Mpixels, NIKORR 4x wide-angle zoom lens, 4x anti-blur, VR,</item>
-      <item id="18472" code="18478" price="151.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Black, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD</item>
-      <item id="18473" code="18479" price="151.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Blue, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD</item>
-      <item id="18486" code="18492" price="151.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Pink, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
-      <item id="18477" code="18483" price="151.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Purple, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
-      <item id="18482" code="18488" price="151.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Red, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD m</item>
-      <item id="18483" code="18489" price="151.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Silver, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
+      <item id="18352" code="18358" price="115.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S2500 Silver</item>
+      <item id="18472" code="18478" price="139.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Black, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD</item>
+      <item id="18473" code="18479" price="139.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Blue, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD</item>
+      <item id="18486" code="18492" price="139.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Pink, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
+      <item id="18477" code="18483" price="139.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Purple, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
+      <item id="18482" code="18488" price="139.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Red, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, HD m</item>
+      <item id="18483" code="18489" price="139.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Silver, 14.0Mpixels, NIKORR 5x wide-angle zoom lens, 4x anti-blur, H</item>
+      <item id="18485" code="18491" price="135.00" stock1="4" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S3100 Yellow</item>
       <item id="19257" code="19263" price="370.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Nikon Coolpix S8100 black, 12.1Mpixels, 10x zoom NIKKOR, 5x anti-blur, Hybrid VR, Full H</item>
       <item id="19127" code="19133" price="95.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Olympus VG-110 Red, 12.0MPixels, 4x wide optical zoom, Digital IS, 2.7" LCD, iAUTO, Li-I</item>
       <item id="19128" code="19134" price="95.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Фотоаппарат Olympus VG-110 Silver, 12.0MPixels, 4x wide optical zoom, Digital IS, 2.7" LCD, iAUTO, L</item>
@@ -760,7 +764,6 @@
         <item id="15975" code="15981" price="80.00" stock1="4" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мышь Apple MB829ZM/A Wireless Magic Mouse, беспроводная</item>
         <item id="17745" code="17751" price="80.00" stock1="0" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Оптический привод Apple MC684ZM/A Apple MacBook Air SuperDrive- ZML</item>
         <item id="19221" code="19227" price="385.00" stock1="1" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Портативный жесткий диск Apple MD032Z/A Time Capsule 2TB Hard Drive</item>
-        <item id="18434" code="18440" price="145.00" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Программное обеспечение Apple MobileMe Family Pack Box mc661z/a</item>
         <item id="19218" code="19224" price="87.30" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Чехол Apple iPad 2 Smart Cover - Leather - Cream mc952zm/a</item>
         <item id="19219" code="19225" price="87.30" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Чехол Apple iPad 2 Smart Cover - Leather - Navy mc949zm/a</item>
         <item id="19220" code="19226" price="87.30" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Чехол Apple iPad 2 Smart Cover - Leather - Tan mc948zm/a</item>
@@ -777,11 +780,11 @@
         <item id="19712" code="19718" price="20.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Akasa Netbook Cooler Aries Aluminium Black</item>
         <item id="19700" code="19706" price="33.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master  Notepal LapAir</item>
         <item id="19701" code="19707" price="32.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master  Notepal X2</item>
-        <item id="18530" code="18536" price="30.00" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Comforter/White-Gray</item>
+        <item id="18530" code="18536" price="22.00" stock1="0" warranty_type="без гарантии" flags="Ц" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Comforter/White-Gray</item>
         <item id="19699" code="19705" price="30.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Notepal E1</item>
         <item id="16824" code="16830" price="26.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Notepal U2 - black</item>
         <item id="18526" code="18532" price="25.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master NotePal X-lite</item>
-        <item id="19506" code="19512" price="32.00" stock1="4" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Notepal X-Slim</item>
+        <item id="19506" code="19512" price="32.00" stock1="3" warranty_type="без гарантии" flags="Н" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Cooler Master Notepal X-Slim</item>
         <item id="19705" code="19711" price="16.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Esperanza EA104</item>
         <item id="19706" code="19712" price="15.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Esperanza EA109</item>
         <item id="19702" code="19708" price="14.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Esperanza EA111 3xWent Hub</item>
@@ -790,8 +793,8 @@
         <item id="19709" code="19715" price="32.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Gembird 2FAN+USB Hub 4 port Aluminum</item>
         <item id="18651" code="18657" price="7.00" stock1="3" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 100</item>
         <item id="18653" code="18659" price="12.00" stock1="22" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 200</item>
-        <item id="18654" code="18660" price="15.00" stock1="16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 250, Aluminium</item>
-        <item id="18655" code="18661" price="22.00" stock1="10" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 300, 2 x fans x 70mm, 2 USB</item>
+        <item id="18654" code="18660" price="15.00" stock1="15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 250, Aluminium</item>
+        <item id="18655" code="18661" price="22.00" stock1="9" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Genius NB Stand 300, 2 x fans x 70mm, 2 USB</item>
         <item id="18861" code="18867" price="19.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Manta MP01</item>
         <item id="19708" code="19714" price="27.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука Media-tech MT2654</item>
         <item id="19707" code="19713" price="21.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Охлаждающая подставка для ноутбука SilentiumPC Hiberna NC300</item>
@@ -808,8 +811,8 @@
         <item id="19223" code="19229" price="2099.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Моноблок Apple MC813Z/A iMac 27" QC i5 2.7GHz/4GB/1TB/Radeon HD 6770M/SD/INT eng keyboard</item>
       </catalog>
       <catalog id="13190" name="Asus">
-        <item id="19059" code="19065" price="270.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Системный блок ASUS EeeBOX EB1007 Black/Atom D410/1GB/250G/802.11 n/GLAN/DOS/Eng Keyb + Mouse</item>
-        <item id="17792" code="17798" price="425.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Системный блок ASUS EeeBOX EB1501p Black/Atom D525/2GB/250GB/DVD-RW/ION GT/802.11 n/GLAN/DOS/Eng Key</item>
+        <item id="19059" code="19065" price="255.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Системный блок ASUS EeeBOX EB1007 Black/Atom D410/1GB/250G/802.11 n/GLAN/DOS/Eng Keyb + Mouse</item>
+        <item id="17792" code="17798" price="385.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Системный блок ASUS EeeBOX EB1501p Black/Atom D525/2GB/250GB/DVD-RW/ION GT/802.11 n/GLAN/DOS/Eng Key</item>
       </catalog>
       <catalog id="18975" name="Dell">
         <item id="18970" code="18976" price="162.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Монитор DELL LCD 1910H Black, 48cm (18.5") WXGA, 1000:1, 250cd/m, 5ms, VGA</item>
@@ -826,8 +829,7 @@
         <item id="19181" code="19187" price="505.00" stock1="&gt;5" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Планшет Samsung P1000 GalaxyTAB</item>
       </catalog>
       <catalog id="11271" name="Ноутбуки Apple">
-        <item id="17003" code="17009" price="1945.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC372RS/A MacBook Pro 15.4” Core i5 2.53GHz/4GB/500GB/GeForce GT 330M 256MB/SD/RUS</item>
-        <item id="18145" code="18151" price="1900.00" stock1="2" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC5041RS/A MacBook Air 13.3" C2D 2.13GHz/4GB/256GB flash/GeForce 320M/RUS</item>
+        <item id="18145" code="18151" price="1900.00" stock1="1" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC5041RS/A MacBook Air 13.3" C2D 2.13GHz/4GB/256GB flash/GeForce 320M/RUS</item>
         <item id="17517" code="17523" price="1710.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC504RS/A MacBook Air 13" C2D 1.86GHz/2GB/256GB flash/GeForce 320M/RUS (Z0JH000U9)</item>
         <item id="18435" code="18441" price="1399.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC700RS/A MacBook Pro 13.3” DC i5 2.3GHz/4GB/320GB/Intel HD Graphics 3000/SD/RUS</item>
         <item id="18437" code="18443" price="2160.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Apple MC721RS/A MacBook Pro 15.4” QC i7 2.0GHz/4GB/500GB/Intel HD Graphics 3000/Radeon HD 64</item>
@@ -848,7 +850,7 @@
         <item id="19668" code="19674" price="730.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Acer Travel Mate 15,6" Intel® Core™ i3 2330M/4Gb/640Gb/GF GT520 1Gb/WLAN/BT/Cam/W7HB/Eng</item>
         <item id="19666" code="19672" price="780.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук Acer Travel Mate 15,6" Intel® Core™ i3 2330M/8Gb/500Gb/GF GT540 1Gb/WLAN/BT/Cam/W7HP/Eng</item>
         <item id="19560" code="19566" price="850.00" stock1="2" warranty_type="12 месяцев" flags="Н" ordered="0" reserved="0" inCart="0">Ноутбук Acer Travel Mate 15,6" Intel® Core™ i5 2430M/8Gb/750Gb/GF GT540 1Gb/WLAN/BT/Cam/W7HP/Eng</item>
-        <item id="19562" code="19568" price="905.00" stock1="3" warranty_type="12 месяцев" flags="Н" ordered="0" reserved="0" inCart="0">Ноутбук Acer Travel Mate 17,3" Intel® Core™ i5 2430M/8Gb/750Gb/HD HD6650 1Gb/WLAN/BT/Cam/W7HP/Eng</item>
+        <item id="19562" code="19568" price="905.00" stock1="2" warranty_type="12 месяцев" flags="Н" ordered="0" reserved="0" inCart="0">Ноутбук Acer Travel Mate 17,3" Intel® Core™ i5 2430M/8Gb/750Gb/HD HD6650 1Gb/WLAN/BT/Cam/W7HP/Eng</item>
       </catalog>
       <catalog id="7586" name="Ноутбуки Asus 12''-13''">
         <item id="19115" code="19121" price="790.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U30Sd 13,3", Core i3-2310M/3Gb/500Gb/NV G520M 1Gb sw/DVD-RW/WLAN/BT/Cam/W7HP</item>
@@ -857,7 +859,7 @@
         <item id="18756" code="18762" price="750.00" stock1="&gt;10" warranty_type="24 месяца" flags="А" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U31Sd 13,3", Core i3-2310M/3Gb/320Gb/NV G520M 1Gb sw/WLAN/BT/Cam/W7HB</item>
         <item id="18755" code="18761" price="835.00" stock1="&gt;5" warranty_type="24 месяца" flags="А" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U31Sd 13,3", Core i5-2410M/4Gb/500Gb/NV G520M 1Gb sw/WLAN/BT/Cam/W7HP</item>
         <item id="19322" code="19328" price="920.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U36Sd 13,3", Core i3-2310M/3Gb/500Gb/NV G520M 1Gb sw/WLAN/BT/Cam/W7HB</item>
-        <item id="19582" code="19588" price="1005.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U36Sd 13,3", Core i5-2410M/4Gb/640Gb/NV G520M 1Gb sw/WLAN/BT/Cam/W7HP</item>
+        <item id="19582" code="19588" price="1005.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS U36Sd 13,3", Core i5-2410M/4Gb/640Gb/NV G520M 1Gb sw/WLAN/BT/Cam/W7HP</item>
       </catalog>
       <catalog id="7495" name="Ноутбуки Asus 14''">
         <item id="18514" code="18520" price="675.00" stock1="1" warranty_type="24 месяца" flags="А" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K43SJ 14,1" HD, Core i3-2310M 2.3GHz/4Gb/320Gb/NV GF520M 1GB/DVD-RW/WLAN/BT/Cam/W7HP</item>
@@ -871,7 +873,7 @@
         <item id="19326" code="19332" price="795.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K53Sc 15.6" HD, Intel® Core™ i5 2410M/4Gb/500Gb/NV GF520MX 1 Gb/DVD-RW/WLAN/BT/Cam/W7HB</item>
         <item id="19425" code="19431" price="675.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K53Ta 15.6" HD, AMD® Fusion A4-3300/3Gb/500Gb/ATI HD6650 1 Gb/DVD-RW/WLAN/BT/Cam/W7HB</item>
         <item id="19424" code="19430" price="765.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K53Ta 15.6" HD, AMD® Fusion A6-3400/4Gb/640Gb/ATI HD6650 1 Gb/DVD-RW/WLAN/BT/Cam/W7HP</item>
-        <item id="19577" code="19583" price="460.00" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K54L 15.6" HD, B800/2Gb/320Gb/Intel HD 3000/DVD-RW/WLAN/BT/Cam/DOS</item>
+        <item id="19577" code="19583" price="460.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K54L 15.6" HD, B800/2Gb/320Gb/Intel HD 3000/DVD-RW/WLAN/BT/Cam/DOS</item>
         <item id="19576" code="19582" price="520.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K54Ly 15.6" HD, B800/2Gb/320Gb/ATI HD6470M 1Gb/DVD-RW/WLAN/BT/Cam/DOS</item>
         <item id="19581" code="19587" price="580.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K54Ly 15.6" HD, B940/2Gb/320Gb/ATI HD6470M 1Gb/DVD-RW/WLAN/BT/Cam/W7HB</item>
         <item id="19120" code="19126" price="800.00" stock1="&gt;5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS N53Sv 15.6" HD, Intel® Core™ i3 2310M/4Gb/500Gb/NV GF540 1 Gb/DVD-RW/WLAN/BT/Cam/W7HB</item>
@@ -880,15 +882,15 @@
         <item id="19422" code="19428" price="475.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53By 15.6" HD, AMD Dual Core E450/2Gb/320Gb/ATI HD6470 1Gb/DVD-RW/WLAN/Cam/DOS</item>
         <item id="19420" code="19426" price="520.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53By 15.6" HD, AMD Dual Core E450/3Gb/320Gb/ATI HD6470 1Gb/DVD-RW/WLAN/Cam/W7HB</item>
         <item id="19573" code="19579" price="530.00" stock1="9" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53E Brown 15.6" HD, B940/2Gb/320Gb/Intel HD 3000/DVD-RW/WLAN/Cam/DOS</item>
-        <item id="19574" code="19580" price="550.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53E Grey 15.6" HD, B940/4Gb/500Gb/Intel HD 3000/DVD-RW/WLAN/Cam/DOS</item>
+        <item id="19574" code="19580" price="550.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53E Grey 15.6" HD, B940/4Gb/500Gb/Intel HD 3000/DVD-RW/WLAN/Cam/DOS</item>
         <item id="19579" code="19585" price="450.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53U 15.6" HD, AMD Dual Core E450/2Gb/320Gb/ATI HD6310/DVD-RW/WLAN/Cam/DOS</item>
-        <item id="19580" code="19586" price="490.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53U 15.6" HD, AMD Dual Core E450/2Gb/320Gb/ATI HD6310/DVD-RW/WLAN/Cam/W7HB</item>
+        <item id="19580" code="19586" price="490.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS X53U 15.6" HD, AMD Dual Core E450/2Gb/320Gb/ATI HD6310/DVD-RW/WLAN/Cam/W7HB</item>
       </catalog>
       <catalog id="7704" name="Ноутбуки Asus 17''">
         <item id="18975" code="18981" price="735.00" stock1="2" warranty_type="24 месяца" flags="А" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K73E 17.3" HD, Core i3-2310M/4Gb/500Gb/Intel GMA HD/DVD-RW/WLAN/BT/Cam/W7HP</item>
         <item id="18976" code="18982" price="830.00" stock1="5" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS K73E 17.3" HD, Core i5-2410M/4Gb/750Gb/Intel GMA HD/DVD-RW/WLAN/BT/Cam/W7HP64</item>
         <item id="18752" code="18758" price="905.00" stock1="1" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS N73Sv 17.3" HD, Core i3-2310M/4Gb/500Gb/NV GF540M 2GB/DVD-RW/WLAN/BT/Cam/W7HP64</item>
-        <item id="18751" code="18757" price="1080.00" stock1="4" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS N73Sv 17.3" HD, Core i5-2410M/4Gb/2x500Gb/NV GF540M 2GB/DVD-RW/WLAN/BT/Cam/W7HP64</item>
+        <item id="18751" code="18757" price="1080.00" stock1="3" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS N73Sv 17.3" HD, Core i5-2410M/4Gb/2x500Gb/NV GF540M 2GB/DVD-RW/WLAN/BT/Cam/W7HP64</item>
         <item id="19575" code="19581" price="1220.00" stock1="6" warranty_type="24 месяца" flags="" ordered="0" reserved="0" inCart="0">Ноутбук ASUS N75Sf 17.3" FHD, Core i5-2410M/6Gb/2x500Gb/NV GF555M 2GB/DVD-RW/WLAN/BT/Cam/W7HP64</item>
       </catalog>
       <catalog id="17738" name="Ноутбуки HP">
@@ -944,7 +946,7 @@
         <item id="8604" code="8610" price="5.50" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 NI-51 Sound System</item>
         <item id="11912" code="11918" price="6.80" stock1="&gt;15" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-103 2.0/2 Satellite Speakers 0,5W RMS/100Hz~18KHz</item>
         <item id="11913" code="11919" price="7.60" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-104/2 Satellite Speakers 0,5W RMS/110Hz~18KHz/Control:</item>
-        <item id="11910" code="11916" price="6.80" stock1="5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-108 2.0 Speakers</item>
+        <item id="11910" code="11916" price="6.80" stock1="3" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-108 2.0 Speakers</item>
         <item id="18757" code="18763" price="7.90" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-109 Speakers/2W RMS/USB powered</item>
         <item id="18758" code="18764" price="8.50" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.0 SS-110 Speakers/1,4W RMS/USB powered</item>
         <item id="11754" code="11760" price="12.90" stock1="&gt;15" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME SA-104 2.0 Speakers/2,8W RMS/USB powered</item>
@@ -966,11 +968,11 @@
         <item id="10315" code="10321" price="168.10" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Microlab SOLO7C 2.0 Speakers/ 120W RMS (60W+60W)/ Remote Control</item>
       </catalog>
       <catalog id="7448" name="2.1 системы">
-        <item id="8600" code="8606" price="18.40" stock1="1" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 EA-98 Sound System</item>
+        <item id="8600" code="8606" price="18.40" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 EA-98 Sound System</item>
         <item id="8603" code="8609" price="15.00" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 NI-30 Sound System</item>
         <item id="13720" code="13726" price="14.34" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-201/Black Grey/Magnetically shielded/Power: 5,5 W (Woo</item>
         <item id="13593" code="13599" price="13.00" stock1="&gt;4" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-202/Black/Magnetically shielded/3" Wooden Woofer + 2 x</item>
-        <item id="19331" code="19337" price="23.50" stock1="&gt;5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-203 2.1 Speaker system</item>
+        <item id="19331" code="19337" price="23.50" stock1="5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-203 2.1 Speaker system</item>
         <item id="11753" code="11759" price="13.20" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-204 2.1 Speaker system</item>
         <item id="19333" code="19339" price="19.60" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система ACME 2.1 SS-205 2.1 Speaker system</item>
         <item id="18689" code="18695" price="17.40" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-2.1 355 10W, black</item>
@@ -991,8 +993,8 @@
         <item id="14369" code="14375" price="83.20" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Microlab X16 2.1 Speakers/ 68W RMS (14Wx2+40W)/ Remote Control</item>
       </catalog>
       <catalog id="7462" name="5.1 системы">
-        <item id="18691" code="18697" price="37.40" stock1="&gt;5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-5.1 1005, 26W, black</item>
-        <item id="18694" code="18700" price="82.60" stock1="1" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-HF5.1 4000 100W, wood</item>
+        <item id="18691" code="18697" price="37.40" stock1="5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-5.1 1005, 26W, black</item>
+        <item id="18694" code="18700" price="82.60" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-HF5.1 4000 100W, wood</item>
         <item id="18697" code="18703" price="92.00" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-HF5.1 4500, 125W, wood wenge</item>
         <item id="18695" code="18701" price="98.90" stock1="&gt;5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-HF5.1 5050 V2, 150W, wood</item>
         <item id="18692" code="18698" price="129.00" stock1="&gt;15" warranty_type="6 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">Акустическая система Genius SW-HF5.1 6000 200W, wood</item>
@@ -1042,7 +1044,7 @@
         <item id="16709" code="16715" price="27.10" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Геймпад Mad Catz X360 wired (for XBOX360), analog triggers and joysticks/ Features vibration feedbac</item>
       </catalog>
       <catalog id="7558" name="Microsoft">
-        <item id="18635" code="18641" price="42.50" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Геймпад Microsoft Xbox360 Controller for Windows kabel 52A-00005</item>
+        <item id="18635" code="18641" price="42.50" stock1="&gt;5" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Геймпад Microsoft Xbox360 Controller for Windows kabel 52A-00005</item>
         <item id="18636" code="18642" price="47.50" stock1="&gt;15" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Геймпад Microsoft Xbox360 Wireless Controller for Windows Black JR9-00010</item>
       </catalog>
       <catalog id="13666" name="Natec">
@@ -1112,7 +1114,7 @@
         <item id="16279" code="16285" price="3.15" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура ACME Standard Keyboard KS02 Black /USB/EN, BG/Slim без русских букв</item>
         <item id="12571" code="12577" price="5.90" stock1="&gt;15" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мультимедиа клавиатура ACME  KM03 Grey/USB/EN/RU/SLIM/9 Multimedia, Internet, System Hot keys</item>
         <item id="12573" code="12579" price="11.30" stock1="&gt;15" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мультимедиа клавиатура ACME  KM06 Black/Silver/USB/EN/RU/SLIM/15 Multimedia, Internet, System Hot ke</item>
-        <item id="12293" code="12299" price="6.80" stock1="&gt;10" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мультимедиа клавиатура ACME KM04 Black/USB/EN/RU/SLIM/15 Multimedia, Internet, System Hot keys</item>
+        <item id="12293" code="12299" price="6.80" stock1="&gt;5" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мультимедиа клавиатура ACME KM04 Black/USB/EN/RU/SLIM/15 Multimedia, Internet, System Hot keys</item>
         <item id="14449" code="14455" price="12.00" stock1="&gt;15" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Мультимедиа клавиатура ACME KM07 PRO b acme Multimedia Keyboard KM07 Black/USB/EN/RU/SLIM/18 Mul</item>
       </catalog>
       <catalog id="17396" name="Chicony">
@@ -1120,7 +1122,7 @@
         <item id="17813" code="17819" price="6.30" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony keyboard KU-0325, US/RUS, USB, Black</item>
         <item id="17317" code="17323" price="10.95" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony keyboard KU-0833 black, US/RUS, USB, 10 multimedia hotkeys, slim, CHICLET fl</item>
         <item id="17316" code="17322" price="10.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony keyboard KU-0833,white US/RUS, USB, 10 multimhotkeys, slim, CHICLET flat key desi</item>
-        <item id="17318" code="17324" price="7.99" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony keyboard KU-9810, US/RUS, USB, 3 extra power management keys, black</item>
+        <item id="17318" code="17324" price="7.99" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony keyboard KU-9810, US/RUS, USB, 3 extra power management keys, black</item>
         <item id="19134" code="19140" price="12.99" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Клавиатура Chicony standard keyboard KU-0950, US/RUS, USB (Black), Polished surface, Built-in palmre</item>
       </catalog>
       <catalog id="18450" name="Игровые клавиатуры">
@@ -1278,7 +1280,7 @@
         <item id="19663" code="19669" price="25.00" stock1="0" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники Esperanza TH104 20Hz-20.000Hz/ FM 30m/ 2 pcs AAA</item>
       </catalog>
       <catalog id="7591" name="Микрофоны">
-        <item id="6294" code="6296" price="1.80" stock1="&gt;5" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Микрофон ACME MK-200 (1/100/3)</item>
+        <item id="6294" code="6296" price="1.80" stock1="2" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Микрофон ACME MK-200 (1/100/3)</item>
         <item id="18737" code="18743" price="5.00" stock1="0" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Микрофон CANYON CNR-MIC1</item>
       </catalog>
       <catalog id="14582" name="Наушники A4Tech">
@@ -1306,7 +1308,7 @@
         <item id="11886" code="11892" price="3.40" stock1="&gt;20" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники ACME HM-01 с микрофоном</item>
         <item id="11887" code="11893" price="5.99" stock1="14" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники ACME HM-02 с микрофоном</item>
         <item id="11888" code="11894" price="5.34" stock1="16" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники ACME HM-03 с микрофоном</item>
-        <item id="14939" code="14945" price="6.60" stock1="31" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники ACME HM-05 с микрофоном PRO by acme Headset (CD-609)</item>
+        <item id="14939" code="14945" price="6.60" stock1="28" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники ACME HM-05 с микрофоном PRO by acme Headset (CD-609)</item>
       </catalog>
       <catalog id="15372" name="Наушники Genius">
         <item id="18947" code="18953" price="11.40" stock1="4" warranty_type="3 месяца" flags="" ordered="0" reserved="0" inCart="0">Наушники Genius GHP-04 Headphones</item>
@@ -1428,7 +1430,7 @@
         <item id="19299" code="19305" price="22.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер 4world MP3 Clipse 2GB Black 03388-BLK</item>
       </catalog>
       <catalog id="7614" name="Acme">
-        <item id="10688" code="10694" price="28.50" stock1="&gt;15" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">MP3 плеер ACME Mp3 player V130-Extreme series /black/2 GB/FM/voice recorder/LCD/Mp3</item>
+        <item id="10688" code="10694" price="26.50" stock1="&gt;15" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! MP3 плеер ACME V130-Extreme series /black/2 GB/FM/voice recorder/LCD</item>
         <item id="18240" code="18246" price="23.00" stock1="0" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер ACME V150-Extreme series Mp3 player</item>
         <item id="18241" code="18247" price="28.50" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер ACME V160-Extreme series Mp3 player</item>
       </catalog>
@@ -1439,11 +1441,11 @@
         <item id="19038" code="19044" price="38.50" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Плеер Intenso 4GB VIDEO ROCKER LCD 1,5"</item>
       </catalog>
       <catalog id="19033" name="Manta">
-        <item id="19305" code="19311" price="32.50" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер Manta 2GB MM212 Demon Car Twix</item>
+        <item id="19305" code="19311" price="26.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер Manta 2GB MM212 Demon Car Twix</item>
         <item id="19031" code="19037" price="32.50" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер Manta 2GB MM214 ECHO</item>
       </catalog>
       <catalog id="19072" name="Media-Tech">
-        <item id="19040" code="19046" price="22.50" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер  Media-Tech MT830 Ear Headphones with MP3 Playback</item>
+        <item id="19040" code="19046" price="19.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!!&lt;/font&gt; MP3 плеер  Media-Tech MT830 Ear Headphones with MP3 Playback</item>
       </catalog>
       <catalog id="15266" name="Pentagram">
         <item id="19307" code="19313" price="29.50" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">MP3 плеер Pentagram 2Gb Fun Black 5107-2BK</item>
@@ -1489,7 +1491,7 @@
     <catalog id="7417" name="Веб камеры">
       <catalog id="7705" name="Веб камеры">
         <item id="15190" code="15196" price="7.50" stock1="&gt;15" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Веб камера ACME PC Cam CA03, 350K. pixels, 640x480 resolution</item>
-        <item id="13121" code="13127" price="16.00" stock1="&gt;10" warranty_type="6 месяцев" flags="" ordered="0" reserved="0" inCart="0">Веб камера ACME web cam+earphones kit, AC-02 camera - 1300K pix, 640x480 resolution, 24K colours, ea</item>
+        <item id="13121" code="13127" price="16.00" stock1="&gt;10" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Веб камера ACME web cam+earphones kit, AC-02 camera - 1300K pix, 640x480 resolution, 24K colours, ea</item>
         <item id="18693" code="18699" price="16.00" stock1="&gt;15" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Веб камера Genius eFace 1300</item>
         <item id="18696" code="18702" price="22.00" stock1="&gt;15" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Веб камера Genius e-Face 1325R</item>
         <item id="18698" code="18704" price="13.00" stock1="5" warranty_type="6 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Веб камера Genius Eye 320 SE</item>
@@ -1518,12 +1520,12 @@
     </catalog>
     <catalog id="11682" name="Цифровые фоторамки">
       <catalog id="13003" name="10&quot; и более">
-        <item id="18873" code="18879" price="127.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 10" MediaCreator</item>
-        <item id="18874" code="18880" price="137.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 10" MediaDesigner</item>
+        <item id="18873" code="18879" price="118.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 10" MediaCreator</item>
+        <item id="18874" code="18880" price="127.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 10" MediaDesigner</item>
         <item id="18407" code="18413" price="145.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 12' MediaArtist</item>
       </catalog>
       <catalog id="14296" name="7&quot;">
-        <item id="16784" code="16790" price="42.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 7'' Photoagent</item>
+        <item id="16784" code="16790" price="42.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 7'' Photoagent</item>
         <item id="19675" code="19681" price="104.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 7' PhotoAlbum</item>
         <item id="18347" code="18353" price="59.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 7'' PhotoModel</item>
         <item id="17432" code="17438" price="99.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 7'' WeatherMan</item>
@@ -1532,7 +1534,6 @@
         <item id="17806" code="17812" price="75.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 8'' MediaDirector</item>
         <item id="18406" code="18412" price="75.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 8'' PhotoAngel</item>
         <item id="16565" code="16571" price="61.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 8'' PhotoManager</item>
-        <item id="18405" code="18411" price="65.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 8'' PhotoPartner</item>
         <item id="17805" code="17811" price="69.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Цифровая фоторамка Intenso 8'' PhotoPromoter</item>
       </catalog>
     </catalog>
@@ -1543,7 +1544,7 @@
       <item id="16191" code="16197" price="0.64" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск DVD+R 8.5GB 8X Double Layer WHITE PRINTABLE 100 pcs. spindle packaging</item>
       <item id="6300" code="6302" price="0.47" stock1="&gt;200" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск DVD+R TRAXDATA Bulk 9,4 GB 8X  Double sided    MBI (1/25)</item>
       <item id="18003" code="18009" price="0.14" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск No Name CD-R Bulk 700MBno ring52X CMC</item>
-      <item id="1396" code="0773" price="0.15" stock1="700" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск No Name CD-R Bulk 700MBWHITE PRINT.no ring52X CMC</item>
+      <item id="1396" code="0773" price="0.15" stock1="800" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск No Name CD-R Bulk 700MBWHITE PRINT.no ring52X CMC</item>
       <item id="8444" code="8449" price="0.24" stock1="1100" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск No NameDVD+R Bulk4,7GBX16White Print. With ringCMC 1/100</item>
       <item id="8269" code="8274" price="0.23" stock1="2400" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск No NameDVD-R Bulk4,7GBX16White Print. With ringCMC1/100</item>
       <item id="18076" code="18082" price="41.00" stock1="8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Диск Omega F REESTYLE DVD+R 8,5GB 8X DOUBLE LAYER SILVER/OEM CAKE*100 [41016]</item>
@@ -1646,6 +1647,13 @@
       <item id="11216" code="11222" price="9.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">"SALE!!!" 4GB Kingston DataTraveler 100 USB 2.0 DT100/4GB</item>
       <item id="15741" code="15747" price="5.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">"SALE!!!" Natec Lizzard White USB 2.0 Hub 4 port</item>
       <item id="14825" code="14831" price="25.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">"SUPER PRICE!!!" 16GB Kingston DataTraveler Mini Slim USB 2.0 DTMSB/16GB</item>
+      <item id="17420" code="17426" price="20.00" stock1="9" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB A-Data C003 Blue Retail USB 2.0 Flash Drive</item>
+      <item id="16145" code="16151" price="19.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB Apacer AH323 USB 2.0 Flash Drive Black</item>
+      <item id="18382" code="18388" price="19.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB Apacer AH325 USB 2.0 Flash Drive Black</item>
+      <item id="18383" code="18389" price="19.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB Apacer AH326 USB 2.0 Flash Drive Black</item>
+      <item id="18384" code="18390" price="19.50" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB Apacer AH332 USB 2.0 Flash Drive Grape</item>
+      <item id="18663" code="18669" price="38.00" stock1="1" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 16GB Pretec i-Disk PenDrive Racing red USB 2.0</item>
+      <item id="18456" code="18462" price="45.00" stock1="1" warranty_type="12 месяцев" flags="Ц" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Флеш накопитель 32GB A-Data C008 White Retail USB 2.0 Flash Drive</item>
       <item id="14906" code="14912" price="41.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16GB A-Data 803 Black USB 2.0 Flash Drive</item>
       <item id="14909" code="14915" price="41.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16GB A-Data C903 Retail Red USB 2.0 Flash Drive</item>
       <item id="12106" code="12112" price="34.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16GB Apacer AH320 USB 2.0 Flash Drive</item>
@@ -1793,7 +1801,6 @@
       <item id="16940" code="16946" price="42.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Док-станция I-Tec HDD Docking Station SATA DriveDock USB 3.0 2.5/3.5''</item>
       <item id="15743" code="15749" price="10.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Набор адаптеров Seven USB adapters kit</item>
       <item id="18239" code="18245" price="28.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB A-Data  USB 3.0 Flash Drive S102, Grey</item>
-      <item id="17420" code="17426" price="22.00" stock1="9" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB A-Data C003 Blue Retail USB 2.0 Flash Drive</item>
       <item id="17421" code="17427" price="20.00" stock1="&gt;10" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB A-Data C003 Red Retail USB 2.0 Flash Drive</item>
       <item id="18386" code="18392" price="20.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB A-Data C008 Black Retail USB 2.0 Flash Drive</item>
       <item id="18261" code="18267" price="20.00" stock1="&gt;10" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB A-Data C008 White Retail USB 2.0 Flash Drive</item>
@@ -1806,10 +1813,6 @@
       <item id="18385" code="18391" price="21.00" stock1="&gt;5" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH223 USB 2.0 Flash Drive</item>
       <item id="12129" code="12135" price="20.00" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH321 USB 2.0 Flash Drive Red</item>
       <item id="14200" code="14206" price="20.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH322 USB 2.0 Flash Drive Black</item>
-      <item id="16145" code="16151" price="20.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH323 USB 2.0 Flash Drive Black</item>
-      <item id="18382" code="18388" price="20.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH325 USB 2.0 Flash Drive Black</item>
-      <item id="18383" code="18389" price="20.50" stock1="&gt;15" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH326 USB 2.0 Flash Drive Black</item>
-      <item id="18384" code="18390" price="20.50" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Apacer AH332 USB 2.0 Flash Drive Grape</item>
       <item id="13794" code="13800" price="25.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Goodram Gooddrive Edge USB 2.0 Flash Drive</item>
       <item id="12978" code="12984" price="24.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Goodram Gooddrive Twister USB 2.0 Flash Drive</item>
       <item id="15671" code="15677" price="29.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Integral Courier USB 2.0 Flash Drive</item>
@@ -1826,7 +1829,6 @@
       <item id="17924" code="17930" price="23.00" stock1="5" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB OCZ Diesel USB2.0 aluminium</item>
       <item id="16476" code="16482" price="49.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Pretec i-Disk PenDrive BulletProof USB 2.0</item>
       <item id="16291" code="16297" price="25.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Pretec i-Disk PenDrive Pocket Credit Card USB 2.0</item>
-      <item id="18663" code="18669" price="38.00" stock1="1" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Pretec i-Disk PenDrive Racing red USB 2.0</item>
       <item id="16292" code="16298" price="28.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Pretec i-Disk PenDrive Tango USB 2.0</item>
       <item id="15829" code="15835" price="28.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Sandisk Flash Drive Cruzer Micro U3 USB 2.0</item>
       <item id="19070" code="19076" price="24.00" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 16GB Transcend JetFlash 560</item>
@@ -1855,7 +1857,6 @@
       <item id="15517" code="15523" price="9.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 2GB Transcend JetFlash V90C</item>
       <item id="19269" code="19275" price="43.00" stock1="6" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB A-Data C003 Blue Retail USB 2.0 Flash Drive</item>
       <item id="18455" code="18461" price="53.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB A-Data C008 Black Retail USB 2.0 Flash Drive</item>
-      <item id="18456" code="18462" price="45.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB A-Data C008 White Retail USB 2.0 Flash Drive</item>
       <item id="14850" code="14856" price="43.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB Integral Courier USB 2.0 Flash Drive</item>
       <item id="19649" code="19655" price="40.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB Integral EVO USB 2.0 Flash Drive</item>
       <item id="19271" code="19277" price="45.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 32GB Intenso Pendrive 16GB Business Line</item>
@@ -1945,7 +1946,7 @@
       <item id="14480" code="14486" price="16.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB Kingston DataTraveler I-GEN 2 USB 2.0 Flash Drive Blue DTIG2/8GB</item>
       <item id="14920" code="14926" price="37.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB Mushkin USB Turbo Flash Stick Midnight Series</item>
       <item id="17923" code="17929" price="15.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB OCZ Diesel USB2.0 aluminium*</item>
-      <item id="17921" code="17927" price="14.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB PNY Oxford Black USB2.0</item>
+      <item id="17921" code="17927" price="14.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB PNY Oxford Black USB2.0</item>
       <item id="16475" code="16481" price="29.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB Pretec i-Disk PenDrive BulletProof USB 2.0</item>
       <item id="18660" code="18666" price="27.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB Pretec i-Disk PenDrive Racing blue USB 2.0</item>
       <item id="18661" code="18667" price="30.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Флеш накопитель 8GB Pretec i-Disk PenDrive Racing red USB 2.0</item>
@@ -1974,8 +1975,8 @@
       <item id="19212" code="19218" price="3.70" stock1="&gt;20" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Дискеты VERBATIM 3.5 2HD plastic box colours MF2-HD (1/40/10)</item>
     </catalog>
     <catalog id="7407" name="Карты памяти, картридеры">
-      <item id="18814" code="18820" price="9.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти A-Data 4 GB Micro SDHC card, class4</item>
-      <item id="19502" code="19508" price="8.50" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти A-Data 4 GB Micro SDHC card, class4,adapter</item>
+      <item id="18814" code="18820" price="9.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти A-Data 4 GB Micro SDHC card, class4</item>
+      <item id="19502" code="19508" price="8.50" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти A-Data 4 GB Micro SDHC card, class4,adapter</item>
       <item id="19637" code="19643" price="9.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти A-Data 4 GB SDHC Card Retail Class 4</item>
       <item id="18599" code="18605" price="9.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти Goodram 4 GB Micro SDHC card, adaptor</item>
       <item id="18449" code="18455" price="7.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">4Gb Карта памяти Goodram 4 GB SDHC card</item>
@@ -1988,13 +1989,13 @@
       <item id="19483" code="19489" price="12.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти A-Data 8GB MicroSD Card Class4</item>
       <item id="18349" code="18355" price="12.70" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти A-Data 8GB MicroSD Card Class4 Adaptor</item>
       <item id="18450" code="18456" price="14.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти Goodram 8 GB Micro SDHC card, adaptor Class 4</item>
-      <item id="18600" code="18606" price="11.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти Goodram 8 GB SDHC card class6</item>
+      <item id="18600" code="18606" price="11.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти Goodram 8 GB SDHC card class6</item>
       <item id="19369" code="19375" price="12.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти Transcend 8 GB Micro SDHC card, Class 2 adapter</item>
       <item id="16313" code="16319" price="13.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти Transcend SDHC10 Card 8GB Class10</item>
-      <item id="19205" code="19211" price="5.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Кардридер USB 2.0 BURO BU-CR/all in1</item>
-      <item id="18603" code="18609" price="6.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Кардридер USB 2.0 Hama H-91099</item>
+      <item id="19205" code="19211" price="5.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Кардридер USB 2.0 BURO BU-CR/all in1</item>
+      <item id="18603" code="18609" price="6.00" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Кардридер USB 2.0 Hama H-91099</item>
       <item id="19007" code="19013" price="32.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти A-Data Micro SDHC 16Gb, adapter Class4</item>
-      <item id="19484" code="19490" price="38.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти A-Data Micro SDHC 16Gb, Class10</item>
+      <item id="19484" code="19490" price="38.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти A-Data Micro SDHC 16Gb, Class10</item>
       <item id="19227" code="19233" price="32.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти GoodRam SDHC 16Gb</item>
       <item id="19632" code="19638" price="32.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти Goodram SDHC 16GB Class 10</item>
       <item id="19356" code="19362" price="32.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">16Gb Карта памяти Kingston SDHC 16GB CLASS 10</item>
@@ -2007,11 +2008,11 @@
       <item id="10329" code="10335" price="22.70" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">2Gb Карта памяти SANDISK 2GB xD Card M type</item>
       <item id="11928" code="11934" price="39.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">8Gb Карта памяти SANDISK 8GB Memory Stick Pro Duo</item>
       <item id="19076" code="19082" price="11.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Hama H-49009</item>
-      <item id="19206" code="19212" price="11.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Hama H-91094</item>
-      <item id="19363" code="19369" price="15.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Kingston  MobileLite FCR-MLG2</item>
-      <item id="19365" code="19371" price="15.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Manta MM348</item>
+      <item id="19206" code="19212" price="7.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Hama H-91094</item>
+      <item id="19363" code="19369" price="8.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Kingston  MobileLite FCR-MLG2</item>
+      <item id="19365" code="19371" price="5.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Manta MM348</item>
       <item id="19364" code="19370" price="14.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Manta MM349</item>
-      <item id="19366" code="19372" price="14.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 MODECOM CR-NANO Black</item>
+      <item id="19366" code="19372" price="5.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 MODECOM CR-NANO Black</item>
       <item id="18809" code="18815" price="10.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Tracer C11</item>
       <item id="19367" code="19373" price="15.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Кардридер USB 2.0 Tracer C24</item>
     </catalog>
@@ -2063,22 +2064,22 @@
     </catalog>
     <catalog id="7710" name="Беспроводные сетевые устройства">
       <catalog id="15086" name="Edimax">
+        <item id="15046" code="15052" price="20.00" stock1="&gt;5" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE!!! Сетевая карта Edimax EW-7717Un Wireless-N USB Adapter</item>
         <item id="15073" code="15079" price="190.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сервер презентаций Edimax WP-S1100 Wireless Projector Server v1.0 Rev.A (RU)</item>
         <item id="16468" code="16474" price="30.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7317LDG WLAN ADAPTER W/WIFI DETECTOR (RU)</item>
         <item id="16467" code="16473" price="15.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7318USg Wireless LAN USB Card</item>
         <item id="17313" code="17319" price="19.00" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7612PIn 1T2R Wi-Fi PCI-E Adapter (RU)</item>
         <item id="18065" code="18071" price="18.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7612UAN 300Mbps wireless USB adapter</item>
-        <item id="17755" code="17761" price="14.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7622UMn Wireless 2T2R USB adapter Wireless 2T2R USB adapter(RU)</item>
+        <item id="17755" code="17761" price="14.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7622UMn Wireless 2T2R USB adapter Wireless 2T2R USB adapter(RU)</item>
         <item id="17315" code="17321" price="18.00" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711In 1T1R Wireless N PCI Card  v1.0 A (RU)</item>
         <item id="15051" code="15057" price="16.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711UAn 1T1R USB Adapter (RU)</item>
-        <item id="15053" code="15059" price="12.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711UMn nLite 150M 1T1R Wireless USB Adapter (RU)</item>
+        <item id="15053" code="15059" price="12.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711UMn nLite 150M 1T1R Wireless USB Adapter (RU)</item>
         <item id="15050" code="15056" price="17.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711USn 150N WLan USB w/r-Small Connector</item>
         <item id="15052" code="15058" price="13.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7711UTn 150N WLan Mini USB (RU)</item>
-        <item id="15046" code="15052" price="22.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7717Un Wireless-N USB Adapter (WPS Edimax) (RU)</item>
         <item id="15043" code="15049" price="28.50" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7718UN Wireless-N USB adapter (RU)</item>
         <item id="17314" code="17320" price="22.00" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7722In 2T2R Wireless-N PCI card  v1.0 A (RU)</item>
         <item id="19440" code="19446" price="32.50" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7722UND Dual band 300Mbps wireless USB adapter</item>
-        <item id="18064" code="18070" price="20.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7722UTN 300N 2T2R Wireless USB adapter (RU)</item>
+        <item id="18064" code="18070" price="20.00" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7722UTN 300N 2T2R Wireless USB adapter (RU)</item>
         <item id="15044" code="15050" price="29.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7728In Wireless-N PCI card (RU)</item>
         <item id="16274" code="16280" price="14.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сетевая карта Edimax EW-7811UN Wireless 802.11 b/g/nnano USB adapter (RU)</item>
         <item id="18371" code="18377" price="31.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Точка доступа Edimax EW-7228APN 1T1R 150M wireless rangeextender access point (RU)</item>
@@ -2123,7 +2124,7 @@
         <item id="18142" code="18148" price="45.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор D-LINK DIR-620, 802.11n Wireless Router with 4-ports 10/100 Base-TX switch+US</item>
       </catalog>
       <catalog id="15090" name="Edimax">
-        <item id="15257" code="15263" price="63.50" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE OUT!&lt;/font&gt; Маршрутизатор Edimax 3G-6210n 3G Portable Router with Batt</item>
+        <item id="15257" code="15263" price="63.50" stock1="1" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;&lt;strong&gt;SALE OUT!&lt;/font&gt; Маршрутизатор Edimax 3G-6210n 3G Portable Router with Batt</item>
         <item id="15102" code="15108" price="480.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Контроллер доступа Edimax AC-M1000 2Wan + 8Lan Network Access Controller</item>
         <item id="15054" code="15060" price="39.50" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор Edimax 3G-6200N 3G Mobile Broadband Router v1.0 B(RU)</item>
         <item id="17310" code="17316" price="36.00" stock1="3" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор Edimax 3G-6200NL 3G Mobile Broadband Router v1.0 B(RU)</item>
@@ -2242,9 +2243,9 @@
     </catalog>
     <catalog id="7698" name="ADSL устройства, модемы">
       <catalog id="12973" name="D-Link">
-        <item id="8395" code="8400" price="38.50" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор + ADSL модем D-LINK DSL-2640U, Wireless 802.11b/g/n Ethernet ADSL/ADSL2/ADSL2+ Router</item>
+        <item id="8395" code="8400" price="38.50" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор + ADSL модем D-LINK DSL-2640U, Wireless 802.11b/g/n Ethernet ADSL/ADSL2/ADSL2+ Router</item>
         <item id="14310" code="14316" price="39.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор + ADSL модем D-LINK DSL-2650U, Wireless 802.11g / Ethernet ADSL  Router</item>
-        <item id="3112" code="2007" price="2.50" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сплиттер D-LINK DSL-30CF (CPF1005C) xDSL spliter (1xRJ11 input and 2xRJ-11 output ports )</item>
+        <item id="3112" code="2007" price="2.50" stock1="&gt;50" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Сплиттер D-LINK DSL-30CF (CPF1005C) xDSL spliter (1xRJ11 input and 2xRJ-11 output ports )</item>
       </catalog>
       <catalog id="15084" name="Edimax">
         <item id="15819" code="15825" price="45.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Маршрутизатор + ADSL модем Edimax AR-7266WnA 11n ADSL 2+ Modem Router V1.0 Rev.A (RU)</item>
@@ -2270,7 +2271,7 @@
         <item id="16300" code="16306" price="1600.00" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=blue&gt;ПО  Антивирус Касперского Crystal, 12 мес, 2 ПК</item>
         <item id="16775" code="16781" price="1100.00" stock1="&gt;5" warranty_type="без гарантии" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=green&gt;ПО  Антивирус Касперского Internet Security 2011 DVD box 12 мес, 2 ПК</item>
         <item id="18950" code="18956" price="1500.00" stock1="2" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=orange&gt;ПО  Антивирус Касперского Internet Security Special Ferrari Edition 12 мес, 1 ПК</item>
-        <item id="19417" code="19423" price="900.00" stock1="4" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;ПО  Антивирус Касперского 2012 DVD box, 12 мес, 2 ПК</item>
+        <item id="19417" code="19423" price="900.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;ПО  Антивирус Касперского 2012 DVD box, 12 мес, 2 ПК</item>
         <item id="19318" code="19324" price="540.00" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;ПО  Антивирус Касперского 2012 renewal card, 12 мес, 2 ПК</item>
         <item id="19418" code="19424" price="1280.00" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;ПО  Антивирус Касперского Internet Security 2012 DVD box 12 мес, 2 ПК</item>
         <item id="19317" code="19323" price="710.00" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;ПО  Антивирус Касперского Internet Security 2012 renewal card, 12 мес, 2 ПК</item>
@@ -2361,7 +2362,7 @@
       <item id="16599" code="16605" price="20.50" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME Утюг  IA-200</item>
       <item id="16607" code="16613" price="15.50" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME Утюг  IE-200</item>
       <item id="16600" code="16606" price="10.50" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME Утюг IB-100</item>
-      <item id="18104" code="18110" price="9.20" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME фен HD-110</item>
+      <item id="18104" code="18110" price="9.20" stock1="5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME фен HD-110</item>
       <item id="18105" code="18111" price="10.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME фен HD-210I</item>
       <item id="19413" code="19419" price="19.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME фен HD-310I</item>
       <item id="16601" code="16607" price="24.00" stock1="&gt;10" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">ACME Электрический чайник  KA-200</item>
@@ -2381,7 +2382,7 @@
       <item id="17897" code="17903" price="3.70" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Энергосберегающая лампа ACME energy saving lamp Globe 20W8000h827E27</item>
       <item id="18002" code="18008" price="2.10" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Энергосберегающая лампа ACME energy saving lamp Half Spiral 15W8000h827E27</item>
       <item id="17895" code="17901" price="3.10" stock1="1" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Энергосберегающая лампа ACME energy saving lamp P55A 11W8000h827E27</item>
-      <item id="14985" code="14991" price="1.00" stock1="0" warranty_type="12 месяцев" flags="А" ordered="0" reserved="0" inCart="0">Энергосберегающая лампа ACME energy saving lamp Spiral 15W8000h827E14</item>
+      <item id="14985" code="14991" price="1.00" stock1="0" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Энергосберегающая лампа ACME energy saving lamp Spiral 15W8000h827E14</item>
     </catalog>
   </catalog>
   <catalog id="9833" name="Игровые консоли, eBooks">
@@ -2389,7 +2390,7 @@
       <catalog id="16788" name="Sony Playstation">
         <item id="17948" code="17954" price="205.00" stock1="&gt;15" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Playstation PSP 3004 Base Pack</item>
         <item id="18408" code="18414" price="345.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Sony Playstation 3 160GB CECH-2508A/PS3</item>
-        <item id="19230" code="19236" price="455.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Sony Playstation 3 320 Slim + Little Big Planet 2</item>
+        <item id="19230" code="19236" price="430.00" stock1="2" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Sony Playstation 3 320 Slim + Little Big Planet 2</item>
         <item id="18388" code="18394" price="450.00" stock1="&gt;5" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Sony Playstation 3 320GB Slim Console</item>
         <item id="18849" code="18855" price="479.00" stock1="4" warranty_type="12 месяцев" flags="" ordered="0" reserved="0" inCart="0">Игровая консоль Sony Playstation 3 320Gb+GR+VIRTUAT4-PS MOVE EYE</item>
       </catalog>
@@ -2427,9 +2428,9 @@
         <item id="9222" code="9228" price="4.68" stock1="6" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетка TFT/LCD - микрофибра 45x40cm  + спрей  125 ml.</item>
         <item id="11558" code="11564" price="2.31" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки  для - LCD/TFT/CRT экранов  /10 влажных/10 сухих</item>
         <item id="12884" code="12890" price="1.79" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки  для TFT/LCD экранов по  70шт в мягкой упаковке.</item>
-        <item id="5855" code="5856" price="2.83" stock1="5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки  для оптики 50 влажн. +50 сухих  (тверд уп.)</item>
+        <item id="5855" code="5856" price="2.83" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки  для оптики 50 влажн. +50 сухих  (тверд уп.)</item>
         <item id="11560" code="11566" price="2.60" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки  по 100шт в тубе. Для очистки пластик/металл.поверхностей.</item>
-        <item id="11557" code="11563" price="2.44" stock1="&gt;5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки для  TFT/LCD экранов 100шт в тубе</item>
+        <item id="11557" code="11563" price="2.44" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки для  TFT/LCD экранов 100шт в тубе</item>
         <item id="11561" code="11567" price="1.50" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Салфетки по 100шт в мягкой упаковке</item>
         <item id="16068" code="16074" price="4.90" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Сжатый воздух  Air pressure cleaning 400ml</item>
         <item id="14666" code="14672" price="2.50" stock1="&gt;15" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">ACME Универсальный  спрей 250ml-TFT Clean</item>
@@ -2474,26 +2475,26 @@
     </catalog>
     <catalog id="19232" name="Картриджи">
       <catalog id="19231" name="Картриджи CANON струйные">
-        <item id="19087" code="19093" price="18.00" stock1="&gt;5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж Canon PGI-5Bk, Black cartridge for mp800/mp500/ip5200/ix5000</item>
         <item id="5480" code="5480" price="23.00" stock1="3" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Canon CL-41, Color cartridge for iP1200/ iP1600/mp160</item>
         <item id="18835" code="18841" price="19.00" stock1="5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Canon CL-511 Color cartridge for mp190/mp240/mp280</item>
         <item id="5481" code="5481" price="18.50" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Canon PG-40, Black cartridge for iP1200/ iP1600/mp160</item>
         <item id="18839" code="18845" price="16.50" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Canon PG-510, Black cartridge for mp240/mp260/mp280</item>
+        <item id="19087" code="19093" price="18.00" stock1="&gt;5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Canon PGI-5Bk, Black cartridge for mp800/mp500/ip5200/ix5000</item>
       </catalog>
       <catalog id="18847" name="Картриджи EPSON струйные">
-        <item id="19108" code="19114" price="44.00" stock1="2" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж Epson T04874010 cartridge for R220/R300/R320/RX500/RX620 (0487)</item>
-        <item id="18842" code="18848" price="8.40" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж Epson T07314A BK cartridge for T40W/CX3900/CX4900 (0731)</item>
-        <item id="18844" code="18850" price="8.40" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж Epson T09214A BK cartridge for T26/CX4300/TX106/TX109 (0921)</item>
+        <item id="19108" code="19114" price="44.00" stock1="2" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Epson T04874010 cartridge for R220/R300/R320/RX500/RX620 (0487)</item>
+        <item id="18842" code="18848" price="8.40" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Epson T07314A BK cartridge for T40W/CX3900/CX4900 (0731)</item>
         <item id="18843" code="18849" price="31.50" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Epson T07354A K cartridge for T40W/CX3900/CX4900 (0735)</item>
+        <item id="18844" code="18850" price="8.40" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Epson T09214A BK cartridge for T26/CX4300/TX106/TX109 (0921)</item>
         <item id="18846" code="18852" price="31.50" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж Epson T09254A K cartridge for T26/CX4300/TX106/TX109 (0925)</item>
       </catalog>
       <catalog id="19230" name="Картриджи HP лазерные">
-        <item id="18711" code="18717" price="65.00" stock1="6" warranty_type="без гарантии" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж  HP СВ435A для НР LJ P1005/P1006</item>
-        <item id="18712" code="18718" price="65.00" stock1="1" warranty_type="без гарантии" flags="А" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!!Картридж  HP СВ436А для HP LJ P1505</item>
         <item id="18713" code="18719" price="90.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж  HP CE505A для НР LJ P2055/P2035</item>
+        <item id="18710" code="18716" price="55.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж  HP Q2612A для НР LJ 1010</item>
         <item id="18714" code="18720" price="72.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж  HP Q5949A для НР LJ 1320</item>
         <item id="18715" code="18721" price="78.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Картридж  HP Q7553A для НР LJ P2014/P2015</item>
-        <item id="18710" code="18716" price="55.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Спец цена!!!! Картридж  HP Q2612A для НР LJ 1010</item>
+        <item id="18711" code="18717" price="63.00" stock1="6" warranty_type="без гарантии" flags="А" ordered="0" reserved="0" inCart="0">Картридж  HP СВ435A для НР LJ P1005/P1006</item>
+        <item id="18712" code="18718" price="68.00" stock1="1" warranty_type="без гарантии" flags="А" ordered="0" reserved="0" inCart="0">Картридж  HP СВ436А для HP LJ P1505</item>
       </catalog>
       <catalog id="18955" name="Картриджи HP струйные">
         <item id="9555" code="9561" price="27.00" stock1="4" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">&lt;font color=red&gt;SALE!!! Картридж HP C6615D black №15 HP DJ 845c/880c/890c/895cxi</item>
@@ -2544,14 +2545,14 @@
       <catalog id="7601" name="Acme">
         <item id="16597" code="16603" price="20.60" stock1="7" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Рюкзак  для ноутбука ACME 16B07 Notebook Backpack, 16", blac</item>
         <item id="16598" code="16604" price="21.30" stock1="8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Рюкзак  для ноутбука ACME 16B08 Notebook Backpack, 16", grey</item>
-        <item id="15179" code="15185" price="9.80" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 10M01 Netbook Case, 10", black</item>
+        <item id="15179" code="15185" price="9.80" stock1="&gt;8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 10M01 Netbook Case, 10", black</item>
         <item id="13659" code="13665" price="13.00" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 151M-A35 , 15.4", серая</item>
         <item id="15189" code="15195" price="16.90" stock1="&gt;32" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 15M04 Notebook Case, 15.6", grey/beige</item>
         <item id="15620" code="15626" price="17.00" stock1="&gt;8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16C01 Notebook Case, 16", black</item>
         <item id="12873" code="12879" price="15.93" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16C065 Notebook Case, 16", black</item>
         <item id="12872" code="12878" price="18.80" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16C48 Notebook Case, 16", black</item>
         <item id="13033" code="13039" price="19.50" stock1="&gt;32" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16C65+CO058 Notebook Case, 16", black+mouse</item>
-        <item id="15177" code="15183" price="11.00" stock1="2" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16M03 Notebook Case, 16", black</item>
+        <item id="15177" code="15183" price="11.00" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16M03 Notebook Case, 16", black</item>
         <item id="13690" code="13696" price="16.00" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16M05 Notebook Case, 16", grey</item>
         <item id="18906" code="18912" price="20.00" stock1="&gt;16" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 16M12 Notebook Case For 16"/ Black/ (int. dim 40 x 384 x 280 mm)/ Lifetime</item>
         <item id="13034" code="13040" price="25.63" stock1="2" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука  ACME 172C-O37, 17.1", черная</item>
@@ -2589,9 +2590,9 @@
         <item id="9666" code="9672" price="17.00" stock1="8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука PLATINET 16" PTO246</item>
       </catalog>
       <catalog id="15216" name="Targus">
-        <item id="15650" code="15656" price="14.50" stock1="5" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus CN31 15.4'</item>
-        <item id="15652" code="15658" price="17.00" stock1="8" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus TBC002EU  15.4'</item>
-        <item id="17533" code="17539" price="16.99" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus TSS18003EU для NETbooka 11.6 розовая</item>
+        <item id="15650" code="15656" price="14.50" stock1="4" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus CN31 15.4'</item>
+        <item id="15652" code="15658" price="17.00" stock1="7" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus TBC002EU  15.4'</item>
+        <item id="17533" code="17539" price="16.99" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Сумка для ноутбука Targus TSS18003EU для NETbooka 11.6 розовая</item>
       </catalog>
     </catalog>
     <catalog id="7500" name="Сумки для фото-видеокамер">
@@ -2629,7 +2630,7 @@
       </catalog>
       <catalog id="7541" name="Батарейки">
         <item id="17010" code="17016" price="1.35" stock1="&gt;20" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME  AAA Alkaline LR03 (цена за 6 штук)</item>
-        <item id="6070" code="6071" price="1.00" stock1="1" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME AA Alkaline LR6 (цена за 4 шт.)</item>
+        <item id="6070" code="6071" price="1.00" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME AA Alkaline LR6 (цена за 4 шт.)</item>
         <item id="17009" code="17015" price="1.35" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME AA Alkaline LR6/(цена за 6 шт.)</item>
         <item id="6073" code="6074" price="0.70" stock1="0" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME AA Super Heavy Duty R6P  (цена за 4 шт.)</item>
         <item id="6069" code="6070" price="0.42" stock1="&gt;20" warranty_type="без гарантии" flags="" ordered="0" reserved="0" inCart="0">Батарейки ACME AAA Alkaline LR03 (цена за 2 шт.)</item>
