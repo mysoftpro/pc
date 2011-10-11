@@ -206,8 +206,12 @@ p {
 #megafon{
     background-image:url('/static/megafonicon.png')
 }
-
-
+#email {
+    background-image:url('/static/email.png')
+}
+#skype{
+    background-image:url('/static/skype.png')
+}
 #operators span {
     padding-left:16px;
     background-repeat:no-repeat;
@@ -225,6 +229,7 @@ p {
     padding-bottom:7px;
     width:300px;
     padding-right:15px;
+    text-align:center;
 }
 
 
