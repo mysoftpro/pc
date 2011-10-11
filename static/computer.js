@@ -127,7 +127,7 @@ function recalculate(){
 	tottal +=installprice;
     }
     if (jgetDVD().is(':checked')){
-	tottal +=1000;
+	tottal +=dvdprice;
     }
     var lp = jgetLargePrice();
     var old_tottal = parseInt(jgetLargePrice().text());
@@ -1341,4 +1341,5 @@ $(function(){
 	  $('#tocart').text('Сохранить');
       $('#installprice').text(installprice+' р');
       $('#buildprice').text(buildprice+' р');
+      $('#dvdprice').text(dvdprice+' р');
   });
