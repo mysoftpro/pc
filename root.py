@@ -584,7 +584,7 @@ class AdminGate(Resource):
         self.putChild('storemodel', StoreModel())
 
     def render_GET(self, request):
-        return self.static.getChild('index.html', request).render_GET(request)
+        return self.static.getChild('index.html', request).render(request)
 
     def getChild(self, name, request):
         if 'html' in name or 'js' in name:
