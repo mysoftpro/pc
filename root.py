@@ -10,7 +10,7 @@ from pc import base36
 from twisted.web.server import NOT_DONE_YET
 import os
 from twisted.web.http import CACHED
-from pc.couch import couch
+from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
@@ -22,6 +22,20 @@ from twisted.python.failure import Failure
 from lxml import etree
 from copy import deepcopy
 from pc.mail import Sender
+
+
+
+
+def howtochoose(template, skin, request):
+    skin.top = template.top
+    skin.middle = template.middle
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    d = defer.Deferred()
+    d.addCallback(lambda some:skin.render())
+    d.callback(None)
+    return d
+
 _cached_statics = {}
 
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
@@ -31,7 +45,8 @@ static_dir = os.path.join(os.path.dirname(__file__), 'static')
 static_hooks = {
     'index.html':index,
     'computer.html':computer,
-    'computers.html':computers
+    'computers.html':computers,
+    'howtochoose.html':howtochoose
 }
 
 
@@ -262,6 +277,7 @@ class Root(Cookable):
         self.putChild('xml',XmlGetter())
         self.putChild('computer', Computer(self.static))
         self.putChild('cart', Cart(self.static))
+        self.putChild('howtochoose', HowToChoose(self.static))
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
@@ -308,6 +324,15 @@ class Cart(Cookable):
     def getChild(self, name, request):
         self.checkCookie(request)
         return self.static.getChild("computers.html", request)
+
+
+class HowToChoose(Cookable):
+    def __init__(self, static):
+        Cookable.__init__(self)
+        self.static = static
+    def render_GET(self, request):
+        self.checkCookie(request)
+        return self.static.getChild("howtochoose.html", request).render_GET(request)
 
 
 class CustomWriter(object):
@@ -540,9 +565,33 @@ class ClearCache(Resource):
         return "ok"
 
 class UpdatePrices(Resource):
+    # this thing is only update prices in models.
+    # not in components.
+    # does not used actually (it is automatic)
     def render_GET(self,request):
         updateOriginalModelPrices()
         return "ok"
+
+class ClearAttachments(Resource):
+    def clear(self, result):
+        def _sorted(name1,name2):
+            return int(name1.split('-')[0])-int(name1.split('-')[0])
+                        
+        for r in result['rows']:
+            doc = r['doc']
+            if '_attachments' not in doc:
+                continue
+            if len(doc['_attachments'].keys()) <= 3:
+                continue
+            sorted_attachments = sorted([name for name in doc['_attachments'].keys() if 'jpg' not in name], _sorted)
+            for a in sorted_attachments[:-3]:
+                doc['_attachments'].pop(a)
+            couch.saveDoc(doc)
+    def render_GET(self, request):
+        d = couch.openView(designID,"codes", include_docs=True, stale=False)
+        d.addCallback(self.clear)
+        return "ok"
+
 
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
@@ -575,6 +624,7 @@ class AdminGate(Resource):
         Resource.__init__(self)
         self.static = static
         self.putChild('clear_cache',ClearCache())
+        self.putChild('clear_attachments',ClearAttachments())
         self.putChild('update_prices',UpdatePrices())
         self.putChild('edit_model', EditModel())
         self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
@@ -724,3 +774,4 @@ class EditModel(Resource):
         script.set('src','../edit_model.js')
         child.skin.root().append(script)
         return child
+

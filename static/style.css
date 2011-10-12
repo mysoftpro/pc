@@ -30,11 +30,11 @@ h2 {
 
 
 #logo {
-
     margin: 0;
     padding:0;
     z-index:9999;
     float:left;
+    padding-top:10px;
 }
 #links{
     float:right;
@@ -48,6 +48,7 @@ h2 {
 }
 #greetings{
     float:left;
+    height:240px;
 }
 #greeting_banner{
     background:url('hp1.png');
@@ -55,7 +56,7 @@ h2 {
     /* background-position: 420px 70px; */
     float:right;
     width:558px;
-    height:261px;
+    height:240px;
 }
 .title {
        text-transform:uppercase;
@@ -78,6 +79,8 @@ p {
     margin:0;
     margin-top:10px;
     margin-bottom:10px;
+    padding-bottom: 15px;
+    padding-top: 5px;
 }
 #second{
 
@@ -90,10 +93,17 @@ p {
     color:#898989;
     max-width:400px;
 }
+#third span{
+    color:#B6C974;
+}
+
 #fourth{
     font-size:18px;
     color:#999999;
     max-width:400px;
+}
+#fourth span{
+    color:#B9D3E1
 }
 
 #fifth{
@@ -206,7 +216,7 @@ p {
 #megafon{
     background-image:url('/static/megafonicon.png')
 }
-#email {
+#emailc {
     background-image:url('/static/email.png')
 }
 #skype{
@@ -1142,4 +1152,52 @@ strong.red{
 }
 .guider_description ul li:hover{
     color:#730606;
+}
+#how{
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    font-size: 18px;
+}
+.midlle_how{
+    margin-top:20px !important;
+}
+#howguider{
+    width:200px;
+    margin-top:50px;
+    margin-bottom:30px;
+}
+.sentence{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+.sentence_float{
+    margin-top:30px;
+    margin-bottom:30px;
+    float:left;
+}
+#hselect_chzn{
+    margin-left:245px;
+    width:615px !important;
+    display:block;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+h2.inline{
+    float:left;
+    margin-top:30px;
+    margin-left:20px;
+}
+#how h1{
+    font-size:27px;
+    margin-top:30px;
+    line-height: 30px;
+}
+#how h1 span{
+ color: #B6C974;
+}
+#hindex{
+    display:inline;
+    font-size:20px;
+    color: #B9D3E1;
 }
