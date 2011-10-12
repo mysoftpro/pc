@@ -1204,15 +1204,33 @@ h2.inline{
 .sentence strong {
     color: #B9D3E1;
 }
-#how #callme{
+
+#callmecontainer{
+    height:400px;
+}
+#callmecontainer h1{
     margin-top:150px;
     color:white;
     font-size:40px;
+    margin-left:10px;
 }
+#callmecontainer div div{
+    margin-left:-20px;
+    max-width:280px;
+    text-align:center;
+}
+
+
 #how h2 img{
     margin-right:5px;
 }
 
-.computers_top h3{
-    font-size:18px;
+.computers_top div{
+    //font-size:18px;
+}
+
+.htip{
+    float:left;
+    line-height:30px;
+    font-size:20px;
 }
