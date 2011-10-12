@@ -36,6 +36,16 @@ def howtochoose(template, skin, request):
     d.callback(None)
     return d
 
+def howtobuy(template, skin, request):
+    skin.top = template.top
+    skin.middle = template.middle
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    d = defer.Deferred()
+    d.addCallback(lambda some:skin.render())
+    d.callback(None)
+    return d
+
 _cached_statics = {}
 
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
@@ -46,7 +56,8 @@ static_hooks = {
     'index.html':index,
     'computer.html':computer,
     'computers.html':computers,
-    'howtochoose.html':howtochoose
+    'howtochoose.html':howtochoose,
+    'howtobuy.html':howtobuy
 }
 
 
@@ -278,6 +289,7 @@ class Root(Cookable):
         self.putChild('computer', Computer(self.static))
         self.putChild('cart', Cart(self.static))
         self.putChild('howtochoose', HowToChoose(self.static))
+        self.putChild('howtobuy', HowToBuy(self.static))
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
@@ -333,6 +345,14 @@ class HowToChoose(Cookable):
     def render_GET(self, request):
         self.checkCookie(request)
         return self.static.getChild("howtochoose.html", request).render_GET(request)
+
+class HowToBuy(Cookable):
+    def __init__(self, static):
+        Cookable.__init__(self)
+        self.static = static
+    def render_GET(self, request):
+        self.checkCookie(request)
+        return self.static.getChild("howtobuy.html", request).render_GET(request)
 
 
 class CustomWriter(object):

@@ -1204,3 +1204,15 @@ h2.inline{
 .sentence strong {
     color: #B9D3E1;
 }
+#how #callme{
+    margin-top:150px;
+    color:white;
+    font-size:40px;
+}
+#how h2 img{
+    margin-right:5px;
+}
+
+.computers_top h3{
+    font-size:18px;
+}
