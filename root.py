@@ -46,6 +46,19 @@ def howtobuy(template, skin, request):
     d.callback(None)
     return d
 
+
+def warranty(template, skin, request):
+    skin.top = template.top
+    skin.middle = template.middle
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    d = defer.Deferred()
+    d.addCallback(lambda some:skin.render())
+    d.callback(None)
+    return d
+
+
+
 _cached_statics = {}
 
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
@@ -57,7 +70,8 @@ static_hooks = {
     'computer.html':computer,
     'computers.html':computers,
     'howtochoose.html':howtochoose,
-    'howtobuy.html':howtobuy
+    'howtobuy.html':howtobuy,
+    'warranty.html':warranty
 }
 
 
@@ -182,7 +196,7 @@ class CachedStatic(File):
 
         request.setHeader('Content-Encoding', 'gzip')
 
-        if 'html' in self.type:
+        if 'html' in self.type or 'text' in self.type:
             self.type += ';charset=utf-8'
         request.setHeader('Content-Type', self.type)
         last_modified = self.getmtime()
@@ -290,6 +304,7 @@ class Root(Cookable):
         self.putChild('cart', Cart(self.static))
         self.putChild('howtochoose', HowToChoose(self.static))
         self.putChild('howtobuy', HowToBuy(self.static))
+        self.putChild('warranty', Warranty(self.static))
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
@@ -353,6 +368,14 @@ class HowToBuy(Cookable):
     def render_GET(self, request):
         self.checkCookie(request)
         return self.static.getChild("howtobuy.html", request).render_GET(request)
+
+class Warranty(Cookable):
+    def __init__(self, static):
+        Cookable.__init__(self)
+        self.static = static
+    def render_GET(self, request):
+        self.checkCookie(request)
+        return self.static.getChild("warranty.html", request).render_GET(request)
 
 
 class CustomWriter(object):
