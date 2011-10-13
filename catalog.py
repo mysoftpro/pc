@@ -37,6 +37,8 @@ standard_headers = {'User-Agent': ['Mozilla/5.0 (Windows; U; Windows NT 6.1; en-
                     'Connection': ['keep-alive']}
 
 
+gLastUpdate = None
+
 class XmlGetter(Resource):
     isLeaf = True
     allowedMethods = ('GET','POST')

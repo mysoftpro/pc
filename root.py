@@ -65,6 +65,42 @@ static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
 
+class SiteMap(Resource):
+    def buildElement(self, location, freq="monthly", prior="0.8"):
+        url = etree.Element('url')
+        loc = etree.Element('loc')
+        loc.text = 'http://buildpc.ru/'+location
+        lastmod = etree.Element('lastmod')
+        today = datetime.today()
+        lastmod.text = '-'.join((str(today.year),str(today.month),str(today.day)))
+        changefreq = etree.Element('changefreq')
+        changefreq.text = freq
+        priority = etree.Element('priority')
+        priority.text = prior
+        url.append(loc)
+        url.append(lastmod)
+        url.append(changefreq)
+        url.append(priority)
+        return url
+
+    def siteMap(self, models, request):
+        request.setHeader('Content-Type', 'text/xml;charset=utf-8')
+        root = etree.XML('<urlset></urlset>')
+        root.append(self.buildElement(''))
+        root.append(self.buildElement('computer'))
+        for model in models['rows']:
+            root.append(self.buildElement('computer/'+model['key'], freq='daily'))
+        root.append(self.buildElement('howtochoose'))
+        root.append(self.buildElement('howtobuy'))
+        root.append(self.buildElement('warranty'))
+        request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
+        request.finish()
+
+    def render_GET(self, request):
+        d = couch.openView(designID, 'models')
+        d.addCallback(self.siteMap, request)
+        return NOT_DONE_YET
+
 static_hooks = {
     'index.html':index,
     'computer.html':computer,
@@ -281,7 +317,7 @@ class CachedStatic(File):
 
 class Cookable(Resource):
     def __init__(self):
-        self.cookies = []        
+        self.cookies = []
         Resource.__init__(self)
 
     def checkCookie(self, request):
@@ -314,6 +350,7 @@ class Root(Cookable):
         self.putChild('admin',Admin())
         self.host_url = host_url
         self.putChild('5406ae5f1ec4.html',File(os.path.join(static_dir,'5406ae5f1ec4.html')))
+        self.putChild('sitemap.xml',SiteMap())
 
     def getChild(self, name, request):
         self.checkCookie(request)
@@ -332,7 +369,7 @@ class Computer(Cookable):
         self.checkCookie(request)
         return self.static.getChild("computers.html", request).render_GET(request)
 
-    def getChild(self, name, request):        
+    def getChild(self, name, request):
         self.checkCookie(request)
         return self.static.getChild("computer.html", request)
 
@@ -471,7 +508,7 @@ class Save(Resource):
 
         # cases
         # 1 no user doc, no model
-        if user_doc.__class__ is Failure:            
+        if user_doc.__class__ is Failure:
             if 'id' in model:
                 model['parent'] = model.pop('id')
             installOriginalPrices(model)
@@ -620,7 +657,7 @@ class ClearAttachments(Resource):
     def clear(self, result):
         def _sorted(name1,name2):
             return int(name1.split('-')[0])-int(name1.split('-')[0])
-                        
+
         for r in result['rows']:
             doc = r['doc']
             if '_attachments' not in doc:
@@ -818,4 +855,3 @@ class EditModel(Resource):
         script.set('src','../edit_model.js')
         child.skin.root().append(script)
         return child
-
