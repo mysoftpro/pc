@@ -148,10 +148,9 @@ class XmlGetter(Resource):
         sio = StringIO(src)
         gz = gzip.GzipFile(fileobj=sio)
 
-        f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
-        f.write(gz.read())
-        f.close()
-
+        # f = open(os.path.join(os.path.dirname(__file__), str(datetime.now()).replace(" ","_").replace(":","-")) + ".xml", 'w')
+        # f.write(gz.read())
+        # f.close()
         gz.seek(0)
         tree = etree.parse(gz)
         root = tree.getroot()

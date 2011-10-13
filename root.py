@@ -599,6 +599,7 @@ def clear_cache():
     from pc import models
     models.gChoices = None
     models.gChoices_flatten = {}
+    models.gWarning_sent = []
     d = models.fillChoices()
     d.addCallback(lambda x: models.updateOriginalModelPrices())
 

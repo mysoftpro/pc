@@ -7,6 +7,7 @@ import re
 from copy import deepcopy
 from urllib import unquote_plus
 from datetime import datetime
+from pc.mail import send_email
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
 DVD_PRICE = 800
@@ -25,6 +26,8 @@ DVD_PRICE = 800
 #        <catalog id="9422" name="LGA1366">
 #        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
 #        <catalog id="7700" name="SOCKET AM2">
+
+gWarning_sent = []
 
 components = "7363"
 perifery = "7365"
@@ -268,6 +271,13 @@ def replaceComponent(code,model):
     if _next == _length:
         _next = ind-1
     next_el = deepcopy(flatten[_next])
+    if 'ours' in model and code not in globals()['gWarning_sent']:
+        globals()['gWarning_sent'].append(code)
+        text = model['name'] + ' '+parts_names[name] + ': '+code
+        send_email('admin@buildpc.ru',
+                   u'В модели заменен компонент',
+                   text,
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     return next_el
 
 no_component_added = False
@@ -502,7 +512,7 @@ def equipCases(result):
         i+=1
     chipest_power = sorted([row['doc'] for row in power['rows']],lambda x,y:int(x['price']-y['price']))[0]
     for r in exclusive_rows:
-        r['doc']['price'] += chipest_power['price']        
+        r['doc']['price'] += chipest_power['price']
     result.pop(power_index)
     return result
 
