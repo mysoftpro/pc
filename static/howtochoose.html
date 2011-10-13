@@ -9,14 +9,18 @@
 
 <middle>
   <div id="how">
-    Компьютеры удобно сравнивать между собой на <a href="computer">странице всех моделей</a>.<br/>
-    Кроме текстового описания, можно посмотреть все компоненты компьютера с ценами
-    кликнув на значок <img src="/static/info.png" alt="info icon"/><br/>
+    <div class="sentence">
+      Компьютеры удобно сравнивать между собой на <a href="computer">странице всех моделей</a>.
+    </div>
+    <div class="sentence">
+      Кроме текстового описания, можно посмотреть все компоненты компьютера с ценами
+      кликнув на значок <img src="/static/info.png" alt="info icon"/>
+    </div>
     <div id="howguider">
       Окошко с компонентами компьютера
     </div>
-    <div class="sentence">
-      Можно открыть несколько таких окошек и посмотреть чем один компьютер отличается от другого.
+    <div class="sentence" style="margin-top:50px;">
+      Можно открыть <span>несколько таких окошек</span> и посмотреть чем один компьютер отличается от другого.
     </div>
     <div class="sentence_float">
       Чтобы перейти к компьютеру - кликайте его название:
@@ -27,17 +31,65 @@
     </h2>
     <div style="clear:both;"></div>
     <div class="sentence">
-      Все компьютеры укомплектованы таким образом, чтобы вы сразу могли начать его использовать.
+      Все компьютеры укомплектованы таким образом, чтобы вы могли начать
+      <span>сразу  его использовать</span>.
     </div>
-    <div class="sentence">
+    <div class="sentence_float">
+      Но некоторые компоненты, возможно, не нужны вам.
+      Исключайте их.
+    </div>
+    <table id="options" style="float:right;margin-right:30px;margin-top:20px;">
+      <tbody><tr><td style="width:70px;">
+            <input type="checkbox" checked="" value="odispl" id="odispl">
+            <label for="odispl">монитор</label>
+          </td>
+          <td style="width:70px;">
+            <input type="checkbox" checked="" value="osoft" id="osoft">
+            <label for="osoft">Windows</label>
+          </td>
+          <td style="width:80px;">
+            <input type="checkbox" checked="" value="oaudio" id="oaudio">
+            <label for="oaudio">колонки</label>
+          </td>
+          <td style="width:75px;">
+            <input type="checkbox" checked="" value="omouse" id="omouse">
+            <label for="omouse">мышь</label>
+          </td>
+          <td style="width:95px;">
+            <input type="checkbox" checked="" value="okbrd" id="okbrd">
+            <label for="okbrd">клавиатура</label>
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="checkbox" checked="" value="odvd" id="odvd">
+            <label for="odvd">DVD RW: <span id="dvdprice">800 р</span></label>
+          </td>
+          <td colspan="2">
+            <input type="checkbox" checked="" value="oinstalling" id="oinstalling">
+            <label for="oinstalling">Установка windows: <span id="installprice">800 р</span></label>
+          </td>
+          <td colspan="1">
+            <input type="checkbox" checked="" value="obuild" id="obuild">
+            <label for="obuild">Сборка: <span id="buildprice">800 р</span></label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="clear:both;"></div>
+
+
+    <div class="sentence_float" >
       На странице компьютера все основные компоненты собраны в таблицу.
     </div>
     <select id="hselect">
       <option selected="selected">Каждый компонент - это раскрывающийся список</option>
       <option>Можете выбирать любой</option>
     </select>
-
-    <div class="sentence">Возможно вам покажется удобней использовать кнопки справа</div>
+    <div style="clear:both;"></div>
+    <div class="sentence_float" >Возможно, вам покажется удобней использовать кнопки справа</div>
+    <div class="sentence_right">
     <div class="sentence">
       <img src="/static/down_small.png" alt="дешевле"/> - выбирает ближайший компонент с меньшей ценой.
     </div>
@@ -47,18 +99,21 @@
     </div>
 
     <div class="sentence">
-      <img src="/static/reset_small.png" alt="сбросить"/> - выбирает компонент изначально установленный в этой модели.
+      <img src="/static/reset_small.png" alt="сбросить"/> - выбирает изначально установленный компонент.
     </div>
-    <div class="sentence">
-      <div style="float:left;">Некоторые компоненты компоненты могут состоять из нескольких элементов</div>
-      <span id="ramcount" style="margin-right:130px;">1 шт.</span>
+    </div>
+
+      <div class="sentence_float" style="max-width:400px;margin-bottom:20px;">
+	Некоторые компоненты могут состоять из нескольких элементов.
+	Кликайте <strong>+</strong> и <strong>-</strong> чтобы изменить количество этих элементов.
+      </div>
+      <div style="float:right;margin-right:40px;margin-top:30px;">
+      <span id="ramcount">1 шт.</span>
       <span id="incram">+1шт</span>
       <span id="decram">-1шт</span>
-    </div>
+      </div>
     <div style="clear:both;"></div>
-    <div class="sentence">
-      Кликайте <strong>+</strong> и <strong>-</strong> чтобы изменить количество этих элементов.
-    </div>
+
 
     <h1 class="bold">Главной характеристикой компьютера является его <span>производительность.</span></h1>
     <img src="/static/IMG_5201-big.jpg" alt="nice computer" class="bold"/>
@@ -90,7 +145,7 @@
     </div>
     <div class="sentence">
       <div style="float:left;margin-top:10px;">Также вверху, после итоговой суммы, указан итоговый индекс производительности.</div>
-      <div id="large"><span id="large_price">32780</span> р / <span id="large_index">5.4</span></div>
+      <div id="large"><span id="large_price" style="color:#999;">32780</span> р / <span id="large_index">5.4</span></div>
     </div>
     <div style="clear:both;"></div>
     <div class="sentence">
@@ -103,8 +158,8 @@
     </div>
     <div style="clear:both;"></div>
     <div class="sentence">
-      <strong>Кнопка "дешевле"</strong>, заменяет те компоненты компьютера, которые имеют высокую цену,
-      но не определяют итоговую производительность,
+      <strong>Кнопка "дешевле"</strong>, заменяет те компоненты компьютера,
+      которые не определяют итоговую производительность,
       потому что есть элементы с меньшей производительностью.
       В примере с видеокартой за 20 тысяч, нажимая последовательно на кнопку "дешевле"
       система будет заменять выдеоконтроллер на более дешевый до тех пор, пока его производительность
@@ -130,7 +185,7 @@
       (казалось бы минимум возможностей, которые дает вам компьютер)
       держит
       открытым несколько браузеров с десятками вкладок в каждом из них.
-      На самом деле, это очень удобно. И для таких целей нужен достаточно серьезный компьютер.
+      На самом деле - это очень удобно. И для таких целей нужен достаточно серьезный компьютер.
     </div>
     <div class="sentence">
       Тривиальная задача - набор текста, может оказаться очень затратной,
@@ -173,12 +228,12 @@
       <br/>
     </div>
     <div class="sentence">
-	Однако помните, что       
-	<span style="color: #B9D3E1;">всегда можно сделать "апгрейд".</span>
+        Однако помните, что
+        <span style="color: #B9D3E1;">всегда можно сделать "апгрейд".</span>
       В нашем магазине - самые современные компоненты.
       Мы отслеживаем все изменения на рынке разработчиков "железа". Вы можете быть уверены,
-      что компьютер купленный у нас можно будет успешно 
-	<span style="color: #B9D3E1;">"проапгрейдить"</span> спустя несколько лет.
+      что компьютер купленный у нас можно будет успешно
+        <span style="color: #B9D3E1;">"проапгрейдить"</span> спустя несколько лет.
 
     </div>
   </div>

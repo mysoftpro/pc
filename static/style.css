@@ -1168,8 +1168,8 @@ strong.red{
     margin-top:20px !important;
 }
 #howguider{
-    width:200px;
-    margin-top:50px;
+    width:400px;
+    margin-top:65px;
     margin-bottom:30px;
 }
 .sentence{
@@ -1180,18 +1180,25 @@ strong.red{
     margin-top:30px;
     margin-bottom:30px;
     float:left;
+    width:400px;
 }
+.sentence_right{
+    float:right;
+    margin-right:30px;
+}
+
 #hselect_chzn{
-    margin-left:245px;
-    width:615px !important;
+    float:right;
     display:block;
-    margin-top:20px;
+    margin-top:50px;
     margin-bottom:20px;
+    margin-right:40px;
+    width:440px !important;
 }
 h2.inline{
-    float:left;
+    float:right;
     margin-top:30px;
-    margin-left:20px;
+    margin-right:40px;
 }
 #how h1{
     font-size:27px;
@@ -1229,12 +1236,12 @@ h2.inline{
     margin-bottmo:30px;
     display:block;
     margin-right:150px;
-    border-radius: 15px 15px 15px 15px;
-    -moz-border-radius:15px 15px 15px 15px;
-    -webkit-border-bottom-left-radius:15px;
-    -webkit-border-bottom-right-radius:15px;
-    -webkit-border-top-left-radius:15px;
-    -webkit-border-top-right-radius:15px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px;
+    -webkit-border-bottom-left-radius:10px;
+    -webkit-border-bottom-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
 
 }
 
@@ -1247,7 +1254,7 @@ h2.inline{
     //font-size:18px;
 }
 
-.htip{
+div.htip{
     float:left;
     line-height:30px;
     font-size:20px;
@@ -1265,12 +1272,12 @@ img.bold{
     margin-top:50px;
     margin-bottom:30px;
     border: 1px solid #777777;
-    border-radius: 15px 15px 15px 15px;
-    -moz-border-radius:15px 15px 15px 15px;
-    -webkit-border-bottom-left-radius:15px;
-    -webkit-border-bottom-right-radius:15px;
-    -webkit-border-top-left-radius:15px;
-    -webkit-border-top-right-radius:15px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px;
+    -webkit-border-bottom-left-radius:10px;
+    -webkit-border-bottom-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
 
 }
 h1.bold.left{
@@ -1287,4 +1294,10 @@ h1.bold.left{
     padding-left:0;
     background-color:#730606;
     color:white;
+}
+.htip span {
+    color:#B6C974;
+}
+.sentence span{
+    color:#B6C974;
 }
