@@ -64,7 +64,6 @@ _cached_statics = {}
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
-
 class SiteMap(Resource):
     def buildElement(self, location, freq="monthly", prior="0.8"):
         url = etree.Element('url')
@@ -351,6 +350,7 @@ class Root(Cookable):
         self.host_url = host_url
         self.putChild('5406ae5f1ec4.html',File(os.path.join(static_dir,'5406ae5f1ec4.html')))
         self.putChild('sitemap.xml',SiteMap())
+        self.putChild('robots.txt',File(os.path.join(static_dir,'robots.txt')))
 
     def getChild(self, name, request):
         self.checkCookie(request)

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Dissalow: /admin
+Sitemap: http://buildpc.ru/sitemap.xml
+
