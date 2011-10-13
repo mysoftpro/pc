@@ -1251,6 +1251,7 @@ h2.inline{
     float:left;
     line-height:30px;
     font-size:20px;
+    margin-top:10px;
 }
 h1.bold{
     float:left;
@@ -1276,4 +1277,14 @@ h1.bold.left{
     float:right;
     margin-left:20px;
     width:480px;
+}
+.hlink{
+    margin-right:10px;
+    max-width:410px;
+}
+.hlink span{
+    padding:8px;
+    padding-left:0;
+    background-color:#730606;
+    color:white;
 }
