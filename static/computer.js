@@ -138,7 +138,7 @@ function recalculate(){
 
     var pin = jgetLargePin();
     var old_pin = parseFloat(jgetLargePin().text());
-    var new_pin = Array.sort(pins,function(x1,x2){return x1-x2;})[0];//
+    var new_pin = pins.sort(function(x1,x2){return x1-x2;})[0];//Array.sort(pins,function(x1,x2){return x1-x2;})[0]
     if (new_pin != old_pin){
         pin.text(new_pin);
         blink(pin, '#222');
