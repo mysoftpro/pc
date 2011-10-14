@@ -1,3 +1,33 @@
+function saveDoc(e){
+    var tr = $(e.target).parent();
+    var doc = tr.data('doc');
+    doc['video'] = parseInt(tr.find('input[name="video"]').val());
+    doc['ramslots'] = parseInt(tr.find('input[name="ramslots"]').val());
+    doc['maxram'] = parseInt(tr.find('input[name="maxram"]').val());
+    $.ajax({
+	       url:'store_mother',
+	       type:'POST',
+	       datatype: "json",
+	       data:{'order':JSON.stringify({'mother':doc})},
+	       success:function(_rev){
+		   doc['_rev'] =_rev;
+		   tr.data('doc',doc);
+		   alert('Получилось!');
+	       },
+	       error:function(er){
+		   if (er.responseText
+		       .match('[0-9abcdef]+-[0-9abcdef]+$'))
+		   {
+		       doc['_rev'] = er.responseText;
+		       tr.data('doc',doc);
+		       alert('Получилось!');
+		   }
+		   else{
+		       alert('Что пошло не так! Не удается сохранить!');
+		   }
+	       }
+	   });
+}
 function addInput(doc,name){
     var input = $(document.createElement('input')).attr('name',name);
     console.log(input);
@@ -38,10 +68,11 @@ function fillMothers(data){
                 .click(function(e){$(e.target).parent().next().find('td').show();})
                 .text('показать описание');
             var save = $(document.createElement('button'))
-                .click(function(e){$(e.target).parent().next().find('td').show();})
+                .click(saveDoc)
                 .text('сохранить');
             tr.append(name).append(video).append(ramslots).append(maxram)
                 .append(open).append(save);
+	    tr.data('doc',doc);
             tr1.append(description);
             table.append(tr);
             table.append(tr1);

@@ -713,6 +713,7 @@ class AdminGate(Resource):
         self.putChild('findorder', FindOrder())
         self.putChild('storeorder', StoreOrder())
         self.putChild('mothers', Mothers())
+        self.putChild('store_mother', StoreMother())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -840,6 +841,19 @@ class StoreOrder(Resource):
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
+class StoreMother(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        mother = request.args.get('mother')[0]
+        jmother = simplejson.loads(mother)
+        d = couch.saveDoc(jmother)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
 
 class StoreModel(Resource):
     def finish(self, some, request):
