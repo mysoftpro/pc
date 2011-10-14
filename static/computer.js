@@ -208,10 +208,10 @@ function fillOmitOptions(new_component,old_component){
 }
 
 var no_video_li_template = _.template('<li class="active-result result-selected group-option"' +
-				      'id="{{_id}}">Видеокарта: нет 0 р</li>');
+                                      'id="{{_id}}">Видеокарта: нет 0 р</li>');
 
-function switchNoVideo(mother_body){
-    var has_video = getVideoFromMother(mother_body);
+function switchNoVideo(mother_component){
+    var has_video = getVideoFromMother(mother_component);
     var video_select = jgetSelectByRow($('#' + parts['video']));
     var no_video_li_id ='#'+video_select.attr('id')+'_chzn_o_1';
     var no_video_li = $(no_video_li_id);
@@ -228,9 +228,19 @@ function switchNoVideo(mother_body){
             $(no_video_li_id).remove();
     }
     if (has_video && no_video_li.length==0){
-	$('#'+video_select.attr('id')+'_chzn_o_2')
+        $('#'+video_select.attr('id')+'_chzn_o_2')
             .before(no_video_li_template({'_id':video_select.attr('id')+'_chzn_o_1'}));
     }
+}
+function checkRamSlots(mother_component){
+    var ramselect = jgetSelectByRow($('#' + parts['ram']));
+    var ram_component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
+    var count = ram_component['count'];
+    if (count>mother_component['ramslots']){		
+	changeRam('mock','down',false);
+	shadowCram($('#incram'));
+	return checkRamSlots(mother_component);
+    }	
 }
 
 
@@ -288,15 +298,8 @@ function componentChanged(maybe_event){
 
         //check video!
         if (isMother(body)){
-            switchNoVideo(body);
-            // var video_select = jgetSelectByRow($('#' + parts['video']));
-            // if (video_select.val().match('no') && !getVideoFromMother(body)){
-            //     var first_option = $(video_select.find('option')[1]);
-            //     video_select.val(first_option.val());
-            //     jgetChosenTitle(video_select).text(first_option.text());
-            //     componentChanged({'target':video_select[0],'no_desc':true});
-            //  //console.log($('#'+video_select.attr('id')+'_chzn_o_1'));
-            // }
+            switchNoVideo(new_component);
+            checkRamSlots(new_component);
         }
         // todo - it must be impossible change video to 'no' if
         // no video in mother
@@ -822,7 +825,7 @@ function shadowCram(target){
 
 
 
-function _getVideoFromMother(body){
+function _getVideoFromMother(){
     var retval,_text;
     var descr = jgetDescrByIndex(0);
     _text = descr.text();
@@ -850,20 +853,18 @@ function _getVideoFromMother(body){
 }
 
 
-var getVideoFromMother = function(body){
-    var code = jgetSelect(body).val();
-    var doc = choices[code];
+var getVideoFromMother = function(component){
     var retval;
-    if (doc['video'] == undefined)
-        retval = _getVideoFromMother(body);
+    if (component['video'] == undefined)
+        retval = _getVideoFromMother();
     else
-        retval = doc['video'];
+        retval = component['video'];
     return retval;
 };
 
-function _geRamSlotsFromMother(body){
+function _geRamSlotsFromMother(){
     var max_count,new_count;
-    var _text = body.text();
+    var _text = jgetBodyByIndex(0).text();
     if (_text.match('4DDR3'))
         max_count = 4;
     if (!max_count && _text.match('2DDR3'))
@@ -927,14 +928,12 @@ function _geRamSlotsFromMother(body){
     }
     return max_count;
 }
-var geRamSlotsFromMother= function(body){
-    var code = jgetSelect(body).val();
-    var doc = choices[code];
+var geRamSlotsFromMother= function(mother_component){
     var retval;
-    if (doc['ramslots'] == undefined)
-        retval = geRamSlotsFromMother(body);
+    if (mother_component['ramslots'] == undefined)
+        retval = _geRamSlotsFromMother();
     else
-	retval = doc['ramslots'];         
+        retval = mother_component['ramslots'];
     return retval;
 };
 // var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother,
@@ -953,8 +952,8 @@ function changeRam(e, direction, silent){
     var max_count;
     if (direction == 'up' || direction == 'mock'){
         var mother_select = jgetSelectByRow($('#' + parts['mother']));
-        var mother_body = jgetBody(mother_select);
-        max_count = geRamSlotsFromMother(mother_body);
+        //var mother_body = jgetBody(mother_select);
+        max_count = geRamSlotsFromMother(choices[mother_select.val()]);
         new_count = count + 1;
     }
     else if (direction == 'down'){
@@ -1409,9 +1408,9 @@ $(function(){
       installOptions();
       changeRam('e','mock');
       GCheaperGBeater();
-      switchNoVideo(jgetBodyByIndex(0));
+      switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();
-      
+
       $('#greset').click(function(){window.location.reload();});
       $('#tocart').click(to_cart);
       if (uuid)
