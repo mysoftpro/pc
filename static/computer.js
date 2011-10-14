@@ -207,6 +207,33 @@ function fillOmitOptions(new_component,old_component){
     }
 }
 
+var no_video_li_template = _.template('<li class="active-result result-selected group-option"' +
+				      'id="{{_id}}">Видеокарта: нет 0 р</li>');
+
+function switchNoVideo(mother_body){
+    var has_video = getVideoFromMother(mother_body);
+    var video_select = jgetSelectByRow($('#' + parts['video']));
+    var no_video_li_id ='#'+video_select.attr('id')+'_chzn_o_1';
+    var no_video_li = $(no_video_li_id);
+
+    if (!has_video){
+
+        if (video_select.val().match('no')){
+            var first_option = $(video_select.find('option')[1]);
+            video_select.val(first_option.val());
+            jgetChosenTitle(video_select).text(first_option.text());
+            componentChanged({'target':video_select[0],'no_desc':true});
+        }
+        if (no_video_li.length>0)
+            $(no_video_li_id).remove();
+    }
+    if (has_video && no_video_li.length==0){
+	$('#'+video_select.attr('id')+'_chzn_o_2')
+            .before(no_video_li_template({'_id':video_select.attr('id')+'_chzn_o_1'}));
+    }
+}
+
+
 function componentChanged(maybe_event){
     try{
 
@@ -261,14 +288,18 @@ function componentChanged(maybe_event){
 
         //check video!
         if (isMother(body)){
-            var video_select = jgetSelectByRow($('#' + parts['video']));
-            if (video_select.val().match('no') && !getVideoFromMother(body)){
-                var first_option = $(video_select.find('option')[1]);
-                video_select.val(first_option.val());
-                jgetChosenTitle(video_select).text(first_option.text());
-                componentChanged({'target':video_select[0],'no_desc':true});
-            }
+            switchNoVideo(body);
+            // var video_select = jgetSelectByRow($('#' + parts['video']));
+            // if (video_select.val().match('no') && !getVideoFromMother(body)){
+            //     var first_option = $(video_select.find('option')[1]);
+            //     video_select.val(first_option.val());
+            //     jgetChosenTitle(video_select).text(first_option.text());
+            //     componentChanged({'target':video_select[0],'no_desc':true});
+            //  //console.log($('#'+video_select.attr('id')+'_chzn_o_1'));
+            // }
         }
+        // todo - it must be impossible change video to 'no' if
+        // no video in mother
 
     } catch (x) {
         console.log(x);
@@ -735,7 +766,7 @@ function reset(){
                           var _id = body.attr('id');
                           var new_component = model[_id];
                           var old_component= choices[select.val()];
-			  changeComponent(body, new_component, old_component);
+                          changeComponent(body, new_component, old_component);
                           _.delay(function(){jgetPrice(body).css('background-color','transparent');},
                                   300);
                       });
@@ -767,16 +798,16 @@ function installOptions(){
         if (!target.is(':checked')){
             select.val(op.val());
             jgetChosenTitle(select).text(op.text());
-	    componentChanged({'target':select[0],'no_desc':true});
+            componentChanged({'target':select[0],'no_desc':true});
         }
         else{
-	    var new_component = choices[op.val()];
-	    var initial_component = filterByCatalogs(_(model).values(),
+            var new_component = choices[op.val()];
+            var initial_component = filterByCatalogs(_(model).values(),
                                          getCatalogs(new_component))[0];
-	    var init_option = jgetOption(select,initial_component['_id']);
-	    select.val(init_option.val());
+            var init_option = jgetOption(select,initial_component['_id']);
+            select.val(init_option.val());
             jgetChosenTitle(select).text(init_option.text());
-	    componentChanged({'target':select[0],'no_desc':true});
+            componentChanged({'target':select[0],'no_desc':true});
         }
     }
     $('#options input').change(substructAdd);
@@ -818,21 +849,15 @@ function _getVideoFromMother(body){
     return retval;
 }
 
-// var getVideoFromMother = _.memoize(_getVideoFromMother,
-//           function(body){
-//               var ret = jgetSelect(body).val();
-// 	      console.log('memoizeeeeeeee for that!');
-// 	      console.log(ret);
-// 	      return ret;
-//           });
+
 var getVideoFromMother = function(body){
     var code = jgetSelect(body).val();
     var doc = choices[code];
     var retval;
     if (doc['video'] == undefined)
-	retval = _getVideoFromMother(body);
+        retval = _getVideoFromMother(body);
     else
-	retval = doc['video'];
+        retval = doc['video'];
     return retval;
 };
 
@@ -1152,12 +1177,12 @@ function changePinedComponent(old_component, pins, no_perifery){
         var last =  _(this.apprs).last();
         if (last.delta == pins.delta){
             if (_(this.apprs).filter(function(_ob){return _ob['_id']==_id;}).length>1){
-		//get same component. loooooooooop		
-		this.apprs.push(ob);
-		return changePinedComponent(appr_component, pins, no_perifery);
+                //get same component. loooooooooop
+                this.apprs.push(ob);
+                return changePinedComponent(appr_component, pins, no_perifery);
             }
-	    else
-		this.apprs.push(ob);
+            else
+                this.apprs.push(ob);
         }
         else{
             this['apprs'] = [ob];//reset on change direction
@@ -1374,7 +1399,9 @@ $(function(){
       installOptions();
       changeRam('e','mock');
       GCheaperGBeater();
+      switchNoVideo(jgetBodyByIndex(0));
       recalculate();
+      
       $('#greset').click(function(){window.location.reload();});
       $('#tocart').click(to_cart);
       if (uuid)
