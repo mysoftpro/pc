@@ -634,6 +634,7 @@ def clear_cache():
         except:
             pass
     from pc import models
+    models.no_component_added = False
     models.gChoices = None
     models.gChoices_flatten = {}
     models.gWarning_sent = []
