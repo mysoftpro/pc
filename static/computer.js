@@ -237,7 +237,7 @@ function checkRamSlots(mother_component){
     var ram_component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
     var count = ram_component['count'];
     if (count>mother_component['ramslots']){		
-	changeRam('mock','down',false);
+	changeComponentCount('mock','down',false);
 	shadowCram($('#incram'));
 	return checkRamSlots(mother_component);
     }	
@@ -458,8 +458,8 @@ function installBodies(){
                          }
                      }
                      if (!init && $('#ramcount').length == 0){
-                         var ramcounts = changeRam('e','mock',true);
-                         installRamCount();
+                         var ramcounts = changeComponentCount('e','mock',true);
+                         installCountButtons(jgetBody(jgetSelectByRow($('#' + parts['ram']))));
                          if (ramcounts['max_count']
                              && ramcounts['max_count'] == ramcounts['new_count'])
                              shadowCram($('#incram'));
@@ -941,7 +941,7 @@ var geRamSlotsFromMother= function(mother_component){
 //                                          return jgetSelect(body).val();
 //                                      });
 
-function changeRam(e, direction, silent){
+function changeComponentCount(e, direction, silent){
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var component = choices[ramselect.val()];
     var count = 1;
@@ -965,7 +965,7 @@ function changeRam(e, direction, silent){
     component['count'] = new_count;
     if (!silent){
         componentChanged({'target':ramselect[0],'no_desc':true});
-        installRamCount();
+        installCountButtons(jgetBody(ramselect));
         if (max_count && max_count == new_count)
             shadowCram($('#incram'));
         if (new_count == 1){
@@ -975,22 +975,19 @@ function changeRam(e, direction, silent){
     return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
-function installRamCount(){
-    var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var rambody = jgetBody(ramselect);
-    rambody.text(jgetOption(ramselect,ramselect.val()).text().substring(0,60));
-    var component = new_model[ramselect.val()];
+function installCountButtons(body){
+    var select = jgetSelect(body);
+    body.text(jgetOption(select,select.val()).text().substring(0,60));
+    var component = new_model[select.val()];
     var pcs = 1;
     if (component['count']){
         pcs = component['count'];
     }
-
-    rambody.append(_.template('<span id="ramcount">{{pcs}} шт.</span> <span id="incram">+1шт</span><span id="decram">-1шт</span>',
-                              {
-                                  pcs:pcs
-                              }));
-    $('#incram').click(function(e){changeRam(e,'up');});
-    $('#decram').click(function(e){changeRam(e,'down');});
+    body.append(_.template('<span id="ramcount">{{pcs}} шт.</span> '+
+			   '<span id="incram">+1шт</span><span id="decram">-1шт</span>',
+                              {pcs:pcs}));
+    $('#incram').click(function(e){changeComponentCount(e,'up');});
+    $('#decram').click(function(e){changeComponentCount(e,'down');});
 }
 
 
@@ -1048,14 +1045,14 @@ function changeRamIfPossible(old_component, direction){
         delta = -1;
     var retval = false;
     if (old_component.count){
-        var counters = changeRam('e',direction, true);
+        var counters = changeComponentCount('e',direction, true);
         old_component.count = counters.count;
         if (counters.count != counters.new_count
             && counters.new_count !=0
             && ((counters.max_count && counters.new_count<=counters.max_count)
                 || !counters.max_count))
         {
-            changeRam('e',direction);
+            changeComponentCount('e',direction);
             retval = true;
         }
         else{
@@ -1129,7 +1126,7 @@ function changeComponent(body, new_component, old_component, nosocket){
         else
             componentChanged({'target':select[0],'no_desc':true});
         if(isRam(body)){
-            changeRam('e', 'mock');
+            changeComponentCount('e', 'mock');
         }
 
 
@@ -1406,7 +1403,7 @@ $(function(){
       reset();
       $('#descriptions').jScrollPane();
       installOptions();
-      changeRam('e','mock');
+      changeComponentCount('e','mock');
       GCheaperGBeater();
       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();
