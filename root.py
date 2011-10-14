@@ -493,7 +493,7 @@ class Save(Resource):
         def updateModel(_model, _user, new_model):
             # if _model author is _user: AND "EDIT" in request, just updateModel
             # else - store new model with the parent_id of this model
-            # REMEBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
+            # REMEMBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
             if _model['author'] == _user['_id'] and request.args.get('edit', [None])[0] is not None:
                 new_model['_id'] = _model['_id']
                 new_model['_rev'] = _model['_rev']

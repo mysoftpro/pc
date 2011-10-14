@@ -8,7 +8,7 @@ function saveDoc(e){
 	       url:'store_mother',
 	       type:'POST',
 	       datatype: "json",
-	       data:{'order':JSON.stringify({'mother':doc})},
+	       data:{'mother':JSON.stringify(doc)},
 	       success:function(_rev){
 		   doc['_rev'] =_rev;
 		   tr.data('doc',doc);
@@ -30,8 +30,7 @@ function saveDoc(e){
 }
 function addInput(doc,name){
     var input = $(document.createElement('input')).attr('name',name);
-    console.log(input);
-    if (doc[name])
+    if (doc[name] != undefined)
         input.val(doc[name]);
     else
         input.val(-1);
@@ -47,7 +46,7 @@ function fillMothers(data){
             var tr = $(document.createElement('tr'));
             var tr1 = $(document.createElement('tr'));
             var name = $(document.createElement('td'));
-            name.html(doc['text']);
+            name.html(doc['text'] + ' ' + doc['_id']);
             var description = $(document.createElement('td'))
                 .attr('colspan',5)
                 .css({'display':'none'});

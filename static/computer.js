@@ -818,10 +818,23 @@ function _getVideoFromMother(body){
     return retval;
 }
 
-var getVideoFromMother = _.memoize(_getVideoFromMother,
-          function(body){
-              return jgetSelect(body).val();
-          });
+// var getVideoFromMother = _.memoize(_getVideoFromMother,
+//           function(body){
+//               var ret = jgetSelect(body).val();
+// 	      console.log('memoizeeeeeeee for that!');
+// 	      console.log(ret);
+// 	      return ret;
+//           });
+var getVideoFromMother = function(body){
+    var code = jgetSelect(body).val();
+    var doc = choices[code];
+    var retval;
+    if (doc['video'] == undefined)
+	retval = _getVideoFromMother(body);
+    else
+	retval = doc['video'];
+    return retval;
+};
 
 function _geRamSlotsFromMother(body){
     var max_count,new_count;
