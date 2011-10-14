@@ -712,7 +712,7 @@ class AdminGate(Resource):
                                                          '/_utils', reactor=reactor))
         self.putChild('findorder', FindOrder())
         self.putChild('storeorder', StoreOrder())
-        self.putChild('storemodel', StoreModel())
+        self.putChild('mothers', Mothers())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -722,6 +722,41 @@ class AdminGate(Resource):
             return self.static.getChild(name, request)
         return self
 
+
+class Mothers(Resource):
+    def finish(self, result, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(result))
+        request.finish()
+
+    def render_GET(self, request):
+        from pc import models
+        defer.DeferredList([
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.mother_1155, stale=False),
+                # .addCallback(lambda res: ("LGA1155",res)),
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.mother_1156, stale=False),
+                # .addCallback(lambda res: ("LGA1166",res)),
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.mother_775, stale=False),
+                # .addCallback(lambda res: ("LGA775",res)),
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.mother_am23, stale=False),
+                # .addCallback(lambda res: ("AM2 3",res)),
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.mother_fm1, stale=False)
+                # .addCallback(lambda res: ("FM1",res))
+                ]).addCallback(self.finish, request)
+        return NOT_DONE_YET
+        
+        
 class FindOrder(Resource):
 
     def finish(self, result, request):
