@@ -727,7 +727,7 @@ function _jgetOption(select, _id){
 var jgetOption = _.memoize(_jgetOption, function(s,i){return i;});
 
 function reset(){
-    $('.reset').click(function(e){
+    $('.reset').click(function(e, silent){
                           e.preventDefault();
                           var target = $(e.target);
                           var select = jgetSelect(target);
@@ -735,7 +735,7 @@ function reset(){
                           var _id = body.attr('id');
                           var new_component = model[_id];
                           var old_component= choices[select.val()];
-                          changeComponent(body, new_component, old_component);
+			  changeComponent(body, new_component, old_component);
                           _.delay(function(){jgetPrice(body).css('background-color','transparent');},
                                   300);
                       });
@@ -767,10 +767,16 @@ function installOptions(){
         if (!target.is(':checked')){
             select.val(op.val());
             jgetChosenTitle(select).text(op.text());
-            componentChanged({'target':select[0],'no_desc':true});
+	    componentChanged({'target':select[0],'no_desc':true});
         }
         else{
-            jgetReset(jgetBody(select)).click();
+	    var new_component = choices[op.val()];
+	    var initial_component = filterByCatalogs(_(model).values(),
+                                         getCatalogs(new_component))[0];
+	    var init_option = jgetOption(select,initial_component['_id']);
+	    select.val(init_option.val());
+            jgetChosenTitle(select).text(init_option.text());
+	    componentChanged({'target':select[0],'no_desc':true});
         }
     }
     $('#options input').change(substructAdd);
