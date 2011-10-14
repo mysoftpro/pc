@@ -927,10 +927,20 @@ function _geRamSlotsFromMother(body){
     }
     return max_count;
 }
-var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother,
-                                     function(body){
-                                         return jgetSelect(body).val();
-                                     });
+var geRamSlotsFromMother= function(body){
+    var code = jgetSelect(body).val();
+    var doc = choices[code];
+    var retval;
+    if (doc['ramslots'] == undefined)
+        retval = geRamSlotsFromMother(body);
+    else
+	retval = doc['ramslots'];         
+    return retval;
+};
+// var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother,
+//                                      function(body){
+//                                          return jgetSelect(body).val();
+//                                      });
 
 function changeRam(e, direction, silent){
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
