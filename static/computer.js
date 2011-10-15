@@ -239,7 +239,7 @@ function checkRamSlots(){
     // body click before component changed, and the buttons are wrong!
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
-    var counters = possibleComponentCount(component, 'mock');
+    var counters = possibleComponentCount(jgetBody(ramselect), 'mock');
     var count = component['count'];
     if (count>counters.max_count){
         changeComponentCount('down');
@@ -931,13 +931,16 @@ var geRamSlotsFromMother= function(mother_component){
 //                                          return jgetSelect(body).val();
 //                                      });
 
-function possibleComponentCount(component, direction){
+function possibleComponentCount(body, direction){
+    var select = jgetSelect(body);
+    var component = new_model[select.val()];
     var count = 1;
     if (component['count'])
         count = component['count'];
     var new_count;
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
     // !evcounts! this required checking for ram and for the video!
+    //if (isRam
     var max_count = geRamSlotsFromMother(choices[mother_select.val()]);
     if (direction == 'up'){        
         new_count = count + 1;
@@ -954,10 +957,10 @@ function possibleComponentCount(component, direction){
 function changeComponentCount(direction){
     // !evcounts! this must receive body!
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var component = new_model[ramselect.val()];
-    var counters = possibleComponentCount(component, direction);
-    component['count'] = counters.new_count;
     var body = jgetBody(ramselect);
+    var counters = possibleComponentCount(body, direction);
+    var component = new_model[ramselect.val()];
+    component['count'] = counters.new_count;
     setPriceAndPin(component,body);
     recalculate();
     installCountButtons(jgetBody(ramselect));
@@ -965,7 +968,7 @@ function changeComponentCount(direction){
 // !evcounts! this could be the same!
 function installCountButtons(body){
     var select = jgetSelect(body);
-    var counters = possibleComponentCount(new_model[select.val()],'mock');
+    var counters = possibleComponentCount(body,'mock');
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
     body.find('span').unbind('click').remove();
@@ -1039,21 +1042,24 @@ function getSortedPins(direction){
 }
 
 
-function changeRamIfPossible(old_component, direction){
+function changeRamIfPossible(component, direction){
     var delta = 1;
     if (direction == 'down')
         delta = -1;
     var retval = false;
-    if (old_component.count){
-        var counters = possibleComponentCount(old_component,direction);
+    if (component.count){	
+        var old_component = filterByCatalogs(_(model).values(),
+                                         getCatalogs(component))[0];
+	var body = jgetBodyById(old_component['_id']);
+	var counters = possibleComponentCount(body,direction);
 	if (counters.new_count<=counters.max_count && counters.new_count !=0){
 	    changeComponentCount(direction);
 	    retval = false;
 	}
         else{
 	    //TODO! do not touch fucken choices!
-            var appr_components = _.clone(getNearestComponent(old_component.price,
-                                                      getCatalogs(old_component),
+            var appr_components = _.clone(getNearestComponent(component.price,
+                                                      getCatalogs(component),
                                                       delta, false));
             if (appr_components[0]){
                 var new_component = appr_components[0];
@@ -1405,6 +1411,10 @@ $(function(){
 
       var ramselect = jgetSelectByRow($('#' + parts['ram']));
       installCountButtons(jgetBody(ramselect));
+      
+      var video_select = jgetSelectByRow($('#' + parts['video']));
+      installCountButtons(jgetBody(video_select));
+      
       GCheaperGBeater();
       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();
