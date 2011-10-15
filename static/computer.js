@@ -232,7 +232,7 @@ function switchNoVideo(mother_component){
             .before(no_video_li_template({'_id':video_select.attr('id')+'_chzn_o_1'}));
     }
 }
-function checkRamSlots(mother_component){
+function checkRamSlots(){
     // this shit is required cause installCountButtons calls on
     // body click before component changed, and the buttons are wrong!
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
@@ -241,11 +241,9 @@ function checkRamSlots(mother_component){
     var count = component['count'];
     if (count>counters.max_count){
         changeComponentCount('down');
-        // ?? sure ??
-        // shadowCram($('#incram'));
-        return checkRamSlots(mother_component);
+        return checkRamSlots();
     }
-    installCountButtons(jgetBody(ramselect),counters);
+    installCountButtons(jgetBody(ramselect));
 }
 
 
@@ -275,7 +273,7 @@ function componentChanged(maybe_event){
             new_name = 'нет';
 
         var new_component = choices[target.val()];
-
+	console.log(new_component);
         var new_cats = getCatalogs(new_component);
 
         var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
@@ -467,9 +465,7 @@ function installBodies(){
                      // after body switch from td to select and back;
                      if (!init && $('#ramcount').length == 0){
                          var ramselect = jgetSelectByRow($('#' + parts['ram']));
-                         var component = new_model[ramselect.val()];
-                         var counters = possibleComponentCount(component, 'mock');
-                         installCountButtons(jgetBody(ramselect),counters);
+                         installCountButtons(jgetBody(ramselect));
                      }
                  });
     //what a fuck is that? ff caches select values? chosen sucks?
@@ -739,10 +735,7 @@ function cheaperBetter(){
         // do not stress users!
         doNotStress = true;
         var body = jgetBody(select);
-        var old_component = choices[select.val()];
-        if (isRam(body)
-            && changeRamIfPossible(old_component, direction))
-            return;
+        var old_component = new_model[select.val()];
         body.click();
         var appr_components = getNearestComponent(old_component.price,
                                                   getCatalogs(old_component),
@@ -972,11 +965,12 @@ function changeComponentCount(direction){
     var body = jgetBody(ramselect);
     setPriceAndPin(component,body);
     recalculate();
-    installCountButtons(jgetBody(ramselect), counters);
+    installCountButtons(jgetBody(ramselect));
 }
 
-function installCountButtons(body, counters){
+function installCountButtons(body){
     var select = jgetSelect(body);
+    var counters = possibleComponentCount(new_model[select.val()],'mock');
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
     body.find('span').unbind('click').remove();
@@ -1052,20 +1046,14 @@ function changeRamIfPossible(old_component, direction){
     var retval = false;
     if (old_component.count){
         var counters = possibleComponentCount(old_component,direction);
-        old_component.count = counters.count;
-        if (counters.count != counters.new_count
-            && counters.new_count !=0
-            && ((counters.max_count && counters.new_count<=counters.max_count)
-                || !counters.max_count))
-        {
-            changeComponentCount(direction);
-            retval = true;
-        }
+	if (counters.new_count<=counters.max_count && counters.new_count !=0){
+	    changeComponentCount(direction);
+	    retval = true;
+	}
         else{
             var appr_components = getNearestComponent(old_component.price,
                                                       getCatalogs(old_component),
                                                       delta, false);
-
             if (appr_components[0]){
                 var new_component = appr_components[0];
                 new_component['count'] = 1;
@@ -1130,12 +1118,6 @@ function changeComponent(body, new_component, old_component, nosocket){
             componentChanged({'target':select[0]});
         else
             componentChanged({'target':select[0],'no_desc':true});
-        if(isRam(body)){
-            var ramselect = jgetSelectByRow($('#' + parts['ram']));
-            var ramcounts = possibleComponentCount(new_model[ramselect.val()],'mock');
-            installCountButtons(jgetBody(ramselect),ramcounts);
-        }
-
         if (delta != 0)
             shadowCheBe(delta, body, new_component);
         else{
@@ -1409,8 +1391,7 @@ $(function(){
       installOptions();
 
       var ramselect = jgetSelectByRow($('#' + parts['ram']));
-      var ramcounts = possibleComponentCount(new_model[ramselect.val()],'mock');
-      installCountButtons(jgetBody(ramselect),ramcounts);
+      installCountButtons(jgetBody(ramselect));
       GCheaperGBeater();
       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();

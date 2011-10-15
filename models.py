@@ -395,8 +395,8 @@ def renderComputer(model, template, skin):
 
             component_doc = findComponent(model,name)
 
-        if count >0:
-            component_doc.update({'count':count})
+        # if count >0:
+        #     component_doc.update({'count':count})
 
         viewlet = deepcopy(original_viewlet)
         descr = fillViewlet(component_doc)
