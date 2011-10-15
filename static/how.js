@@ -8,14 +8,14 @@ $(function(){
                           }).show();
       $('#hselect').chosen();
       $('.modellink').attr('target','_blank');
-      $('#incram').click(function(e){
+      $('.incram').click(function(e){
 			     
-			     var r = $('#ramcount');
+			     var r = $('.ramcount');
 			     var t = r.text();
 			     r.text(parseInt(t.split(' ')[0])+1+" шт.");
 			 });
-      $('#decram').click(function(e){			     
-			     var r = $('#ramcount');
+      $('.decram').click(function(e){			     
+			     var r = $('.ramcount');
 			     var t = r.text();
 			     r.text(parseInt(t.split(' ')[0])-1+" шт.");
 			 });
