@@ -234,28 +234,40 @@ function switchNoVideo(mother_component){
             .before(no_video_li_template({'_id':video_select.attr('id')+'_chzn_o_1'}));
     }
 }
-function checkRamSlots(){
+
+// TODO check video slots. check sata slots. check display slots
+function checkAvailableSlots(name){
     // this shit is required cause installCountButtons calls on
     // body click before component changed, and the buttons are wrong!
-    var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
-    var counters = possibleComponentCount(jgetBody(ramselect), 'mock');
+    var select = jgetSelectByRow($('#' + parts[name]));
+    var component = new_model[jgetSelectByRow($('#' + parts[name])).val()];
+    var counters = possibleComponentCount(jgetBody(select), 'mock');
     var count = component['count'];
     if (count>counters.max_count){
-        changeComponentCount('down');
-        return checkRamSlots();
+        changeComponentCount(jgetBody(select),'down');
+        return checkAvailableSlots(name);
     }
-    installCountButtons(jgetBody(ramselect));
+    installCountButtons(jgetBody(select));
 }
 
 
-function setPriceAndPin(component,body){
+function setPriceAndPin(body,component){
+    var will_blink = true;
+    if (!component){
+	will_blink = false;
+	component = new_model[jgetSelect(body).val()];
+    }	
+    // if (isVideo(body))
+    // 	console.log(component);
+    
     var mult = 1;
     // may be just count is changed
     if (component['count'])
         mult = component['count'];
-    jgetPrice(body).text(component.price*mult + ' р');
-    blink(jgetPrice(body), '#404040');
+    var pr = jgetPrice(body);
+    pr.text(component.price*mult + ' р');
+    if (will_blink)
+	blink(pr, '#404040');
     var pin = calculatePin(component);
     if (pin != 8){
         jgetPin(body).text(pin);
@@ -294,7 +306,7 @@ function componentChanged(maybe_event){
             body.text(new_name.substring(0,80));
         }
 
-        setPriceAndPin(new_component,body);
+        setPriceAndPin(body,new_component);
 
         setPerifery(new_id, false);
         setPerifery(old_id, true);
@@ -304,7 +316,10 @@ function componentChanged(maybe_event){
         //check video!
         if (isMother(body)){
             switchNoVideo(new_component);
-            checkRamSlots(new_component);
+            checkAvailableSlots('ram');
+	    checkAvailableSlots('video');
+	    checkAvailableSlots('hdd');
+	    checkAvailableSlots('displ');
         }
         // todo - it must be impossible change video to 'no' if
         // no video in mother
@@ -461,8 +476,7 @@ function installBodies(){
                      // this is just to install counter
                      // after body switch from td to select and back;
                      if (!init && $('#ramcount').length == 0){
-                         var ramselect = jgetSelectByRow($('#' + parts['ram']));
-                         installCountButtons(jgetBody(ramselect));
+			 installCounters();
                      }
                  });
     //what a fuck is that? ff caches select values? chosen sucks?
@@ -625,6 +639,20 @@ function _isVideo(body){
     return body.parent().attr('id') == parts['video'];
 }
 var isVideo = _.memoize(_isVideo, function(body){return body.attr('id');});
+
+
+function _isHdd(body){
+    return body.parent().attr('id') == parts['hdd'];
+}
+var isHdd = _.memoize(_isHdd, function(body){return body.attr('id');});
+
+
+function _isDispl(body){
+    return body.parent().attr('id') == parts['displ'];
+}
+var isDispl = _.memoize(_isDispl, function(body){return body.attr('id');});
+
+
 
 function _isRam(body){
     return body.parent().attr('id') == parts['ram'];
@@ -926,10 +954,35 @@ var geRamSlotsFromMother= function(mother_component){
         retval = mother_component['ramslots'];
     return retval;
 };
-// var geRamSlotsFromMother = _.memoize(_geRamSlotsFromMother,
-//                                      function(body){
-//                                          return jgetSelect(body).val();
-//                                      });
+var geVideoSlotsFromMother = function(mother_component){
+    // TODO! SLI or CrossFire! check video card also
+    var retval;
+    if (mother_component['videoslots'] == undefined)
+        retval = 1;
+    else
+        retval = mother_component['videoslots'];
+    return retval;
+};
+
+var geDisplSlotsFromVideo = function(video_component){
+    var retval;
+    if (video_component['displaylots'] == undefined)
+        retval = 1;
+    else
+        retval = video_component['displaylots'];
+    return retval;
+};
+
+var geHDDSlotsFromMother = function(mother_component){
+    var retval;
+    if (mother_component['satalots'] == undefined)
+        retval = 2;
+    else
+        retval = mother_component['satalots'];
+    return retval;
+};
+
+
 
 function possibleComponentCount(body, direction){
     var select = jgetSelect(body);
@@ -940,8 +993,17 @@ function possibleComponentCount(body, direction){
     var new_count;
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
     // !evcounts! this required checking for ram and for the video!
-    //if (isRam
-    var max_count = geRamSlotsFromMother(choices[mother_select.val()]);
+    var max_count = 1;
+    if (isRam(body))
+	max_count = geRamSlotsFromMother(choices[mother_select.val()]);
+    else if (isVideo(body))
+    max_count = geVideoSlotsFromMother(choices[mother_select.val()]);
+    else if (isHdd(body))
+    max_count = geHDDSlotsFromMother(choices[mother_select.val()]);
+    else if (isDispl(body))
+    max_count = geDisplSlotsFromVideo(choices[jgetSelectByRow($('#' + parts['video'])).val()]);
+
+
     if (direction == 'up'){        
         new_count = count + 1;
     }
@@ -954,29 +1016,30 @@ function possibleComponentCount(body, direction){
     return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
-function changeComponentCount(direction){
-    // !evcounts! this must receive body!
-    var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var body = jgetBody(ramselect);
+function changeComponentCount(body, direction){        
+    var select = jgetSelect(body);
     var counters = possibleComponentCount(body, direction);
-    var component = new_model[ramselect.val()];
+    var component = new_model[select.val()];
     component['count'] = counters.new_count;
-    setPriceAndPin(component,body);
+    setPriceAndPin(body,component);
     recalculate();
-    installCountButtons(jgetBody(ramselect));
+    installCountButtons(body);
 }
-// !evcounts! this could be the same!
+
 function installCountButtons(body){
     var select = jgetSelect(body);
+    body.find('span').unbind('click').remove();
+    if (select.val().match('no'))
+	return;
     var counters = possibleComponentCount(body,'mock');
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
-    body.find('span').unbind('click').remove();
+    
     body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
                            '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
                               {pcs:counters.new_count}));
     var clickFactory = function(dir){
-        return function(e){changeComponentCount(dir);};
+        return function(e){changeComponentCount(body,dir);};
     };
     body.find('.incram').click(clickFactory('up'));
     body.find('.decram').click(clickFactory('down'));
@@ -1053,7 +1116,7 @@ function changeRamIfPossible(component, direction){
 	var body = jgetBodyById(old_component['_id']);
 	var counters = possibleComponentCount(body,direction);
 	if (counters.new_count<=counters.max_count && counters.new_count !=0){
-	    changeComponentCount(direction);
+	    changeComponentCount(body,direction);
 	    retval = false;
 	}
         else{
@@ -1199,6 +1262,10 @@ function changePinedComponent(old_component, pins, no_perifery){
     if (isRam(model_body)){
 	var ramselect = jgetSelectByRow($('#' + parts['ram']));
 	installCountButtons(jgetBody(ramselect));
+    }
+    else if (isVideo(model_body)){
+	var videoselect = jgetSelectByRow($('#' + parts['video']));
+	installCountButtons(jgetBody(videoselect));
     }
     return true;
 }
@@ -1371,6 +1438,16 @@ function code(_id){
     var part = eval("parts['" + _id + "']");
     return jgetSelectByRow($('#' + part)).val();
 }
+
+function installCounters(){
+    function install(name){
+	var ramselect = jgetSelectByRow($('#' + parts[name]));
+	installCountButtons(jgetBody(ramselect));
+	setPriceAndPin(jgetBody(ramselect));		
+    }
+    install('ram');install('video');install('hdd');install('displ');
+}
+
 $(function(){
       new_model = _.clone(model);
       var options = $('#options input');
@@ -1407,14 +1484,10 @@ $(function(){
       cheaperBetter();
       reset();
       $('#descriptions').jScrollPane();
-      installOptions();
+      installOptions();      
+ 
+      installCounters();
 
-      var ramselect = jgetSelectByRow($('#' + parts['ram']));
-      installCountButtons(jgetBody(ramselect));
-      
-      var video_select = jgetSelectByRow($('#' + parts['video']));
-      installCountButtons(jgetBody(video_select));
-      
       GCheaperGBeater();
       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();
