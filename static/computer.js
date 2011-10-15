@@ -285,17 +285,15 @@ function componentChanged(maybe_event){
         fillOmitOptions(new_component,old_component);
 
         recalculate();
+	if (new_component.count){
+            body.text(new_name.substring(0,60));
+        }
+        else{
+            body.text(new_name.substring(0,80));
+        }
+
         setPriceAndPin(new_component,body);
-        // var mult = 1;
-        // // may be just count is changed
-        // if (new_component['count'])
-        //     mult = new_component['count'];
-        // jgetPrice(body).text(new_component.price*mult + ' р');
-        // blink(jgetPrice(body), '#404040');
-        // var pin = calculatePin(new_component);
-        // if (pin != 8){
-        //     jgetPin(body).text(pin);
-        // }
+
         setPerifery(new_id, false);
         setPerifery(old_id, true);
 
@@ -408,10 +406,7 @@ function changeDescription(index, _id, show, data){
                 _text = 'к сожалению описание не предоставлено поставщиком';
             descriptions_cached[_id] = treatDescriptionText(_text);
         }
-        // else if (descriptions_cached[_id]==undefined){
-        //     console.log('updateDescription');
-        //     return updateDescription(_id, id, !show);
-        // }
+
         if (!show)
             return;
         descr.find('.manu').html(descriptions_cached[_id]);
@@ -1114,17 +1109,12 @@ function shadowCheBe(_delta, body, component){
 function changeComponent(body, new_component, old_component, nosocket){
     var new_cats = getCatalogs(new_component);
     var delta = new_component.price-old_component.price;
-    console.log('changeComponent');
-    console.log(new_component);
-    console.log(old_component);
-    console.log(body);
+
     var change = function(){
-	console.log(2);
         var select = jgetSelect(body);
         var new_option = jgetOption(select, new_component['_id']);
         select.val(new_option.val());
         jgetChosenTitle(select).text(new_option.text());
-	console.log(2);
         if (!nosocket)
             componentChanged({'target':select[0]});
         else
