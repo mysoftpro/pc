@@ -138,7 +138,7 @@ function recalculate(){
 
     var pin = jgetLargePin();
     var old_pin = parseFloat(jgetLargePin().text());
-    var new_pin = pins.sort(function(x1,x2){return x1-x2;})[0];//Array.sort(pins,function(x1,x2){return x1-x2;})[0]
+    var new_pin = pins.sort(function(x1,x2){return x1-x2;})[0];
     if (new_pin != old_pin){
         pin.text(new_pin);
         blink(pin, '#222');
@@ -236,11 +236,11 @@ function checkRamSlots(mother_component){
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var ram_component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
     var count = ram_component['count'];
-    if (count>mother_component['ramslots']){		
-	changeComponentCount('mock','down',false);
-	shadowCram($('#incram'));
-	return checkRamSlots(mother_component);
-    }	
+    if (count>mother_component['ramslots']){
+        changeComponentCount('down');
+        shadowCram($('#incram'));
+        return checkRamSlots(mother_component);
+    }
 }
 
 
@@ -448,7 +448,6 @@ function installBodies(){
                              }
                              else{
                                  var select = jgetSelect(_body);
-                                 //changeDescription(i,select.val(), true);
                                  updateDescription(_id,_id);
                              }
                          }
@@ -457,15 +456,16 @@ function installBodies(){
                              select_block.hide();
                          }
                      }
+                     // this is just to install counter
+                     // after body switch from td to select and back;
                      if (!init && $('#ramcount').length == 0){
-                         var ramcounts = changeComponentCount('e','mock',true);
-                         installCountButtons(jgetBody(jgetSelectByRow($('#' + parts['ram']))));
-                         if (ramcounts['max_count']
-                             && ramcounts['max_count'] == ramcounts['new_count'])
-                             shadowCram($('#incram'));
-                         if (ramcounts['new_count'] == 1){
-                             shadowCram($('#decram'));
-                         }
+			 console.log('here');
+                         var ramselect = jgetSelectByRow($('#' + parts['ram']));
+			 var component = new_model[ramselect.val()];
+			 console.log(component);
+			 console.log(new_model[ramselect.val()]);
+			 var counters = possibleComponentCount(component, 'mock');
+			 installCountButtons(jgetBody(ramselect),counters);
                      }
                  });
     //what a fuck is that? ff caches select values? chosen sucks?
@@ -941,18 +941,13 @@ var geRamSlotsFromMother= function(mother_component){
 //                                          return jgetSelect(body).val();
 //                                      });
 
-function changeComponentCount(e, direction, silent){
-    var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var component = choices[ramselect.val()];
+function possibleComponentCount(component, direction){
     var count = 1;
     if (component['count'])
         count = component['count'];
-    var new_count;
-    var need_hide;
-    var max_count;
+    var new_count, max_count;
     if (direction == 'up' || direction == 'mock'){
         var mother_select = jgetSelectByRow($('#' + parts['mother']));
-        //var mother_body = jgetBody(mother_select);
         max_count = geRamSlotsFromMother(choices[mother_select.val()]);
         new_count = count + 1;
     }
@@ -961,33 +956,39 @@ function changeComponentCount(e, direction, silent){
     }
     if (direction == 'mock'){
         new_count = count;
-    }
-    component['count'] = new_count;
-    if (!silent){
-        componentChanged({'target':ramselect[0],'no_desc':true});
-        installCountButtons(jgetBody(ramselect));
-        if (max_count && max_count == new_count)
-            shadowCram($('#incram'));
-        if (new_count == 1){
-            shadowCram($('#decram'));
-        }
-    }
+    }    
     return {'count':count, 'new_count':new_count, 'max_count':max_count};
 }
 
-function installCountButtons(body){
+function changeComponentCount(direction){
+    console.log('changing!');
+    var ramselect = jgetSelectByRow($('#' + parts['ram']));
+    var component = new_model[ramselect.val()];
+    var counters = possibleComponentCount(component, direction);
+    component['count'] = counters.new_count;
+    recalculate();
+    installCountButtons(jgetBody(ramselect), counters);
+    console.log(new_model[ramselect.val()]);
+}
+
+function installCountButtons(body, counters){
     var select = jgetSelect(body);
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
-    var pcs = 1;
-    if (component['count']){
-        pcs = component['count'];
-    }
     body.append(_.template('<span id="ramcount">{{pcs}} шт.</span> '+
-			   '<span id="incram">+1шт</span><span id="decram">-1шт</span>',
-                              {pcs:pcs}));
-    $('#incram').click(function(e){changeComponentCount(e,'up');});
-    $('#decram').click(function(e){changeComponentCount(e,'down');});
+                           '<span id="incram">+1шт</span><span id="decram">-1шт</span>',
+                              {pcs:counters.new_count}));
+    var clickFactory = function(dir){
+	return function(e){changeComponentCount(dir);};
+    };
+    $('#incram').click(clickFactory('up'));
+    $('#decram').click(clickFactory('down'));
+    
+    if (counters.max_count && counters.max_count == counters.new_count)
+        shadowCram($('#incram'));
+    if (counters.new_count == 1){
+        shadowCram($('#decram'));
+    }
 }
 
 
@@ -1045,18 +1046,17 @@ function changeRamIfPossible(old_component, direction){
         delta = -1;
     var retval = false;
     if (old_component.count){
-        var counters = changeComponentCount('e',direction, true);
+	var counters = possibleComponentCount(old_component,direction);
         old_component.count = counters.count;
         if (counters.count != counters.new_count
             && counters.new_count !=0
             && ((counters.max_count && counters.new_count<=counters.max_count)
                 || !counters.max_count))
         {
-            changeComponentCount('e',direction);
+            changeComponentCount(direction);
             retval = true;
         }
         else{
-            //if (counters.max_count && counters.new_count> counters.max_count){
             var appr_components = getNearestComponent(old_component.price,
                                                       getCatalogs(old_component),
                                                       delta, false);
@@ -1126,10 +1126,10 @@ function changeComponent(body, new_component, old_component, nosocket){
         else
             componentChanged({'target':select[0],'no_desc':true});
         if(isRam(body)){
-            changeComponentCount('e', 'mock');
+	    var ramselect = jgetSelectByRow($('#' + parts['ram']));
+	    var ramcounts = possibleComponentCount(new_model[ramselect.val()],'mock');
+	    installCountButtons(jgetBody(ramselect),ramcounts);
         }
-
-
 
         if (delta != 0)
             shadowCheBe(delta, body, new_component);
@@ -1138,7 +1138,6 @@ function changeComponent(body, new_component, old_component, nosocket){
                 shadowCheBe(-1, body, new_component);
         }
     };
-
 
     if (!nosocket){
         if ((isProc(body) || isMother(body))
@@ -1403,7 +1402,10 @@ $(function(){
       reset();
       $('#descriptions').jScrollPane();
       installOptions();
-      changeComponentCount('e','mock');
+
+      var ramselect = jgetSelectByRow($('#' + parts['ram']));
+      var ramcounts = possibleComponentCount(new_model[ramselect.val()],'mock');
+      installCountButtons(jgetBody(ramselect),ramcounts);
       GCheaperGBeater();
       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
       recalculate();
