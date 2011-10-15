@@ -736,6 +736,10 @@ function cheaperBetter(){
         doNotStress = true;
         var body = jgetBody(select);
         var old_component = new_model[select.val()];
+	//here
+	// if (isRam(body)
+        //     && changeRamIfPossible(old_component, direction))
+        //     return;
         body.click();
         var appr_components = getNearestComponent(old_component.price,
                                                   getCatalogs(old_component),
@@ -942,10 +946,10 @@ function possibleComponentCount(component, direction){
     var count = 1;
     if (component['count'])
         count = component['count'];
-    var new_count, max_count;
-    if (direction == 'up' || direction == 'mock'){
-        var mother_select = jgetSelectByRow($('#' + parts['mother']));
-        max_count = geRamSlotsFromMother(choices[mother_select.val()]);
+    var new_count;
+    var mother_select = jgetSelectByRow($('#' + parts['mother']));
+    var max_count = geRamSlotsFromMother(choices[mother_select.val()]);
+    if (direction == 'up'){        
         new_count = count + 1;
     }
     else if (direction == 'down'){
@@ -1110,11 +1114,17 @@ function shadowCheBe(_delta, body, component){
 function changeComponent(body, new_component, old_component, nosocket){
     var new_cats = getCatalogs(new_component);
     var delta = new_component.price-old_component.price;
+    console.log('changeComponent');
+    console.log(new_component);
+    console.log(old_component);
+    console.log(body);
     var change = function(){
+	console.log(2);
         var select = jgetSelect(body);
         var new_option = jgetOption(select, new_component['_id']);
         select.val(new_option.val());
         jgetChosenTitle(select).text(new_option.text());
+	console.log(2);
         if (!nosocket)
             componentChanged({'target':select[0]});
         else
