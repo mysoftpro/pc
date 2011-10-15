@@ -273,7 +273,7 @@ function componentChanged(maybe_event){
             new_name = 'нет';
 
         var new_component = choices[target.val()];
-	console.log(new_component);
+
         var new_cats = getCatalogs(new_component);
 
         var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
@@ -1051,6 +1051,7 @@ function changeRamIfPossible(old_component, direction){
 	    retval = true;
 	}
         else{
+	    //TODO! do not touch fucken choices!
             var appr_components = getNearestComponent(old_component.price,
                                                       getCatalogs(old_component),
                                                       delta, false);
