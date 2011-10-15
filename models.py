@@ -237,6 +237,8 @@ def noComponentFactory(_doc, name):
     no_doc['text'] = parts_names[name] + u': нет'
     return no_doc
 
+# TODO! than replace mother or video
+# check slots! may be 2 video installed with sli or with crossfire!
 def replaceComponent(code,model):
     original_price = model['original_prices'][code]
     name = nameForCode(code,model)

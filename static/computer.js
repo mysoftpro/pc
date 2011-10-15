@@ -313,17 +313,10 @@ function componentChanged(maybe_event){
 
         updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
 
-        //check video!
         if (isMother(body)){
             switchNoVideo(new_component);
-            checkAvailableSlots('ram');
-	    checkAvailableSlots('video');
-	    checkAvailableSlots('hdd');
-	    checkAvailableSlots('displ');
+            installCounters();
         }
-        // todo - it must be impossible change video to 'no' if
-        // no video in mother
-
     } catch (x) {
         console.log(x);
     }
@@ -1440,12 +1433,10 @@ function code(_id){
 }
 
 function installCounters(){
-    function install(name){
-	var ramselect = jgetSelectByRow($('#' + parts[name]));
-	installCountButtons(jgetBody(ramselect));
-	setPriceAndPin(jgetBody(ramselect));		
-    }
-    install('ram');install('video');install('hdd');install('displ');
+    checkAvailableSlots('ram');
+    checkAvailableSlots('video');
+    checkAvailableSlots('hdd');
+    checkAvailableSlots('displ');
 }
 
 $(function(){
