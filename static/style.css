@@ -750,7 +750,7 @@ color:#7b9c0a;
     -webkit-box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-#incram,#decram  {
+.incram,.decram  {
     color: #AADD00;
     cursor: pointer;
     margin-left: 14px;
@@ -768,7 +768,7 @@ color:#7b9c0a;
 
 }
 
-#ramcount {
+.ramcount {
     color:white !important;
     font-weight:bold;
     border: 1px solid #444;

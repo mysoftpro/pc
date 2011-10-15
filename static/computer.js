@@ -811,10 +811,6 @@ function installOptions(){
 }
 
 
-function shadowCram(target){
-    target.unbind('click');
-    target.css({'cursor':'auto','color':"#444444"});
-}
 
 
 
@@ -941,6 +937,7 @@ function possibleComponentCount(component, direction){
         count = component['count'];
     var new_count;
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
+    // !evcounts! this required checking for ram and for the video!
     var max_count = geRamSlotsFromMother(choices[mother_select.val()]);
     if (direction == 'up'){        
         new_count = count + 1;
@@ -955,6 +952,7 @@ function possibleComponentCount(component, direction){
 }
 
 function changeComponentCount(direction){
+    // !evcounts! this must receive body!
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
     var component = new_model[ramselect.val()];
     var counters = possibleComponentCount(component, direction);
@@ -964,26 +962,31 @@ function changeComponentCount(direction){
     recalculate();
     installCountButtons(jgetBody(ramselect));
 }
-
+// !evcounts! this could be the same!
 function installCountButtons(body){
     var select = jgetSelect(body);
     var counters = possibleComponentCount(new_model[select.val()],'mock');
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
     body.find('span').unbind('click').remove();
-    body.append(_.template('<span id="ramcount">{{pcs}} шт.</span> '+
-                           '<span id="incram">+1шт</span><span id="decram">-1шт</span>',
+    body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
+                           '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
                               {pcs:counters.new_count}));
     var clickFactory = function(dir){
         return function(e){changeComponentCount(dir);};
     };
-    $('#incram').click(clickFactory('up'));
-    $('#decram').click(clickFactory('down'));
+    body.find('.incram').click(clickFactory('up'));
+    body.find('.decram').click(clickFactory('down'));
+    
+    function shadowCram(target){
+	target.unbind('click');
+	target.css({'cursor':'auto','color':"#444444"});
+    }
 
     if (counters.max_count && counters.max_count == counters.new_count)
-        shadowCram($('#incram'));
+        shadowCram(body.find('.incram'));
     if (counters.new_count == 1){
-        shadowCram($('#decram'));
+        shadowCram(body.find('.decram'));
     }
 }
 
