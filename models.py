@@ -394,9 +394,9 @@ def renderComputer(model, template, skin):
                 counted.update({code:count})
 
             component_doc = findComponent(model,name)
-
-        # if count >0:
-        #     component_doc.update({'count':count})
+        # looks like this shit can destroy choices for me!
+        if count >0:
+            component_doc.update({'count':count})
 
         viewlet = deepcopy(original_viewlet)
         descr = fillViewlet(component_doc)
@@ -792,12 +792,6 @@ def computers(template,skin,request):
 
 
 
-
-
-
-
-
-
 def findComponent(model, name):
     """ ??? i have a flat choices now! why do i need that?"""
     code = model['items'][name]
@@ -811,7 +805,8 @@ def findComponent(model, name):
     else:
         if retval['stock1'] == 0:
             retval = replaceComponent(code,model)
-    return retval
+    # there is 1 thing downwhere count! is is installed just in this component! 
+    return deepcopy(retval)
 
 
 

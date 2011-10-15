@@ -60,6 +60,8 @@ function getRamFromText(text){
     retval = 2;
     else if (text.match('4096MB'))
     retval = 4;
+    else if (text.match('8192MB'))
+    retval = 8;
     return retval;
 }
 
@@ -714,19 +716,15 @@ function changeSocket(component, body, direction){
 
 var doNotStress = false;
 
-
-//TODO GLOBAL. the body, which i always need is just an id of old component.
-// may be instead of jgetBody, just return catalogs, and part?
 function cheaperBetter(){
     chbeQueue = [];
-    function _cheaperBetter(e, delta){//prev_next
+    function _cheaperBetter(e, delta){
         e.preventDefault();
         var direction = 'down';
         if (delta > 0)
             direction = 'up';
         var target = $(e.target);
         var select = jgetSelect(target);
-
         // do not stress users!
         doNotStress = true;
         var body = jgetBody(select);
@@ -1047,13 +1045,13 @@ function changeRamIfPossible(old_component, direction){
         var counters = possibleComponentCount(old_component,direction);
 	if (counters.new_count<=counters.max_count && counters.new_count !=0){
 	    changeComponentCount(direction);
-	    retval = true;
+	    retval = false;
 	}
         else{
 	    //TODO! do not touch fucken choices!
-            var appr_components = getNearestComponent(old_component.price,
+            var appr_components = _.clone(getNearestComponent(old_component.price,
                                                       getCatalogs(old_component),
-                                                      delta, false);
+                                                      delta, false));
             if (appr_components[0]){
                 var new_component = appr_components[0];
                 new_component['count'] = 1;
@@ -1072,6 +1070,7 @@ function changeRamIfPossible(old_component, direction){
                     //thats all! just install new count to choices!
                     //component will be changed later!
                 }
+		retval = appr_components;
             }
         }
     }
@@ -1148,9 +1147,15 @@ function changePinedComponent(old_component, pins, no_perifery){
     var model_component = filterByCatalogs(_(model).values(),
                                            old_cats)[0];
     var model_body = jgetBodyById(model_component['_id']);
-    if (isRam(model_body) && changeRamIfPossible(old_component, pins.direction))
-        return true;
-    var appr_components = getNearestComponent(old_component.price,
+    var appr_components;
+    if (isRam(model_body))
+    {
+	appr_components = changeRamIfPossible(old_component, pins.direction);
+	if (!appr_components)
+	    return true;//counter was changed
+    }
+    else
+	appr_components = getNearestComponent(old_component.price,
                                               old_cats, pins.delta, false);
     if (!appr_components[0]){
         if (!no_perifery){
@@ -1180,8 +1185,12 @@ function changePinedComponent(old_component, pins, no_perifery){
         else{
             this['apprs'] = [ob];//reset on change direction
         }
+    }    
+    changeComponent(model_body, appr_component, old_component);    
+    if (isRam(model_body)){
+	var ramselect = jgetSelectByRow($('#' + parts['ram']));
+	installCountButtons(jgetBody(ramselect));
     }
-    changeComponent(model_body, appr_component, old_component);
     return true;
 }
 
