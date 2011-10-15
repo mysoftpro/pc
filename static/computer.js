@@ -233,14 +233,19 @@ function switchNoVideo(mother_component){
     }
 }
 function checkRamSlots(mother_component){
+    // this shit is required cause installCountButtons calls on
+    // body click before component changed, and the buttons are wrong!
     var ramselect = jgetSelectByRow($('#' + parts['ram']));
-    var ram_component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
-    var count = ram_component['count'];
-    if (count>mother_component['ramslots']){
+    var component = new_model[jgetSelectByRow($('#' + parts['ram'])).val()];
+    var counters = possibleComponentCount(component, 'mock');
+    var count = component['count'];
+    if (count>counters.max_count){
         changeComponentCount('down');
-        shadowCram($('#incram'));
+        // ?? sure ??
+        // shadowCram($('#incram'));
         return checkRamSlots(mother_component);
     }
+    installCountButtons(jgetBody(ramselect),counters);
 }
 
 
@@ -254,7 +259,7 @@ function setPriceAndPin(component,body){
     var pin = calculatePin(component);
     if (pin != 8){
         jgetPin(body).text(pin);
-    }    
+    }
 }
 
 function componentChanged(maybe_event){
@@ -282,7 +287,7 @@ function componentChanged(maybe_event){
         fillOmitOptions(new_component,old_component);
 
         recalculate();
-	setPriceAndPin(new_component,body);
+        setPriceAndPin(new_component,body);
         // var mult = 1;
         // // may be just count is changed
         // if (new_component['count'])
@@ -461,11 +466,8 @@ function installBodies(){
                      // this is just to install counter
                      // after body switch from td to select and back;
                      if (!init && $('#ramcount').length == 0){
-                         console.log('here');
                          var ramselect = jgetSelectByRow($('#' + parts['ram']));
                          var component = new_model[ramselect.val()];
-                         console.log(component);
-                         console.log(new_model[ramselect.val()]);
                          var counters = possibleComponentCount(component, 'mock');
                          installCountButtons(jgetBody(ramselect),counters);
                      }
@@ -977,6 +979,7 @@ function installCountButtons(body, counters){
     var select = jgetSelect(body);
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
+    body.find('span').unbind('click').remove();
     body.append(_.template('<span id="ramcount">{{pcs}} шт.</span> '+
                            '<span id="incram">+1шт</span><span id="decram">-1шт</span>',
                               {pcs:counters.new_count}));
