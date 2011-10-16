@@ -739,14 +739,15 @@ def computers(template,skin,request):
                 a.text = m['_id']
             price_span = model_div.find('.//span')
             price_span.set('id',m['_id'])
-            
+
             _components = buildPrices(m, json_prices, price_span)
             # TODO, move this logic to model view!!!!!!
             case_found = [c for c in _components if c.cat_name == case]
             if len(case_found) >0:
                 icon = deepcopy(tree.find('model_icon').find('a'))
+                icon.set('href','/computer/'+m['_id'])
                 icon.find('img').set('src',case_found[0].getIconUrl())
-                model_div.append(icon)
+                model_div.insert(0,icon)
 
             if not this_is_cart:
                 info = etree.Element('div')
@@ -817,7 +818,7 @@ def findComponent(model, name):
     else:
         if retval['stock1'] == 0:
             retval = replaceComponent(code,model)
-    # there is 1 thing downwhere count! is is installed just in this component! 
+    # there is 1 thing downwhere count! is is installed just in this component!
     return deepcopy(retval)
 
 

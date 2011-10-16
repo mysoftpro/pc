@@ -208,7 +208,7 @@ $(function(){
       }
 
 	$(".rollover").css({'opacity':'0'});
-	$('#gallery a.item').hover(
+	$('a.item').hover(
 		function() {
 		$(this).find('.rollover').stop().fadeTo(500, 1);
 		  },

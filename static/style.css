@@ -1307,28 +1307,31 @@ h1.bold.left{
 
 
 
-  a.item{
-position:relative;
-display:block;
-height:187px;
-width:187px;
-float:left;
+a.item{
+    position:relative;
+    display:block;
+    height:187px;
+    width:187px;
+    float:left;
 }
 a.item .gallery-shadow{
-display:block;
-position:absolute;
-top:0%;
-left:0%;
-width:187px;
-height:187px;
-background:url(shadow.png);
+    display:block;
+    position:absolute;
+    top:0%;
+    left:0%;
+    width:187px;
+    height:187px;
+    background:url('shadow.png');
 }
 a.item .rollover{
-display:block;
-position:absolute;
-top:0%;
-left:0%;
-width:187px;
-height:187px;
-background:url(rollover.png);
+    display:block;
+    position:absolute;
+    top:0%;
+    left:0%;
+    width:187px;
+    height:187px;
+    background:url('rollover.png');
+}
+a.item img{
+    height:187px;
 }
