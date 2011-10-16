@@ -273,13 +273,13 @@ def replaceComponent(code,model):
     if _next == _length:
         _next = ind-1
     next_el = deepcopy(flatten[_next])
-    if 'ours' in model and code not in globals()['gWarning_sent']:
-        globals()['gWarning_sent'].append(code)
-        text = model['name'] + ' '+parts_names[name] + ': '+code
-        send_email('admin@buildpc.ru',
-                   u'В модели заменен компонент',
-                   text,
-                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+    # if 'ours' in model and code not in globals()['gWarning_sent']:
+    #     globals()['gWarning_sent'].append(code)
+    #     text = model['name'] + ' '+parts_names[name] + ': '+code
+    #     send_email('admin@buildpc.ru',
+    #                u'В модели заменен компонент',
+    #                text,
+    #                sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     return next_el
 
 no_component_added = False
@@ -485,25 +485,31 @@ def pr(some):
 gChoices = None
 gChoices_flatten = {}
 
+def cleanFlattenChoice(doc):
+    def _pop(name):
+        if 'descriptions' in doc and name in doc['descriptions']:
+            doc['descriptions'].pop(name)
+    _pop('img')
+    _pop('name')
+    _pop('comments')
+
 def flatChoices(res):
     for name,choices in globals()['gChoices'].items():
         if type(choices) is list:
             for el in choices:
                 if el[0]:
                     for ch in el[1][1]['rows']:
-                                if 'description' in ch['doc']:
-                                    ch['doc'].pop('description')
-                                globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+                        cleanFlattenChoice(ch['doc'])
+                        globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
         else:
             for ch in choices['rows']:
-                if 'description' in ch['doc']:
-                    ch['doc'].pop('description')
+                cleanFlattenChoice(ch['doc'])
                 globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
 
 
 
 def equipCases(result):
-    exclusive = power = power_index = None
+    exclusive_rows = power = power_index = None
     i=0
     for r in result:
         if r[1][0] == u"Эксклюзивные корпусы":
@@ -717,13 +723,14 @@ def computers(template,skin,request):
         container = template.middle.xpath('//div[@id="models"]')[0]
 
         json_prices = {}
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
         for m in models:
             model_snippet = tree.find('model')
             divs = deepcopy(model_snippet.findall('div'))
             model_div = divs[0]
 
-            if '_attachments' in m and 'icon.png' in m['_attachments']:
-                model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
+            # if '_attachments' in m and 'icon.png' in m['_attachments']:
+            #     model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
             a = model_div.find('.//a')
             a.set('href','/computer/%s' % m['_id'])
             if 'name' in m:
@@ -732,8 +739,14 @@ def computers(template,skin,request):
                 a.text = m['_id']
             price_span = model_div.find('.//span')
             price_span.set('id',m['_id'])
-
+            
             _components = buildPrices(m, json_prices, price_span)
+            # TODO, move this logic to model view!!!!!!
+            case_found = [c for c in _components if c.cat_name == case]
+            if len(case_found) >0:
+                icon = deepcopy(tree.find('model_icon').find('a'))
+                icon.find('img').set('src',case_found[0].getIconUrl())
+                model_div.append(icon)
 
             if not this_is_cart:
                 info = etree.Element('div')
@@ -746,11 +759,8 @@ def computers(template,skin,request):
 
             ul = etree.Element('ul')
             ul.set('class','description')
-            for text,code in _components.items():
-                li = etree.Element('li')
-                li.text = text
-                li.set('id',code)
-                ul.append(li)
+            for cfm in _components:
+                ul.append(cfm.render())
             description_div.append(ul)
 
             h3 = description_div.find('h3')
@@ -812,7 +822,26 @@ def findComponent(model, name):
 
 
 
+class ComponentForModelsPage(object):
+    def __init__(self,model,component, cat_name, price):
+        self.component= component
+        self.price = price
+        self.cat_name = cat_name
+        self.model = model
+    def getIconUrl(self):
+        retval = "/static/icon.png"
+        if 'description' in self.component and'imgs' in self.component['description']:
+            retval = ''.join(("/image/",self.component['_id'],"/",
+                              self.component['description']['imgs'][-1],'.jpg'))
+        return retval
+    def render(self):
+        li = etree.Element('li')
+        li.text = self.component['text'] + u' <strong>'+ unicode(self.price) + u' р</strong>'
+        li.set('id',self.model['_id']+'_'+self.component['_id'])
+        return li
 
+# TODO! refactor it without side effects
+# TODO! rename it. it is absoluttely about no prices!
 def buildPrices(model, json_prices, price_span):
     aliasses_reverted = {}
     total = 0
@@ -833,21 +862,16 @@ def buildPrices(model, json_prices, price_span):
         code = component_doc['_id']
         price = makePrice(component_doc)
         total += price
-        # if model['_id'] == 'raytrace':
         updatePrice(model['_id'],cat_name,displ,price)
         updatePrice(model['_id'],cat_name,soft,price)
         updatePrice(model['_id'],cat_name,audio,price)
         updatePrice(model['_id'],cat_name,mouse,price)
         updatePrice(model['_id'],cat_name,kbrd,price)
-        __components.append((component_doc['text'] + u' <strong>'+ unicode(price) + u' р</strong>',parts[cat_name], model['_id']+'_'+code))
+        __components.append(ComponentForModelsPage(model,component_doc, cat_name, price))
     total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
     price_span.text = str(total) + u' р'
     json_prices[model['_id']]['total'] = total
-    sorted_components = [(c[0],c[2]) for c in sorted(__components,lambda x,y:x[1]-y[1])]
-    retval = {}
-    for k,v in sorted_components:
-        retval.update({k:v})
-    return retval
+    return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
 
@@ -865,6 +889,7 @@ def index(template, skin, request):
         tree = template.root()
         div = template.middle.xpath('//div[@id="computers_container"]')[0]
         json_prices = {}
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
         for m in models:
             model_snippet = tree.find('model')
             snippet = deepcopy(model_snippet.find('div'))
