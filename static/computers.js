@@ -206,4 +206,15 @@ $(function(){
                   .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');
           }
       }
+
+	$(".rollover").css({'opacity':'0'});
+	$('#gallery a.item').hover(
+		function() {
+		$(this).find('.rollover').stop().fadeTo(500, 1);
+		  },
+		   function() {
+		   $(this).find('.rollover').stop().fadeTo(500, 0);
+		  }
+		 );
+
   });
