@@ -880,8 +880,7 @@ color:#7b9c0a;
 
 .computers_description{
     float:left;
-    margin-right:10px;
-    width:200px;
+    width:210px;
     height:250px;
 }
 .cart_description{
@@ -925,9 +924,6 @@ color:#7b9c0a;
     background-image:url('/static/localhost.png');
 }
 
-#middle .computeritem{
-    background-image:url('/static/icon.png');
-}
 
 #next_button{
     background-image:url('/static/next.png');
@@ -1310,28 +1306,31 @@ h1.bold.left{
 a.item{
     position:relative;
     display:block;
-    height:187px;
-    width:187px;
+    height:150px;
+    width:150px;
     float:left;
+    left:-10px;
 }
 a.item .gallery-shadow{
     display:block;
     position:absolute;
     top:0%;
     left:0%;
-    width:187px;
-    height:187px;
-    background:url('shadow.png');
+    width:150px;
+    height:150px;
+    background:url('shadow1.png');
+    background-repeat:no-repeat;
 }
-a.item .rollover{
-    display:block;
-    position:absolute;
-    top:0%;
-    left:0%;
-    width:187px;
-    height:187px;
-    background:url('rollover.png');
-}
+/* a.item .rollover{ */
+/*     display:block; */
+/*     position:absolute; */
+/*     top:0%; */
+/*     left:0%; */
+/*     width:187px; */
+/*     height:187px; */
+/*     background:url('rollover.png'); */
+/* } */
 a.item img{
-    height:187px;
+    max-height:150px;
+    max-width:150px;
 }
