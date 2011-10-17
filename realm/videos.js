@@ -1,16 +1,16 @@
 function saveDoc(e){
     var tr = $(e.target).parent();
     var doc = tr.data('doc');
-    doc['video'] = parseInt(tr.find('input[name="video"]').val());
-    doc['ramslots'] = parseInt(tr.find('input[name="ramslots"]').val());
-    doc['maxram'] = parseInt(tr.find('input[name="maxram"]').val());
+    // doc['video'] = parseInt(tr.find('input[name="video"]').val());
+    // doc['ramslots'] = parseInt(tr.find('input[name="ramslots"]').val());
+    // doc['maxram'] = parseInt(tr.find('input[name="maxram"]').val());
     doc['crossfire'] = parseInt(tr.find('input[name="crossfire"]').val());
     doc['sli'] = parseInt(tr.find('input[name="sli"]').val());
     $.ajax({
-	       url:'store_mother',
+	       url:'store_video',
 	       type:'POST',
 	       datatype: "json",
-	       data:{'mother':JSON.stringify(doc)},
+	       data:{'video':JSON.stringify(doc)},
 	       success:function(_rev){
 		   doc['_rev'] =_rev;
 		   tr.data('doc',doc);
@@ -39,8 +39,8 @@ function addInput(doc,name){
     return input;
 }
 
-function fillMothers(data){
-    var table = $('#mothertable');
+function fillVideos(data){
+    var table = $('#videotable');
     for (var i=0;i<data.length;i++){
         var rows = data[i][1]['rows'];
         for (var j=0;j<rows.length;j++){
@@ -56,14 +56,14 @@ function fillMothers(data){
                 description.html(doc['description']['comments']);
             }
 
-            var video = $(document.createElement('td'));
-            video.append(addInput(doc,'video'));
+            // var video = $(document.createElement('td'));
+            // video.append(addInput(doc,'video'));
 
-            var ramslots = $(document.createElement('td'));
-	    ramslots.append(addInput(doc,'ramslots'));
+            // var ramslots = $(document.createElement('td'));
+	    // ramslots.append(addInput(doc,'ramslots'));
 
-            var maxram = $(document.createElement('td'));
-	    maxram.append(addInput(doc,'maxram'));
+            // var maxram = $(document.createElement('td'));
+	    // maxram.append(addInput(doc,'maxram'));
 
             var crossfire = $(document.createElement('td'));
 	    crossfire.append(addInput(doc,'crossfire'));
@@ -89,7 +89,7 @@ function fillMothers(data){
             var save = $(document.createElement('button'))
                 .click(saveDoc)
                 .text('сохранить');
-            tr.append(name).append(video).append(ramslots).append(maxram)
+            tr.append(name)
 	    .append(crossfire).append(sli)
                 .append(open).append(save);
 	    tr.data('doc',doc);
@@ -102,10 +102,10 @@ function fillMothers(data){
 }
 
 $(function(){
-      var table = $('#mothertable');
-      table.html('<tr><td>name</td><td>video</td><td>ramslots</td><td>maxram</td><td>crossfire</td><td>sli</td></tr>');
+      var table = $('#videotable');
+      table.html('<tr><td>name</td><td>crossfire</td><td>sli</td></tr>');
       $.ajax({
-                 url:'mothers',
-                 success:fillMothers
+                 url:'videos',
+                 success:fillVideos
              });
   });

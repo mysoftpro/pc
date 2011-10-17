@@ -715,6 +715,8 @@ class AdminGate(Resource):
         self.putChild('storeorder', StoreOrder())
         self.putChild('mothers', Mothers())
         self.putChild('store_mother', StoreMother())
+        self.putChild('videos', Videos())
+        self.putChild('store_video', StoreVideo())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -755,6 +757,28 @@ class Mothers(Resource):
                                'catalogs',
                                include_docs=True, key=models.mother_fm1, stale=False)
                 # .addCallback(lambda res: ("FM1",res))
+                ]).addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+class Videos(Resource):
+    def finish(self, result, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(result))
+        request.finish()
+
+    def render_GET(self, request):
+        from pc import models
+        defer.DeferredList([
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.geforce, stale=False),
+                # .addCallback(lambda res: ("GeForce",res)),
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.radeon, stale=False),
+                # .addCallback(lambda res: ("Radeon",res)),
                 ]).addCallback(self.finish, request)
         return NOT_DONE_YET
         
@@ -828,6 +852,8 @@ class FindOrder(Resource):
         order_d.addErrback(self.getModel, _id, request)
         return NOT_DONE_YET
 
+# REMEMBER! each order linked to model by id!
+# somewhone make an order for several models will have some orders
 class StoreOrder(Resource):
     def finish(self, doc, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
@@ -855,6 +881,23 @@ class StoreMother(Resource):
         d = couch.saveDoc(jmother)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
+
+
+
+class StoreVideo(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        video = request.args.get('video')[0]
+        jvideo = simplejson.loads(video)
+        d = couch.saveDoc(jvideo)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
 
 class StoreModel(Resource):
     def finish(self, some, request):
