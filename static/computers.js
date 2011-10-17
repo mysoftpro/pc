@@ -197,6 +197,8 @@ $(function(){
               }
               return _deleteUUID;
           }
+	  //$('.computeritem').css('min-height','200px');
+	  //$('h2.section').css('margin-top','-10px');
           for(var i=0;i<links.length;i++){
               var span = $(links.get(i)).next();
               var _id = span.attr('id');
