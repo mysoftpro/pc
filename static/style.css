@@ -872,7 +872,7 @@ color:#7b9c0a;
 .computeritem h2 {
     margin:0;
     padding:0;
-    margin-top:180px;
+    margin-top:-10px;
 }
 .computeritem h3 {
     margin-top:30px;
@@ -881,39 +881,37 @@ color:#7b9c0a;
 .computers_description{
     float:left;
     width:210px;
-    height:250px;
+    height:240px;
 }
 .cart_description{
     float:left;
     margin-right:10px;
     width:750px;
-    height:180px;
+    height:150px;
     margin-bottom:50px;
 }
 .computers_description h3{
     color:#AAAAAA;
     margin:0;
+    margin-left:18px;
 }
 .computers_description ul{
-    margin-left: -20px;
     color:#B9D3E1;
     line-height:12px;
     font-size:12px;
     margin-top: 0;
+    list-style-type:none;
+    margin-left:-20px;
 }
-.computers_description h3{
-    color:#AAAAAA;
-    margin:0;
-}
+
 .cart_description ul{
-    margin-left: -20px;
     color:#B9D3E1;
     line-height:12px;
     font-size:12px;
 }
 .cart_description h3{
     color:#AAAAAA;
-    margin:0;
+    margin: 0 0 0 18px;
 }
 .computeritem .section{
     width: 205px;
@@ -943,7 +941,7 @@ color:#7b9c0a;
 #cart_top{
     height:150px;
     margin-top:20px;
-    margin-bottom:40px;
+    margin-bottom:70px;
 }
 #cartlink{
     width:265px;
@@ -991,12 +989,16 @@ strong.red{
 .info{
     font-weight:bold;
     position: relative;
-    top: -220px;
-    cursor:pointer;
+    top: -154px;
     width:30px;
     height:30px;    
     background-image:url('/static/info.png');
 }
+/* .info img { */
+/*     cursor:pointer; */
+/*     z-index:999; */
+/* } */
+
 .guider_description li {
     font-size: 11px;
     line-height: 11px;
@@ -1303,15 +1305,14 @@ h1.bold.left{
 
 
 
-a.item{
+a.modelicon{
     position:relative;
     display:block;
     height:150px;
-    width:150px;
-    float:left;
+    width:150px; 
     left:-10px;
 }
-a.item .gallery-shadow{
+a.modelicon .gallery-shadow{
     display:block;
     position:absolute;
     top:0%;
@@ -1321,7 +1322,7 @@ a.item .gallery-shadow{
     background:url('shadow1.png');
     background-repeat:no-repeat;
 }
-/* a.item .rollover{ */
+/* a.modelicon .rollover{ */
 /*     display:block; */
 /*     position:absolute; */
 /*     top:0%; */
@@ -1330,7 +1331,7 @@ a.item .gallery-shadow{
 /*     height:187px; */
 /*     background:url('rollover.png'); */
 /* } */
-a.item img{
+a.modelicon img{
     max-height:150px;
     max-width:150px;
 }

@@ -749,10 +749,10 @@ def computers(template,skin,request):
                 icon.find('img').set('src',case_found[0].getIconUrl())
                 model_div.insert(0,icon)
 
-            if not this_is_cart:
-                info = etree.Element('div')
-                info.set('class','info')
-                model_div.append(info)
+            # if not this_is_cart:
+            #     info = etree.Element('div')
+            #     info.set('class','info')
+            #     model_div.append(info)
 
             container.append(model_div)
 
@@ -833,7 +833,7 @@ class ComponentForModelsPage(object):
         retval = "/static/icon.png"
         if 'description' in self.component and'imgs' in self.component['description']:
             retval = ''.join(("/image/",self.component['_id'],"/",
-                              self.component['description']['imgs'][-1],'.jpg'))
+                              self.component['description']['imgs'][0],'.jpg'))
         return retval
     def render(self):
         li = etree.Element('li')

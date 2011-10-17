@@ -208,7 +208,7 @@ $(function(){
       }
 
 	// $(".rollover").css({'opacity':'0'});
-	// $('a.item').hover(
+	// $('a.modelicon').hover(
 	// 	function() {
 	// 	$(this).find('.rollover').stop().fadeTo(500, 1);
 	// 	  },
