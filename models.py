@@ -809,10 +809,11 @@ def computers(template,skin,request):
 def findComponent(model, name):
     """ ??? i have a flat choices now! why do i need that?"""
     code = model['items'][name]
-    if code is None:
-        return noComponentFactory({},name)
     if type(code) is list:
         code = code[0]
+    if code is None or code.startswith('no'):
+        return noComponentFactory({},name)
+
     retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
     if retval is None:
         retval = replaceComponent(code,model)
@@ -858,11 +859,13 @@ def buildPrices(model, json_prices, price_span):
                 json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
     for cat_name,code in model['items'].items():
+        count = 1
         if type(code) is list:
+            count = len(code)
             code = code[0]
         component_doc = findComponent(model,cat_name)
         code = component_doc['_id']
-        price = makePrice(component_doc)
+        price = makePrice(component_doc)*count
         total += price
         updatePrice(model['_id'],cat_name,displ,price)
         updatePrice(model['_id'],cat_name,soft,price)
