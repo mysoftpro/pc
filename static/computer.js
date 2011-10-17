@@ -1445,9 +1445,7 @@ function setCode(catalog,code){
 
 function installCounters(){
     checkAvailableSlots('ram');
-    console.log("---------------------!!------------------");
     checkAvailableSlots('video');
-    console.log(',,,,,,,,,,,,,,,,,,,,');
     checkAvailableSlots('hdd');
     checkAvailableSlots('displ');
 }
