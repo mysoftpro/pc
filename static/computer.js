@@ -1029,10 +1029,9 @@ function installCountButtons(body){
     var counters = possibleComponentCount(body,'mock');
     body.text(jgetOption(select,select.val()).text().substring(0,60));
     var component = new_model[select.val()];
-
     body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
                            '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
-                              {pcs:counters.new_count}));
+                              {pcs:counters.new_count}));    
     var clickFactory = function(dir){
         return function(e){changeComponentCount(body,dir);};
     };
@@ -1446,7 +1445,9 @@ function setCode(catalog,code){
 
 function installCounters(){
     checkAvailableSlots('ram');
+    console.log("---------------------!!------------------");
     checkAvailableSlots('video');
+    console.log(',,,,,,,,,,,,,,,,,,,,');
     checkAvailableSlots('hdd');
     checkAvailableSlots('displ');
 }

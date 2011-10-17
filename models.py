@@ -385,7 +385,7 @@ def renderComputer(model, template, skin):
 
     for name,code in model['items'].items():
         component_doc = None
-        count = 0
+        count = 1
         if code is None:
             component_doc = noComponentFactory({}, name)
         else:
@@ -397,8 +397,8 @@ def renderComputer(model, template, skin):
 
             component_doc = findComponent(model,name)
         # looks like this shit can destroy choices for me!
-        if count >0:
-            component_doc.update({'count':count})
+        # if count >1:
+        #     component_doc.update({'count':count})
 
         viewlet = deepcopy(original_viewlet)
         descr = fillViewlet(component_doc)
@@ -410,8 +410,9 @@ def renderComputer(model, template, skin):
 
         cleaned_doc = cleanDoc(component_doc, price)
         cleaned_doc['price'] = price
+        cleaned_doc['count'] = count
         model_json.update({cleaned_doc['_id']:cleaned_doc})
-        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price) + u' р'
+        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
 
         ch = choices[name]
         options = []

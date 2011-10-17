@@ -713,6 +713,7 @@ class AdminGate(Resource):
                                                          '/_utils', reactor=reactor))
         self.putChild('findorder', FindOrder())
         self.putChild('storeorder', StoreOrder())
+        self.putChild('storemodel', StoreModel())
         self.putChild('mothers', Mothers())
         self.putChild('store_mother', StoreMother())
         self.putChild('videos', Videos())
