@@ -872,7 +872,8 @@ color:#7b9c0a;
 .computeritem h2 {
     margin:0;
     padding:0;
-    margin-top:-10px;
+    margin-top:-30px;
+    margin-left:20px;
 }
 .computeritem h3 {
     margin-top:30px;
@@ -881,7 +882,7 @@ color:#7b9c0a;
 .computers_description{
     float:left;
     width:210px;
-    height:240px;
+    height:220px;
 }
 .cart_description{
     float:left;
@@ -897,8 +898,8 @@ color:#7b9c0a;
 }
 .computers_description ul{
     color:#B9D3E1;
-    line-height:12px;
-    font-size:12px;
+    line-height:15px;
+    font-size:14px;
     margin-top: 0;
     list-style-type:none;
     margin-left:-20px;
