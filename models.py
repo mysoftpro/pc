@@ -273,13 +273,13 @@ def replaceComponent(code,model):
     if _next == _length:
         _next = ind-1
     next_el = deepcopy(flatten[_next])
-    # if 'ours' in model and code not in globals()['gWarning_sent']:
-    #     globals()['gWarning_sent'].append(code)
-    #     text = model['name'] + ' '+parts_names[name] + ': '+code
-    #     send_email('admin@buildpc.ru',
-    #                u'В модели заменен компонент',
-    #                text,
-    #                sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+    if 'ours' in model and code not in globals()['gWarning_sent']:
+        globals()['gWarning_sent'].append(code)
+        text = model['name'] + ' '+parts_names[name] + ': '+code
+        send_email('admin@buildpc.ru',
+                   u'В модели заменен компонент',
+                   text,
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     return next_el
 
 no_component_added = False
