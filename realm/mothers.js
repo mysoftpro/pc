@@ -42,13 +42,15 @@ function addInput(doc,name){
 function fillMothers(data){
     var table = $('#mothertable');
     for (var i=0;i<data.length;i++){
-        var rows = data[i][1]['rows'];
+        var rows = data[i][1]['rows'].sort(function(el1,el2){
+                                               return el1.doc.price-el2.doc.price;
+					   });
         for (var j=0;j<rows.length;j++){
             var doc = rows[j]['doc'];
             var tr = $(document.createElement('tr'));
             var tr1 = $(document.createElement('tr'));
             var name = $(document.createElement('td'));
-            name.html(doc['text'] + ' ' + doc['_id']);
+	    name.html(doc['text'] + '<strong>' + doc['_id'] + '</strong> $'+doc.price);
             var description = $(document.createElement('td'))
                 .attr('colspan',5)
                 .css({'display':'none'});

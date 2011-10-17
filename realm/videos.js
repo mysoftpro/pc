@@ -7,28 +7,28 @@ function saveDoc(e){
     doc['crossfire'] = parseInt(tr.find('input[name="crossfire"]').val());
     doc['sli'] = parseInt(tr.find('input[name="sli"]').val());
     $.ajax({
-	       url:'store_video',
-	       type:'POST',
-	       datatype: "json",
-	       data:{'video':JSON.stringify(doc)},
-	       success:function(_rev){
-		   doc['_rev'] =_rev;
-		   tr.data('doc',doc);
-		   alert('Получилось!');
-	       },
-	       error:function(er){
-		   if (er.responseText
-		       .match('[0-9abcdef]+-[0-9abcdef]+$'))
-		   {
-		       doc['_rev'] = er.responseText;
-		       tr.data('doc',doc);
-		       alert('Получилось!');
-		   }
-		   else{
-		       alert('Что пошло не так! Не удается сохранить!');
-		   }
-	       }
-	   });
+               url:'store_video',
+               type:'POST',
+               datatype: "json",
+               data:{'video':JSON.stringify(doc)},
+               success:function(_rev){
+                   doc['_rev'] =_rev;
+                   tr.data('doc',doc);
+                   alert('Получилось!');
+               },
+               error:function(er){
+                   if (er.responseText
+                       .match('[0-9abcdef]+-[0-9abcdef]+$'))
+                   {
+                       doc['_rev'] = er.responseText;
+                       tr.data('doc',doc);
+                       alert('Получилось!');
+                   }
+                   else{
+                       alert('Что пошло не так! Не удается сохранить!');
+                   }
+               }
+           });
 }
 function addInput(doc,name){
     var input = $(document.createElement('input')).attr('name',name);
@@ -42,13 +42,15 @@ function addInput(doc,name){
 function fillVideos(data){
     var table = $('#videotable');
     for (var i=0;i<data.length;i++){
-        var rows = data[i][1]['rows'];
+        var rows = data[i][1]['rows'].sort(function(el1,el2){
+                                               return el1.doc.price-el2.doc.price;
+					   });;
         for (var j=0;j<rows.length;j++){
             var doc = rows[j]['doc'];
             var tr = $(document.createElement('tr'));
             var tr1 = $(document.createElement('tr'));
             var name = $(document.createElement('td'));
-            name.html(doc['text'] + ' ' + doc['_id']);
+            name.html(doc['text'] + '<strong>' + doc['_id'] + '</strong> $'+doc.price);
             var description = $(document.createElement('td'))
                 .attr('colspan',5)
                 .css({'display':'none'});
@@ -56,33 +58,24 @@ function fillVideos(data){
                 description.html(doc['description']['comments']);
             }
 
-            // var video = $(document.createElement('td'));
-            // video.append(addInput(doc,'video'));
-
-            // var ramslots = $(document.createElement('td'));
-	    // ramslots.append(addInput(doc,'ramslots'));
-
-            // var maxram = $(document.createElement('td'));
-	    // maxram.append(addInput(doc,'maxram'));
-
             var crossfire = $(document.createElement('td'));
-	    crossfire.append(addInput(doc,'crossfire'));
+            crossfire.append(addInput(doc,'crossfire'));
 
             var sli = $(document.createElement('td'));
-	    sli.append(addInput(doc,'sli'));
+            sli.append(addInput(doc,'sli'));
 
-	    function showdesc(e){
-		var target = $(e.target);
-		target.parent().next().find('td').show();
-		target.text('спрятать описание');
-		target.unbind('click').click(hidedesc);		
-	    }
-	    function hidedesc(e){
-		var target = $(e.target);
-		target.parent().next().find('td').hide();
-		target.text('показать описание');
-		target.unbind('click').click(showdesc);		
-	    }
+            function showdesc(e){
+                var target = $(e.target);
+                target.parent().next().find('td').show();
+                target.text('спрятать описание');
+                target.unbind('click').click(hidedesc);
+            }
+            function hidedesc(e){
+                var target = $(e.target);
+                target.parent().next().find('td').hide();
+                target.text('показать описание');
+                target.unbind('click').click(showdesc);
+            }
             var open = $(document.createElement('button'))
                 .click(showdesc)
                 .text('показать описание');
@@ -90,9 +83,9 @@ function fillVideos(data){
                 .click(saveDoc)
                 .text('сохранить');
             tr.append(name)
-	    .append(crossfire).append(sli)
+            .append(crossfire).append(sli)
                 .append(open).append(save);
-	    tr.data('doc',doc);
+            tr.data('doc',doc);
             tr1.append(description);
             table.append(tr);
             table.append(tr1);
@@ -103,7 +96,7 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>crossfire</td><td>sli</td></tr>');
+      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td></tr>');
       $.ajax({
                  url:'videos',
                  success:fillVideos
