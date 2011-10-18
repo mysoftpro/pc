@@ -2,7 +2,7 @@ var masked = false;
 
 function makeMask(action, _closing){
     function _makeMask(e){
-	try{
+	//try{
             if (e)
                 e.preventDefault();
             var maskHeight = $(document).height();
@@ -43,10 +43,10 @@ function makeMask(action, _closing){
                                                       $('#mask').click();
                                                   }
                                               });
-        }
-        catch (e){
-            console.log(e);
-        }
+        //}
+        // catch (e){
+        //     console.log(e);
+        // }
     }
     return _makeMask;
 }
