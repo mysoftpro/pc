@@ -980,20 +980,13 @@ class WarrantyFill(Resource):
         res = []
         model = doc['model']
         for c in doc['components']:
+            code = c['_id']
+            if code.startswith('no'):
+                continue
             record = {'name':c['text'],
                       'price':c['ourprice']}
-            # code_in_model = model['items'][c['_id']]
-            pcs = 1
-            for k,v in model['items'].items():
-                if type(v) is list and v[0] == c['_id']:
-                    pcs = 2
-                    break
-                elif v == c['_id']:
-                    pcs = 1
-                    break
-            record.update({'pcs':pcs})
-            record.update({'factory':doc['factory_idses'][c['_id']]})
-            record.update({'warranty':doc['warranty'][c['_id']]})
+            record.update({'factory':doc['factory_idses'][code]})
+            record.update({'warranty':c['warranty_type']})
             res.append(record)
         ob = {'items':res}
         ob.update({'building':model['building']})
