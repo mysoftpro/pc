@@ -270,9 +270,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # not_min = "js" in _name and "min." not in _name
-        # if not_min:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
