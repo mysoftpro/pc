@@ -38,7 +38,7 @@ function fillForm(_data){
 
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
 				      {model:model['_id']}));
-    $('#ordertable').append('<tr><td>Код</td><td>Компонент</td><td>Название</td>'+
+    $('#ordertable').append('<tr><td>Код</td><td>Заводской айдишник</td><td>Компонент</td><td>Название</td>'+
 			   '<td>Шт</td><td>Цена</td><td>Наша цена</td><td>Склад</td></tr>');
 
 
@@ -50,7 +50,8 @@ function fillForm(_data){
 	if (code.match('no'))
 	    code = '';
 	tr.append(_.template('<td><input value="{{code}}"/></td>',
-				      {code:code}));
+				      {code:code}));	
+	tr.append('<td><input class="factory_id" value=""/></td>');
 	tr.append(_.template('<td>{{humanname}}</td>',
 				      {humanname:comp['humanname']}));
 	tr.append(_.template('<td>{{name}}</td>',
@@ -91,6 +92,13 @@ function fillForm(_data){
 			     'phone':$('#phone').val()
 			 };
 			 to_store['_id'] = 'order_'+model['_id'];
+			 var factory_idses = $('.factory_id');
+			 var fi = {};
+			 for (var k=0;k<factory_idses.length;k++){
+			     var inp = $(factory_idses.get(k));
+			     fi[inp.parent().prev().find('input').val()] = inp.val();
+			 }
+			 to_store['factory_idses'] = fi;
 			 if (rev)
 			     to_store['_rev'] = rev;
 			 $.ajax({

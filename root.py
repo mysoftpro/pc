@@ -717,12 +717,12 @@ class AdminGate(Resource):
         self.putChild('store_mother', StoreMother())
         self.putChild('videos', Videos())
         self.putChild('store_video', StoreVideo())
-
+        self.putChild('warranty', WarrantyFill())
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
 
     def getChild(self, name, request):
-        if 'html' in name or 'js' in name:
+        if 'html' in name or 'js' in name or 'jpg' in name:
             return self.static.getChild(name, request)
         return self
 
@@ -781,8 +781,8 @@ class Videos(Resource):
                 # .addCallback(lambda res: ("Radeon",res)),
                 ]).addCallback(self.finish, request)
         return NOT_DONE_YET
-        
-        
+
+
 class FindOrder(Resource):
 
     def finish(self, result, request):
@@ -948,3 +948,44 @@ class EditModel(Resource):
         script.set('src','../edit_model.js')
         child.skin.root().append(script)
         return child
+
+#TODO! what if the user will change the model when order already processed!
+# it need to prohibit that
+class WarrantyFill(Resource):
+    def fail(self, fail, request):
+        request.write('fail')
+        request.finish()
+    def finish(self, doc, request):
+        res = []
+        model = doc['model']
+        for c in doc['components']:
+            record = {'name':c['text'],
+                      'price':c['ourprice']}
+            # code_in_model = model['items'][c['_id']]
+            pcs = 1
+            for k,v in model['items'].items():
+                if type(v) is list and v[0] == c['_id']:
+                    pcs = 2
+                    break
+                elif v == c['_id']:
+                    pcs = 1
+                    break                
+            record.update({'pcs':pcs})
+            record.update({'factory':doc['factory_idses'][c['_id']]})
+            res.append(record)
+        res.append({'building':model['building']})
+        res.append({'installing':model['building']})
+        res.append({'dvd':model['dvd']})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps({'items':res}))
+        request.finish()
+
+    def render_GET(self, request):
+        _id = request.args.get("_id", [None])[0]
+        if _id is None:
+            return "fail"
+        d = couch.openDoc('order_'+_id)
+        d.addCallback(self.finish, request)
+        # d.addErrback(self.fail, request)
+        return NOT_DONE_YET
