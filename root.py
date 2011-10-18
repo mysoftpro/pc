@@ -972,13 +972,16 @@ class WarrantyFill(Resource):
                     break                
             record.update({'pcs':pcs})
             record.update({'factory':doc['factory_idses'][c['_id']]})
+            record.update({'warranty':doc['warranty'][c['_id']]})
             res.append(record)
-        res.append({'building':model['building']})
-        res.append({'installing':model['building']})
-        res.append({'dvd':model['dvd']})
+        ob = {'items':res}
+        ob.update({'building':model['building']})
+        ob.update({'installing':model['building']})
+        ob.update({'dvd':model['dvd']})
+        
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        request.write(simplejson.dumps({'items':res}))
+        request.write(simplejson.dumps(ob))
         request.finish()
 
     def render_GET(self, request):

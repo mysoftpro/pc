@@ -22,7 +22,14 @@ $(function(e){
 			 name.text(data['items'][i]['name']);
 			 var count = $(document.createElement('td'));
 			 count.text(data['items'][i]['pcs']);
+			 var fac = $(document.createElement('td'));
+			 fac.text(data['items'][i]['factory']);
 
+			 tr.append(no);
+			 tr.append(name);
+			 tr.append(count);
+			 tr.append(fac);
+			 table.append(tr);			 
                      }
                  }
              });

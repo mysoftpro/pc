@@ -5,6 +5,7 @@ _.templateSettings = {
 
 $(function(e){
       $('#submit').click(function(e){
+			     
 			     $.ajax({
 					url:'findorder?id='+$('#orderid').val(),
 					success:fillForm
@@ -16,6 +17,9 @@ var rev;
 var phone;
 var comment;
 function fillForm(_data){
+    $('#ordertable').html('');
+    $('#comments').remove();
+    $('h3').remove();
     data = _data;
     var user,model,components;
     if (data['_rev']){
@@ -38,7 +42,8 @@ function fillForm(_data){
 
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
 				      {model:model['_id']}));
-    $('#ordertable').append('<tr><td>Код</td><td>Заводской айдишник</td><td>Компонент</td><td>Название</td>'+
+    $('#ordertable').append('<tr><td>Код</td><td>Заводской айдишник</td><td>Срок гарантии</td>'+
+			    '<td>Компонент</td><td>Название</td>'+
 			   '<td>Шт</td><td>Цена</td><td>Наша цена</td><td>Склад</td></tr>');
 
 
@@ -51,7 +56,16 @@ function fillForm(_data){
 	    code = '';
 	tr.append(_.template('<td><input value="{{code}}"/></td>',
 				      {code:code}));	
-	tr.append('<td><input class="factory_id" value=""/></td>');
+	var fac = "";
+	if (data['factory_idses'])
+	    fac = data['factory_idses'][code];
+	tr.append(_.template('<td><input class="factory_id" value="{{fac}}"/></td>',{fac:fac}));
+	
+	var war = "";
+	if (data['warranty'])
+	    war = data['warranty'][code];
+	tr.append(_.template('<td><input class="warranty" value="{{war}}"/></td>',{war:war}));
+
 	tr.append(_.template('<td>{{humanname}}</td>',
 				      {humanname:comp['humanname']}));
 	tr.append(_.template('<td>{{name}}</td>',
@@ -99,6 +113,13 @@ function fillForm(_data){
 			     fi[inp.parent().prev().find('input').val()] = inp.val();
 			 }
 			 to_store['factory_idses'] = fi;
+			 var warranty = $('.warranty');
+			 var wa = {};
+			 for (var j=0;j<warranty.length;j++){
+			     var inp = $(warranty.get(j));
+			     wa[inp.parent().prev().prev().find('input').val()] = inp.val();
+			 }
+			 to_store['warranty'] = wa;
 			 if (rev)
 			     to_store['_rev'] = rev;
 			 $.ajax({
