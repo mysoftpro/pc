@@ -24,11 +24,13 @@ $(function(e){
 			 count.text(data['items'][i]['pcs']);
 			 var fac = $(document.createElement('td'));
 			 fac.text(data['items'][i]['factory']);
-
+			 var war = $(document.createElement('td'));
+			 war.text(data['items'][i]['warranty']);
 			 tr.append(no);
 			 tr.append(name);
 			 tr.append(count);
 			 tr.append(fac);
+			 tr.append(war);
 			 table.append(tr);			 
                      }
                  }
