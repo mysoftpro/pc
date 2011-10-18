@@ -1351,7 +1351,7 @@ function to_cart(event){
             model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
         }
         var to_store = null;
-        if (new_model_comp.count){
+        if (new_model_comp.count && new_model_comp.count>1){
             to_store = [];
             for (var i=0;i<new_model_comp.count;i++){
                 to_store.push(new_model_comp['_id']);

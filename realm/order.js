@@ -17,6 +17,10 @@ var rev;
 var phone;
 var comment;
 function fillForm(_data){
+    if (_data['fail']){
+	alert(_data['fail']);
+	return;
+    }
     $('#ordertable').html('');
     $('#comments').remove();
     $('h3').remove();

@@ -788,18 +788,32 @@ class FindOrder(Resource):
     def finish(self, result, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        # first level
+        for li in result:
+            for tu in li:
+                if not tu[0]:
+                    request.write(simplejson.dumps({'fail':str(tu[1])}))
+                    request.finish()
+                    return
         request.write(simplejson.dumps(result))
         request.finish()
 
 
     def addComponents(self, model_user):
-
         defs = []
         def addCount(count):
             def add(doc):
                 doc['count'] = count
                 return doc
             return add
+        def popDesc():
+            def _pop(doc):
+                if 'description' in doc:
+                    doc.pop('description')
+                if '_attachments' in doc:
+                    doc.pop('_attachments')
+                return doc
+            return _pop
         def addPrice():
             def add(doc):
                 doc['ourprice'] = makePrice(doc)
@@ -816,19 +830,26 @@ class FindOrder(Resource):
                 return doc
             return add
 
+        def no():
+            d = defer.Deferred()
+            d.addCallback(lambda x: noComponentFactory({}, k))
+            d.callback(None)
+            return d
         for k,v in model_user[0][1]['items'].items():
             component = None
             if v is not None:
-                if type(v) is list:
-                    component = couch.openDoc(v[0])
+                if type(v) is list:                    
+                    component = couch.openDoc(v[0])                    
                     component.addCallback(addCount(len(v)))
                 else:
-                    component = couch.openDoc(v)
+                    if not v.startswith('no'):
+                        component = couch.openDoc(v)
+                    else:
+                        component = no()
             else:
-                component = defer.Deferred()
-                component.addCallback(lambda x: noComponentFactory({}, k))
-                component.callback(None)
+                component = no()                
             component.addCallback(addPrice())
+            component.addCallback(popDesc())
             component.addCallback(addName(parts_names[k]))
             component.addCallback(addOrder(parts[k]))
             defs.append(component)
@@ -969,7 +990,7 @@ class WarrantyFill(Resource):
                     break
                 elif v == c['_id']:
                     pcs = 1
-                    break                
+                    break
             record.update({'pcs':pcs})
             record.update({'factory':doc['factory_idses'][c['_id']]})
             record.update({'warranty':doc['warranty'][c['_id']]})
@@ -978,7 +999,7 @@ class WarrantyFill(Resource):
         ob.update({'building':model['building']})
         ob.update({'installing':model['building']})
         ob.update({'dvd':model['dvd']})
-        
+
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         request.write(simplejson.dumps(ob))
