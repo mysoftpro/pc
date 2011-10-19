@@ -3,8 +3,13 @@ $(function(e){
       if (splitted.length!=2 || splitted[0]!='?id')
           return;
       var _id = splitted[1];
-      $('#sign').css({'background-image':'url("/admin/sign.jpg")'});
-      $('#stamp').css({'background-image':'url("/admin/stamp.jpg")'});
+      $('#number').text(parseInt(_id, 16));
+      var _date = new Date();
+      $('#year').text(_date.getFullYear());
+      $('#month').text(_date.getMonth()+1);
+      $('#day').text(_date.getDate());
+      // $('#sign').css({'background-image':'url("/admin/sign.jpg")'});
+      // $('#stamp').css({'background-image':'url("/admin/stamp.jpg")'});
       $.ajax({
                  url:'/admin/warranty',
                  data:{'_id':_id},

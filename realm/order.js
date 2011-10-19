@@ -45,7 +45,12 @@ function fillForm(_data){
 
 
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
-                                      {model:model['_id']}));
+                                      {model:model['_id']}))
+    .before(_.template('<a href="/admin/warranty.html?id={{_id}}">Бланк гарантии</a>',
+                       {_id:model['_id']}))
+	.before(_.template('<a href="/admin/bill.html?id={{_id}}">Бланк накладной</a>',
+                           {_id:model['_id']}));
+    
     $('#ordertable').append('<tr><td>Код</td><td>Заводской айдишник</td><td>Срок гарантии</td>'+
                             '<td>Компонент</td><td>Название</td>'+
                            '<td>Шт</td><td>Цена</td><td>Наша цена</td><td>Склад</td></tr>');
