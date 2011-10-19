@@ -22,8 +22,10 @@ function fillForm(_data){
         return;
     }
     $('#ordertable').html('');
-    $('#comments').remove();
+    $('#comments').remove();    
     $('h3').remove();
+    $('#warranty_link').remove();
+    $('#bill_link').remove();
     data = _data;
     var user,model,components;
     if (data['_rev']){
@@ -42,13 +44,11 @@ function fillForm(_data){
         .sort(function(x,y){return x['order']-y['order'];});
     }
 
-
-
     $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
                                       {model:model['_id']}))
-    .before(_.template('<a href="/admin/warranty.html?id={{_id}}">Бланк гарантии</a>',
+    .before(_.template('<a target="_blank" id="warranty_link" href="/admin/warranty.html?id={{_id}}">Бланк гарантии</a>',
                        {_id:model['_id']}))
-	.before(_.template('<a href="/admin/bill.html?id={{_id}}">Бланк накладной</a>',
+	.before(_.template('<a target="_blank" id="bill_link" href="/admin/bill.html?id={{_id}}">Бланк накладной</a>',
                            {_id:model['_id']}));
     
     $('#ordertable').append('<tr><td>Код</td><td>Заводской айдишник</td><td>Срок гарантии</td>'+

@@ -885,6 +885,7 @@ class StoreOrder(Resource):
     def render_POST(self, request):
         order = request.args.get('order')[0]
         jorder = simplejson.loads(order)
+        jorder['date']=str(date.today()).split('-')
         d = couch.saveDoc(jorder)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
