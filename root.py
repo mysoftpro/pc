@@ -802,11 +802,25 @@ class FindOrder(Resource):
 
     def addComponents(self, model_user):
         defs = []
+
         def addCount(count):
             def add(doc):
                 doc['count'] = count
                 return doc
             return add
+
+        def addText(text):
+            def _text(doc):
+                doc['text'] = text
+                return doc
+            return _text
+
+        def addWarranty(warranty):
+            def _warranty(doc):
+                doc['warranty_type'] = warranty
+                return doc
+            return _warranty
+
         def popDesc():
             def _pop(doc):
                 if 'description' in doc:
@@ -815,33 +829,33 @@ class FindOrder(Resource):
                     doc.pop('_attachments')
                 return doc
             return _pop
+
         def addPrice(ourPrice=None):
             def add(doc):
-                if ourPrice is None:                    
+                if ourPrice is None:
                     doc['ourprice'] = makePrice(doc)
                 else:
                     doc['ourprice'] = ourPrice
                 return doc
             return add
+
         def addName(name):
             def add(doc):
                 doc['humanname'] = name
                 return doc
             return add
+
         def addOrder(order):
             def add(doc):
                 doc['order'] = order
                 return doc
             return add
-        
-        def mock(code=None, _id="no"):
+
+        def mock(code):
             d = defer.Deferred()
-            if code is not None:
-                d.addCallback(lambda x: noComponentFactory({}, code))
-            else:
-                d.addCallback(lambda x: {'_id':_id})
+            d.addCallback(lambda x: noComponentFactory({}, code))
             d.callback(None)
-            return d        
+            return d
 
         def cheapestDVD(res):
             cheapeast = None
@@ -854,7 +868,7 @@ class FindOrder(Resource):
             return cheapeast
 
         for k,v in model_user[0][1]['items'].items():
-            component = None            
+            component = None
             if v is not None:
                 if type(v) is list:
                     component = couch.openDoc(v[0])
@@ -872,6 +886,7 @@ class FindOrder(Resource):
             component.addCallback(addName(parts_names[k]))
             component.addCallback(addOrder(parts[k]))
             defs.append(component)
+
         if model_user[0][1]['dvd']:
             dvds = couch.openView(designID,
                                   'dvd',
@@ -879,23 +894,30 @@ class FindOrder(Resource):
             dvds.addCallback(cheapestDVD)
             dvds.addCallback(addPrice(DVD_PRICE))
             dvds.addCallback(popDesc())
-            component.addCallback(addName(u'DVD'))
-            component.addCallback(addOrder(999))
+            dvds.addCallback(addName(u'DVD'))
+            dvds.addCallback(addCount(1))
+            dvds.addCallback(addOrder(300))
             defs.append(dvds)
 
+        def makeServiseRecord(_id, name, text, price, warranty, order):
+            service = defer.Deferred()
+            service.addCallback(lambda x: {'_id':_id})
+            service.addCallback(addName(name))
+            service.addCallback(addText(text))
+            service.addCallback(addPrice(price))
+            service.addCallback(addCount(1))
+            service.addCallback(addWarranty(warranty))
+            service.addCallback(addOrder(order))
+            service.callback(None)
+            defs.append(service)
         if model_user[0][1]['building']:
-            bui = mock(_id='building')
-            bui.addCallback(addName(u'Сборка'))
-            bui.addCallback(addPrice(BUILD_PRICE))
-            bui.addCallback(addOrder(9999))
-            defs.append(bui)
-
+            makeServiseRecord('building',u'Сборка',
+                              u'Сборка компьютера',BUILD_PRICE,
+                              u'6 месяцев',400)
         if model_user[0][1]['installing']:
-            inst = mock(_id='installing')
-            inst.addCallback(addName(u'Установка'))
-            inst.addCallback(addPrice(INSTALLING_PRICE))
-            inst.addCallback(addOrder(9999))
-            defs.append(inst)
+                        makeServiseRecord('installing',u'Установка',
+                              u'Установка программного обеспечения',INSTALLING_PRICE,
+                              u'без гарантии',500)
 
         li = defer.DeferredList(defs)
         li.addCallback(lambda res: (model_user,res))
