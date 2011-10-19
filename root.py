@@ -14,7 +14,8 @@ from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
-    noComponentFactory,makePrice,parts_names,parts,updateOriginalModelPrices
+    noComponentFactory,makePrice,parts_names,parts,updateOriginalModelPrices,\
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -814,9 +815,12 @@ class FindOrder(Resource):
                     doc.pop('_attachments')
                 return doc
             return _pop
-        def addPrice():
+        def addPrice(ourPrice=None):
             def add(doc):
-                doc['ourprice'] = makePrice(doc)
+                if ourPrice is None:                    
+                    doc['ourprice'] = makePrice(doc)
+                else:
+                    doc['ourprice'] = ourPrice
                 return doc
             return add
         def addName(name):
@@ -829,30 +833,70 @@ class FindOrder(Resource):
                 doc['order'] = order
                 return doc
             return add
-
-        def no():
+        
+        def mock(code=None, _id="no"):
             d = defer.Deferred()
-            d.addCallback(lambda x: noComponentFactory({}, k))
+            if code is not None:
+                d.addCallback(lambda x: noComponentFactory({}, code))
+            else:
+                d.addCallback(lambda x: {'_id':_id})
             d.callback(None)
-            return d
+            return d        
+
+        def cheapestDVD(res):
+            cheapeast = None
+            for row in res['rows']:
+                if cheapeast is None:
+                    cheapeast = row['doc']
+                else:
+                    if row['doc']['price'] < cheapeast['price']:
+                        cheapeast = row['doc']
+            return cheapeast
+
         for k,v in model_user[0][1]['items'].items():
-            component = None
+            component = None            
             if v is not None:
-                if type(v) is list:                    
-                    component = couch.openDoc(v[0])                    
+                if type(v) is list:
+                    component = couch.openDoc(v[0])
                     component.addCallback(addCount(len(v)))
                 else:
                     if not v.startswith('no'):
                         component = couch.openDoc(v)
+                        component.addCallback(addCount(1))
                     else:
-                        component = no()
+                        component = mock(k)
             else:
-                component = no()                
+                component = mock(k)
             component.addCallback(addPrice())
             component.addCallback(popDesc())
             component.addCallback(addName(parts_names[k]))
             component.addCallback(addOrder(parts[k]))
             defs.append(component)
+        if model_user[0][1]['dvd']:
+            dvds = couch.openView(designID,
+                                  'dvd',
+                                  stale=False, include_docs=True)
+            dvds.addCallback(cheapestDVD)
+            dvds.addCallback(addPrice(DVD_PRICE))
+            dvds.addCallback(popDesc())
+            component.addCallback(addName(u'DVD'))
+            component.addCallback(addOrder(999))
+            defs.append(dvds)
+
+        if model_user[0][1]['building']:
+            bui = mock(_id='building')
+            bui.addCallback(addName(u'Сборка'))
+            bui.addCallback(addPrice(BUILD_PRICE))
+            bui.addCallback(addOrder(9999))
+            defs.append(bui)
+
+        if model_user[0][1]['installing']:
+            inst = mock(_id='installing')
+            inst.addCallback(addName(u'Установка'))
+            inst.addCallback(addPrice(INSTALLING_PRICE))
+            inst.addCallback(addOrder(9999))
+            defs.append(inst)
+
         li = defer.DeferredList(defs)
         li.addCallback(lambda res: (model_user,res))
         return li
@@ -876,18 +920,26 @@ class FindOrder(Resource):
 # REMEMBER! each order linked to model by id!
 # somewhone make an order for several models will have some orders
 class StoreOrder(Resource):
-    def finish(self, doc, request):
+    def finish(self, li, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        request.write(str(doc['rev']))
+
+        if li[0][0] and li[1][0]:
+            request.write(str(li[0][1]['rev'])+'.'+str(li[1][1]['rev']))
+        else:
+            request.write('fail')
         request.finish()
 
     def render_POST(self, request):
         order = request.args.get('order')[0]
         jorder = simplejson.loads(order)
         jorder['date']=str(date.today()).split('-')
-        d = couch.saveDoc(jorder)
-        d.addCallback(self.finish, request)
+        d1 = couch.saveDoc(jorder)
+        model = jorder['model']
+        model['processing'] = True
+        d2 = couch.saveDoc(model)
+        li = defer.DeferredList([d1,d2])
+        li.addCallback(self.finish, request)
         return NOT_DONE_YET
 
 class StoreMother(Resource):
@@ -985,7 +1037,8 @@ class WarrantyFill(Resource):
             if code.startswith('no'):
                 continue
             record = {'name':c['text'],
-                      'price':c['ourprice']}
+                      'price':c['ourprice'],
+                      'pcs':c['count']}
             record.update({'factory':doc['factory_idses'][code]})
             record.update({'warranty':c['warranty_type']})
             res.append(record)
