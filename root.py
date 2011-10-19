@@ -920,26 +920,26 @@ class FindOrder(Resource):
 # REMEMBER! each order linked to model by id!
 # somewhone make an order for several models will have some orders
 class StoreOrder(Resource):
-    def finish(self, li, request):
+    def finish(self, order_res, model_rev, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-
-        if li[0][0] and li[1][0]:
-            request.write(str(li[0][1]['rev'])+'.'+str(li[1][1]['rev']))
-        else:
-            request.write('fail')
+        request.write(str(order_res['rev'])+'.'+str(model_rev))
         request.finish()
+
+    def storeOrder(self, model_res, order, model, request):
+        model['_rev'] = model_res['rev']
+        order['model'] = model
+        d = couch.saveDoc(order)
+        d.addCallback(self.finish, model['_rev'], request)
 
     def render_POST(self, request):
         order = request.args.get('order')[0]
         jorder = simplejson.loads(order)
         jorder['date']=str(date.today()).split('-')
-        d1 = couch.saveDoc(jorder)
         model = jorder['model']
         model['processing'] = True
-        d2 = couch.saveDoc(model)
-        li = defer.DeferredList([d1,d2])
-        li.addCallback(self.finish, request)
+        d = couch.saveDoc(model)
+        d.addCallback(self.storeOrder, jorder,model,request)
         return NOT_DONE_YET
 
 class StoreMother(Resource):

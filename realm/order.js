@@ -128,24 +128,17 @@ function fillForm(_data){
                              fi[inp.parent().prev().find('input').val()] = inp.val();
                          }
                          to_store['factory_idses'] = fi;
-                         // var warranty = $('.warranty');
-                         // var wa = {};
-                         // for (var j=0;j<warranty.length;j++){
-                         //     var inp = $(warranty.get(j));
-                         //     wa[inp.parent().prev().prev().find('input').val()] = inp.val();
-                         // }
-                         // to_store['warranty'] = wa;
                          if (rev)
                              to_store['_rev'] = rev;
                          function treatRes(revs){
-                             if (revs == 'fail')
+                             var splitted = revs.split('.');
+                             if (splitted.length!=2)
                                  alert('Что-то пошло не так! Не удается сохранить!');
-                             else{
-                                 var splitted = revs.split('.');
-                                 rev = splitted[0];
+			     else{
+				 rev = splitted[0];
                                  model['_rev'] = splitted[1];
-                                 alert('Получилось!');
-                             }
+                                 alert('Получилось!');    
+			     }                                 
                          }
                          $.ajax({
                                     url:'storeorder',
