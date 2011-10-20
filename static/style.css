@@ -212,25 +212,27 @@ p {
 }
 
 #beeline{
-    background-image:url('/static/beelineicon.png');
+
 }
 #mts{
-    background-image:url('/static/mtsicon.png');
+    background-position:0px -38px;
 }
 #megafon{
-    background-image:url('/static/megafonicon.png')
+
 }
 #emailc {
-    background-image:url('/static/email.png')
+    background-position:0px -56px;
 }
 #skype{
-    background-image:url('/static/skype.png')
+    background-position:0px -19px;
 }
 #operators span {
     padding-left:16px;
     background-repeat:no-repeat;
     margin-left:5px;
     cursor:pointer;
+    background-image:url('/static/build_icons.png');
+    background-repeat:no-repeat;
 }
 #city{
     padding-top:10px;
@@ -977,11 +979,18 @@ color:#7b9c0a;
     display:none;
 }
 #pricetext label{
-    background-image:url('/static/checkbox.png');
-    padding-left:19px;
-    background-repeat:no-repeat;
-    margin-left:10px;
+    //background-image:url('/static/checkbox.png');
+    //padding-left:19px;
+    //background-repeat:no-repeat;
+    //margin-left:10px;
 }
+#pricetext label{
+    background-image:url('/static/build_icons.png');
+    background-repeat:no-repeat;
+    background-position: -1px -76px;
+    padding-left:16px;
+}
+
 #cartcall{
     float:left;
     margin-left:30px;

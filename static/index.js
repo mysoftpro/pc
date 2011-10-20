@@ -19,7 +19,7 @@ $(function(){
                      var last_pos = $('.indexitem').last().position();
                      var first_pos = $('.indexitem').first().position();
                      var empty = {
-                         'background-image':"url('/static/empty.png')",
+                         'background-position':"url('/static/empty.png')",
                          'cursor':"inherit"
                      };
                      var next_button = $('#next_button');
@@ -58,9 +58,9 @@ $(function(){
           .click(function(e){
                      var target = $(e.target);
                      if (target.is(':checked'))
-                         target.next().css('background-image',"url('/static/checkbox.png')");
+                         target.next().css('background-position','1px -76px');
                      else
-                         target.next().css('background-image',"url('/static/checkbox_empty.png')");
+                         target.next().css('background-position','0px -94px');
 
                      var no_soft = !$('#isoft').is(':checked');
                      var no_displ = !$('#idisplay').is(':checked');
