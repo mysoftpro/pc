@@ -860,9 +860,9 @@ class FindOrder(Resource):
                 return doc
             return add
 
-        def mock(code):
+        def wrap(co):
             d = defer.Deferred()
-            d.addCallback(lambda x: noComponentFactory({}, code))
+            d.addCallback(lambda x: co)
             d.callback(None)
             return d
 
@@ -875,21 +875,24 @@ class FindOrder(Resource):
                     if row['doc']['price'] < cheapeast['price']:
                         cheapeast = row['doc']
             return cheapeast
-
+        from pc import models
+        from copy import deepcopy
         for k,v in model_user[0][1]['items'].items():
             component = None
             if v is not None:
                 if type(v) is list:
-                    component = couch.openDoc(v[0])
+                    # component = couch.openDoc(v[0])
+                    component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
                     component.addCallback(addCount(len(v)))
                 else:
                     if not v.startswith('no'):
-                        component = couch.openDoc(v)
+                        # component = couch.openDoc(v)
+                        component = wrap(deepcopy(models.gChoices_flatten[v]))
                         component.addCallback(addCount(1))
                     else:
-                        component = mock(k)
+                        component = wrap(noComponentFactory({}, k))
             else:
-                component = mock(k)
+                component = wrap(noComponentFactory({}, k))
             component.addCallback(addPrice())
             component.addCallback(popDesc())
             component.addCallback(addName(parts_names[k]))
