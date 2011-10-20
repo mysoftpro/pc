@@ -795,6 +795,10 @@ class Videos(Resource):
 
 class FindOrder(Resource):
 
+    def graceFull(self, fail, request):
+        self.finish((((False, fail),),), request)
+
+
     def finish(self, result, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
@@ -882,6 +886,7 @@ class FindOrder(Resource):
             if v is not None:
                 if type(v) is list:
                     # component = couch.openDoc(v[0])
+                    # TODO! what if no component in choices?????????
                     component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
                     component.addCallback(addCount(len(v)))
                 else:
@@ -948,7 +953,10 @@ class FindOrder(Resource):
         _id = request.args.get('id')[0]
         order_d = couch.openDoc('order_'+_id)
         order_d.addCallback(self.finish, request)
+        # if no order -> get model
         order_d.addErrback(self.getModel, _id, request)
+        # if problem with the order -> finish any way
+        order_d.addErrback(self.graceFull, request)
         return NOT_DONE_YET
 
 # REMEMBER! each order linked to model by id!

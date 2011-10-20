@@ -242,7 +242,7 @@ function checkAvailableSlots(name){
     var select = jgetSelectByRow($('#' + parts[name]));
     var component = new_model[jgetSelectByRow($('#' + parts[name])).val()];
     var counters = possibleComponentCount(jgetBody(select), 'mock');
-    var count = component['count'];
+    var count = component['count'];    
     if (count>counters.max_count){
         changeComponentCount(jgetBody(select),'down');
         return checkAvailableSlots(name);
@@ -948,7 +948,6 @@ var geRamSlotsFromMother= function(mother_component){
     return retval;
 };
 var geVideoSlotsFromMother = function(mother_component, video_component){
-    // TODO! SLI or CrossFire! check video card also
     var retval = 1;
     if (mother_component['sli'] && video_component['sli'])
         retval = 2;
@@ -1451,6 +1450,12 @@ function installCounters(){
 }
 
 $(function(){
+      var replaced = [];
+      for (var code in model){
+	  if (model[code]['replaced'])
+	      replaced.push(code);
+	  delete model[code]['replaced'];
+      }      
       new_model = _.clone(model);
       var options = $('#options input');
       options.removeAttr('disabled');
@@ -1506,4 +1511,8 @@ $(function(){
       $('#installprice').text(installprice+' р');
       $('#buildprice').text(buildprice+' р');
       $('#dvdprice').text(dvdprice+' р');
+      for (var i=0;i<replaced.length;i++){
+	  var td = $('#'+replaced[i]);
+	  td.css('border','1px solid red');	  
+      }
   });

@@ -288,16 +288,20 @@ no_component_added = False
 
 def renderComputer(model, template, skin):
     _name = ''
-    _uuid = '';
+    _uuid = ''
+    author = ''
+    parent = ''
     h2 =template.top.find('div').find('h2')
+    # only original models have length
     if 'name' in model:
         _name= model['name']
-    elif '_id' in model:
+    else:
         _name = model['_id']
         _uuid = model.pop('_id')
-        for token in ('author','parent'):
-            if token in model:
-                model.pop(token)
+        author = model.pop('author')
+        if 'parent' in model:
+            parent = model.pop('parent')
+
     h2.text = _name
 
     if 'description' in model:
@@ -398,20 +402,19 @@ def renderComputer(model, template, skin):
                 counted.update({code:count})
 
             component_doc = findComponent(model,name)
-        # looks like this shit can destroy choices for me!
-        # if count >1:
-        #     component_doc.update({'count':count})
+
+        if _uuid == '' and 'replaced' in component_doc:
+            # no need 'replaced' alert' in original models
+            component_doc.pop('replaced')
 
         viewlet = deepcopy(original_viewlet)
         descr = fillViewlet(component_doc)
-
 
         price = makePrice(component_doc)
 
         total += price
 
         cleaned_doc = cleanDoc(component_doc, price)
-        cleaned_doc['price'] = price
         cleaned_doc['count'] = count
         model_json.update({cleaned_doc['_id']:cleaned_doc})
         viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
@@ -453,6 +456,8 @@ def renderComputer(model, template, skin):
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
                                                     ';var processing=',simplejson.dumps(processing),
                                                     ';var uuid=',simplejson.dumps(_uuid),
+                                                    ';var author=',simplejson.dumps(author),
+                                                    ';var parent=',simplejson.dumps(parent),
                                                     ';var total=',unicode(total),
                                                     ';var choices=',simplejson.dumps(components_json),
                                                     ';var parts_names=',simplejson.dumps(parts_names),
@@ -813,15 +818,19 @@ def findComponent(model, name):
         code = code[0]
     if code is None or code.startswith('no'):
         return noComponentFactory({},name)
-
+    replaced = False
     retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
     if retval is None:
         retval = replaceComponent(code,model)
+        replaced = True
     else:
         if retval['stock1'] == 0:
             retval = replaceComponent(code,model)
+            replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
-    return deepcopy(retval)
+    ret = deepcopy(retval)
+    ret['replaced'] = replaced
+    return ret
 
 
 
