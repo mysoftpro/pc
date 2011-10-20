@@ -990,6 +990,9 @@ color:#7b9c0a;
     background-position: -1px -76px;
     padding-left:16px;
 }
+#pricetext em{
+    margin-right:10px;
+}
 
 #cartcall{
     float:left;
