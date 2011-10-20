@@ -729,9 +729,9 @@ def computers(template,skin,request):
             model_snippet = tree.find('model')
             divs = deepcopy(model_snippet.findall('div'))
             model_div = divs[0]
-
-            # if '_attachments' in m and 'icon.png' in m['_attachments']:
-            #     model_div.set('style',"background-image:url('/image/" + m['_id'] + "/icon.png')")
+            if 'processing' in m:
+                header = model_div.find('h2')
+                header.set('class', header.get('class')+ ' processing')
             a = model_div.find('.//a')
             a.set('href','/computer/%s' % m['_id'])
             if 'name' in m:
@@ -749,11 +749,6 @@ def computers(template,skin,request):
                 icon.set('href','/computer/'+m['_id'])
                 icon.find('img').set('src',case_found[0].getIconUrl())
                 model_div.insert(0,icon)
-
-            # if not this_is_cart:
-            #     info = etree.Element('div')
-            #     info.set('class','info')
-            #     model_div.append(info)
 
             container.append(model_div)
 

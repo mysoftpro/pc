@@ -15,7 +15,6 @@ function showDescription(_id){
 		     var text = '';
 		     if (data['imgs']){
 			 for (var i=0,l=data['imgs'].length;i<l;i++){
-			     console.log(data['imgs'][i]);
 			     text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
 			 }
 		     }
@@ -171,6 +170,21 @@ $(function(){
       // $.cookie('pc_user')
       var splitted = document.location.href.split('/');
       var uuid = splitted[splitted.length-1].split('?')[0];
+      if (uuid != 'computer'){
+	  $('.computeritem h2 ').css('margin-top','0px');
+	  $('.info').remove();
+	  $('ul.description')
+	      .css('cursor','pointer')
+	      .find('li').click(function(e){
+                                  e.preventDefault();
+                                  var _id = e.target.id.split('_')[1];
+                                  $.ajax({
+                                             url:'/component?id='+_id,
+                                             success:showDescription(_id)
+                                         });
+
+                              });
+      }
       if (!prices && uuid === $.cookie('pc_user')){
           var links = $('a.modellink');
 
@@ -197,26 +211,20 @@ $(function(){
               }
               return _deleteUUID;
           }
-	  //$('.computeritem').css('min-height','200px');
-	  //$('h2.section').css('margin-top','-10px');
           for(var i=0;i<links.length;i++){
               var span = $(links.get(i)).next();
-              var _id = span.attr('id');
-              span.parent().css('width','450px');
+	      var _id = span.attr('id');
+
+	      if (span.parent().attr('class').match('processing')){
+		  span.parent().css('width','600px');
+		  span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
+		  return;
+	      }		  
+              span.parent().css('width','450px');              
               span.after('<a class="edit_links" href="">удалить</a>');
               span.next().click(deleteUUID(_id))
                   .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');
           }
       }
-
-	// $(".rollover").css({'opacity':'0'});
-	// $('a.modelicon').hover(
-	// 	function() {
-	// 	$(this).find('.rollover').stop().fadeTo(500, 1);
-	// 	  },
-	// 	   function() {
-	// 	   $(this).find('.rollover').stop().fadeTo(500, 0);
-	// 	  }
-	// 	 );
 
   });
