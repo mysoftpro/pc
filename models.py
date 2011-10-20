@@ -6,8 +6,10 @@ import simplejson
 import re
 from copy import deepcopy
 from urllib import unquote_plus
-from datetime import datetime
+from datetime import datetime,timedelta
 from pc.mail import send_email
+from random import randint
+
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
 DVD_PRICE = 800
@@ -887,7 +889,6 @@ def index(template, skin, request):
 
     def render(result):
         i = 0
-
         models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
         tree = template.root()
         div = template.middle.xpath('//div[@id="computers_container"]')[0]
@@ -907,6 +908,21 @@ def index(template, skin, request):
             i+=1
             if i==len(imgs): i=0
         template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+        last_update = template.middle.xpath('//strong[@id="last_update"]')[0]
+        now = datetime.now()
+        hour = now.hour-7
+        if hour>18:
+            last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +' 18:20'
+        elif hour<9:
+            delta = timedelta(days=-1)
+            now = now + delta
+            last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +' 18:20'
+        else:
+            if now.minute<14:
+                hour-=1
+            last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +\
+                ' '+str(hour)+':' + str(14+randint(1,6))
+        
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
