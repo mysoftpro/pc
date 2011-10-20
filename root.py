@@ -459,6 +459,8 @@ class Save(Resource):
         user_doc = user_model[0]
         if model_doc['_id'] not in user_doc['models']:
             user_doc['models'].append(model_doc['_id'])
+            print "aaaaaaaaaaaaaaaaaaaaaa!!!!"
+            print user_doc['models']
             request.addCookie('pc_cart',
                               str(len(user_doc['models'])),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
@@ -476,7 +478,7 @@ class Save(Resource):
 
     def saveModel(self, user_doc, user_id, model, request):
         def addId(uuids, _user, _model):
-            _model['_id'] = uuids#simplejson.loads(uuids)['uuids'][0][26:]
+            _model['_id'] = uuids
             _model['author'] = _user['_id']
             return (_user,_model)
         def installOriginalPrices(_model):
@@ -494,7 +496,10 @@ class Save(Resource):
             # if _model author is _user: AND "EDIT" in request, just updateModel
             # else - store new model with the parent_id of this model
             # REMEMBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
-            if _model['author'] == _user['_id'] and request.args.get('edit', [None])[0] is not None:
+            same_author = _model['author'] == _user['_id']
+            edit_request = request.args.get('edit', [None])[0] is not None
+            not_processing = 'processing' not in model or not model['processing']
+            if  same_author and edit_request and not_processing:
                 new_model['_id'] = _model['_id']
                 new_model['_rev'] = _model['_rev']
                 new_model['author'] = _user['_id']
@@ -502,30 +507,34 @@ class Save(Resource):
                 return (_user,new_model)
             else:
                 new_model['parent'] = _model['_id']
-                _d = get_uuid()# couch.get('/_uuids?count=1')
+                _d = get_uuid()
                 _d.addCallback(addId, _user, new_model)
                 return _d
 
         # cases
-        # 1 no user doc, no model
+        # 1 no user doc, no model (new user new model)
+        installOriginalPrices(model)
         if user_doc.__class__ is Failure:
+            # print "case 1!"
             if 'id' in model:
                 model['parent'] = model.pop('id')
-            installOriginalPrices(model)
+            # installOriginalPrices(model)
             user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
             d = get_uuid()#couch.get('/_uuids?count=1')
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
-        # 2a user doc but no model
+        # 2a user doc but no model (old user new model)
         if not 'id' in model:
-            installOriginalPrices(model)
-            d = get_uuid()#couch.get('/_uuids?count=1')
+            # print "case 2a!"
+            # installOriginalPrices(model)
+            d = get_uuid()
             d.addCallback(addId, user_doc, model)
             d.addCallback(self.finish, request)
             return d
-        # 2b user doc and model
+        # 2b user doc and model (old user old model, edit or make new from existant)
         else:
+            # print "case 2b!"
             model_id = model.pop('id')
             d = couch.openDoc(model_id)
             d.addCallback(updateModel,user_doc, model)

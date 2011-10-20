@@ -6,30 +6,30 @@ _.templateSettings = {
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 
-function showDescription(_id){    
+function showDescription(_id){
     function _show(data){
-	if (!data['comments'])
-	    return;
-	var mock = function(){};
-	makeMask(function(){
-		     var text = '';
-		     if (data['imgs']){
-			 for (var i=0,l=data['imgs'].length;i<l;i++){
-			     text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
-			 }
-		     }
-		     text += data['name'] + data['comments'];
-		     
-		     $('#details').html(text);
-		     _.delay(function(){
-				 $('#mask').css('height',
-						$(document)
-						.height());
-			     }, 700);
+        if (!data['comments'])
+            return;
+        var mock = function(){};
+        makeMask(function(){
+                     var text = '';
+                     if (data['imgs']){
+                         for (var i=0,l=data['imgs'].length;i<l;i++){
+                             text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
+                         }
+                     }
+                     text += data['name'] + data['comments'];
+
+                     $('#details').html(text);
+                     _.delay(function(){
+                                 $('#mask').css('height',
+                                                $(document)
+                                                .height());
+                             }, 700);
                      $('#mask').css('height',
                                     $(document).height());
-		 },
-		 function(){})();
+                 },
+                 function(){})();
     }
     return _show;
 }
@@ -171,11 +171,11 @@ $(function(){
       var splitted = document.location.href.split('/');
       var uuid = splitted[splitted.length-1].split('?')[0];
       if (uuid != 'computer'){
-	  $('.computeritem h2 ').css('margin-top','0px');
-	  $('.info').remove();
-	  $('ul.description')
-	      .css('cursor','pointer')
-	      .find('li').click(function(e){
+          $('.computeritem h2 ').css('margin-top','0px');
+          $('.info').remove();
+          $('ul.description')
+              .css('cursor','pointer')
+              .find('li').click(function(e){
                                   e.preventDefault();
                                   var _id = e.target.id.split('_')[1];
                                   $.ajax({
@@ -187,7 +187,6 @@ $(function(){
       }
       if (!prices && uuid === $.cookie('pc_user')){
           var links = $('a.modellink');
-
           function deleteUUID(_id){
               function _deleteUUID(e){
                   e.preventDefault();
@@ -213,14 +212,14 @@ $(function(){
           }
           for(var i=0;i<links.length;i++){
               var span = $(links.get(i)).next();
-	      var _id = span.attr('id');
+              var _id = span.attr('id');
 
-	      if (span.parent().attr('class').match('processing')){
-		  span.parent().css('width','600px');
-		  span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
-		  return;
-	      }		  
-              span.parent().css('width','450px');              
+              if (span.parent().attr('class').match('processing')){
+                  span.parent().css('width','600px');
+                  span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
+                  continue;
+              }
+              span.parent().css('width','450px');
               span.after('<a class="edit_links" href="">удалить</a>');
               span.next().click(deleteUUID(_id))
                   .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');

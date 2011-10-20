@@ -1371,7 +1371,7 @@ function to_cart(event){
     model_to_store['building'] = $('#obuild').is(':checked');
     model_to_store['dvd'] = $('#odvd').is(':checked');
     var to_send = {'model':JSON.stringify(model_to_store)};
-    if (document.location.href.match('edit'))
+    if (document.location.href.match('edit') && !processing)
         to_send['edit'] = 't';
     $.ajax({
                url:'/save',
