@@ -213,7 +213,6 @@ $(function(){
           for(var i=0;i<links.length;i++){
               var span = $(links.get(i)).next();
               var _id = span.attr('id');
-
               if (span.parent().attr('class').match('processing')){
                   span.parent().css('width','600px');
                   span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
@@ -221,8 +220,7 @@ $(function(){
               }
               span.parent().css('width','450px');
               span.after('<a class="edit_links" href="">удалить</a>');
-              span.next().click(deleteUUID(_id))
-                  .after('<a class="edit_links" href="/computer/'+_id+'?edit=t">редактировать</a>');
+              span.next().click(deleteUUID(_id));
           }
       }
 

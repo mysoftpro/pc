@@ -492,35 +492,26 @@ class Save(Resource):
         from pc import models
         user_doc = None
         if user_model[0][0]:
-            print "1111111111111111111"
             user_doc = user_model[0][1]
         else:
-            print "222222222222222222"
             user_doc = {'_id':user_id, 'models':[]}
 
         model_doc = None
         if user_model[1][0]:
-            print "3333333333333333333333"
             edit_model = request.args.get('edit', [None])[0] is not None
             if edit_model:
-                print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!"
-                print user_model[1][1] 
                 same_author = user_model[1][1]['author'] == user_id
                 not_processing = not 'processing' in user_model[1][1] \
                     or not user_model[1][1]['processing']
                 if same_author and not_processing:
-                    print "3AQAAAAAAAAAAAAAAAAAAAAAAAAAA"
                     model_doc = user_model[1][1]
                 else:
-                    print "haaaaaaaaaaaaaaaaaack"
                     model_doc = new_model
                     model_doc['_id'] = model_id
             else:
-                print "3BBBBBBBBBBBBBBBBBBBBBB"
                 model_doc = new_model
                 model_doc['_id'] = model_id
         else:
-            print "444444444444444444444"
             model_doc = new_model
             model_doc['_id'] = model_id
 
@@ -569,7 +560,7 @@ class Delete(Resource):
                 return
             _user = user_model[0][1]
             _model = user_model[1][1]
-            if _model['author'] == user_id:
+            if _model['author'] == user_id and ('processing' not in _model or not _model['processing']):
                 couch.deleteDoc(uuid,_model['_rev'])
                 _user['models'] = [m for m in _user['models'] if m != _model['_id']]
                 couch.saveDoc(_user)
