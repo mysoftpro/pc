@@ -242,7 +242,7 @@ function checkAvailableSlots(name){
     var select = jgetSelectByRow($('#' + parts[name]));
     var component = new_model[jgetSelectByRow($('#' + parts[name])).val()];
     var counters = possibleComponentCount(jgetBody(select), 'mock');
-    var count = component['count'];    
+    var count = component['count'];
     if (count>counters.max_count){
         changeComponentCount(jgetBody(select),'down');
         return checkAvailableSlots(name);
@@ -1030,7 +1030,7 @@ function installCountButtons(body){
     var component = new_model[select.val()];
     body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
                            '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
-                              {pcs:counters.new_count}));    
+                              {pcs:counters.new_count}));
     var clickFactory = function(dir){
         return function(e){changeComponentCount(body,dir);};
     };
@@ -1452,10 +1452,10 @@ function installCounters(){
 $(function(){
       var replaced = [];
       for (var code in model){
-	  if (model[code]['replaced'])
-	      replaced.push(code);
-	  delete model[code]['replaced'];
-      }      
+          if (model[code]['replaced'])
+              replaced.push(code);
+          delete model[code]['replaced'];
+      }
       new_model = _.clone(model);
       var options = $('#options input');
       options.removeAttr('disabled');
@@ -1504,15 +1504,31 @@ $(function(){
       //TODO! warning if processing and edit
       if (uuid)
           to_cartSuccess({'id':uuid});
-      if (document.location.href.match('edit')){	  
-	  if (!processing)
-	      $('#tocart').text('Сохранить');
-      }          
+      if (document.location.href.match('edit')){
+          if (!processing)
+              $('#tocart').text('Сохранить');
+      }
       $('#installprice').text(installprice+' р');
       $('#buildprice').text(buildprice+' р');
       $('#dvdprice').text(dvdprice+' р');
-      for (var i=0;i<replaced.length;i++){
-	  var td = $('#'+replaced[i]);
-	  td.css('border','1px solid red');	  
+      if (author && $.cookie('pc_user')==author){
+          for (var i=0;i<replaced.length;i++){
+              var td = $('#'+replaced[i]);
+              td.css('border','1px solid red');
+              var ass = guider.createGuider({
+                                                attachTo: td,
+                                                description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
+                                                position: 1,
+                                                width: 500
+                                            }).show();
+              console.log(ass);
+          }
+          var guides = $('.guider_content');
+          for (var i=0;i<guides.length;i++){
+              $(guides.get(i)).find('p').before('<div class="closeg"></div>');
+          }
+          $('.closeg').click(function(e){
+                                 $(e.target).parent().parent().remove();
+                             });
       }
   });
