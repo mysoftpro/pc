@@ -83,10 +83,9 @@ var guider = (function(){
       var myHeight = myGuider.elem.innerHeight();
       var myWidth = myGuider.elem.innerWidth();
       if (myGuider.position === 0) {
-        myGuider.elem.css("position", "absolute");
-        myGuider.elem.css("top", ($(window).height() - myHeight) / 3 + $(window).scrollTop() + "px");
-        myGuider.elem.css("left", ($(window).width() - myWidth) / 2 + $(window).scrollLeft() + "px");
-	  console.log('gg');
+          myGuider.elem.css("position", "absolute");
+          myGuider.elem.css("top", ($(window).height() - myHeight) / 3 + $(window).scrollTop() + "px");
+          myGuider.elem.css("left", ($(window).width() - myWidth) / 2 + $(window).scrollLeft() + "px");
         return;
       }
       myGuider.attachTo = $(myGuider.attachTo);

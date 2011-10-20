@@ -257,8 +257,6 @@ function setPriceAndPin(body,component){
         will_blink = false;
         component = new_model[jgetSelect(body).val()];
     }
-    // if (isVideo(body))
-    //  console.log(component);
 
     var mult = 1;
     // may be just count is changed
