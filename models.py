@@ -193,10 +193,10 @@ def cleanDoc(doc, price):
     new_doc['price'] = price
     return new_doc
 
-imgs = ['static/acer-aspire-ie-3450-desktop-pc-1.png',
-        'static/compaq-presario-sg3440il-desktop-pc1.png',
-        'static/dell-studio-hybrid-desktop-pc1.png',
-        'static/desktop-pc1.png'
+imgs = ['static/comp_icon_1.png',
+        'static/comp_icon_2.png',
+        'static/comp_icon_3.png',
+        'static/comp_icon_4.png'
         ]
 
 
