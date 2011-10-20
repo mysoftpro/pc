@@ -445,8 +445,11 @@ def renderComputer(model, template, skin):
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
         components_container.append(viewlet[1].find('tr'))
         description_container.append(viewlet[2])
-
+    processing = False
+    if 'processing' in model and model['processing']:
+        processing = True
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
+                                                    ';var processing=',simplejson.dumps(processing),
                                                     ';var uuid=',simplejson.dumps(_uuid),
                                                     ';var total=',unicode(total),
                                                     ';var choices=',simplejson.dumps(components_json),
@@ -729,7 +732,7 @@ def computers(template,skin,request):
             model_snippet = tree.find('model')
             divs = deepcopy(model_snippet.findall('div'))
             model_div = divs[0]
-            if 'processing' in m:
+            if 'processing' in m and m['processing']:
                 header = model_div.find('h2')
                 header.set('class', header.get('class')+ ' processing')
             a = model_div.find('.//a')

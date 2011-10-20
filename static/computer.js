@@ -1496,10 +1496,13 @@ $(function(){
 
       $('#greset').click(function(){window.location.reload();});
       $('#tocart').click(to_cart);
+      //TODO! warning if processing and edit
       if (uuid)
           to_cartSuccess({'id':uuid});
-      if (document.location.href.match('edit'))
-          $('#tocart').text('Сохранить');
+      if (document.location.href.match('edit')){	  
+	  if (!processing)
+	      $('#tocart').text('Сохранить');
+      }          
       $('#installprice').text(installprice+' р');
       $('#buildprice').text(buildprice+' р');
       $('#dvdprice').text(dvdprice+' р');
