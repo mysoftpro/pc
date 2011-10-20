@@ -1335,7 +1335,7 @@ function GCheaperGBeater(){
 
 
 
-function to_cart(event){
+function to_cart(edit){
     var model_to_store = {};
     var items = {};
     for (_id in model){
@@ -1364,20 +1364,30 @@ function to_cart(event){
         items[part] = to_store;
     }
     model_to_store['items'] = items;
-    if (uuid)
-        model_to_store['id'] = uuid;
     model_to_store['installing'] = $('#oinstalling').is(':checked');
     model_to_store['building'] = $('#obuild').is(':checked');
     model_to_store['dvd'] = $('#odvd').is(':checked');
     var to_send = {'model':JSON.stringify(model_to_store)};
-    if (document.location.href.match('edit') && !processing)
-        to_send['edit'] = 't';
+
+    if (uuid){	   
+	if (edit && !processing){
+	    model_to_store['id'] = uuid;
+	    to_send['edit'] = 't';
+	}
+	else{
+	    model_to_store['parent'] = uuid;
+	}
+    }
+        
+
     $.ajax({
                url:'/save',
                data:to_send,
                success:to_cartSuccess
            });
 }
+
+
 var added_cached;
 
 function to_cartSuccess(data){
@@ -1449,15 +1459,8 @@ function installCounters(){
     checkAvailableSlots('displ');
 }
 
-$(function(){
-      var replaced = [];
-      for (var code in model){
-          if (model[code]['replaced'])
-              replaced.push(code);
-          delete model[code]['replaced'];
-      }
-      new_model = _.clone(model);
-      var options = $('#options input');
+function checkOptions(){
+          var options = $('#options input');
       options.removeAttr('disabled');
       for (var i=0;i<options.length;i++){
           var op = $(options.get(i));
@@ -1485,6 +1488,18 @@ $(function(){
       }
       if (model['no'+parts['soft']])
           $("#oinstalling").prop('checked',false).prop('disabled','disabled');
+}
+
+$(function(){
+      var replaced = [];
+      for (var code in model){
+          if (model[code]['replaced'])
+              replaced.push(code);
+          delete model[code]['replaced'];
+      }
+      new_model = _.clone(model);
+
+      checkOptions();
 
       $('select').chosen().change(manualChange);
       installBodies();
@@ -1500,28 +1515,31 @@ $(function(){
       recalculate();
 
       $('#greset').click(function(){window.location.reload();});
-      $('#tocart').click(to_cart);
-      //TODO! warning if processing and edit
-      if (uuid)
+      $('#tocart').click(function(e){to_cart(false);});
+      
+      console.log(author);
+      console.log(uuid);
+      if (uuid && author==$.cookie('pc_user'))
           to_cartSuccess({'id':uuid});
-      if (document.location.href.match('edit')){
-          if (!processing)
-              $('#tocart').text('Сохранить');
-      }
+
       $('#installprice').text(installprice+' р');
       $('#buildprice').text(buildprice+' р');
       $('#dvdprice').text(dvdprice+' р');
+
       if (author && $.cookie('pc_user')==author){
           for (var i=0;i<replaced.length;i++){
               var td = $('#'+replaced[i]);
-              td.css('border','1px solid red');
-              var ass = guider.createGuider({
+              if (td.css('display')!='none')
+		  td.css('border','1px solid red');
+	      else{
+		  td.prev().css('border','1px solid red');
+	      }
+              guider.createGuider({
                                                 attachTo: td,
                                                 description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
                                                 position: 1,
                                                 width: 500
                                             }).show();
-              console.log(ass);
           }
           var guides = $('.guider_content');
           for (var i=0;i<guides.length;i++){
@@ -1530,5 +1548,22 @@ $(function(){
           $('.closeg').click(function(e){
                                  $(e.target).parent().parent().remove();
                              });
+          if (!processing){
+	      $('#greset')
+		  .attr('class','green_image_button')
+		  .text('Сохранить')
+		  .unbind('click')
+		  .click(function(e){
+			     try{
+				 e.preventDefault();
+				 to_cart(true);
+				 $('td.body').css('border','none');
+				 $('td.component_select').css('border','none');	 
+			     } catch (x) {
+				 console.log(x);
+			     }			     
+			     return false;
+			 });
+          }
       }
   });

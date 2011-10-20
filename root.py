@@ -158,7 +158,6 @@ class Template(object):
         for el in top:
             div.append(el)
         parent.replace(self.get_top(), div)
-        # parent.replace(self.get_top(), top)
 
     top = property(get_top, set_top)
 
@@ -454,95 +453,18 @@ class Component(Resource):
 
 class Save(Resource):
 
-    def finish(self, user_model, request):
-        model_doc = user_model[1]
-        user_doc = user_model[0]
-        if model_doc['_id'] not in user_doc['models']:
-            user_doc['models'].append(model_doc['_id'])
-            print "aaaaaaaaaaaaaaaaaaaaaa!!!!"
-            print user_doc['models']
+    def finish(self, user_model, request, user_doc):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        if user_model[0][0] and user_model[1][0]:
             request.addCookie('pc_cart',
                               str(len(user_doc['models'])),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
-        _date=str(date.today()).split('-')
-        user_doc['date'] = _date
-        model_doc['date'] = _date
-        couch.saveDoc(model_doc)
-        couch.saveDoc(user_doc)
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        doc = {'id':model_doc['_id']}
-        request.write(simplejson.dumps(doc))
-        request.finish()
-
-    def saveModel(self, user_doc, user_id, model, request):
-        def addId(uuids, _user, _model):
-            _model['_id'] = uuids
-            _model['author'] = _user['_id']
-            return (_user,_model)
-        def installOriginalPrices(_model):
-            from pc import models
-            _model['original_prices'] = {}
-            for name,code in _model['items'].items():
-                if type(code) is list:
-                    code = code[0]
-                if code in models.gChoices_flatten:
-                    component = models.gChoices_flatten[code]
-                    _model['original_prices'].update({code:component['price']})
-                else:
-                    _model['original_prices'].update({code:99})
-        def updateModel(_model, _user, new_model):
-            # if _model author is _user: AND "EDIT" in request, just updateModel
-            # else - store new model with the parent_id of this model
-            # REMEMBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
-            same_author = _model['author'] == _user['_id']
-            edit_request = request.args.get('edit', [None])[0] is not None
-            not_processing = 'processing' not in model or not model['processing']
-            if  same_author and edit_request and not_processing:
-                new_model['_id'] = _model['_id']
-                new_model['_rev'] = _model['_rev']
-                new_model['author'] = _user['_id']
-                new_model['original_prices'] = _model['original_prices']
-                return (_user,new_model)
-            else:
-                new_model['parent'] = _model['_id']
-                _d = get_uuid()
-                _d.addCallback(addId, _user, new_model)
-                return _d
-
-        # cases
-        # 1 no user doc, no model (new user new model)
-        installOriginalPrices(model)
-        if user_doc.__class__ is Failure:
-            # print "case 1!"
-            if 'id' in model:
-                model['parent'] = model.pop('id')
-            # installOriginalPrices(model)
-            user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
-            d = get_uuid()#couch.get('/_uuids?count=1')
-            d.addCallback(addId, user_doc, model)
-            d.addCallback(self.finish, request)
-            return d
-        # 2a user doc but no model (old user new model)
-        if not 'id' in model:
-            # print "case 2a!"
-            # installOriginalPrices(model)
-            d = get_uuid()
-            d.addCallback(addId, user_doc, model)
-            d.addCallback(self.finish, request)
-            return d
-        # 2b user doc and model (old user old model, edit or make new from existant)
+            request.write(simplejson.dumps(user_model[1][1]))
         else:
-            # print "case 2b!"
-            model_id = model.pop('id')
-            d = couch.openDoc(model_id)
-            d.addCallback(updateModel,user_doc, model)
-            d.addCallback(self.finish, request)
-            return d
-
-    def pr(self, e):
-        print e
+            request.write(simplejson.dumps({}))
+        request.finish()
 
     def render_GET(self, request):
         model = request.args.get('model', [None])[0]
@@ -550,12 +472,162 @@ class Save(Resource):
             jmodel = simplejson.loads(model)
             # TODO validate fields to avoid hacks!
             user_id = request.getCookie('pc_user')
-            d = couch.openDoc(user_id)
-            d.addCallback(self.saveModel, user_id, jmodel, request)
-            d.addErrback(self.saveModel, user_id, jmodel, request)
-            # d.addErrback(self.storeUser, user_id, jmodel, request)
+            d1 = couch.openDoc(user_id)
+            d2 = defer.Deferred()
+            model_id = None
+            if 'id' in jmodel:
+                model_id = jmodel.pop('id')
+                d2 = couch.openDoc(model_id)
+            else:
+                model_id = base36.gen_id()
+                d2.addCallback(lambda x: jmodel)
+                d2.callback(None)
+            li = defer.DeferredList([d1,d2])
+            li.addCallback(self.saveModel, user_id, model_id, jmodel, request)
             return NOT_DONE_YET
         return 'fail'
+
+    # TODO! how fast is base36.gen_id() ???? may be wrap in deferred???
+    def saveModel(self, user_model, user_id, model_id, new_model, request):
+        from pc import models
+        user_doc = None
+        if user_model[0][0]:
+            print "1111111111111111111"
+            user_doc = user_model[0][1]
+        else:
+            print "222222222222222222"
+            user_doc = {'_id':user_id, 'models':[]}
+
+        model_doc = None
+        if user_model[1][0]:
+            print "3333333333333333333333"
+            edit_model = request.args.get('edit', [None])[0] is not None
+            if edit_model:
+                print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!"
+                print user_model[1][1] 
+                same_author = user_model[1][1]['author'] == user_id
+                not_processing = not 'processing' in user_model[1][1] \
+                    or not user_model[1][1]['processing']
+                if same_author and not_processing:
+                    print "3AQAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    model_doc = user_model[1][1]
+                else:
+                    print "haaaaaaaaaaaaaaaaaack"
+                    model_doc = new_model
+                    model_doc['_id'] = model_id
+            else:
+                print "3BBBBBBBBBBBBBBBBBBBBBB"
+                model_doc = new_model
+                model_doc['_id'] = model_id
+        else:
+            print "444444444444444444444"
+            model_doc = new_model
+            model_doc['_id'] = model_id
+
+        # no it does not matter what we have in model_doc.
+        # brand new or existant model. just copy all fron new model here
+        for k,v in new_model.items():
+            model_doc[k] = v
+        model_doc['original_prices'] = {}
+        for name,code in model_doc['items'].items():
+            if type(code) is list:
+                code = code[0]
+            if code in models.gChoices_flatten:
+                component = models.gChoices_flatten[code]
+                model_doc['original_prices'].update({code:component['price']})
+            else:
+                model_doc['original_prices'].update({code:0})
+
+        model_doc['author'] = user_id
+        if model_doc['_id'] not in user_doc['models']:            
+            user_doc['models'].append(model_doc['_id'])
+        _date=str(date.today()).split('-')
+        user_doc['date'] = _date
+        model_doc['date'] = _date
+        d1 = couch.saveDoc(model_doc)
+        d2 = couch.saveDoc(user_doc)
+        li = defer.DeferredList([d1,d2])
+        li.addCallback(self.finish, request,user_doc)
+
+    # def saveModel(self, user_doc, user_id, model, request):
+    #     def addId(uuids, _user, _model):
+    #         _model['_id'] = uuids
+    #         _model['author'] = _user['_id']
+    #         return (_user,_model)
+    #     def installOriginalPrices(_model):
+    #         from pc import models
+    #         _model['original_prices'] = {}
+    #         for name,code in _model['items'].items():
+    #             if type(code) is list:
+    #                 code = code[0]
+    #             if code in models.gChoices_flatten:
+    #                 component = models.gChoices_flatten[code]
+    #                 _model['original_prices'].update({code:component['price']})
+    #             else:
+    #                 _model['original_prices'].update({code:99})
+    #     def updateModel(_model, _user, new_model):
+    #         # if _model author is _user: AND "EDIT" in request, just updateModel
+    #         # else - store new model with the parent_id of this model
+    #         # REMEMBER!!! YOU WILL LOST ALL ADDITIONAL DATA FROM THE OLD MODEL!!!
+    #         same_author = _model['author'] == _user['_id']
+    #         edit_request = request.args.get('edit', [None])[0] is not None
+    #         not_processing = 'processing' not in model or not model['processing']
+    #         if  same_author and edit_request and not_processing:
+    #             new_model['_id'] = _model['_id']
+    #             new_model['_rev'] = _model['_rev']
+    #             new_model['author'] = _user['_id']
+    #             new_model['original_prices'] = _model['original_prices']
+    #             return (_user,new_model)
+    #         else:
+    #             new_model['parent'] = _model['_id']
+    #             _d = get_uuid()
+    #             _d.addCallback(addId, _user, new_model)
+    #             return _d
+
+    #     # cases
+    #     # 1 no user doc, no model (new user new model)
+    #     installOriginalPrices(model)
+    #     if user_doc.__class__ is Failure:
+    #         # print "case 1!"
+    #         if 'id' in model:
+    #             model['parent'] = model.pop('id')
+    #         # installOriginalPrices(model)
+    #         user_doc = {'_id':user_id, 'models':[], 'date':str(date.today()).split('-')}
+    #         d = get_uuid()#couch.get('/_uuids?count=1')
+    #         d.addCallback(addId, user_doc, model)
+    #         d.addCallback(self.finish, request)
+    #         return d
+    #     # 2a user doc but no model (old user new model)
+    #     if not 'id' in model:
+    #         # print "case 2a!"
+    #         # installOriginalPrices(model)
+    #         d = get_uuid()
+    #         d.addCallback(addId, user_doc, model)
+    #         d.addCallback(self.finish, request)
+    #         return d
+    #     # 2b user doc and model (old user old model, edit or make new from existant)
+    #     else:
+    #         # print "case 2b!"
+    #         model_id = model.pop('id')
+    #         d = couch.openDoc(model_id)
+    #         d.addCallback(updateModel,user_doc, model)
+    #         d.addCallback(self.finish, request)
+    #         return d
+
+    # def pr(self, e):
+    #     print e
+
+    # def render_GET(self, request):
+    #     model = request.args.get('model', [None])[0]
+    #     if model is not None:
+    #         jmodel = simplejson.loads(model)
+    #         # TODO validate fields to avoid hacks!
+    #         user_id = request.getCookie('pc_user')
+    #         d = couch.openDoc(user_id)
+    #         d.addCallback(self.saveModel, user_id, jmodel, request)
+    #         d.addErrback(self.saveModel, user_id, jmodel, request)
+    #         return NOT_DONE_YET
+    #     return 'fail'
 
 
 
