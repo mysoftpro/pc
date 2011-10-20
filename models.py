@@ -910,7 +910,7 @@ def index(template, skin, request):
         template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
         last_update = template.middle.xpath('//strong[@id="last_update"]')[0]
         now = datetime.now()
-        hour = now.hour-7
+        hour = now.hour+7
         if hour>18:
             last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +' 18:20'
         elif hour<9:
