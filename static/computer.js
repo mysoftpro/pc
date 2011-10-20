@@ -1367,8 +1367,8 @@ function to_cart(edit){
     model_to_store['installing'] = $('#oinstalling').is(':checked');
     model_to_store['building'] = $('#obuild').is(':checked');
     model_to_store['dvd'] = $('#odvd').is(':checked');
-    var to_send = {'model':JSON.stringify(model_to_store)};
-
+    
+    var to_send = {};
     if (uuid){	   
 	if (edit && !processing){
 	    model_to_store['id'] = uuid;
@@ -1377,9 +1377,8 @@ function to_cart(edit){
 	else{
 	    model_to_store['parent'] = uuid;
 	}
-    }
-        
-
+    }        
+    to_send['model'] = JSON.stringify(model_to_store);
     $.ajax({
                url:'/save',
                data:to_send,
@@ -1517,8 +1516,6 @@ $(function(){
       $('#greset').click(function(){window.location.reload();});
       $('#tocart').click(function(e){to_cart(false);});
       
-      console.log(author);
-      console.log(uuid);
       if (uuid && author==$.cookie('pc_user'))
           to_cartSuccess({'id':uuid});
 
