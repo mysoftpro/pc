@@ -80,7 +80,7 @@
 
 
     <div class="sentence_float" >
-      На странице компьютера все основные компоненты собраны в таблицу.
+      <a href="/computer/render">На странице компьютера</a> все основные компоненты собраны в таблицу.
     </div>
     <select id="hselect">
       <option selected="selected">Каждый компонент - это раскрывающийся список</option>
@@ -115,11 +115,23 @@
 
     <div class="sentence">
       <div style="float:left;margin-top:15px;">
-        Кнопками "дешевле" и "лучше" можно подкорректировать этот индекс
+        Кнопками "дешевле" и "лучше" можно автоматически выбирать компоненты.
+	Наше приложение выбирает замену для компонента,
+	который по его оценке не соответсвует остальным компонентам компьютера.
+	Описание их работы можно прочитать на страничке 
+	<a href="/howtochoose#chbetter">как выбирать</a>
       </div>
       <div style="margin-right:70px;" class="large_button" id="gbetter">лучше</div>
       <div class="large_button" id="gcheaper">дешевле</div>
-
+    </div>
+    <div style="clear:both;"></div>
+    <div class="sentence">
+      <div style="margin-top:20px;float:left;width:635px;">
+        Каждый раз, когда вы выбираете какой-нибудь компонент компьютера,
+        внизу под таблицей появляется его описание и, возможно, наши рекомендации.
+      </div>
+      <div id="component_title" class="component_tab active">Аудиосистема</div>
+      <div id="ourcomments" class="component_tab inactive" style="width:auto;">Как выбирать</div>
     </div>
     <div style="clear:both;"></div>
 
