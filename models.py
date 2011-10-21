@@ -917,7 +917,7 @@ def index(template, skin, request):
             i+=1
             if i==len(imgs): i=0
         template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
-        last_update = template.middle.xpath('//strong[@id="last_update"]')[0]
+        last_update = template.middle.xpath('//span[@id="last_update"]')[0]
         now = datetime.now()
         hour = now.hour+7
         if hour>18:
