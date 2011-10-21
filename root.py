@@ -37,6 +37,18 @@ def howtochoose(template, skin, request):
     d.callback(None)
     return d
 
+
+def howtouse(template, skin, request):
+    skin.top = template.top
+    skin.middle = template.middle
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    d = defer.Deferred()
+    d.addCallback(lambda some:skin.render())
+    d.callback(None)
+    return d
+
+
 def howtobuy(template, skin, request):
     skin.top = template.top
     skin.middle = template.middle
@@ -92,6 +104,7 @@ class SiteMap(Resource):
             root.append(self.buildElement('computer/'+model['key'], freq='daily'))
         root.append(self.buildElement('howtochoose'))
         root.append(self.buildElement('howtobuy'))
+        root.append(self.buildElement('howtouse'))        
         root.append(self.buildElement('warranty'))
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
@@ -106,6 +119,7 @@ static_hooks = {
     'computer.html':computer,
     'computers.html':computers,
     'howtochoose.html':howtochoose,
+    'howtouse.html':howtouse,
     'howtobuy.html':howtobuy,
     'warranty.html':warranty
 }
@@ -337,6 +351,7 @@ class Root(Cookable):
         self.putChild('computer', Computer(self.static))
         self.putChild('cart', Cart(self.static))
         self.putChild('howtochoose', HowToChoose(self.static))
+        self.putChild('howtouse', HowToUse(self.static))
         self.putChild('howtobuy', HowToBuy(self.static))
         self.putChild('warranty', Warranty(self.static))
         self.putChild('component', Component())
@@ -396,6 +411,15 @@ class HowToChoose(Cookable):
     def render_GET(self, request):
         self.checkCookie(request)
         return self.static.getChild("howtochoose.html", request).render_GET(request)
+
+
+class HowToUse(Cookable):
+    def __init__(self, static):
+        Cookable.__init__(self)
+        self.static = static
+    def render_GET(self, request):
+        self.checkCookie(request)
+        return self.static.getChild("howtouse.html", request).render_GET(request)
 
 class HowToBuy(Cookable):
     def __init__(self, static):

@@ -1,0 +1,130 @@
+<top>
+  <h1>Как пользоваться сайтом для выбора компьютера</h1>
+  <p class="computers_top">
+    Если вы хотите узнать по каким параметрам выбирают компьютер,
+    читайте подробней <a href="/howtochoose">о выборе компьютера</a>
+  </p>
+</top>
+
+<middle>
+  <div id="how">
+    <div class="sentence">
+      Компьютеры удобно сравнивать между собой на <a href="computer">странице всех моделей</a>.
+    </div>
+    <div class="sentence">
+      Кроме текстового описания, можно посмотреть все компоненты компьютера с ценами,
+      кликнув на значок <img src="/static/info.png" alt="info icon"/>
+    </div>
+    <div id="howguider">
+      Окошко с компонентами компьютера
+    </div>
+    <div class="sentence" style="margin-top:50px;">
+      Можно открыть <span>несколько таких окошек</span> и посмотреть чем один компьютер отличается от другого.
+    </div>
+    <div class="sentence_float">
+      Чтобы перейти к компьютеру - кликайте его название:
+    </div>
+    <h2 class="section inline">
+      <a href="/computer/scroll" class="modellink">Скролл</a>
+      <span id="scroll" class="modelprice">34000 р</span>
+    </h2>
+    <div style="clear:both;"></div>
+    <div class="sentence">
+      Все компьютеры укомплектованы таким образом, чтобы вы могли начать
+      <span>сразу  его использовать</span>.
+    </div>
+    <div class="sentence_float">
+      Но некоторые компоненты, возможно, не нужны вам.
+      Исключайте их.
+    </div>
+    <table id="options" style="float:right;margin-right:30px;margin-top:20px;">
+      <tbody><tr><td style="width:70px;">
+            <input type="checkbox" checked="" value="odispl" id="odispl">
+            <label for="odispl">монитор</label>
+          </td>
+          <td style="width:70px;">
+            <input type="checkbox" checked="" value="osoft" id="osoft">
+            <label for="osoft">Windows</label>
+          </td>
+          <td style="width:80px;">
+            <input type="checkbox" checked="" value="oaudio" id="oaudio">
+            <label for="oaudio">колонки</label>
+          </td>
+          <td style="width:75px;">
+            <input type="checkbox" checked="" value="omouse" id="omouse">
+            <label for="omouse">мышь</label>
+          </td>
+          <td style="width:95px;">
+            <input type="checkbox" checked="" value="okbrd" id="okbrd">
+            <label for="okbrd">клавиатура</label>
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="checkbox" checked="" value="odvd" id="odvd">
+            <label for="odvd">DVD RW: <span id="dvdprice">800 р</span></label>
+          </td>
+          <td colspan="2">
+            <input type="checkbox" checked="" value="oinstalling" id="oinstalling">
+            <label for="oinstalling">Установка windows: <span id="installprice">800 р</span></label>
+          </td>
+          <td colspan="1">
+            <input type="checkbox" checked="" value="obuild" id="obuild">
+            <label for="obuild">Сборка: <span id="buildprice">800 р</span></label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="clear:both;"></div>
+
+
+    <div class="sentence_float" >
+      На странице компьютера все основные компоненты собраны в таблицу.
+    </div>
+    <select id="hselect">
+      <option selected="selected">Каждый компонент - это раскрывающийся список</option>
+      <option>Можете выбирать любой</option>
+    </select>
+    <div style="clear:both;"></div>
+    <div class="sentence_float" >Возможно, вам покажется удобней использовать кнопки справа</div>
+    <div class="sentence_right">
+      <div class="sentence">
+	<img src="/static/down_small.png" alt="дешевле"/> - выбирает ближайший компонент с меньшей ценой.
+      </div>
+
+      <div class="sentence">
+	<img src="/static/up_small.png" alt="лучше"/> - выбирает ближайший компонент с большей ценой.
+      </div>
+
+      <div class="sentence">
+	<img src="/static/reset_small.png" alt="сбросить"/> - выбирает изначально установленный компонент.
+      </div>
+    </div>
+
+    <div class="sentence_float" style="max-width:400px;margin-bottom:20px;">
+      Некоторые компоненты могут состоять из нескольких элементов.
+      Кликайте <strong>+</strong> и <strong>-</strong> чтобы изменить количество этих элементов.
+    </div>
+    <div style="float:right;margin-right:40px;margin-top:30px;">
+      <span class="ramcount">1 шт.</span>
+      <span class="incram">+1шт</span>
+      <span class="decram">-1шт</span>
+    </div>
+    <div style="clear:both;"></div>
+
+    <div class="sentence">
+      <div style="float:left;margin-top:15px;">
+        Кнопками "дешевле" и "лучше" можно подкорректировать этот индекс
+      </div>
+      <div style="margin-right:70px;" class="large_button" id="gbetter">лучше</div>
+      <div class="large_button" id="gcheaper">дешевле</div>
+
+    </div>
+    <div style="clear:both;"></div>
+
+  <script type="text/javascript">
+    scripts['next'] = {'top':["/static/guider.js","/static/chosen.jquery.js"],
+    'next':{'top':["/static/how.js"]}};
+  </script>
+</middle>
