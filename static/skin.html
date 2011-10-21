@@ -4,23 +4,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <title>Компьютерный магазин в Калининграде</title>
       <meta name="keywords" content="компьютер купить конфигурация производительность компонент магазин Калининград" >
-	<meta name="description" content="В нашем магазине можно купить компьютер собственной конфигурации, составленной из множества компонетов. Подберите оптимальную цену и производительность своего компьютера.">
-	  
-	<meta name='yandex-verification' content='5b31888975c0e828' />     
+        <meta name="description" content="В нашем магазине можно купить компьютер собственной конфигурации, составленной из множества компонетов. Подберите оптимальную цену и производительность своего компьютера.">
+
+        <meta name='yandex-verification' content='5b31888975c0e828' />
    <link type="text/css" rel="stylesheet" media="all" href="/static/style.css"/>
         <link type="text/css" rel="stylesheet" media="all" href="/static/chosen.css"/>
         <link type="text/css" rel="stylesheet" media="all" href="/static/guider.css"/>
         <link type="text/css" rel="stylesheet" media="all" href="/static/jScrollPane.css"/>
-        <script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
-        <script type="text/javascript" src="/static/jquery.cookie.min.js"></script>
-	<script type="text/javascript" src="/static/underscore-min.js"></script>
+
         <script type="text/javascript">
-          $(function(){
-          var cart = $.cookie('pc_cart');
-          if (cart){
-          $('#main_menu').append('<li><a id="cart" href="/cart/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
-          }
-          });
+          var scripts = {'top':['/static/jquery-1.6.min.js','/static/jquery.cookie.min.js',
+                                '/static/underscore-min.js']};
         </script>
       </head>
       <body>
@@ -38,8 +32,8 @@
                 8 (911) 462-42-52
               </strong>
               <span id="operators">
-		<span id="skype" ></span>
-		<span id="emailc" ></span>
+                <span id="skype" ></span>
+                <span id="emailc" ></span>
                 <span id="beeline" ></span>
                 <span id="mts" ></span>
                 <!-- <span id="megafon" ></span> -->
@@ -69,21 +63,13 @@
           </div>
 
           <div class="content" style="color:#999999;font-size:10px;">
-	    ИП Ганжа, ОГРНИП 311392627600113, ИНН 390606738176 
-	  </div>
+            ИП Ганжа, ОГРНИП 311392627600113, ИНН 390606738176
+          </div>
       </div>
       <script type="text/javascript">
 
         $(function(){
-        function swapPhone(text){
-        return function(e){$('#phone').text(text)};
-        }
-        $('#beeline').click(swapPhone('8 (909) 792-22-39'));
-        $('#mts').click(swapPhone('8 (911) 462-42-52'));
-	$('#emailc').click(swapPhone('inbox@buildpc.ru'));
-	$('#skype').click(swapPhone('buildpc.ru'));
-        //$('#megafon').click(swapPhone('8 (911) 469-18-92'));
-        //$('#city').click(swapPhone('8 (911) 469-18-92'));
+        
         });
       </script>
 
@@ -96,6 +82,37 @@
         <h3></h3>
         <p></p>
       </div>
+      <script type="text/javascript" src="/static/head.load.min.js"></script>
+
+      <script type="text/javascript">
+	function load(_scripts){
+	console.log('eeeeeeeeeeeeeeeeeeeeeeee');
+        console.log(_scripts);
+	var top_level = _scripts['top'];
+	if (!_scripts['next']){
+        top_level.push(function(){
+        var cart = $.cookie('pc_cart');
+                           if (cart){
+        $('#main_menu').append('<li><a id="cart" href="/cart/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
+        }
+                       
+	function swapPhone(text){
+        return function(e){$('#phone').text(text)};
+        }
+        $('#beeline').click(swapPhone('8 (909) 792-22-39'));
+        $('#mts').click(swapPhone('8 (911) 462-42-52'));
+        $('#emailc').click(swapPhone('inbox@buildpc.ru'));
+        $('#skype').click(swapPhone('buildpc.ru'));
+        
+});
+        return top_level;
+	}
+	var next = load(_scripts['next']);
+	top_level.push(function(){head.js(next);});
+	return top_level;
+	}
+	head.js(load(scripts));
+      </script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -103,11 +120,11 @@
   _gaq.push(['_trackPageview']);
 
   (function() {
-    var ga = document.createElement('script'); ga.type = 
+    var ga = document.createElement('script'); ga.type =
 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; 
+    var s = document.getElementsByTagName('script')[0];
 s.parentNode.insertBefore(ga, s);
   })();
 
