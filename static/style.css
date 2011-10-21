@@ -440,23 +440,6 @@ h3 {
     background-position: 0 -91px;
     color:#888;
 }
-/* .white_image_button */
-/* { */
-/*     -moz-background-clip: border; */
-/*     -moz-background-origin: padding; */
-/*     -moz-background-size: auto auto; */
-/*     background: url("/static/white_button.png") no-repeat scroll 0 0 transparent; */
-/*     border: medium none; */
-/*     cursor: pointer; */
-/*     display: block; */
-/*     font-size: 18px; */
-/*     height: 52px; */
-/*     line-height:48px; */
-/*     text-align: center; */
-/*     min-width: 146px; */
-/*     color:#888; */
-/* } */
-
 #gbetter{
     background-position: 0 -50px;
     margin-left:5px;
@@ -1303,15 +1286,7 @@ a.modelicon .gallery-shadow{
     background:url('shadow1.png');
     background-repeat:no-repeat;
 }
-/* a.modelicon .rollover{ */
-/*     display:block; */
-/*     position:absolute; */
-/*     top:0%; */
-/*     left:0%; */
-/*     width:187px; */
-/*     height:187px; */
-/*     background:url('rollover.png'); */
-/* } */
+
 a.modelicon img{
     max-height:150px;
     max-width:150px;
