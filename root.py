@@ -114,17 +114,6 @@ class SiteMap(Resource):
         d.addCallback(self.siteMap, request)
         return NOT_DONE_YET
 
-static_hooks = {
-    'index.html':index,
-    'computer.html':computer,
-    'computers.html':computers,
-    'howtochoose.html':howtochoose,
-    'howtouse.html':howtouse,
-    'howtobuy.html':howtobuy,
-    'warranty.html':warranty
-}
-
-
 
 class Template(object):
 
@@ -192,7 +181,7 @@ class Skin(Template):
 
 
 class CachedStatic(File):
-
+    
     def __init__(self, *args, **kwargs):
         self.skin = Skin()
         File.__init__(self, *args, **kwargs)
@@ -297,10 +286,18 @@ class CachedStatic(File):
             _cached_statics[_name] = (_time, gzipped)
         return gzipped
 
+    static_hooks = {
+        'index.html':index,
+        'computer.html':computer,
+        'computers.html':computers,
+        'howtochoose.html':howtochoose,
+        'howtouse.html':howtouse,
+        'howtobuy.html':howtobuy,
+        'warranty.html':warranty
+        }
+
 
     def renderTemplate(self, fileForReading, last_modified, request):
-
-        # Hoooooooooks
         self.prepareSkin(request)
         short_name = None
         if '/' in fileForReading.name:
@@ -308,9 +305,9 @@ class CachedStatic(File):
         else:
             short_name = fileForReading.name.split('\\')[-1]
 
-        if short_name in static_hooks:
+        if short_name in self.static_hooks:
             template = Template(fileForReading,short_name,last_modified)
-            d = static_hooks[short_name](template, self.skin, request)
+            d = self.static_hooks[short_name](template, self.skin, request)
         else:
             # just an empty snippet
             d = defer.Deferred()
@@ -346,14 +343,24 @@ class Root(Cookable):
         Cookable.__init__(self)
         self.static = CachedStatic(static_dir)
         self.static.indexNames = [index_page]
+
+
         self.putChild('static',self.static)
+        self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
+        self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
+        self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
+        self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
+        self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))
+        self.putChild('warranty', TemplateRenderrer(self.static, 'warranty.html'))
+
+        # self.putChild('computer', Computer(self.static))
+        # self.putChild('cart', Cart(self.static))
+        # self.putChild('howtochoose', HowToChoose(self.static))
+        # self.putChild('howtouse', HowToUse(self.static))
+        # self.putChild('howtobuy', HowToBuy(self.static))
+        # self.putChild('warranty', Warranty(self.static))
+
         self.putChild('xml',XmlGetter())
-        self.putChild('computer', Computer(self.static))
-        self.putChild('cart', Cart(self.static))
-        self.putChild('howtochoose', HowToChoose(self.static))
-        self.putChild('howtouse', HowToUse(self.static))
-        self.putChild('howtobuy', HowToBuy(self.static))
-        self.putChild('warranty', Warranty(self.static))
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
@@ -373,69 +380,89 @@ class Root(Cookable):
             return self.static.getChild(name, request)
         return self
 
-class Computer(Cookable):
-    def __init__(self, static):
+
+
+class TemplateRenderrer(Cookable):    
+    def __init__(self, static, name, default_name=None):
         Cookable.__init__(self)
         self.static = static
+        self.name = name
+        self.default_name = default_name
 
-    # show models if computer is not specified
     def render_GET(self, request):
         self.checkCookie(request)
-        return self.static.getChild("computers.html", request).render_GET(request)
+        return self.static.getChild(self.name, request).render_GET(request)
 
     def getChild(self, name, request):
         self.checkCookie(request)
-        return self.static.getChild("computer.html", request)
+        child = None
+        if self.default_name is None:
+            child = Cookable.getChild(self.name,request)
+        else:
+            child = self.static.getChild(self.default_name, request)
+        return child
+
+# class Computer(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+
+#     # show models if computer is not specified
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("computers.html", request).render_GET(request)
+
+#     def getChild(self, name, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("computer.html", request)
+
+# class Cart(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+#     # show models if cart is not specified
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("computers.html", request).render_GET(request)
+
+#     def getChild(self, name, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("computers.html", request)
 
 
+# class HowToChoose(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("howtochoose.html", request).render_GET(request)
 
 
-class Cart(Cookable):
-    def __init__(self, static):
-        Cookable.__init__(self)
-        self.static = static
-    # show models if cart is not specified
-    def render_GET(self, request):
-        self.checkCookie(request)
-        return self.static.getChild("computers.html", request).render_GET(request)
+# class HowToUse(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("howtouse.html", request).render_GET(request)
 
-    def getChild(self, name, request):
-        self.checkCookie(request)
-        return self.static.getChild("computers.html", request)
+# class HowToBuy(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("howtobuy.html", request).render_GET(request)
 
+# class Warranty(Cookable):
+#     def __init__(self, static):
+#         Cookable.__init__(self)
+#         self.static = static
+#     def render_GET(self, request):
+#         self.checkCookie(request)
+#         return self.static.getChild("warranty.html", request).render_GET(request)
 
-class HowToChoose(Cookable):
-    def __init__(self, static):
-        Cookable.__init__(self)
-        self.static = static
-    def render_GET(self, request):
-        self.checkCookie(request)
-        return self.static.getChild("howtochoose.html", request).render_GET(request)
-
-
-class HowToUse(Cookable):
-    def __init__(self, static):
-        Cookable.__init__(self)
-        self.static = static
-    def render_GET(self, request):
-        self.checkCookie(request)
-        return self.static.getChild("howtouse.html", request).render_GET(request)
-
-class HowToBuy(Cookable):
-    def __init__(self, static):
-        Cookable.__init__(self)
-        self.static = static
-    def render_GET(self, request):
-        self.checkCookie(request)
-        return self.static.getChild("howtobuy.html", request).render_GET(request)
-
-class Warranty(Cookable):
-    def __init__(self, static):
-        Cookable.__init__(self)
-        self.static = static
-    def render_GET(self, request):
-        self.checkCookie(request)
-        return self.static.getChild("warranty.html", request).render_GET(request)
 
 
 class CustomWriter(object):
@@ -734,6 +761,7 @@ class AdminGate(Resource):
         self.putChild('videos', Videos())
         self.putChild('store_video', StoreVideo())
         self.putChild('warranty', WarrantyFill())
+
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
 
