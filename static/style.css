@@ -1170,11 +1170,7 @@ h2.inline{
 #how h1 span{
  color: #B6C974;
 }
-#hindex{
-    display:inline;
-    font-size:20px;
-    color: #B9D3E1;
-}
+
 .sentence strong {
     color: #B9D3E1;
 }
@@ -1291,8 +1287,6 @@ a.modelicon img{
     max-height:150px;
     max-width:150px;
 }
-/* #no_register{color:#b9d3e1 !important;} */
-/* #last_update{color:#b9d3e1 !important;} */
 
 
 .bright_blue{
