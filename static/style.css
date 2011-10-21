@@ -415,69 +415,47 @@ h3 {
     margin-bottom:10px;
 }
 
-.black_text_button{
-    background-color: #222222;
-    border: 1px solid #444444;
-    color: #FFFFFF;
-    font-size: 16px;
-    letter-spacing: 1px;
-    margin: 5px 0;
-    padding: 5px;
-}
 
-.black_image_button
-{
-    -moz-background-clip: border;
-    -moz-background-origin: padding;
-    -moz-background-size: auto auto;
-    background: url("/static/black_button.png") no-repeat scroll 0 0 transparent;
-    border: medium none;
+
+.square_button{
+    background: url("/static/square_buttons.png") no-repeat scroll 0 0 transparent;
     cursor: pointer;
     display: block;
     font-size: 18px;
-    height: 52px;
+    height: 50px;
     line-height:48px;
     text-align: center;
-    min-width: 146px;
-    color:#585858;
+    min-width: 160px;
+    float:right;
 }
-
-.green_image_button{
-    -moz-background-clip: border;
-    -moz-background-origin: padding;
-    -moz-background-size: auto auto;
-    background-attachment: scroll;
-    background-color: transparent !important;
-    background-image: url("/static/green_button.png");
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    display: block;
-    height: 52px;
-    width: 158px;
-    font-size: 18px;
+#tocart{
     color:black;
-    line-height:48px;
-    text-align: center;
-    cursor:pointer;
+    background-position: 0 -45px;
 }
-
-
-.white_image_button
-{
-    -moz-background-clip: border;
-    -moz-background-origin: padding;
-    -moz-background-size: auto auto;
-    background: url("/static/white_button.png") no-repeat scroll 0 0 transparent;
-    border: medium none;
-    cursor: pointer;
-    display: block;
-    font-size: 18px;
-    height: 52px;
-    line-height:48px;
-    text-align: center;
-    min-width: 146px;
+#greset{
+    color:#585858;
+    background-position: 0 2px;
+}
+#tips{
+    background-position: 0 -91px;
     color:#888;
 }
+/* .white_image_button */
+/* { */
+/*     -moz-background-clip: border; */
+/*     -moz-background-origin: padding; */
+/*     -moz-background-size: auto auto; */
+/*     background: url("/static/white_button.png") no-repeat scroll 0 0 transparent; */
+/*     border: medium none; */
+/*     cursor: pointer; */
+/*     display: block; */
+/*     font-size: 18px; */
+/*     height: 52px; */
+/*     line-height:48px; */
+/*     text-align: center; */
+/*     min-width: 146px; */
+/*     color:#888; */
+/* } */
 
 #gbetter{
     background-position: 0 -50px;
