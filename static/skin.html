@@ -66,13 +66,6 @@
 	    ИП Ганжа А.Ю., ОГРНИП 311392627600113, ИНН 390606738176 
 	  </div>
       </div>
-      <script type="text/javascript">
-
-        $(function(){
-        
-        });
-      </script>
-
 
       <div id="mask"></div>
       <div id="details">
@@ -85,34 +78,34 @@
       <script type="text/javascript" src="/static/head.load.min.js"></script>
 
       <script type="text/javascript">
-	function load(_scripts){
-	console.log('eeeeeeeeeeeeeeeeeeeeeeee');
-        console.log(_scripts);
-	var top_level = _scripts['top'];
-	if (!_scripts['next']){
-        top_level.push(function(){
-        var cart = $.cookie('pc_cart');
+function load(_scripts){
+    var top_level = _scripts['top'];
+    for (var i=0;i<top_level.length;i++)
+        head.js(top_level[i]);
+
+    if (!_scripts['next']){
+        head.ready(function(){
+                           var cart = $.cookie('pc_cart');
                            if (cart){
-        $('#main_menu').append('<li><a id="cart" href="/cart/' +$.cookie('pc_user')+ '">Корзина('+cart+')</a></li>');
-        }
-                       
-	function swapPhone(text){
-        return function(e){$('#phone').text(text)};
-        }
-        $('#beeline').click(swapPhone('8 (909) 792-22-39'));
-        $('#mts').click(swapPhone('8 (911) 462-42-52'));
-        $('#emailc').click(swapPhone('inbox@buildpc.ru'));
-        $('#skype').click(swapPhone('buildpc.ru'));
-        
-});
-        return top_level;
-	}
-	var next = load(_scripts['next']);
-	top_level.push(function(){head.js(next);});
-	return top_level;
-	}
-	head.js(load(scripts));
-      </script>
+                               $('#main_menu')
+                                   .append('<li><a id="cart" href="/cart/' +
+                                           $.cookie('pc_user')+
+                                           '">Корзина('+cart+')</a></li>');
+                           }
+                           function swapPhone(text){
+                               return function(e){$('#phone').text(text);};
+                           }
+                           $('#beeline').click(swapPhone('8 (909) 792-22-39'));
+                           $('#mts').click(swapPhone('8 (911) 462-42-52'));
+                           $('#emailc').click(swapPhone('inbox@buildpc.ru'));
+                           $('#skype').click(swapPhone('buildpc.ru'));
+                       });
+    }
+    else
+        head.ready(load(_scripts['next']));
+}
+head.js(load(scripts));
+		     </script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
