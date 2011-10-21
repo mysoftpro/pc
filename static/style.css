@@ -510,21 +510,23 @@ h3 {
 }
 
 
-.better {
-    background-image:url('/static/up_small.png');
+
+
+.controls{
+    background-image:url('/static/build_icons.png');
     background-repeat:no-repeat;
-    background-position: -1px 5px;
     padding-left:24px;
     cursor:pointer;
     color:#999999;
 }
 .cheaper {
-    background-image:url('/static/down_small.png');
-    background-repeat:no-repeat;
-    background-position: -1px 5px;
-    padding-left:24px;
-    cursor:pointer;
-    color:#999999;
+    background-position: 0px -107px;
+}
+.better {
+    background-position: 0px -134px;
+}
+.reset{
+    background-position: 0px -161px;
 }
 
 
@@ -627,14 +629,6 @@ height:40px;
 color:#7b9c0a;
 }
 
-.reset{
-    padding-right:0px;
-    text-align:right;
-    background-image:url('/static/reset_small.png');
-    background-repeat:no-repeat;
-    background-position: -1px 5px;
-    padding-left:24px;
-}
 
 #options{
     width:460px;
