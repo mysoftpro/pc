@@ -1067,7 +1067,8 @@ class EditModel(Resource):
         child = static.getChild("computer.html", request)
         script = etree.Element('script')
         script.set('type','text/javascript')
-        script.set('src','../edit_model.js')
+        # script.set('src','../edit_model.js')
+        script.text ='head.ready(function(){head.js("../edit_model.js");});'
         child.skin.root().append(script)
         return child
 
