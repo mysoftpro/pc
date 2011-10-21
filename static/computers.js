@@ -36,9 +36,9 @@ function showDescription(_id){
 function changePrices(e){
     var target = $(e.target);
     if (target.is(':checked'))
-        target.next().css('background-image',"url('/static/checkbox.png')");
+        target.next().css('background-position','-1px -76px');//('background-image',"url('/static/checkbox.png')");
     else
-        target.next().css('background-image',"url('/static/checkbox_empty.png')");
+        target.next().css('background-position','-1px -93px');//('background-image',"url('/static/checkbox_empty.png')");
 
     var no_soft = !$('#isoft').is(':checked');
     var no_displ = !$('#idisplay').is(':checked');
