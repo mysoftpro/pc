@@ -930,14 +930,20 @@ color:#7b9c0a;
     background-image:url('/static/localhost.png');
 }
 
+.belt_button{
+    background-image:url('/static/build_buttons.png');
+    height: 45px;
+    margin-top: 55px;
+    cursor: inherit;
+}
 
 #next_button{
-    background-image:url('/static/next.png');
+    background-position: 0 -106px;
 }
 #previous_button{
-    background-image:url('/static/empty.png');
-    cursor:inherit;
+    background-position: 0 -155px;
 }
+
 #models_container{
     width:100%;
 }

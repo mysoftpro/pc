@@ -1,7 +1,11 @@
 var lock = false;
 var greetings_swapped = [];//"Привет!" funxtion(){.ajax({... 30 материнских плат! последнне обновление
 $(function(){
-
+      var empty = {
+          'background-position':'0 -209px',
+          'cursor':"inherit"
+      };
+      $('#previous_button').css(empty);
       $('#next_button')
           .click(function(e){
                      if (greetings_swapped.length>0 && !lock){
@@ -17,11 +21,7 @@ $(function(){
                                  }, 200);
                      }
                      var last_pos = $('.indexitem').last().position();
-                     var first_pos = $('.indexitem').first().position();
-                     var empty = {
-                         'background-position':"url('/static/empty.png')",
-                         'cursor':"inherit"
-                     };
+                     var first_pos = $('.indexitem').first().position();                     
                      var next_button = $('#next_button');
                      var previous_button = $('#previous_button');
                      if (first_pos.top != last_pos.top)
@@ -29,13 +29,13 @@ $(function(){
                      else
                          next_button.css(empty);
                      previous_button.css({
-                                                   'background-image':"url('static/previous.png')",
-                                                   'cursor':"pointer"
+					     'background-position': '0 -155px',
+                                             'cursor':"pointer"
                                                })
                          .unbind('click')
                          .click(function(){
                                     next_button.css({
-                                                   'background-image':"url('/static/next.png')",
+                                                   'background-position': '0 -106px',
                                                    'cursor':"pointer"
                                                });
                                     if ($('#computers_container').css('margin-left') != '0px')
