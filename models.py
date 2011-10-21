@@ -13,21 +13,6 @@ from random import randint
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
 DVD_PRICE = 800
-# <catalog id="7388" name="Материнские платы">
-#       <catalog id="17961" name="LGA1155">
-#       <catalog id="12854" name="LGA1156">
-#       <catalog id="18029" name="LGA1366 Dual Core (процессоры Intel Nehalem )">
-#       <catalog id="7449" name="LGA775 Dual Core (процессоры Intel)">
-#       <catalog id="7627" name="SOCKET 478">
-#       <catalog id="7699" name="SOCKET AM2 3 (процессоры AMD)">
-#      <catalog id="2899" name="Материнские платы с процессором">
-
-# <catalog id="7399" name="Процессоры">
-#        <catalog id="18027" name="LGA1155">
-#        <catalog id="18028" name="LGA1156">
-#        <catalog id="9422" name="LGA1366">
-#        <catalog id="7451" name="LGA775 Dual&amp;Quad Core">
-#        <catalog id="7700" name="SOCKET AM2">
 
 gWarning_sent = []
 
