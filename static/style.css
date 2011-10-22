@@ -628,6 +628,7 @@ color:#7b9c0a;
     height:300px;
     margin-bottom:20px;
     background-color: #333333;
+    font-size:18px;
 }
 
 
@@ -838,7 +839,7 @@ color:#7b9c0a;
 
 .computers_description{
     float:left;
-    width:210px;
+    width:211px;
     height:220px;
 }
 .cart_description{
@@ -860,7 +861,7 @@ color:#7b9c0a;
     font-size:14px;
     margin-top: 0;
     list-style-type:none;
-    margin-left:-20px;
+    margin-left:-23px;
 }
 
 .cart_description ul{

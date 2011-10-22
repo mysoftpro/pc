@@ -758,7 +758,10 @@ def computers(template,skin,request):
             h3 = description_div.find('h3')
             if not this_is_cart:
                 h3.text = m['title']
-                description_div.append(etree.fromstring(m['description']))
+                try:
+                    description_div.append(etree.fromstring(m['description']))
+                except:
+                    description_div.text = m['description']
                 ul.set('style','display:none')
             else:
                 h3.text = u'Пользовательская конфигурация'

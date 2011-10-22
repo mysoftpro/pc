@@ -1047,13 +1047,13 @@ class ShowHow(Resource):
         request.write(simplejson.dumps(res))
         request.finish()
 
-    def render_GET(self,request):
+    def render_POST(self,request):
         defs = []
         for name in ('how_7388','how_7396','how_7406','how_7394','how_7383',
                      'how_7369','how_7387','how_7390','how_7389'):
             defs.append(couch.openDoc(name))
         li = defer.DeferredList(defs)
-        li.addCallback(self.finish)
+        li.addCallback(self.finish, request)
         return NOT_DONE_YET
 
 class EditHow(Resource):
@@ -1064,8 +1064,8 @@ class EditHow(Resource):
         request.write(simplejson.dumps(res))
         request.finish()
 
-    def render_GET(self,request):
+    def render_POST(self,request):
         doc = request.args.get('doc',[None])[0]
-        d = couch.saveDoc(doc)
-        d.addCallback(self.finish)
+        d = couch.saveDoc(simplejson.loads(doc))
+        d.addCallback(self.finish, request)
         return NOT_DONE_YET
