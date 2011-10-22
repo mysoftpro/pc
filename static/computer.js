@@ -1502,7 +1502,8 @@ $(function(){
       installBodies();
       cheaperBetter();
       reset();
-      $('#descriptions').jScrollPane();
+      var container = $('#descriptions');
+      container.jScrollPane();
       installOptions();
 
       installCounters();
