@@ -1545,7 +1545,7 @@ $(function(){
                              });
           if (!processing){
 	      $('#greset')
-		  .attr('class','green_image_button')
+		  .css({'background-position':'0 -45px','color':'black'})
 		  .text('Сохранить')
 		  .unbind('click')
 		  .click(function(e){
