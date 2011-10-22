@@ -230,6 +230,8 @@ $(function()
               function animate(){
                   var desc = $('.description');
 		  desc.find('.our').show();
+		  $('#descriptions').jScrollPaneRemove();
+		  $('#descriptions').jScrollPane();
 		  desc.animate({'margin-left':'-=912'}, 400);
               }
 	      fillSelectHelps(animate);                      

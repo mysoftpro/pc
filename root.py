@@ -20,7 +20,7 @@ from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
-from lxml import etree
+from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
 
@@ -50,15 +50,14 @@ parts_aliases = {
 
 def renderPartPage(doc, header, template, skin):
     container = template.middle.find('div')
-    try:
-        container.append(etree.fromstring(doc['html']))
-    except:
-        container.text = doc['html']
+    # try:
+    for el in html.fragments_fromstring(doc['html']):
+        container.append(el)
     template.top.find('h1').text = header
     skin.top = template.top
     skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
     return skin
 
 def partPage(template, skin, request):

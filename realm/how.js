@@ -15,10 +15,11 @@ $(function(){
 			 div.data({'doc':data[i][1]});
 			 var txt = $(document.createElement('textarea'));
 			 txt.text(data[i][1].html);
+			 var code = $(document.createElement('span')).text(data[i][1]['_id']);
 			 var bu = $(document.createElement('button')).text('сохранить');
 			 bu.click(function(e){
 				      var target = $(e.target);
-				      target.parent().data('doc').html = target.prev().val();
+				      target.parent().data('doc').html = target.prev().prev().val();
 				      $.ajax({
 						 url:'edit_how',
 						 type:'POST',
@@ -33,6 +34,7 @@ $(function(){
 					     });
 				  });
 			 div.append(txt);
+			 div.append(code);
 			 div.append(bu);
 			 body.append(div);
 		     }
