@@ -957,7 +957,7 @@ var geVideoSlotsFromMother = function(mother_component, video_component){
 var geDisplSlotsFromVideo = function(video_component){
     var retval;
     if (video_component['displaylots'] == undefined)
-	retval = 1;
+	retval = 2;
     else
 	retval = video_component['displaylots'];
     return retval;
