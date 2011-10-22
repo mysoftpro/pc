@@ -1301,3 +1301,11 @@ a.modelicon img{
     color: #B9D3E1;
     font-weight:bold;
 }
+.our img{
+    display:none;
+}
+.our h1{
+    float: none;
+    margin-top: 0 !important;
+    font-size:18px;
+}
