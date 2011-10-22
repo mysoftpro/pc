@@ -51,8 +51,13 @@ parts_aliases = {
 def renderPartPage(doc, header, template, skin):
     container = template.middle.find('div')
     # try:
-    for el in html.fragments_fromstring(doc['html']):
-        container.append(el)
+    els = html.fragments_fromstring(doc['html'])
+    container.text = ''
+    for el in els:
+        if type(el) is unicode:
+            container.text +=el
+        else:
+            container.append(el)
     template.top.find('h1').text = header
     skin.top = template.top
     skin.middle = template.middle
