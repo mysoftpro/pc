@@ -660,6 +660,8 @@ class AdminGate(Resource):
         self.putChild('videos', Videos())
         self.putChild('store_video', StoreVideo())
         self.putChild('warranty', WarrantyFill())
+        self.putChild('show_how', ShowHow())
+        self.putChild('edit_how', EditHow())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -1035,4 +1037,35 @@ class WarrantyFill(Resource):
         d = couch.openDoc('order_'+_id)
         d.addCallback(self.finish, request)
         # d.addErrback(self.fail, request)
+        return NOT_DONE_YET
+
+
+class ShowHow(Resource):
+    def finish(self, res, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(res))
+        request.finish()
+
+    def render_GET(self,request):
+        defs = []
+        for name in ('how_7388','how_7396','how_7406','how_7394','how_7383',
+                     'how_7369','how_7387','how_7390','how_7389'):
+            defs.append(couch.openDoc(name))
+        li = defer.DeferredList(defs)
+        li.addCallback(self.finish)
+        return NOT_DONE_YET
+
+class EditHow(Resource):
+
+    def finish(self, res, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(res))
+        request.finish()
+
+    def render_GET(self,request):
+        doc = request.args.get('doc',[None])[0]
+        d = couch.saveDoc(doc)
+        d.addCallback(self.finish)
         return NOT_DONE_YET

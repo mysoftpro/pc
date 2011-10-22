@@ -1,9 +1,9 @@
 function saveDoc(e){
     var tr = $(e.target).parent();
     var doc = tr.data('doc');
-    // doc['video'] = parseInt(tr.find('input[name="video"]').val());
-    // doc['ramslots'] = parseInt(tr.find('input[name="ramslots"]').val());
-    // doc['maxram'] = parseInt(tr.find('input[name="maxram"]').val());
+    // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
+    // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
+    // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
     doc['crossfire'] = parseInt(tr.find('input[name="crossfire"]').val());
     doc['sli'] = parseInt(tr.find('input[name="sli"]').val());
     $.ajax({
@@ -58,6 +58,15 @@ function fillVideos(data){
                 description.html(doc['description']['comments']);
             }
 
+	    // var hdmi = $(document.createElement('td'));
+	    // hdmi.append(addInput(doc,'hdmi'));
+
+	    // var dvi = $(document.createElement('td'));
+	    // dvi.append(addInput(doc,'dvi'));
+
+	    // var dsub = $(document.createElement('td'));
+	    // dsub.append(addInput(doc,'d-sub'));
+
             var crossfire = $(document.createElement('td'));
             crossfire.append(addInput(doc,'crossfire'));
 
@@ -84,7 +93,7 @@ function fillVideos(data){
                 .text('сохранить');
             tr.append(name)
             .append(crossfire).append(sli)
-                .append(open).append(save);
+                .append(open).append(save);//.append(hdmi).append(dvi).append(dsub)
             tr.data('doc',doc);
             tr1.append(description);
             table.append(tr);

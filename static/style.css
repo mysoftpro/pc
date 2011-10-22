@@ -474,7 +474,13 @@ h3 {
 }
 
 
-#modelname{
+#model_area{
+    float:left;
+    width:520px;
+    max-width:520px;
+}
+
+#modelname{    
     background-color:#730606;
     color:white;
     margin-top:5px;
@@ -482,8 +488,9 @@ h3 {
     padding:5px;
     text-align:center;
     vertical-align:center;
-
+    margin-right:10px;
 }
+
 .component_select{
     display:none;
 }
