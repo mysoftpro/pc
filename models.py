@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
-from lxml import etree
+from lxml import etree, html
 from twisted.internet import defer
 import simplejson
 import re
@@ -293,7 +293,8 @@ def renderComputer(model, template, skin):
         # try:
             d = template.top.find('div').find('div')
             d.text = ''
-            d.append(etree.fromstring(model['description']))
+            for el in html.fragments_fromstring(model['description']):
+                d.append(el)
         # except:
         #     pass
     original_viewlet = template.root().find('componentviewlet')
@@ -758,10 +759,12 @@ def computers(template,skin,request):
             h3 = description_div.find('h3')
             if not this_is_cart:
                 h3.text = m['title']
-                try:
-                    description_div.append(etree.fromstring(m['description']))
-                except:
-                    description_div.text = m['description']
+                for el in html.fragments_fromstring(m['description']):
+                    description_div.append(el)
+                # try:
+                #     description_div.append(etree.fromstring(m['description']))
+                # except:
+                #     description_div.text = m['description']
                 ul.set('style','display:none')
             else:
                 h3.text = u'Пользовательская конфигурация'
