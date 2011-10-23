@@ -405,7 +405,7 @@ class TemplateRenderrer(Cookable):
 	self.checkCookie(request)
 	child = None
 	if self.default_name is None:
-	    child = Cookable.getChild(self.name,request)
+	    child = Cookable.getChild(self, self.name,request)
 	else:
 	    child = self.static.getChild(self.default_name, request)
 	return child
