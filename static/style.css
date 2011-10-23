@@ -854,7 +854,7 @@ color:#7b9c0a;
 .computers_description h3{
     color:#AAAAAA;
     margin:0;
-    margin-left:18px;
+    margin-left:10px;
 }
 .computers_description ul{
     color:#B9D3E1;
@@ -862,7 +862,8 @@ color:#7b9c0a;
     font-size:14px;
     margin-top: 0;
     list-style-type:none;
-    margin-left:-23px;
+    margin-left:-20px;
+    width:190px;
 }
 
 .cart_description ul{
@@ -1286,7 +1287,7 @@ a.modelicon .gallery-shadow{
     position:absolute;
     top:0%;
     left:0%;
-    width:150px;
+    width:143px;
     height:150px;
     background:url('shadow1.png');
     background-repeat:no-repeat;
@@ -1294,7 +1295,7 @@ a.modelicon .gallery-shadow{
 
 a.modelicon img{
     max-height:150px;
-    max-width:150px;
+    max-width:140px;
 }
 
 
