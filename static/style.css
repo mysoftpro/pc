@@ -1,4 +1,4 @@
-﻿html{
+html{
     background-color: #3F3F3F;
     height:100%;
     background-size:100%;
@@ -10,7 +10,7 @@ body {
         color: #DDD;
         line-height: 22px;
         background-color: #3F3F3F;
-	height:100%;
+	height:auto;
         background-size:100%;
 }
 
@@ -179,6 +179,7 @@ p {
         width: 1000px;
         color: #555;
         text-align: center;
+background-color: #3F3F3F;
 }
 
 
@@ -748,6 +749,8 @@ color:#7b9c0a;
 
 #middle {
     margin-top:-20px;
+background-color: #3F3F3F;
+
 }
 
 .manu{
@@ -908,6 +911,7 @@ color:#7b9c0a;
 
 #models_container{
     width:100%;
+background-color: #3F3F3F;
 }
 #models{
     width:1000px;
