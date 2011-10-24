@@ -1,11 +1,18 @@
-﻿body {
+html{
+background-color: #3F3F3F;
+height:100%;
+}
+body {
         margin: 0;
         padding: 0;
         font: 14px Arial, Helvetica, sans-serif;
         color: #DDD;
         line-height: 22px;
         background-color: #3F3F3F;
+        height:100%;
+        background-size:100%;
 }
+
 img {
         border: none;
         outline: none;
