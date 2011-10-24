@@ -1,4 +1,4 @@
-$(function(){
+head.ready(function(){
       guider.createGuider({
                               attachTo: "#howguider",
                               description: "Список компонентов этой модели с ценами. <br/>Чтобы прочитать описания компонента, нужно кликнуть его название.<br/> Внизу - <span style=\"float:none;margin:0;\" class=\"guiderdiv\">кнопки</span>, которыми можно подвигать окошко.",

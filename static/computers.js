@@ -59,11 +59,11 @@ function changePrices(e){
     }
 }
 
-$(function(){
+head.ready(function(){
       var _ya_share = $('#ya_share_cart');
       if (_ya_share.length>0){
-	  // cart
-	  showYa('ya_share_cart', 'http://buildpc.ru/computer/'+$.cookie('pc_user'));
+	  // cart	  
+	  showYa('ya_share_cart', 'http://buildpc.ru/computer/'+$.cookie('pc_user'));	  
 	  var input = $('#email_cart');
 	  input.click(function(e){if (input.val()=='введите email')input.val('');});
 	  $('#emailbutton_cart').click(function(e){

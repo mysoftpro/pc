@@ -1489,7 +1489,7 @@ function checkOptions(){
 	  $("#oinstalling").prop('checked',false).prop('disabled','disabled');
 }
 
-$(function(){
+head.ready(function(){
       var replaced = [];
       for (var code in model){
 	  if (model[code]['replaced'])

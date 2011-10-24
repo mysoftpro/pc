@@ -1,6 +1,6 @@
 var lock = false;
 var greetings_swapped = [];//"Привет!" funxtion(){.ajax({... 30 материнских плат! последнне обновление
-$(function(){
+head.ready(function(){
       var empty = {
           'background-position':'0 -209px',
           'cursor':"inherit"

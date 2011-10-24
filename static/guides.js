@@ -73,20 +73,6 @@ function showMessage(type)
 				       $('.'+type).animate({top:"0",left:"0"}, 500);
 				   });
 }
-// $(function(){hideAllMessages();
-
-//              // Show message
-//              for(var i=0;i<myMessages.length;i++)
-//              {
-//                  showMessage(myMessages[i]);
-//              }
-
-//              // When message is clicked, hide it
-//              $('.message').click(function(){
-//                                      $(this).animate({top: -$(this).outerHeight()}, 500);
-//                                  });
-
-//             });
 
 var filled_selects_helps = {
 };
@@ -109,7 +95,7 @@ var showYa = function (_id, _link){
 		 });
 };
 
-$(function()
+head.ready(function()
   {
       hideAllMessages();
       $('#tips').click(function(e){
