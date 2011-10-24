@@ -873,7 +873,12 @@ def buildPrices(model, json_prices, price_span):
         updatePrice(model['_id'],cat_name,mouse,price)
         updatePrice(model['_id'],cat_name,kbrd,price)
         __components.append(ComponentForModelsPage(model,component_doc, cat_name, price))
-    total += INSTALLING_PRICE + BUILD_PRICE+DVD_PRICE
+    if model['installing']:
+        total += INSTALLING_PRICE
+    if model['building']:
+         total += BUILD_PRICE
+    if model['dvd']:
+        total += DVD_PRICE
     price_span.text = str(total) + u' р'
     json_prices[model['_id']]['total'] = total
     return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
