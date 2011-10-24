@@ -821,6 +821,8 @@ function installOptions(){
 	    var initial_component = filterByCatalogs(_(model).values(),
 					 getCatalogs(new_component))[0];
 	    var init_option = jgetOption(select,initial_component['_id']);
+	    if (init_option.val().match('no'))
+		init_option = init_option.next();
 	    select.val(init_option.val());
 	    jgetChosenTitle(select).text(init_option.text());
 	    componentChanged({'target':select[0],'no_desc':true});
