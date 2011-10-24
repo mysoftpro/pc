@@ -1064,7 +1064,7 @@ function getSortedPins(direction){
 	pins.push({'_id':id,'pin':calculatePin(new_model[id])});
     }
 
-    pins = pins.sort(pins,function(x1,x2){return x1['pin']-x2['pin'];});
+    pins = pins.sort(function(x1,x2){return x1['pin']-x2['pin'];});
     var pinned = _(_(pins).filter(function(x){return x['pin']!==8;}));
 
     var lowest = pinned.first();
