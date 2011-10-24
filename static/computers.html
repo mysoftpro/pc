@@ -8,10 +8,12 @@
     <div style="clear:both;"></div>
   </div>
   <script type="text/javascript">
-    scripts['next'] = {'top':["/static/guider.js","/static/jquery.cookie.min.js"],
-                       'next':{'top':["/static/computers.js","/static/guides.js",
-    "http://yandex.st/share/share.js"]}};
-  </script>
+    var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
+    '/static/jquery.mousewheel.js','/static/jScrollPane.js',
+    '/static/guider.js'];
+    var _next = ['/static/computers.js','/static/guides.js','http://yandex.st/share/share.js'];
+    scripts['next'] = {'top':_top,'next':{'top':_next}};
+  </script>  
 </middle>
 
 <model>

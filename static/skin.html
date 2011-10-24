@@ -102,7 +102,7 @@ function load(_scripts){
                        });
     }
     else{
-          head.ready(load(_scripts['next']));
+          head.ready(function(){load(_scripts['next'])});
                      }
 }
 load(scripts);
