@@ -1,6 +1,7 @@
 ﻿html{
     background-color: #3F3F3F;
     height:100%;
+    background-size:100%;
 }
 body {
         margin: 0;
@@ -8,7 +9,9 @@ body {
         font: 14px Arial, Helvetica, sans-serif;
         color: #DDD;
         line-height: 22px;
-        background-color: #3F3F3F;        
+        background-color: #3F3F3F;
+	height:100%;
+        background-size:100%;
 }
 
 img {
@@ -451,9 +454,9 @@ h3 {
     margin-left:5px;
 }
 
-.large_button{ 
+.large_button{
     float:right;
-    background-image: url("/static/build_buttons.png");    
+    background-image: url("/static/build_buttons.png");
     background-repeat: no-repeat;
     min-height:30px;
     padding-left:48px;
@@ -486,7 +489,7 @@ h3 {
     max-width:520px;
 }
 
-#modelname{    
+#modelname{
     background-color:#730606;
     color:white;
     margin-top:5px;
@@ -1319,5 +1322,5 @@ a.modelicon img{
 #cartextra{
  width:1000px;
  margin-left:auto;
- margin-right:auto;   
+ margin-right:auto;
 }
