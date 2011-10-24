@@ -11,9 +11,9 @@
         <link type="text/css" rel="stylesheet" media="all" href="/static/chosen.css"/>
         <link type="text/css" rel="stylesheet" media="all" href="/static/guider.css"/>
         <link type="text/css" rel="stylesheet" media="all" href="/static/jScrollPane.css"/>
-      <script type="text/javascript" src="/static/head.load.min.js"></script>
+        <script type="text/javascript" src="/static/head.load.min.js"></script>
         <script type="text/javascript">
-          var scripts = {'top':['/static/jquery-1.6.min.js','/static/jquery.cookie.min.js',
+          var scripts = {'top':['/static/jquery-1.6.min.js',
                                 '/static/underscore-min.js']};
         </script>
       </head>
@@ -63,8 +63,8 @@
           </div>
 
           <div class="content" style="color:#999999;font-size:10px;">
-	    ИП Ганжа А.Ю., ОГРНИП 311392627600113, ИНН 390606738176 
-	  </div>
+            ИП Ганжа А.Ю., ОГРНИП 311392627600113, ИНН 390606738176
+          </div>
       </div>
 
       <div id="mask"></div>
@@ -78,13 +78,14 @@
 
       <script type="text/javascript">
 function load(_scripts){
-    var top_level = _scripts['top'];
-    for (var i=0;i<top_level.length;i++)
-        head.js(top_level[i]);
 
+    var top_level = _scripts['top'];
+    for (var i=0;i<top_level.length;i++){
+                     head.js(top_level[i]);
+                     }
     if (!_scripts['next']){
-        head.ready(function(){
-                           var cart = $.cookie('pc_cart');
+                     head.ready(function(){
+                            var cart = $.cookie('pc_cart');
                            if (cart){
                                $('#main_menu')
                                    .append('<li><a id="cart" href="/cart/' +
@@ -100,11 +101,12 @@ function load(_scripts){
                            $('#skype').click(swapPhone('buildpc.ru'));
                        });
     }
-    else
-        head.ready(load(_scripts['next']));
+    else{
+          head.ready(load(_scripts['next']));
+                     }
 }
-head.js(load(scripts));
-		     </script>
+load(scripts);
+                     </script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
