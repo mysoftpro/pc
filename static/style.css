@@ -1,6 +1,6 @@
 ﻿html{
-background-color: #3F3F3F;
-height:100%;
+    background-color: #3F3F3F;
+    height:100%;
 }
 body {
         margin: 0;
@@ -8,9 +8,7 @@ body {
         font: 14px Arial, Helvetica, sans-serif;
         color: #DDD;
         line-height: 22px;
-        background-color: #3F3F3F;
-        height:100%;
-        background-size:100%;
+        background-color: #3F3F3F;        
 }
 
 img {
