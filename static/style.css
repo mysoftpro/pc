@@ -1318,3 +1318,8 @@ a.modelicon img{
     margin-top: 0 !important;
     font-size:18px;
 }
+#cartextra{
+ width:1000px;
+ margin-left:auto;
+ margin-right:auto;   
+}

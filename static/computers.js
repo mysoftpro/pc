@@ -218,10 +218,21 @@ $(function(){
                   span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
                   continue;
               }
-              span.parent().css('width','450px');
+              span.parent().css('width','260px');
               span.after('<a class="edit_links" href="">удалить</a>');
               span.next().click(deleteUUID(_id));
           }
+          $('#models_container')
+              .append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
+	  $('#deleteall').click(function(e){
+                                    e.preventDefault();
+                                    $.ajax({
+                                               url:'/deleteAll',
+                                               success:function(e){
+						   document.location.href =
+                                                       'http://'+document.location.host;
+                                               }
+					   });
+				});
       }
-
   });

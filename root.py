@@ -275,8 +275,9 @@ class CachedStatic(File):
                 #     if splitted[-1] != virtual_name:
                 #         name_to_cache = None # virtual_name
                 d = self.renderTemplate(fileForReading, last_modified, request)
-                d.addCallback(self._gzip, None, last_modified)
+                d.addCallback(self._gzip, None, last_modified)                
                 d.addCallback(self.render_GSIPPED, request)
+                d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -373,6 +374,7 @@ class Root(Cookable):
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
         self.putChild('delete',Delete())
+        self.putChild('deleteAll',DeleteAll())
         self.putChild('sender', Sender())
         self.putChild('select_helps', SelectHelpsProxy())
         self.putChild('admin',Admin())
@@ -506,7 +508,7 @@ class Save(Resource):
                 request.getCookie('pc_key') == user_doc['pc_key']
                 not_processing = not 'processing' in user_model[1][1] \
                     or not user_model[1][1]['processing']
-                if same_author and not_processing:                    
+                if same_author and not_processing:
                     model_doc = user_model[1][1]
                 else:
                     model_doc = new_model
@@ -538,12 +540,6 @@ class Save(Resource):
         _date=str(date.today()).split('-')
         user_doc['date'] = _date
         model_doc['date'] = _date
-        print "yyyyyyyyyyyyyyyyyyyyyyaaaaaaaaaaaaa"
-        print user_doc['_id']
-        print user_doc['_rev']
-        print model_doc['_id']
-        print model_doc['_rev']
-        
         d1 = couch.saveDoc(user_doc)
         d2 = couch.saveDoc(model_doc)
         li = defer.DeferredList([d1,d2])
@@ -583,6 +579,51 @@ class Delete(Resource):
             request.write('fail')
             request.finish()
         defer.DeferredList([user,model]).addCallback(delete)
+        return NOT_DONE_YET
+
+
+
+class DeleteAll(Resource):
+
+    def finish(self, some, request):        
+        request.addCookie('pc_user',
+                          base36.gen_id(),
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.addCookie('pc_key',
+                          base36.gen_id(),
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.addCookie('pc_cart',
+                          base36.gen_id(),
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.write('ok')
+        request.finish()
+
+    def deleteAll(self, models, user_doc,request):
+        defs = []
+        for row in models['rows']:
+            doc = row['doc']
+            if 'processing' in doc and doc['processing']:continue
+            defs.append(couch.deleteDoc(doc['_id'],doc['_rev']))
+        if len(defs) == len(models['rows']):
+            couch.deleteDoc(user_doc['_id'],user_doc['_rev'])
+        self.finish(None, request)
+
+    def render_GET(self, request):
+        user_id = request.getCookie('pc_user')
+        user = couch.openDoc(user_id)
+        def delete(user_doc):
+            d = defer.Deferred()
+            if 'pc_key' in user_doc and request.getCookie('pc_key') == user_doc['pc_key']:
+                d = couch.listDoc(keys=user_doc['models'], include_docs=True)
+                d.addCallback(self.deleteAll, user_doc, request)
+            else:
+                d.addCallback(self.finish, request)
+                d.callback(None)
+            return d
+        user.addCallback(delete)
         return NOT_DONE_YET
 
 
