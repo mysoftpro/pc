@@ -506,7 +506,7 @@ class Save(Resource):
                 request.getCookie('pc_key') == user_doc['pc_key']
                 not_processing = not 'processing' in user_model[1][1] \
                     or not user_model[1][1]['processing']
-                if same_author and not_processing:
+                if same_author and not_processing:                    
                     model_doc = user_model[1][1]
                 else:
                     model_doc = new_model
@@ -538,6 +538,12 @@ class Save(Resource):
         _date=str(date.today()).split('-')
         user_doc['date'] = _date
         model_doc['date'] = _date
+        print "yyyyyyyyyyyyyyyyyyyyyyaaaaaaaaaaaaa"
+        print user_doc['_id']
+        print user_doc['_rev']
+        print model_doc['_id']
+        print model_doc['_rev']
+        
         d1 = couch.saveDoc(user_doc)
         d2 = couch.saveDoc(model_doc)
         li = defer.DeferredList([d1,d2])

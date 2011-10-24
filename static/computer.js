@@ -1527,11 +1527,9 @@ $(function(){
       if (author && $.cookie('pc_user')==author){
 	  for (var i=0;i<replaced.length;i++){
 	      var td = $('#'+replaced[i]);
-	      if (td.css('display')!='none')
-		  td.css('border','1px solid red');
-	      else{
-		  td.prev().css('border','1px solid red');
-	      }
+	      if (td.css('display')=='none')
+		  td = td.prev();
+	      td.css('border','1px solid red');	      
 	      guider.createGuider({
 						attachTo: td,
 						description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
