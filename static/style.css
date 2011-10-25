@@ -1388,7 +1388,6 @@ a.modelicon img{
     top: 18px;
     cursor:pointer;
 }
-
 .desca:before{
     border-top: 8px solid #99DDFF;
 }
@@ -1405,7 +1404,6 @@ a.modelicon img{
 }
 .nactive a{
     color:#B6C974;
-
 }
 .computers_top a{
     color:white;

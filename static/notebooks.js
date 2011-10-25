@@ -1,7 +1,7 @@
 function getNoteClass(note_div){
-    return note_div.attr('class').replace(' note','');
+    return note_div.attr('class').split(' ')[0];
 }
-function sortNotes(el,extractor, treater){
+function sortNotes(el,extractor){
     var divs = el.find('.note');
     var divs_notes = [];
     for(var i=0;i<divs.length;i++){
@@ -17,41 +17,45 @@ function sortNotes(el,extractor, treater){
     _(sorted).each(function(dn){
                        mock.append(dn[0]);
                    });
-    //(mock).children().toArray()
     _(sorted).each(function(dn){
-                       var treaded = treater(dn[0],dn[1]);
                        el.append(dn[0]);
                    });
 
 }
 var notes_active;
 head.ready(function(){
-               sortNotes($('#s_price'),
-                         function(doc1,doc2){return doc1.price-doc2.price;},
-                         function(el,doc){}
-                        );
-               sortNotes($('#s_luxury'),
-                         function(doc1,doc2){return doc1.price-doc2.price;},
-                         function(el,doc){}
-                        );
-               sortNotes($('#s_performance'),
-                         function(doc1,doc2){return doc1.price-doc2.price;},
-                         function(el,doc){}
-                        );
-               sortNotes($('#s_size'),
-                         function(doc1,doc2){return doc1.price-doc2.price;},
-                         function(el,doc){}
-                        );
+
+	       function sortByClick(el, fu){
+		   var reversed = function(some,some1){return 0-fu(some,some1);};
+		   el.find('.asc').click(function(e){
+                                               sortNotes(el,fu);
+                                               el.find('.asc').attr('class','asc asca');
+                                               el.find('.desca').attr('class','desc');
+                                           });
+		   el.find('.desc').click(function(e){
+                                               sortNotes(el,reversed);
+                                               el.find('.asca').attr('class','asc');
+                                               el.find('.desc').attr('class','desc desca');
+                                           });
+	       }
+
+               sortByClick($('#s_performance'), function(doc1,doc2){
+                                                         return doc1.price-doc2.price;});
+	       sortByClick($('#s_price'), function(doc1,doc2){
+                                                         return doc1.price-doc2.price;});
+	       sortByClick($('#s_size'), function(doc1,doc2){
+                                                         return doc1.price-doc2.price;});
+	       $('.asc').click();
                $('.note').click(function(e){
                                     e.preventDefault();
                                     if (notes_active)
                                         notes_active.attr('class',
-							  notes_active
-							  .attr('class')
-							  .replace(' nactive', ''));
+                                                          notes_active
+                                                          .attr('class')
+                                                          .replace(' nactive', ''));
                                     var target = $(e.target);
                                     if (target[0].tagName.toLowerCase()=='a')
-					target = target.parent();
+                                        target = target.parent();
                                     while (!target.attr('class').match('note')){
                                         target = target.parent();
                                     }

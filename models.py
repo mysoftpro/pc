@@ -958,10 +958,16 @@ def updateOriginalModelPrices():
 
 
 def getNoteBookName(doc):
+
+    if 'nname' in doc:
+        return doc['nname']
+
     found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
     _text = None
     if len(found)>0:
         _text = found[0].strip()
+        # doc['nname'] =_text
+        # couch.saveDoc(doc)
     else:
         _text = doc['text'][0:doc['text'].index('"')]
         _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
@@ -969,17 +975,25 @@ def getNoteBookName(doc):
 
 
 def getNoteDispl(doc):
+    if 'ndispl' in doc:
+        return doc['ndispl']
     retval = ''
     found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
     if len(found)>0:
         retval = found[0]
+        # doc['ndispl'] =retval
+        # couch.saveDoc(doc)
     return retval
 
 def getNotePerformance(doc):
+    if 'nperformance' in doc:
+        return doc['nperformance']
     retval = ""
     found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
     if len(found)>0:
         retval = found[0]
+        # doc['nperformance'] =retval
+        # couch.saveDoc(doc)
     return retval
 
 def notebooks(template, skin, request):
@@ -991,11 +1005,6 @@ def notebooks(template, skin, request):
     def render(result):
         json_notebooks= {}
         for r in result['rows']:
-
-            for token in ['id', 'flags','inCart',
-                          'ordered','reserved','stock1', '_rev', 'warranty_type']:
-                r['doc'].pop(token)
-            r['doc']['catalogs'] = getCatalogsKey(r['doc'])
 
             our_price = r['doc']['price']*Course+1500
             r['doc']['price'] = int(round(our_price/10))*10
@@ -1026,6 +1035,12 @@ def notebooks(template, skin, request):
                 if d.get('id') == "s_performance":
                     sort_div.text = getNotePerformance(r['doc'])                    
                 d.append(clone)
+
+            for token in ['id', 'flags','inCart',
+                          'ordered','reserved','stock1', '_rev', 'warranty_type']:
+                r['doc'].pop(token)
+            r['doc']['catalogs'] = getCatalogsKey(r['doc'])
+            #TODO save all this shit found from re
             json_notebooks.update({r['doc']['_id']:r['doc']})
 
         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
