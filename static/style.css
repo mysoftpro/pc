@@ -1,4 +1,4 @@
-html{
+﻿html{
     background-color: #3F3F3F;
     height:100%;
     background-size:100%;
@@ -1321,8 +1321,90 @@ a.modelicon img{
     margin-top: 0 !important;
     font-size:18px;
 }
+
 #cartextra{
  width:1000px;
  margin-left:auto;
  margin-right:auto;
+}
+#notebooks{
+    width:710px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#notebooks a{
+    text-decoration:none;
+}
+.notebook_column{
+    float:left;
+    width:250px;
+    max-width:250px;
+}
+
+#s_performance{
+    max-width:300px;
+    width:300px;
+}
+
+#s_price{
+    width:150px;
+    margin-left:50px;
+}
+#s_size{
+    width:150px;
+    margin-left:50px;
+}
+#s_luxury{
+    width:150px;
+    margin-left:50px;
+}
+
+.nname{
+    font-weight:bold;
+    float:left;    
+}
+.nprice{
+    float:right;
+}
+
+.asc:before {
+    border-bottom: 8px solid #EEEEEE;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    content: "";
+
+    left: 5px;
+    position: relative;
+    top: -5px;
+    cursor:pointer;
+}
+.desc:before {
+    border-top: 8px solid #EEEEEE;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    content: "";
+    left: -5px;
+    position: relative;
+    top: 18px;
+    cursor:pointer;
+}
+.desca:before{
+    border-top: 8px solid #99DDFF;
+}
+.asca:before{
+    border-bottom: 8px solid #99DDFF;
+}
+
+.notebook_column h4,.notebook_column p{
+    float:left;
+}
+
+.nactive {
+    color:#B6C974;
+}
+.nactive a{
+    color:#B6C974;
+}
+.computers_top a{
+    color:white;
 }
