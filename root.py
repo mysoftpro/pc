@@ -15,7 +15,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,parts_names,parts,updateOriginalModelPrices,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -81,7 +81,8 @@ static_hooks = {
     'howtouse.html':simplePage,
     'howtobuy.html':simplePage,
     'warranty.html':simplePage,
-    'part.html':partPage
+    'part.html':partPage,
+    'notebook.html':notebooks
     }
 
 
@@ -120,6 +121,9 @@ class SiteMap(Resource):
         root.append(self.buildElement('howtobuy'))
         root.append(self.buildElement('howtouse'))
         root.append(self.buildElement('warranty'))
+        root.append(self.buildElement('motherboard'))
+        root.append(self.buildElement('video'))
+        root.append(self.buildElement('processor'))
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
 
@@ -277,7 +281,7 @@ class CachedStatic(File):
                 d = self.renderTemplate(fileForReading, last_modified, request)
                 d.addCallback(self._gzip, None, last_modified)                
                 d.addCallback(self.render_GSIPPED, request)
-                d.addErrback(lambda e:request.finish())
+                # d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -352,6 +356,9 @@ class Root(Cookable):
         self.putChild('static',self.static)
         self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
         self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
+
+        self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
+
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
         self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
         self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))

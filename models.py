@@ -9,6 +9,7 @@ from urllib import unquote_plus
 from datetime import datetime,timedelta
 from pc.mail import send_email
 from random import randint
+import re
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -153,7 +154,7 @@ def nameForCode(code,model):
 
 
 Margin=1.2
-Course = 30.9
+Course = 30.7
 
 def makePrice(doc):
     if doc['price'] == 0:
@@ -927,7 +928,7 @@ def index(template, skin, request):
                 hour-=1
             last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +\
                 ' '+str(hour)+':' + str(14+randint(1,6))
-        
+
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
@@ -953,3 +954,90 @@ def updateOriginalModelPrices():
             couch.saveDoc(model)
     d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(update)
+
+
+
+def getNoteBookName(doc):
+    found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
+    _text = None
+    if len(found)>0:
+        _text = found[0].strip()
+    else:
+        _text = doc['text'][0:doc['text'].index('"')]
+        _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
+    return _text
+
+
+def getNoteDispl(doc):
+    retval = ''
+    found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
+    if len(found)>0:
+        retval = found[0]
+    return retval
+
+def getNotePerformance(doc):
+    retval = ""
+    found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
+    if len(found)>0:
+        retval = found[0]
+    return retval
+
+def notebooks(template, skin, request):
+    if globals()['gChoices'] is None:
+        d = fillChoices()
+        d.addCallback(lambda some: notebooks(template, skin, request))
+        return d
+
+    def render(result):
+        json_notebooks= {}
+        for r in result['rows']:
+
+            for token in ['id', 'flags','inCart',
+                          'ordered','reserved','stock1', '_rev', 'warranty_type']:
+                r['doc'].pop(token)
+            r['doc']['catalogs'] = getCatalogsKey(r['doc'])
+
+            our_price = r['doc']['price']*Course+1500
+            r['doc']['price'] = int(round(our_price/10))*10
+
+            note_div = deepcopy(template.root().find('notebook').find('div'))
+            note_div.set('class',r['doc']['_id']+' note')
+
+
+            link = note_div.xpath("//div[@class='nname']")[0].find('a')
+            name = getNoteBookName(r['doc'])
+            link.text = name
+            if 'ourdescription' in r['doc']:
+                link.set('href','/notebook/'+name)
+            else:
+                link.set('name',name)
+
+            columns =template.middle.find('div').findall('div')
+
+            for d in columns[:-1]:
+                clone = deepcopy(note_div)
+                sort_div = clone.xpath("//div[@class='nprice']")[0]
+                if d.get('id') == "s_price":
+                    sort_div.text = unicode(r['doc']['price'])+u' р.'
+                if d.get('id') == "s_size":
+                    sort_div.text = getNoteDispl(r['doc'])
+                if d.get('id') == "s_size":
+                    sort_div.text = getNoteDispl(r['doc'])
+                if d.get('id') == "s_performance":
+                    sort_div.text = getNotePerformance(r['doc'])                    
+                d.append(clone)
+            json_notebooks.update({r['doc']['_id']:r['doc']})
+
+        template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
+
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
+    asus_12 = ["7362","7404","7586"]
+    asus_14 = ["7362","7404","7495"]
+    asus_15 = ["7362","7404","7468"]
+    asus_17 = ["7362","7404","7704"]
+    d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                       keys = [asus_12,asus_14,asus_15,asus_17])
+    d.addCallback(render)
+    return d
