@@ -697,6 +697,8 @@ def computer(template, skin, request):
     # d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
+
+
 def computers(template,skin,request):
     if globals()['gChoices'] is None:
         d = fillChoices()
@@ -782,6 +784,8 @@ def computers(template,skin,request):
             for d in header_divs:
                 template.top.append(d)
         note_div = template.root().find('notebook').find('div')
+
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
         if 'notebooks' in result and 'notebook_keys' in result:
             clear_div = etree.Element('div')
             clear_div.set('style','clear:both')
@@ -794,6 +798,10 @@ def computers(template,skin,request):
                 result['notebook_keys'].pop(key)
                 note.xpath('//strong[@class="modellink"]')[0].text = key
                 note.xpath('//span[@class="modelprice"]')[0].text = str(n['doc']['price']*Course+1500)+u' р.'
+                icon = deepcopy(tree.find('model_icon').find('a'))
+                icon.find('img').set('src',getComponentIcon(n['doc']))
+                note.insert(0,icon)
+                
                 
                 container.append(note)
         template.middle.find('script').text = 'var prices=' + _prices;
@@ -808,12 +816,6 @@ def computers(template,skin,request):
     # RENDER cart here!!!!
     else:
         d = couch.openDoc(name)
-        def getModelsAndNotes(user_doc):
-            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
-            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-            notes.addCallback(lambda res: (user_doc['notebooks'],res))
-            d = defer.DeferredList((models, notes))
-            return d
         def glueModelsAndNotes(li):
             models = li[0][1]
             notebooks = li[1][1][1]
@@ -821,8 +823,16 @@ def computers(template,skin,request):
             models['notebooks'] = notebooks
             models['notebook_keys'] = notebook_keys
             return models
-        d.addCallback(getModelsAndNotes)
-        d.addCallback(glueModelsAndNotes)
+        def getModelsAndNotes(user_doc):
+            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+            if not 'notebooks' in user_doc:
+                return models
+            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+            notes.addCallback(lambda res: (user_doc['notebooks'],res))
+            d = defer.DeferredList((models, notes))
+            d.addCallback(glueModelsAndNotes)
+            return d
+        d.addCallback(getModelsAndNotes)        
         d.addCallback(render)
     return d
 
@@ -851,23 +861,30 @@ def findComponent(model, name):
 
 
 
+def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
+    retval = "/static/icon.png"
+    if 'description' in component and'imgs' in component['description']:
+        retval = ''.join(("/image/",component['_id'],"/",
+                          indexExtractor(component['description']['imgs']),'.jpg'))
+    return retval
+    
+
 class ComponentForModelsPage(object):
     def __init__(self,model,component, cat_name, price):
         self.component= component
         self.price = price
         self.cat_name = cat_name
         self.model = model
+
     def getIconUrl(self):
-        retval = "/static/icon.png"
-        if 'description' in self.component and'imgs' in self.component['description']:
-            retval = ''.join(("/image/",self.component['_id'],"/",
-                              self.component['description']['imgs'][0],'.jpg'))
-        return retval
+        return getComponentIcon(self.component)
+        
     def render(self):
         li = etree.Element('li')
         li.text = self.component['text'] + u' <strong>'+ unicode(self.price) + u' р</strong>'
         li.set('id',self.model['_id']+'_'+self.component['_id'])
         return li
+
 
 # TODO! refactor it without side effects
 # TODO! rename it. it is absoluttely about no prices!
