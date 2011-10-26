@@ -1448,5 +1448,11 @@ a.modelicon img{
     padding:5px;
 }
 .cnname{
-
+    float:left;
+    color: #B9D3E1;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 30px;
+    margin-top: 60px;
+    text-decoration: underline;
 }
