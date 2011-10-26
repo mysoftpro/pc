@@ -1328,7 +1328,7 @@ a.modelicon img{
  margin-right:auto;
 }
 #notebooks{
-    width:710px;
+    width:1000px;/* 710px; */
     margin-left:auto;
     margin-right:auto;
 }
@@ -1401,10 +1401,18 @@ a.modelicon img{
 
 .nactive {
     color:#B6C974;
+    font-weight:bold;
 }
 .nactive a{
     color:#B6C974;
 }
 .computers_top a{
     color:white;
+}
+
+.npane{
+    float:left;
+    min-width:140px;
+    height:100%;
+    border: 1px solid red;
 }

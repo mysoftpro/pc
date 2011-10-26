@@ -771,6 +771,8 @@ class AdminGate(Resource):
         self.putChild('store_mother', StoreMother())
         self.putChild('videos', Videos())
         self.putChild('store_video', StoreVideo())
+        self.putChild('notebooks', NoteBooks())
+        self.putChild('store_note', StoreNote())
         self.putChild('warranty', WarrantyFill())
         self.putChild('show_how', ShowHow())
         self.putChild('edit_how', EditHow())
@@ -838,6 +840,27 @@ class Videos(Resource):
                 # .addCallback(lambda res: ("Radeon",res)),
                 ]).addCallback(self.finish, request)
         return NOT_DONE_YET
+
+
+
+class NoteBooks(Resource):
+    def finish(self, result, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(result))
+        request.finish()
+
+    def render_GET(self, request):        
+        asus_12 = ["7362","7404","7586"]
+        asus_14 = ["7362","7404","7495"]
+        asus_15 = ["7362","7404","7468"]
+        asus_17 = ["7362","7404","7704"]
+        couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                           keys = [asus_12,asus_14,asus_15,asus_17]).addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+
 
 
 class FindOrder(Resource):
@@ -1058,6 +1081,21 @@ class StoreVideo(Resource):
         video = request.args.get('video')[0]
         jvideo = simplejson.loads(video)
         d = couch.saveDoc(jvideo)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+class StoreNote(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        note = request.args.get('note')[0]
+        jnote = simplejson.loads(note)
+        d = couch.saveDoc(jnote)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
