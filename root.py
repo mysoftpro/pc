@@ -467,7 +467,7 @@ class Save(Resource):
         if user_model[0][0] and user_model[1][0]:
             in_cart = len(user_doc['models'])
             if 'notebooks' in user_doc:
-                in_cart+=len(user_doc['notebooks'])
+                in_cart+=len(user_doc['notebooks'].keys())
             request.addCookie('pc_cart',
                               str(in_cart),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
@@ -559,8 +559,8 @@ class Save(Resource):
 
 
 class SaveNote(Resource):
-    def finish(self, some, request):
-        request.write('ok')
+    def finish(self, res, note_id, request):
+        request.write(note_id)
         request.finish()
     def fail(self, fail, request):
         request.write('fail')
@@ -569,30 +569,32 @@ class SaveNote(Resource):
     def addNote(self, user_doc, _id, request):
         _date=str(date.today()).split('-')
         user_doc['date'] = _date
+        note_id = base36.gen_id()
         if 'notebooks' in user_doc:
-            user_doc['notebooks'].append(_id)
+            user_doc['notebooks'].update({note_id:(_id)})
         else:
-            user_doc['notebooks'] = [_id]
-        in_cart = len(user_doc['models']) + len(user_doc['notebooks'])
+            user_doc['notebooks'] = {note_id:(_id)}
+        in_cart = len(user_doc['models']) + len(user_doc['notebooks'].keys())
         request.addCookie('pc_cart',
                           str(in_cart),
                           expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
+        return note_id
 
 
     def oldUser(self, user_doc, _id, request):
-        self.addNote(user_doc, _id, request)
+        note_id = self.addNote(user_doc, _id, request)
         d = couch.saveDoc(user_doc)
-        d.addCallback(self.finish, request)
+        d.addCallback(self.finish, note_id, request)
         d.addErrback(self.fail, request)
         return d
 
     def newUser(self, fail, user_id, _id, request):
         user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
-        self.addNote(user_doc, _id, request)
+        note_id = self.addNote(user_doc, _id, request)
         d = couch.saveDoc(user_doc)
-        d.addCallback(self.finish, request)
-        d.addErrback(self.fail)
+        d.addCallback(self.finish, note_id, request)
+        d.addErrback(self.fail, request)
         return d
 
     def render_GET(self, request):
@@ -634,7 +636,7 @@ class Delete(Resource):
                 _user['models'] = [m for m in _user['models'] if m != _model['_id']]
                 in_cart = len(_user['models'])
                 if 'notebooks' in _user:
-                    in_cart+=len(_user['notebooks'])
+                    in_cart+=len(_user['notebooks'].keys())
                 request.addCookie('pc_cart',
                                   str(in_cart),
                                   expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),

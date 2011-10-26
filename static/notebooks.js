@@ -117,8 +117,11 @@ head.ready(function(){
 						  url:'savenote',
 						  data:{id:getNoteClass(notes_active)},
 						  success:function(data){
-						      if (data !=='ok')
+						      if (data =='fail'){
+							  alert('Что-то пошло не так :(');
 							  return;
+						      }
+							  
 						      var cart_el = $('#cart');
 						      if (cart_el.length>0){
 							  cart_el.text('Корзина('+
@@ -133,7 +136,7 @@ head.ready(function(){
 												cart:$.cookie('pc_user')
 											    }));
 						      }
-						      alert('Получилось!');
+						      alert('Получилось! Номер заказа: ' + data);
 						  }
 					      });
 				   });

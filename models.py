@@ -707,7 +707,7 @@ def computers(template,skin,request):
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     # cart is only /cart/12345. for /cart and for /computer - all models are shown
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
-    def render(result):
+    def render(result):        
         models = [row['doc'] for row in result['rows'] if row['doc'] is not None]
         if not this_is_cart:
             models = sorted(models,lambda x,y: x['order']-y['order'])
@@ -762,10 +762,6 @@ def computers(template,skin,request):
                 h3.text = m['title']
                 for el in html.fragments_fromstring(m['description']):
                     description_div.append(el)
-                # try:
-                #     description_div.append(etree.fromstring(m['description']))
-                # except:
-                #     description_div.text = m['description']
                 ul.set('style','display:none')
             else:
                 h3.text = u'Пользовательская конфигурация'
@@ -785,6 +781,21 @@ def computers(template,skin,request):
             header_divs = header.findall('div')
             for d in header_divs:
                 template.top.append(d)
+        note_div = template.root().find('notebook').find('div')
+        if 'notebooks' in result and 'notebook_keys' in result:
+            clear_div = etree.Element('div')
+            clear_div.set('style','clear:both')
+            container.append(clear_div)
+            for n in result['notebooks']['rows']:
+                note = deepcopy(note_div)
+                note.xpath('//div[@class="cnname"]')[0].text = n['doc']['text']                
+                keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']][0]
+                key = keys[0]
+                result['notebook_keys'].pop(key)
+                note.xpath('//strong[@class="modellink"]')[0].text = key
+                note.xpath('//span[@class="modelprice"]')[0].text = str(n['doc']['price']*Course+1500)+u' р.'
+                
+                container.append(note)
         template.middle.find('script').text = 'var prices=' + _prices;
         skin.top = template.top
         skin.middle = template.middle
@@ -797,7 +808,21 @@ def computers(template,skin,request):
     # RENDER cart here!!!!
     else:
         d = couch.openDoc(name)
-        d.addCallback(lambda doc:couch.listDoc(keys=doc['models'], include_docs=True))
+        def getModelsAndNotes(user_doc):
+            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+            notes.addCallback(lambda res: (user_doc['notebooks'],res))
+            d = defer.DeferredList((models, notes))
+            return d
+        def glueModelsAndNotes(li):
+            models = li[0][1]
+            notebooks = li[1][1][1]
+            notebook_keys = li[1][1][0]
+            models['notebooks'] = notebooks
+            models['notebook_keys'] = notebook_keys
+            return models
+        d.addCallback(getModelsAndNotes)
+        d.addCallback(glueModelsAndNotes)
         d.addCallback(render)
     return d
 
