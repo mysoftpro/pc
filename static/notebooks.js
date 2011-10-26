@@ -63,6 +63,7 @@ head.ready(function(){
                var note_description = $('#note_dscription');
                var left_pane = $('#left_pane');
                var right_pane = $('#right_pane');
+               var notebook_to_cart = $('#notebook_to_cart');
                $('.note').click(function(e){
                                     e.preventDefault();
                                     if (notes_active)
@@ -99,16 +100,42 @@ head.ready(function(){
                                                 .append('<img width="140" src="/image/' +
                                                         doc['_id']+'/'+a+'"/>');
                                             };
-					    console.log(i);
                                             if (i>4 && i<10)
                                                 app(right_pane);
                                             else if (i<=4 && i<10)
-                                                app(left_pane);					    
-					    i+=1;
+                                                app(left_pane);
+                                            i+=1;
 
                                         }
 
                                     }
+                                    notebook_to_cart.find('h2').remove();
+                                    notebook_to_cart.append('<h2>' + doc['text']+'</h2>');
                                 });
-               note_description.jScrollPane();
+	       $('#tocart').click(function(e){		
+				       $.ajax({
+						  url:'savenote',
+						  data:{id:getNoteClass(notes_active)},
+						  success:function(data){
+						      if (data !=='ok')
+							  return;
+						      var cart_el = $('#cart');
+						      if (cart_el.length>0){
+							  cart_el.text('Корзина('+
+								       $.cookie('pc_cart')
+								       +')');
+						      }
+						      else{
+							  $('#main_menu')
+							      .append(_.
+								      template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+									       {
+												cart:$.cookie('pc_user')
+											    }));
+						      }
+						      alert('Получилось!');
+						  }
+					      });
+				   });
+               $('.nname').first().click();
            });

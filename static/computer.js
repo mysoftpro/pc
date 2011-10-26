@@ -1438,6 +1438,8 @@ function to_cartSuccess(data){
 					       }
 					   });
 				});
+	if ($('#greset').text() == 'Сохранить')
+	    alert('Получилось!');
     }
 }
 function code(_id){

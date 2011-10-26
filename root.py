@@ -380,6 +380,7 @@ class Root(Cookable):
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         self.putChild('save', Save())
+        self.putChild('savenote', SaveNote())
         self.putChild('delete',Delete())
         self.putChild('deleteAll',DeleteAll())
         self.putChild('sender', Sender())
@@ -464,8 +465,11 @@ class Save(Resource):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         if user_model[0][0] and user_model[1][0]:
+            in_cart = len(user_doc['models'])
+            if 'notebooks' in user_doc:
+                in_cart+=len(user_doc['notebooks'])
             request.addCookie('pc_cart',
-                              str(len(user_doc['models'])),
+                              str(in_cart),
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
             request.write(simplejson.dumps(user_model[1][1]))
@@ -553,6 +557,54 @@ class Save(Resource):
         li.addCallback(self.finish, request,user_doc)
 
 
+
+class SaveNote(Resource):
+    def finish(self, some, request):
+        request.write('ok')
+        request.finish()
+    def fail(self, fail, request):
+        request.write('fail')
+        request.finish()
+
+    def addNote(self, user_doc, _id, request):
+        _date=str(date.today()).split('-')
+        user_doc['date'] = _date
+        if 'notebooks' in user_doc:
+            user_doc['notebooks'].append(_id)
+        else:
+            user_doc['notebooks'] = [_id]
+        in_cart = len(user_doc['models']) + len(user_doc['notebooks'])
+        request.addCookie('pc_cart',
+                          str(in_cart),
+                          expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                              path='/')
+
+
+    def oldUser(self, user_doc, _id, request):
+        self.addNote(user_doc, _id, request)
+        d = couch.saveDoc(user_doc)
+        d.addCallback(self.finish, request)
+        d.addErrback(self.fail, request)
+        return d
+
+    def newUser(self, fail, user_id, _id, request):
+        user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+        self.addNote(user_doc, _id, request)
+        d = couch.saveDoc(user_doc)
+        d.addCallback(self.finish, request)
+        d.addErrback(self.fail)
+        return d
+
+    def render_GET(self, request):
+        _id = request.args.get('id', [None])[0]
+        if _id is None:
+            return 'fail'
+        user_id = request.getCookie('pc_user')
+        d = couch.openDoc(user_id)
+        d.addCallback(self.oldUser, _id, request)
+        d.addErrback(self.newUser, user_id, _id, request)
+        return NOT_DONE_YET
+
 def get_uuid():
     d = defer.Deferred()
     d.addCallback(lambda some: base36.gen_id())
@@ -580,6 +632,13 @@ class Delete(Resource):
             if same_author and not_processing:
                 couch.deleteDoc(uuid,_model['_rev'])
                 _user['models'] = [m for m in _user['models'] if m != _model['_id']]
+                in_cart = len(_user['models'])
+                if 'notebooks' in _user:
+                    in_cart+=len(_user['notebooks'])
+                request.addCookie('pc_cart',
+                                  str(in_cart),
+                                  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                                  path='/')                    
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
@@ -612,6 +671,8 @@ class DeleteAll(Resource):
         defs = []
         for row in models['rows']:
             doc = row['doc']
+            if doc is None:
+                continue
             if 'processing' in doc and doc['processing']:continue
             defs.append(couch.deleteDoc(doc['_id'],doc['_rev']))
         if len(defs) == len(models['rows']):

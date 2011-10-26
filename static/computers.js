@@ -198,9 +198,7 @@ head.ready(function(){
                              success:function(data){
                                  if (data == "ok"){
                                      var cart = $.cookie('pc_cart');
-                                     var cart_ammo = parseInt(cart)-1;
-                                     $.cookie('pc_cart', cart_ammo, { path: '/' });
-                                     $('#cart').text('Корзина(' + cart_ammo + ')');
+                                     $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
                                      var target = $(e.target);
                                      while (target.attr('class')!='computeritem'){
                                          target = target.parent();

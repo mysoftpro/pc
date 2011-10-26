@@ -1432,3 +1432,16 @@ a.modelicon img{
 #note_dscription strong{
     color:white;
 }
+#notebook_to_cart{
+    float:right;
+    margin-top:6px;
+}
+
+#notebook_to_cart h2 {
+    font-size:14px;
+    float:left;
+    margin-top:0px;
+    max-width:600px;
+    background-color:#730606;
+    padding:5px;
+}
