@@ -419,7 +419,9 @@ function changeDescription(index, _id, show, data){
 	    return;
 	descr.find('.manu').html(descriptions_cached[_id]);
 	descrptions.jScrollPaneRemove();
+	descr.css('opacity', '0.0');
 	descr.show();
+	descr.animate({'opacity':'1.0'}, 300);
 	descrptions.jScrollPane();
 
 	var new_name = getPartName(_id);
