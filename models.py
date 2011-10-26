@@ -792,12 +792,18 @@ def computers(template,skin,request):
             container.append(clear_div)
             for n in result['notebooks']['rows']:
                 note = deepcopy(note_div)
-                note.xpath('//div[@class="cnname"]')[0].text = n['doc']['text']                
+
                 keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']][0]
                 key = keys[0]
                 result['notebook_keys'].pop(key)
+
+                note_name = note.xpath('//div[@class="cnname"]')[0]
+                note_name.text = n['doc']['text']                
+                note_name.set('id',key+'_'+n['doc']['_id'])
+
                 note.xpath('//strong[@class="modellink"]')[0].text = key
-                note.xpath('//span[@class="modelprice"]')[0].text = str(n['doc']['price']*Course+1500)+u' р.'
+                note.xpath('//span[@class="modelprice"]')[0].text = \
+                    str(n['doc']['price']*Course+1500)+u' р.'
                 icon = deepcopy(tree.find('model_icon').find('a'))
                 icon.find('img').set('src',getComponentIcon(n['doc']))
                 note.insert(0,icon)
