@@ -14,6 +14,7 @@ import re
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
 DVD_PRICE = 800
+NOTE_MARGIN=1500
 
 gWarning_sent = []
 
@@ -802,8 +803,13 @@ def computers(template,skin,request):
                 note_name.set('id',key+'_'+n['doc']['_id'])
 
                 note.xpath('//strong[@class="modellink"]')[0].text = key
-                note.xpath('//span[@class="modelprice"]')[0].text = \
-                    str(n['doc']['price']*Course+1500)+u' р.'
+                
+                price = makeNotePrice(n['doc'])
+                # our_price = float(n['doc']['price'])*Course+NOTE_MARGIN
+                # price = int(round(our_price/10))*10
+
+                note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+                    
                 icon = deepcopy(tree.find('model_icon').find('a'))
                 icon.find('img').set('src',getComponentIcon(n['doc']))
                 note.insert(0,icon)
@@ -1044,6 +1050,12 @@ def getNotePerformance(doc):
         # couch.saveDoc(doc)
     return retval
 
+
+def makeNotePrice(doc):
+    our_price = doc['price']*Course+NOTE_MARGIN
+    return int(round(our_price/10))*10
+
+
 def notebooks(template, skin, request):
     if globals()['gChoices'] is None:
         d = fillChoices()
@@ -1054,8 +1066,9 @@ def notebooks(template, skin, request):
         json_notebooks= {}
         for r in result['rows']:
 
-            our_price = r['doc']['price']*Course+1500
-            r['doc']['price'] = int(round(our_price/10))*10
+            r['doc']['price'] = makeNotePrice(r['doc'])
+            # our_price = r['doc']['price']*Course+NOTE_MARGIN
+            # r['doc']['price'] = int(round(our_price/10))*10
 
             note_div = deepcopy(template.root().find('notebook').find('div'))
             note_div.set('class',r['doc']['_id']+' note')

@@ -279,9 +279,9 @@ class CachedStatic(File):
                 #     if splitted[-1] != virtual_name:
                 #         name_to_cache = None # virtual_name
                 d = self.renderTemplate(fileForReading, last_modified, request)
-                d.addCallback(self._gzip, None, last_modified)                
+                d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
-                # d.addErrback(lambda e:request.finish())
+                d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -379,10 +379,13 @@ class Root(Cookable):
         self.putChild('xml',XmlGetter())
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
+
         self.putChild('save', Save())
         self.putChild('savenote', SaveNote())
         self.putChild('delete',Delete())
+        self.putChild('deleteNote',DeleteNote())        
         self.putChild('deleteAll',DeleteAll())
+
         self.putChild('sender', Sender())
         self.putChild('select_helps', SelectHelpsProxy())
         self.putChild('admin',Admin())
@@ -591,6 +594,10 @@ class SaveNote(Resource):
 
     def newUser(self, fail, user_id, _id, request):
         user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+        request.addCookie('pc_key',
+                          user_doc['pc_key'],
+                          expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
         note_id = self.addNote(user_doc, _id, request)
         d = couch.saveDoc(user_doc)
         d.addCallback(self.finish, note_id, request)
@@ -640,7 +647,7 @@ class Delete(Resource):
                 request.addCookie('pc_cart',
                                   str(in_cart),
                                   expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                                  path='/')                    
+                                  path='/')
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
@@ -650,10 +657,39 @@ class Delete(Resource):
         return NOT_DONE_YET
 
 
+class DeleteNote(Resource):
+    def render_GET(self, request):
+        uuid = request.args.get('uuid', [None])[0]
+        user_id = request.getCookie('pc_user')
+        user = couch.openDoc(user_id)
+        def delete(_user):
+            if 'pc_key' in _user \
+                    and request.getCookie('pc_key') == _user['pc_key']\
+                    and 'notebooks' in _user\
+                    and uuid in _user['notebooks']:
+                _user['notebooks'].pop(uuid)
+                in_cart = len(_user['models'])
+                if 'notebooks' in _user:
+                    in_cart+=len(_user['notebooks'].keys())
+                request.addCookie('pc_cart',
+                                  str(in_cart),
+                                  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                                  path='/')
+                couch.saveDoc(_user)
+                request.write('ok')
+                request.finish()
+            request.write('fail')
+            request.finish()
+        user.addCallback(delete)
+        return NOT_DONE_YET
+
+
+
+
 
 class DeleteAll(Resource):
 
-    def finish(self, some, request):        
+    def finish(self, some, request):
         request.addCookie('pc_user',
                           base36.gen_id(),
                           expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
@@ -913,7 +949,7 @@ class NoteBooks(Resource):
         request.write(simplejson.dumps(result))
         request.finish()
 
-    def render_GET(self, request):        
+    def render_GET(self, request):
         asus_12 = ["7362","7404","7586"]
         asus_14 = ["7362","7404","7495"]
         asus_15 = ["7362","7404","7468"]

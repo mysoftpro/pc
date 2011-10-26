@@ -136,7 +136,7 @@ head.ready(function(){
 												cart:$.cookie('pc_user')
 											    }));
 						      }
-						      alert('Получилось! Номер заказа: ' + data);
+						      alert('Получилось!');
 						  }
 					      });
 				   });
