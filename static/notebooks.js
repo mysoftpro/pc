@@ -57,7 +57,12 @@ head.ready(function(){
                                    return doc1.price-doc2.price;
                            });
                $('.asc').click();
+               var cols = $('.notebook_column');
+               cols.first().before('<div class="npane" id="left_pane"></div>');
+               cols.last().after('<div class="npane" id="right_pane"></div>');
                var note_description = $('#note_dscription');
+               var left_pane = $('#left_pane');
+               var right_pane = $('#right_pane');
                $('.note').click(function(e){
                                     e.preventDefault();
                                     if (notes_active)
@@ -83,17 +88,27 @@ head.ready(function(){
                                         .html(name+'<br/>'+descr['comments']);
                                     note_description.jScrollPane();
                                     note_description.animate({'opacity':'1.0'}, 300);
-				    $('#left_pane').html('');
+
+                                    left_pane.html('');
+                                    right_pane.html('');
+                                    var i=0;
                                     for (var a in doc._attachments){
                                         if (doc._attachments[a]['content_type']=="image/jpeg"){
-					    $('#left_pane')
-						.append('<img src="/image/' + doc['_id']+'/'+a+'"/>');
-					}
-                                            
+                                            var app = function(pane){
+                                                pane
+                                                .append('<img width="140" src="/image/' +
+                                                        doc['_id']+'/'+a+'"/>');
+                                            };
+					    console.log(i);
+                                            if (i>4 && i<10)
+                                                app(right_pane);
+                                            else if (i<=4 && i<10)
+                                                app(left_pane);					    
+					    i+=1;
+
+                                        }
+
                                     }
                                 });
                note_description.jScrollPane();
-               var cols = $('.notebook_column');
-               cols.first().before('<div class="npane" id="left_pane"></div>');
-               //cols.last().after('<div class="npane" id="right_pane"></div>');
            });
