@@ -124,6 +124,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('motherboard'))
         root.append(self.buildElement('video'))
         root.append(self.buildElement('processor'))
+        root.append(self.buildElement('notebook'))
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
 
@@ -291,8 +292,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
