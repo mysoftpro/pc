@@ -1331,6 +1331,7 @@ a.modelicon img{
     width:1000px;/* 710px; */
     margin-left:auto;
     margin-right:auto;
+    margin-top:20px;
 }
 #notebooks a{
     text-decoration:none;
@@ -1412,7 +1413,19 @@ a.modelicon img{
 
 .npane{
     float:left;
-    min-width:140px;
+    width:140px;
     height:100%;
-    border: 1px solid red;
+}
+#left_pane{
+    width:200px;
+    padding-top:30px;
+    margin-right:20px;
+}
+
+#note_dscription{
+    height:150px;
+}
+
+#note_dscription strong{
+    color:white;
 }

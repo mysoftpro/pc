@@ -39,24 +39,25 @@ var notes_active;
 
 head.ready(function(){
 
-	       
+
 
                sortByClick($('#s_performance'), function(doc1,doc2){
-			       if (doc1['performance'] && doc2['performance'])
+                               if (doc1['performance'] && doc2['performance'])
                                    return doc1.performance-doc2.performance;
-			       else
-				   return doc1.price-doc2.price;
-			   });
-	       
-	       sortByClick($('#s_price'), function(doc1,doc2){
+                               else
+                                   return doc1.price-doc2.price;
+                           });
+
+               sortByClick($('#s_price'), function(doc1,doc2){
                                return doc1.price-doc2.price;});
-	       sortByClick($('#s_size'), function(doc1,doc2){
-			       if (doc1['size'] && doc2['size'])
-				   return doc1.size-doc2.size;
-			       else
-				   return doc1.price-doc2.price;
-			   });
-	       $('.asc').click();
+               sortByClick($('#s_size'), function(doc1,doc2){
+                               if (doc1['size'] && doc2['size'])
+                                   return doc1.size-doc2.size;
+                               else
+                                   return doc1.price-doc2.price;
+                           });
+               $('.asc').click();
+               var note_description = $('#note_dscription');
                $('.note').click(function(e){
                                     e.preventDefault();
                                     if (notes_active)
@@ -73,8 +74,26 @@ head.ready(function(){
                                     var klass = getNoteClass(target);
                                     notes_active = $('.'+klass);
                                     notes_active.attr('class',notes_active.attr('class')+' nactive');
+                                    var doc = notebooks[klass];
+                                    var descr = doc['description'];
+                                    note_description.animate({'opacity':'0.0'}, 300);
+                                    note_description.jScrollPaneRemove();
+                                    var name = '<strong>'+descr['name']+'</strong>';
+                                    note_description
+                                        .html(name+'<br/>'+descr['comments']);
+                                    note_description.jScrollPane();
+                                    note_description.animate({'opacity':'1.0'}, 300);
+				    $('#left_pane').html('');
+                                    for (var a in doc._attachments){
+                                        if (doc._attachments[a]['content_type']=="image/jpeg"){
+					    $('#left_pane')
+						.append('<img src="/image/' + doc['_id']+'/'+a+'"/>');
+					}
+                                            
+                                    }
                                 });
-	       var cols = $('.notebook_column');
-	       cols.first().before('<div class="npane" id="left_pane"></div>');
-	       cols.last().after('<div class="npane" id="right_pane"></div>');
+               note_description.jScrollPane();
+               var cols = $('.notebook_column');
+               cols.first().before('<div class="npane" id="left_pane"></div>');
+               //cols.last().after('<div class="npane" id="right_pane"></div>');
            });
