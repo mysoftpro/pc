@@ -110,8 +110,12 @@ head.ready(function(){
 
                                     }
                                     notebook_to_cart.find('h2').remove();
-                                    notebook_to_cart.append('<h2>' + doc['text']+
-							    ' '+doc['price']+' р.</h2>');
+                                    var dos = '';
+				    if (doc['text'].toLowerCase().match('/dos'))
+					dos = ' ВНИМАНИЕ! НЕТ ОПЕРАЦИОННОЙ СИСТЕМЫ!';
+				    notebook_to_cart.append('<h2>' + doc['text']+
+							    ' '+doc['price']+' р.'+dos+'</h2>');
+				    
                                 });
 	       $('#tocart').click(function(e){		
 				       $.ajax({
