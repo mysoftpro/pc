@@ -1345,21 +1345,17 @@ a.modelicon img{
 }
 
 #s_performance{
-    max-width:300px;
-    width:300px;
+    max-width:325px;
+    width:325px;
 }
 
 #s_price{
-    width:165px;
-    margin-left:40px;
+    width:210px;
+    /* margin-left:40px; */
 }
 #s_size{
-    width:135px;
-    margin-left:50px;
-}
-#s_luxury{
-    width:150px;
-    margin-left:50px;
+    width:160px;
+    /* margin-left:50px; */
 }
 
 .nname{
@@ -1455,4 +1451,45 @@ a.modelicon img{
     margin-left: 30px;
     margin-top: -100px;
     text-decoration: underline;
+}
+
+.vertical{
+    height:15px;
+    margin-top:5px;
+}
+.nactive .vertical{
+    border-left:1px solid #B6C974;
+}
+.horizontal{
+    width:20px;    
+    margin-top:10px;
+}
+.nactive .horizontal{
+    border-top:1px solid #B6C974;
+}
+
+.nleft{
+    float:left;
+}
+.nright{
+    float:right;
+}
+
+.half_vertical{
+    border-left:1px solid #B6C974;
+    height:12px;
+    margin-top:10px;
+    display:none;
+}
+#s_performance .nleft {
+    display:none;
+}
+#s_size .nright {
+    display:none;    
+}
+#s_size .half_vertical{
+    display:none;
+}
+#s_performance .half_vertical{
+    display:none;
 }
