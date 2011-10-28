@@ -167,9 +167,8 @@ head.ready(function(){
 				    var _header = doc['text'];
 				    _header = _header.replace('Ноутбук Asus','');
 				    _header = _header.replace('Ноутбук ASUS','');
-				    var _price = '<strong>'+doc['price']+' р.</strong>';
-				    notebook_to_cart.append('<h2>' + 
-							    _header+'<br/>'+_price
+				    var _price = '<strong>'+doc['price']+'р.</strong>';
+				    notebook_to_cart.append('<h2>' + _header+_price
 							    +dos+'</h2>');
 				    showArrows();
 				});
