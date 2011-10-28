@@ -107,10 +107,7 @@ head.ready(function(){
 			       else
 				   return doc1.price-doc2.price;
 			   });
-	       $('.asc').click();
-	       var cols = $('.notebook_column');
-	       // cols.first().before('<div class="npane" id="left_pane"></div>');
-	       // cols.last().after('<div class="npane" id="right_pane"></div>');
+	       $('.asc').click();	       
 	       var note_description = $('#note_dscription');
 	       var left_pane = $('#left_pane');
 	       var right_pane = $('#right_pane');
@@ -155,6 +152,7 @@ head.ready(function(){
 						app(right_pane);
 					    else if (i<=3 && i<10)
 						app(left_pane);
+					    if (i==7)break;
 					    i+=1;
 
 					}
