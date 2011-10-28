@@ -6,6 +6,10 @@ function saveDoc(e){
     // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
     doc['size'] = parseInt(tr.find('input[name="size"]').val());
     doc['performance'] = parseInt(tr.find('input[name="performance"]').val());
+    if (tr.data('description')){
+	//console.log(tr.find('textarea').val());
+	doc['description']['comments'] = tr.next().find('textarea').val();
+    }    
     $.ajax({
                url:'store_note',
                type:'POST',
@@ -55,7 +59,8 @@ function fillVideos(data){
                 .attr('colspan',5)
                 .css({'display':'none'});
             if (doc['description']&&doc['description']['comments']){
-                description.html(doc['description']['comments']);
+                description.html('<textarea>' + doc['description']['comments'] + '</textarea>');
+		tr.data('description',true);
             }
 
             var size = $(document.createElement('td'));
