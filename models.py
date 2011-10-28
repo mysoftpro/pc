@@ -1067,8 +1067,6 @@ def notebooks(template, skin, request):
         for r in result['rows']:
 
             r['doc']['price'] = makeNotePrice(r['doc'])
-            # our_price = r['doc']['price']*Course+NOTE_MARGIN
-            # r['doc']['price'] = int(round(our_price/10))*10
 
             note_div = deepcopy(template.root().find('notebook').find('div'))
             note_div.set('class',r['doc']['_id']+' note')
@@ -1103,7 +1101,7 @@ def notebooks(template, skin, request):
             r['doc']['catalogs'] = getCatalogsKey(r['doc'])
             #TODO save all this shit found from re
             json_notebooks.update({r['doc']['_id']:r['doc']})
-
+        
         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
 
         skin.top = template.top
