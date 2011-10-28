@@ -1080,9 +1080,7 @@ def notebooks(template, skin, request):
             else:
                 link.set('name',name)
 
-            columns =template.middle.find('div').findall('div')
-
-            for d in columns[:-1]:
+            for d in template.middle.xpath("//div[@class='notebook_column']"):
                 clone = deepcopy(note_div)
                 sort_div = clone.xpath("//div[@class='nprice']")[0]
                 if d.get('id') == "s_price":

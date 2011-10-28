@@ -109,8 +109,8 @@ head.ready(function(){
 			   });
 	       $('.asc').click();
 	       var cols = $('.notebook_column');
-	       cols.first().before('<div class="npane" id="left_pane"></div>');
-	       cols.last().after('<div class="npane" id="right_pane"></div>');
+	       // cols.first().before('<div class="npane" id="left_pane"></div>');
+	       // cols.last().after('<div class="npane" id="right_pane"></div>');
 	       var note_description = $('#note_dscription');
 	       var left_pane = $('#left_pane');
 	       var right_pane = $('#right_pane');

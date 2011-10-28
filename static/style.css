@@ -1416,11 +1416,12 @@ a.modelicon img{
 .npane{
     float:left;
     width:140px;
+    min-width:140px;
     height:100%;
     padding-top:65px;
 }
 #left_pane{
-    margin-right:10px;
+    margin-right:10px;    
 }
 #right_pane{
     margin-left:10px;
