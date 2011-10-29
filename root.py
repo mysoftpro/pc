@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from cStringIO import StringIO
 import gzip
 from twisted.web.resource import Resource, ForbiddenResource
@@ -23,7 +22,7 @@ from twisted.python.failure import Failure
 from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
-
+from pc.faq import faq
 
 def simplePage(template, skin, request):
     skin.top = template.top
@@ -82,7 +81,8 @@ static_hooks = {
     'howtobuy.html':simplePage,
     'warranty.html':simplePage,
     'part.html':partPage,
-    'notebook.html':notebooks
+    'notebook.html':notebooks,
+    'faq.html':faq
     }
 
 
@@ -282,7 +282,7 @@ class CachedStatic(File):
                 d = self.renderTemplate(fileForReading, last_modified, request)
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
-                d.addErrback(lambda e:request.finish())
+                # d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -376,6 +376,8 @@ class Root(Cookable):
         self.putChild('keyboard', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('mouse', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
+
+        self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
 
         self.putChild('xml',XmlGetter())
         self.putChild('component', Component())

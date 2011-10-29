@@ -1526,3 +1526,11 @@ a.modelicon img{
 #notebookfullname{
     color:#B6C974;
 }
+#faq_top textarea{
+    width:1000px;
+    font-size:14px;
+    margin-top:10px;
+}
+#faq_top input{
+    width:100px;
+}

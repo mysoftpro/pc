@@ -695,7 +695,7 @@ def computer(template, skin, request):
         name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
-    # d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
+    #d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
 
