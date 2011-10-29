@@ -1,14 +1,24 @@
 <top>
   <div id="faq_top">
-    <textarea>Напишите здесь вопрос, пожелание или просьбу. Что угодно.</textarea>
-    <input type="text" value="email">
+    <textarea class="computers_top">Напишите здесь вопрос, пожелание или просьбу. Что угодно.</textarea>
+    <input class="computers_top" type="text" value="email">
     <em>Если хотите получить уведомление об ответе, укажите email.       
       Ответ можно посмотреть на этой странице.</em>
-    <span>Отправить</span>
+    <span id="sendfaq">Отправить</span>
+    <div style="clear:both;"></div>
   </div>
 </top>
 <middle>
+  <div id="faq"></div>
+  <script type="text/javascript">
+    scripts['next'] = {'top':['/static/jquery.cookie.min.js','/static/faq.js']};
+  </script>
 </middle>
 <faq>
-  <div class="faqrecord"></div>
+  <div class="faqrecord">
+    <div class="faqauthor"></div>
+    <div class="faqdate"></div>
+    <div style="clear:both;"></div>
+    <div class="faqbody"></div>    
+  </div>
 </faq>

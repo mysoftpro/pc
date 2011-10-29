@@ -1529,8 +1529,53 @@ a.modelicon img{
 #faq_top textarea{
     width:1000px;
     font-size:14px;
-    margin-top:10px;
+    margin-top:30px;
 }
 #faq_top input{
-    width:100px;
+    margin-top:10px;
+    display:block;
+    float:left;
+}
+#faq_top em{
+    display:block;
+    float:left;
+    max-width:570px;
+    font-size:18px;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:10px;
+}
+#sendfaq{
+    background: url("/static/square_buttons.png") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    background-position: 0 -91px;
+    color: #DDD;
+    display:block;
+    float:right;
+    height:37px;
+    font-size:20px;
+    width:130px;
+    padding-top:13px;
+    padding-left:25px;
+    margin-top: 7px;
+}
+#faq{
+    margin-top:40px;
+    width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.faqauthor {
+    background-color:#5f7200;
+    color:white;
+    float:left;
+    margin-right:10px;
+}
+.faqdate {
+    background-color:#444;
+    color:white;
+    float:left;
+}
+.faqrecord{
+    padding:10px;
 }

@@ -22,7 +22,7 @@ from twisted.python.failure import Failure
 from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
-from pc.faq import faq
+from pc.faq import faq, StoreFaq
 
 def simplePage(template, skin, request):
     skin.top = template.top
@@ -378,7 +378,7 @@ class Root(Cookable):
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
 
         self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
-
+        self.putChild('storefaq', StoreFaq())
         self.putChild('xml',XmlGetter())
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
@@ -877,7 +877,7 @@ class AdminGate(Resource):
         self.putChild('store_note', StoreNote())
         self.putChild('warranty', WarrantyFill())
         self.putChild('show_how', ShowHow())
-        self.putChild('edit_how', EditHow())
+        self.putChild('edit_how', EditHow())        
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
