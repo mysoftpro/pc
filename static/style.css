@@ -49,7 +49,6 @@ h2 {
     z-index:9999;
     text-align:right;
     margin-bottom:5px;
-    max-width:590px;
 }
 
 #face {
@@ -1337,6 +1336,7 @@ a.modelicon img{
     margin-left:auto;
     margin-right:auto;
     margin-top:20px;
+    min-height:650px;
 }
 #notebooks a{
     text-decoration:none;
@@ -1445,7 +1445,7 @@ a.modelicon img{
     margin-top:0px;
     max-width:600px;
     padding:5px;
-    color:#B9D3E1;
+    color:#B6C974;
     min-height: 45px;
 }
 #notebook_to_cart h2 strong{
@@ -1516,10 +1516,13 @@ a.modelicon img{
     font-size:16px;
 }
 #note_params strong{
-    color:#B6C974;
+    color:#b6c9ff;
 }
 #models_top span{
     color:white;
     background-color:#730606;
     padding:2px;
+}
+#notebookfullname{
+    color:#B6C974;
 }
