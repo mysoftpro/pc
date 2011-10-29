@@ -1213,23 +1213,24 @@ class StoreModel(Resource):
         how['html'] = description
         return couch.saveDoc(how)
 
-    def storeModel(self, model, to_store, request):
+    def storeModel(self, model, to_store, request):        
         for k,v in to_store['model'].items():
             if k in model:
                 model[k] = v
         d = couch.saveDoc(model)
-
-        names = sorted(parts.keys(),lambda x,y: parts[x]-parts[y])
-        defs = []
-        for name,descr in zip(names,to_store['hows']):
-            _d= couch.openDoc('how_'+name)
-            _d.addCallback(self.storeHow,descr)
-            _d.addErrback(self.createHow,descr,'how_'+name)
-            defs.append(_d)
-        hows_d = defer.DeferredList(defs)
-        whole_d = defer.DeferredList((d,hows_d))
-        whole_d.addCallback(self.finish, request)
-        return whole_d
+        d.addCallback(self.finish, request)
+        return d
+        # names = sorted(parts.keys(),lambda x,y: parts[x]-parts[y])
+        # defs = []
+        # for name,descr in zip(names,to_store['hows']):
+        #     _d= couch.openDoc('how_'+name)
+        #     _d.addCallback(self.storeHow,descr)
+        #     _d.addErrback(self.createHow,descr,'how_'+name)
+        #     defs.append(_d)
+        # hows_d = defer.DeferredList(defs)
+        # whole_d = defer.DeferredList((d,hows_d))
+        # whole_d.addCallback(self.finish, request)
+        # return whole_d
 
     def render_POST(self, request):
         to_store = request.args.get('to_store')[0]
