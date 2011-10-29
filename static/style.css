@@ -1515,3 +1515,11 @@ a.modelicon img{
     margin-top:20px;
     font-size:16px;
 }
+#note_params strong{
+    color:#B6C974;
+}
+#models_top span{
+    color:white;
+    background-color:#730606;
+    padding:2px;
+}
