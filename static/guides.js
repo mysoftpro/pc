@@ -108,13 +108,13 @@ head.ready(function()
 						   width: 160
 					       }).show();
 
-			   guider.createGuider({
-						   attachTo: "#7399 .body",
-						   description: "Название выбранного компонента",
-						   id: "body",
-						   position: 7,
-						   width: 100
-					       }).show();
+			   // guider.createGuider({
+			   // 			   attachTo: ".body",
+			   // 			   description: "Название выбранного компонента",
+			   // 			   id: "body",
+			   // 			   position: 7,
+			   // 			   width: 100
+			   // 		       }).show();
 
 			   guider.createGuider({
 						   attachTo: "#7388 .cheaper",
