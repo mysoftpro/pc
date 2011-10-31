@@ -1531,7 +1531,7 @@ a.modelicon img{
     font-size:14px;
     margin-top:30px;
 }
-#faq_top input,#faq_answer input{
+#faq_top input,#faqanswer input{
     display:block;
     padding:2px;
     
@@ -1555,7 +1555,7 @@ a.modelicon img{
     padding-right:10px;
     padding-top:10px;
 }
-#sendfaq{
+.sendfaq{
     background: url("/static/square_buttons.png") no-repeat scroll 0 0 transparent;
     cursor: pointer;
     background-position: 0 -91px;
@@ -1588,6 +1588,7 @@ a.modelicon img{
 }
 .faqrecord{
     padding:10px;
+    margin-top:10px;
 }
 .faqlinks a{
     cursor:pointer;

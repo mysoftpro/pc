@@ -12,7 +12,8 @@ def renderFaq(res, template,skin, request):
     
     faqs = template.middle.find('div')
     for r in res['rows']:
-        faq_viewlet = deepcopy(template.root().find('faq'))
+        faq_viewlet = deepcopy(template.root().find('faq').find('div'))
+        faq_viewlet.set('id',r['doc']['_id'])
         author = faq_viewlet.xpath('//div[@class="faqauthor"]')[0]
         if 'name' in r['doc']:
             author.text = r['doc']['name']
@@ -36,10 +37,10 @@ def faq(template, skin, request):
 
 class StoreFaq(Resource):
     def finish(self, res, doc, request):
-        send_email('admin@buildpc.ru',
-                   u'Кто-то оставил сообщение',
-                   simplejson.dumps(doc),
-                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        # send_email('admin@buildpc.ru',
+        #            u'Кто-то оставил сообщение',
+        #            simplejson.dumps(doc),
+        #            sender=u'Компьютерный магазин <inbox@buildpc.ru>')
         request.write(str(res['id']))
         request.finish()
     def storeNameOrEmail(self, user_doc, name=None, email=None):
@@ -81,6 +82,9 @@ class StoreFaq(Resource):
         if name is not None or email is not None:
             u = couch.openDoc(request.getCookie('pc_user'))
             u.addCallback(self.storeNameOrEmail, unicode(name, 'utf-8'), email)
+        parent = request.args.get('parent',[None])
+        if parent[0] is not None:
+            doc['parent'] = parent
         d = couch.saveDoc(doc)
         d.addCallback(self.finish, doc, request)
         return NOT_DONE_YET               
