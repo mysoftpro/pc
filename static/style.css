@@ -258,7 +258,7 @@ background-color: #3F3F3F;
     opacity:0.0;
     color:#B9D3E1;
 }
-#faqli a{opacity:0.0;color:#B9D3E1;}
+#faqli a{opacity:0.0;}/* color:#B9D3E1;*/
 #phone {
     background-image:url("/static/phone.jpg");
     background-repeat:repeat-x;

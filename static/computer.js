@@ -1416,6 +1416,7 @@ function to_cartSuccess(data){
 	    cart_el.text('Корзина('+int_amo+')');
 	}
 	else{
+	    $('#faqli a').css('margin-top','18px');
 	    $('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
 					      {
 						  cart:$.cookie('pc_user')
