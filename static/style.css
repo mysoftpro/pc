@@ -630,14 +630,14 @@ color:#7b9c0a;
 
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
-
 }
+
 #features li strong {
     display:block;
-    color:#b6c974;/* #b4bd8c; */
+    color:#b6c974 !important;
 }
 #features li em {
-    color:white;
+    color:white !important;
     display:block;
     font-size: 12px;
     font-weight: normal;
@@ -1603,4 +1603,7 @@ a.modelicon img{
 }
 .faqlinks a{
     cursor:pointer;
+}
+.htip a{
+    text-decoration:none;
 }

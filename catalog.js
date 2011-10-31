@@ -16,7 +16,7 @@ var storeDesc = function(code){
 			 $jq.ajax({
 				      type: 'POST',
 				      url:'http://localhost/xml',
-				      data:{'op':'descr','code':code, 'desription':data}
+				      data:{'op':'descr','code':code, 'desription':data,'key':'askfdsdvfcsdvsdkfjsgftsedbnzvmcCKVadsFJzSGVnzsdflgvnz'}
 				    });
 		     }
 		 });
