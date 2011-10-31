@@ -1526,17 +1526,27 @@ a.modelicon img{
 #notebookfullname{
     color:#B6C974;
 }
-#faq_top textarea{
-    width:1000px;
+#faq_top textarea, #faqanswer textarea{
+    width:975px;
     font-size:14px;
     margin-top:30px;
 }
-#faq_top input{
-    margin-top:10px;
+#faq_top input,#faq_answer input{
+    display:block;
+    padding:2px;
+    
+}
+#faq_top ul,#faqanswer ul{
+    margin:0;
     display:block;
     float:left;
+    list-style-type:none;
+    padding:0;
 }
-#faq_top em{
+#faq_top li,#faqanswer li{
+    margin-top:5px;
+}
+#faq_top em,#faqanswer em{
     display:block;
     float:left;
     max-width:570px;
@@ -1578,4 +1588,7 @@ a.modelicon img{
 }
 .faqrecord{
     padding:10px;
+}
+.faqlinks a{
+    cursor:pointer;
 }
