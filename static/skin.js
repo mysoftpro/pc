@@ -1,0 +1,20 @@
+function CartAndContacts(){
+    var cart = $.cookie('pc_cart');
+    if (cart){
+	$('#main_menu')
+	    .append('<li style="width:0"><a id="cart" href="/cart/' +
+		    $.cookie('pc_user')+
+		    '">Корзина('+cart+')</a></li>');
+	$('#cart').parent().animate({'width':'94px'},500);
+    }
+    function swapPhone(text){
+	return function(e){$('#phone').text(text);};
+    }
+    $('#beeline').click(swapPhone('8 (909) 792-22-39'));
+    $('#mts').click(swapPhone('8 (911) 462-42-52'));
+    $('#emailc').click(swapPhone('inbox@buildpc.ru'));
+    $('#skype').click(swapPhone('buildpc.ru'));  
+}
+head.ready(function(){
+	       CartAndContacts();
+	   });

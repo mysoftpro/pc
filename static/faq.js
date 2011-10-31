@@ -9,7 +9,7 @@ var name_initial = "имя";
 var answer_initial = "имя";
 
 head.ready(function(){
-	       var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div><div class="faqlinks">{{links}}</div></div>');
+	       var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div>{{links}}</div>');
 	       var area = $('#faq_top textarea');
 	       var email = $('#faq_top input[name="email"]');
 	       var name = $('#faq_top input[name="name"]');
@@ -71,7 +71,7 @@ head.ready(function(){
 				      var author = $.cookie('pc_user');
 				      if (to_send['name'])
 					  author = to_send['name'];
-				      var links = '<a name="answer">ответить</a>';
+				      var links = '<div class="faqlinks"><a name="answer">ответить</a></div>';
 				      var before_append = function(_html){
 					  middle.children().first().before(_html);
 				      };
@@ -84,10 +84,13 @@ head.ready(function(){
 					  before_append = function(_html){
 					      target.parent().find('.faqlinks').after(_html);
 					  };
-					  after_append = function (){return target
-								     .parent()
-								     .find('.faqlinks').next();
-								    };
+					  after_append = function (){
+					      $('#faqanswer').hide();
+					      var next = target
+						  .parent()
+						  .find('.faqlinks').next();
+					      return next;
+					  };
 				      }
 				      before_append(faq_template(
 							{'body':to_send['txt'],
@@ -95,8 +98,11 @@ head.ready(function(){
 							 'date':_date,
 							 'links':links,
 							 'klass':klass}));
-				      after_append().animate({'opacity':'1.0'},500);
-					  //.find('a').click(postAnswer);
+				      var aa = after_append();
+				      aa.attr('id',data).animate({'opacity':'1.0'},500);
+				      if (!parent){
+					      aa.find('a').click(postAnswer);
+				      }
 				  }
 			      });
 		   }
@@ -119,8 +125,8 @@ head.ready(function(){
 		   answer.find('.sendfaq').unbind('click')
 		       .click(send);
 		   _.delay(function(){
-			       pa.append(answer);
-			       answer
+			       pa.find('.faqlinks').after(answer);
+			       answer.show()
 				   .animate({'opacity':'1.0'},
 					    400);},500);
 

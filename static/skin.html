@@ -83,22 +83,7 @@ function load(_scripts){
                      head.js(top_level[i]);
                      }
     if (!_scripts['next']){
-                     head.ready(function(){
-                            var cart = $.cookie('pc_cart');
-                           if (cart){
-                               $('#main_menu')
-                                   .append('<li><a id="cart" href="/cart/' +
-                                           $.cookie('pc_user')+
-                                           '">Корзина('+cart+')</a></li>');
-                           }
-                           function swapPhone(text){
-                               return function(e){$('#phone').text(text);};
-                           }
-                           $('#beeline').click(swapPhone('8 (909) 792-22-39'));
-                           $('#mts').click(swapPhone('8 (911) 462-42-52'));
-                           $('#emailc').click(swapPhone('inbox@buildpc.ru'));
-                           $('#skype').click(swapPhone('buildpc.ru'));
-                       });
+                     head.ready(function(){head.js('/static/skin.js')});
     }
     else{
           head.ready(function(){load(_scripts['next'])});
