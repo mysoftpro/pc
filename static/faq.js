@@ -9,13 +9,13 @@ var name_initial = "имя";
 var answer_initial = "имя";
 
 head.ready(function(){
-	       var faq_template = _.template('<div style="opacity:0" class="faqrecord"><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div><div class="faqlinks"><a name="answer">ответить</a></div></div>');
+	       var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div><div class="faqlinks">{{links}}</div></div>');
 	       var area = $('#faq_top textarea');
 	       var email = $('#faq_top input[name="email"]');
 	       var name = $('#faq_top input[name="name"]');
 	       var clear = function(txt){
 		   return function(e){
-		       
+
 		       var target = $(e.target);
 		       if (target.val() == txt)
 			   target.val('');
@@ -24,8 +24,8 @@ head.ready(function(){
 	       area.click(clear(ta_initial));
 	       email.click(clear(email_initial));
 	       name.click(clear(name_initial));
-	       function send(e){		   
-		   var target = $(e.target);		   
+	       function send(e){
+		   var target = $(e.target);
 		   while (!target.attr('id') &&
 			  target.attr('id')!=='faq_top' &&
 			  target.attr('id')!=='faqanswer'){
@@ -71,15 +71,32 @@ head.ready(function(){
 				      var author = $.cookie('pc_user');
 				      if (to_send['name'])
 					  author = to_send['name'];
-				      middle.children().first()
-					  .before(faq_template(
-						      {'body':to_send['txt'],
-						       'author':author,
-						       'date':_date}));
-				      middle
-					  .children()
-					  .first()
-					  .animate({'opacity':'1.0'},500).find('a').click(postAnswer);
+				      var links = '<a name="answer">ответить</a>';
+				      var before_append = function(_html){
+					  middle.children().first().before(_html);
+				      };
+				      var after_append = function(){return middle.children()
+								    .first();};
+				      var klass = 'faqrecord';
+				      if (parent){
+					  links = '';
+					  klass = 'faqrecord fanser';
+					  before_append = function(_html){
+					      target.parent().find('.faqlinks').after(_html);
+					  };
+					  after_append = function (){return target
+								     .parent()
+								     .find('.faqlinks').next();
+								    };
+				      }
+				      before_append(faq_template(
+							{'body':to_send['txt'],
+							 'author':author,
+							 'date':_date,
+							 'links':links,
+							 'klass':klass}));
+				      after_append().animate({'opacity':'1.0'},500);
+					  //.find('a').click(postAnswer);
 				  }
 			      });
 		   }
@@ -106,7 +123,7 @@ head.ready(function(){
 			       answer
 				   .animate({'opacity':'1.0'},
 					    400);},500);
-		   
+
 	       }
 	       $('.faqlinks a[name="answer"]').click(postAnswer);
 

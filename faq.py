@@ -31,7 +31,7 @@ def renderFaq(res, template,skin, request):
             faqs.append(faq_viewlet)
             current_record = faq_viewlet
         else:
-            faq_viewlet.set('class',faq_viewlet.get('class')+' faqanswer')
+            faq_viewlet.set('class',faq_viewlet.get('class')+' fanswer')
             faq_viewlet.remove(faq_viewlet.xpath('//div[@class="faqlinks"]')[0])
             current_record.append(faq_viewlet)        
     skin.top = template.top
