@@ -118,7 +118,7 @@ head.ready(function()
 
 			   guider.createGuider({
 						   attachTo: "#7388 .cheaper",
-						   description: "Можно менять компоненты не открывая список.",
+						   description: "Можно менять компоненты, не открывая список.",
 						   id: "cheaperBetter",
 						   position: 6,
 						   width: 130
