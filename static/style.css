@@ -249,6 +249,16 @@ background-color: #3F3F3F;
     float:right;
     height:28px;
 }
+#writeme{
+    padding-top:10px;
+    display:block;
+    float:right;
+    height:28px;
+    margin-right:8px;    
+    opacity:0.0;
+    color:#B9D3E1;
+}
+#faqli a{opacity:0.0;color:#B9D3E1;}
 #phone {
     background-image:url("/static/phone.jpg");
     background-repeat:repeat-x;
@@ -277,7 +287,7 @@ ul#main_menu li {
         float: left;
 }
 ul#main_menu li a {
-        margin: 0 0 0 22px;
+        margin: 0 0 0 16px;
         padding: 0;
         height: 18px;
         display: block;
