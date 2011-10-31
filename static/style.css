@@ -49,6 +49,7 @@ h2 {
     z-index:9999;
     text-align:right;
     margin-bottom:5px;
+    max-width:680px;
 }
 
 #face {

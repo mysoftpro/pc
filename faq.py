@@ -39,7 +39,7 @@ def renderFaq(res, template,skin, request):
     return skin.render()
 
 def faq(template, skin, request):
-    d = couch.openView(designID,'faq',include_docs=True,stale=False,
+    d = couch.openView(designID,'faq',include_docs=True,stale=True,
                        startkey=['z'],endkey=['1'], descending=True,limit=20)
     d.addCallback(renderFaq, template, skin, request)
     return d
