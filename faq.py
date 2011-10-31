@@ -11,8 +11,12 @@ import simplejson
 def renderFaq(res, template,skin, request):
     
     faqs = template.middle.find('div')
+    current_record = None
     for r in res['rows']:
+        # print 'parent' in r['doc']
+        # if not 'parent' in r['doc']:
         faq_viewlet = deepcopy(template.root().find('faq').find('div'))
+        # else:
         faq_viewlet.set('id',r['doc']['_id'])
         author = faq_viewlet.xpath('//div[@class="faqauthor"]')[0]
         if 'name' in r['doc']:
@@ -23,7 +27,12 @@ def renderFaq(res, template,skin, request):
         _date.reverse()
         faq_viewlet.xpath('//div[@class="faqdate"]')[0].text = u'.'.join(_date)
         faq_viewlet.xpath('//div[@class="faqbody"]')[0].text = r['doc']['txt']
-        faqs.append(faq_viewlet)
+        if not 'parent' in r['doc']:
+            faqs.append(faq_viewlet)
+        else:
+            faq_viewlet.set('class',faq_viewlet.get('class')+' faqanswer')
+            current_record.append(faq_viewlet)
+        current_record = faq_viewlet
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
