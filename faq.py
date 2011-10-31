@@ -47,10 +47,10 @@ def faq(template, skin, request):
 
 class StoreFaq(Resource):
     def finish(self, res, doc, request):
-        # send_email('admin@buildpc.ru',
-        #            u'Кто-то оставил сообщение',
-        #            simplejson.dumps(doc),
-        #            sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        send_email('admin@buildpc.ru',
+                   u'Кто-то оставил сообщение',
+                   simplejson.dumps(doc),
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
         request.write(str(res['id']))
         request.finish()
     def storeNameOrEmail(self, user_doc, name=None, email=None):
