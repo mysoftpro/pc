@@ -29,10 +29,11 @@ def renderFaq(res, template,skin, request):
         faq_viewlet.xpath('//div[@class="faqbody"]')[0].text = r['doc']['txt']
         if not 'parent' in r['doc']:
             faqs.append(faq_viewlet)
+            current_record = faq_viewlet
         else:
             faq_viewlet.set('class',faq_viewlet.get('class')+' faqanswer')
-            current_record.append(faq_viewlet)
-        current_record = faq_viewlet
+            faq_viewlet.remove(faq_viewlet.xpath('//div[@class="faqlinks"]')[0])
+            current_record.append(faq_viewlet)        
     skin.top = template.top
     skin.middle = template.middle
     return skin.render()
