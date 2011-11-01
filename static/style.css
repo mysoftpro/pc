@@ -1611,3 +1611,6 @@ a.modelicon img{
 .htip a{
     text-decoration:none;
 }
+#how #seppage{
+    display:none;
+}

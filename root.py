@@ -62,8 +62,8 @@ def renderPartPage(doc, header, template, skin):
     title.text += header
     skin.top = template.top
     skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
+    # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
+    # skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
     return skin
 
 def partPage(template, skin, request):
