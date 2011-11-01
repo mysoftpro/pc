@@ -282,7 +282,8 @@ ul#main_menu {
     display:block;
     margin:0;
     padding:0;
-    margin-top:20px;
+    margin-top:5px;
+    float:right;
 }
 ul#main_menu li {
 	margin: 0;
@@ -997,10 +998,6 @@ strong.red{
     background-image:url('/static/info.png');
     cursor:pointer;
 }
-/* .info img { */
-/*     cursor:pointer; */
-/*     z-index:999; */
-/* } */
 
 .guider_description li {
     font-size: 11px;
