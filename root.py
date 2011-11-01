@@ -407,7 +407,7 @@ class Root(Cookable):
 
 
 class TemplateRenderrer(Cookable):
-    def __init__(self, static, name, default_name=None):
+    def __init__(self, static, name, default_name=None, title=None):
         Cookable.__init__(self)
         self.static = static
         self.name = name
