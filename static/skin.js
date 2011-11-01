@@ -1,6 +1,4 @@
-
-function CartAndContacts(){
-    
+function CartAndContacts(){    
     var cart = $.cookie('pc_cart');
     var faq = $('#faqli a');	
     if (cart){	

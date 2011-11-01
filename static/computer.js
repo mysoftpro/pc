@@ -821,7 +821,7 @@ function installOptions(){
 	else{
 	    var new_component = choices[op.val()];
 	    var initial_component = filterByCatalogs(_(model).values(),
-					 getCatalogs(new_component))[0];
+						     getCatalogs(new_component))[0];
 	    var init_option = jgetOption(select,initial_component['_id']);
 	    if (init_option.val().match('no'))
 		init_option = init_option.next();
@@ -1032,7 +1032,7 @@ function installCountButtons(body){
     var component = new_model[select.val()];
     body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
 			   '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
-			      {pcs:counters.new_count}));
+			   {pcs:counters.new_count}));
     var clickFactory = function(dir){
 	return function(e){changeComponentCount(body,dir);};
     };
@@ -1107,7 +1107,7 @@ function changeRamIfPossible(component, direction){
     var retval = false;
     if (component.count){
 	var old_component = filterByCatalogs(_(model).values(),
-					 getCatalogs(component))[0];
+					     getCatalogs(component))[0];
 	var body = jgetBodyById(old_component['_id']);
 	var counters = possibleComponentCount(body,direction);
 	if (counters.new_count<=counters.max_count && counters.new_count !=0){
@@ -1117,8 +1117,8 @@ function changeRamIfPossible(component, direction){
 	else{
 	    //TODO! do not touch fucken choices!
 	    var appr_components = _.clone(getNearestComponent(component.price,
-						      getCatalogs(component),
-						      delta, false));
+							      getCatalogs(component),
+							      delta, false));
 	    if (appr_components[0]){
 		var new_component = appr_components[0];
 		new_component['count'] = 1;
@@ -1416,7 +1416,8 @@ function to_cartSuccess(data){
 	    cart_el.text('Корзина('+int_amo+')');
 	}
 	else{
-	    $('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+	    if (!data['edit'])
+		$('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
 					      {
 						  cart:$.cookie('pc_user')
 					      }));
@@ -1463,108 +1464,111 @@ function installCounters(){
 }
 
 function checkOptions(){
-	  var options = $('#options input');
-      options.removeAttr('disabled');
-      for (var i=0;i<options.length;i++){
-	  var op = $(options.get(i));
-	  op.prop('checked',true);
-	  var _id = op.attr('id');
-	  var part = _id.substring(1,_id.length);
-	  if (_id =='odvd' && !idvd){
-	      op.prop('checked',false);
-	      continue;
-	  }
-	  if (_id =='oinstalling' && !iinstalling){
-	      op.prop('checked',false);
-	      continue;
-	  }
+    var options = $('#options input');
+    options.removeAttr('disabled');
+    for (var i=0;i<options.length;i++){
+	var op = $(options.get(i));
+	op.prop('checked',true);
+	var _id = op.attr('id');
+	var part = _id.substring(1,_id.length);
+	if (_id =='odvd' && !idvd){
+	    op.prop('checked',false);
+	    continue;
+	}
+	if (_id =='oinstalling' && !iinstalling){
+	    op.prop('checked',false);
+	    continue;
+	}
 
-	  if (_id =='obuild' && !ibuilding){
-	      op.prop('checked',false);
-	      continue;
-	  }
-	  if (!part)
-	      continue;
-	  var no_part = 'no'+parts[part];
-	  if (model[no_part])
-	      op.prop('checked',false);
-      }
-      if (model['no'+parts['soft']])
-	  $("#oinstalling").prop('checked',false).prop('disabled','disabled');
+	if (_id =='obuild' && !ibuilding){
+	    op.prop('checked',false);
+	    continue;
+	}
+	if (!part)
+	    continue;
+	var no_part = 'no'+parts[part];
+	if (model[no_part])
+	    op.prop('checked',false);
+    }
+    if (model['no'+parts['soft']])
+	$("#oinstalling").prop('checked',false).prop('disabled','disabled');
 }
 
 head.ready(function(){
-      var replaced = [];
-      for (var code in model){
-	  if (model[code]['replaced'])
-	      replaced.push(code);
-	  delete model[code]['replaced'];
-      }
-      new_model = _.clone(model);
+	       var replaced = [];
+	       for (var code in model){
+		   if (model[code]['replaced'])
+		       replaced.push(code);
+		   delete model[code]['replaced'];
+	       }
+	       new_model = _.clone(model);
 
-      checkOptions();
+	       checkOptions();
 
-      $('select').chosen().change(manualChange);
-      installBodies();
-      cheaperBetter();
-      reset();
-      var container = $('#descriptions');
-      container.jScrollPane();
-      installOptions();
+	       $('select').chosen().change(manualChange);
+	       installBodies();
+	       cheaperBetter();
+	       reset();
+	       var container = $('#descriptions');
+	       container.jScrollPane();
+	       installOptions();
 
-      installCounters();
+	       installCounters();
 
-      GCheaperGBeater();
-      switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
-      recalculate();
+	       GCheaperGBeater();
+	       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
+	       recalculate();
 
-      $('#greset').click(function(){window.location.reload();});
-      $('#tocart').click(function(e){to_cart(false);});
+	       $('#greset').click(function(){window.location.reload();});
+	       $('#tocart').click(function(e){to_cart(false);});
 
-      if (uuid && author==$.cookie('pc_user'))
-	  to_cartSuccess({'id':uuid});
+	       if (uuid && author==$.cookie('pc_user'))
+		   to_cartSuccess({'id':uuid, 'edit':true});
 
-      $('#installprice').text(installprice+' р');
-      $('#buildprice').text(buildprice+' р');
-      $('#dvdprice').text(dvdprice+' р');
+	       $('#installprice').text(installprice+' р');
+	       $('#buildprice').text(buildprice+' р');
+	       $('#dvdprice').text(dvdprice+' р');
 
-      if (author && $.cookie('pc_user')==author){
-	  for (var i=0;i<replaced.length;i++){
-	      var td = $('#'+replaced[i]);
-	      if (td.css('display')=='none')
-		  td = td.prev();
-	      td.css('border','1px solid red');	      
-	      guider.createGuider({
-						attachTo: td,
-						description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
-						position: 1,
-						width: 500
-					    }).show();
-	  }
-	  var guides = $('.guider_content');
-	  for (var i=0;i<guides.length;i++){
-	      $(guides.get(i)).find('p').before('<div class="closeg"></div>');
-	  }
-	  $('.closeg').click(function(e){
-				 $(e.target).parent().parent().remove();
-			     });
-	  if (!processing){
-	      $('#greset')
-		  .css({'background-position':'0 -45px','color':'black'})
-		  .text('Сохранить')
-		  .unbind('click')
-		  .click(function(e){
-			     try{
-				 e.preventDefault();
-				 to_cart(true);
-				 $('td.body').css('border','none');
-				 $('td.component_select').css('border','none');
-				 guider.hideAll();
-			     } catch (x) {
-				 console.log(x);
-			     }
-			     return false;
-			 });
-	  }
-      }
-  });
+	       if (author && $.cookie('pc_user')==author){
+		   for (var i=0;i<replaced.length;i++){
+		       var td = $('#'+replaced[i]);
+		       if (td.css('display')=='none')
+			   td = td.prev();
+		       td.css('border','1px solid red');	      
+		       guider.createGuider({
+					       attachTo: td,
+					       description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
+					       position: 1,
+					       width: 500
+					   }).show();
+		   }
+		   var guides = $('.guider_content');
+		   for (var i=0;i<guides.length;i++){
+		       $(guides.get(i)).find('p').before('<div class="closeg"></div>');
+		   }
+		   $('.closeg').click(function(e){
+					  $(e.target).parent().parent().remove();
+				      });
+		   if (!processing){
+		       $('#greset')
+			   .css({'background-position':'0 -45px','color':'black'})
+			   .text('Сохранить')
+			   .unbind('click')
+			   .click(function(e){
+				      try{
+					  e.preventDefault();
+					  to_cart(true);
+					  $('td.body').css('border','none');
+					  $('td.component_select').css('border','none');
+					  guider.hideAll();
+				      } catch (x) {
+					  console.log(x);
+				      }
+				      return false;
+				  });
+		   }
+	       }
+	       // if (document.location.hash == '#master'){
+	       // 	   head.js('/static/master.js');
+	       // }
+	   });
