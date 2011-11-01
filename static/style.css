@@ -995,6 +995,7 @@ strong.red{
     width:30px;
     height:30px;
     background-image:url('/static/info.png');
+    cursor:pointer;
 }
 /* .info img { */
 /*     cursor:pointer; */
