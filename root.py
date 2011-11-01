@@ -24,7 +24,17 @@ from copy import deepcopy
 from pc.mail import Sender
 from pc.faq import faq, StoreFaq
 
-def simplePage(template, skin, request):
+simple_titles = {
+    '/howtochoose':u' Как выбирать компьютер.',
+    '/howtouse':u' Как пользоваться сайтом.',
+    '/howtobuy':u' Как покупать.',
+    '/warranty':u' Гарантии.'
+}
+
+def simplePage(template, skin, request):    
+    if request.path in simple_titles:
+        title = skin.root().xpath('//title')[0]
+        title.text += simple_titles[request.path]
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
