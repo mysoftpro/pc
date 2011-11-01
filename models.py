@@ -463,7 +463,8 @@ def renderComputer(model, template, skin):
                                                     ';var Course=',str(Course),
                                                     ';var parts=',simplejson.dumps(parts_aliases)
                                                     ))
-
+    title = skin.root().xpath('//title')[0]
+    title.text += u' Изменение конфигурации компьютера '+_name
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
@@ -817,6 +818,8 @@ def computers(template,skin,request):
                 
                 container.append(note)
         template.middle.find('script').text = 'var prices=' + _prices;
+        title = skin.root().xpath('//title')[0]
+        title.text += u' Готовые модели компьютеров'
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
@@ -1101,7 +1104,8 @@ def notebooks(template, skin, request):
             json_notebooks.update({r['doc']['_id']:r['doc']})
         
         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
-
+        title = skin.root().xpath('//title')[0]
+        title.text += u' Ноутбуки Asus'
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
