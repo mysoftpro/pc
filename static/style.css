@@ -251,6 +251,7 @@ p {
     display:block;
     float:right;
     height:28px;
+    width:200px;
 }
 #writeme{
     padding-top:10px;

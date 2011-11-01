@@ -3,8 +3,8 @@ function CartAndContacts(){
     var cart = $.cookie('pc_cart');
     var faq = $('#faqli a');	
     if (cart){
-	faq.css('margin-top','18px');
-	$('#writeme').css('margin-right','80px');
+	//faq.css('margin-top','18px');
+	//$('#writeme').css('margin-right','80px');
 	$('#main_menu')
 	    .append('<li style="width:0;"><a id="cart" href="/cart/' +
 		    $.cookie('pc_user')+
