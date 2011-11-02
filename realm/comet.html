@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
+    <script type="text/javascript" src="/static/underscore-min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+      $('#show').click(function(e){
+      $.ajax({
+      url:'comet',
+      success:function(data){
+          for (var i=0;i<data.length;i++){
+          $('body').append('<input type="submit" name="' + i + '" class="user" value="'+data[i]+'"/>');
+      $('.user').click(function(e){
+         var _id = $(e.target).val();
+         $.ajax({'url':'acceptComet', 'data':{'id':_id}, success:function(data){
+                                           if (data=="ok")alert('получилось!');}});
+      })
+      }
+      }            
+      })
+      });
+      });
+    </script>
+  </head>
+<body>
+  <input id="show" type="submit" value="Пользователи онлайн"/>
+</body>
+</html>

@@ -434,7 +434,7 @@ class Root(Cookable):
 class Comet(Resource):
     def finish(self, request):
         user = request.getCookie('pc_user')
-        if user in globals()['_comet_users'] and globals()['_comet_users'][user]:
+        if user in globals()['_comet_users']:# and globals()['_comet_users'][user]:
             request.write('ok')
         else:
             request.write('fail')
@@ -449,9 +449,9 @@ class Comet(Resource):
     def render_GET(self, request):
         user = request.getCookie('pc_user')
         if user not in globals()['_comet_users']:
-            globals()['_comet_users'].update({user:False})
+            globals()['_comet_users'].update({user:request})
 
-        call = reactor.callLater(5, self.finish, request)
+        call = reactor.callLater(60, self.finish, request)
         request.notifyFinish().addErrback(self.fail, call, user)
         return NOT_DONE_YET
         
@@ -928,6 +928,8 @@ class AdminGate(Resource):
         self.putChild('warranty', WarrantyFill())
         self.putChild('show_how', ShowHow())
         self.putChild('edit_how', EditHow())        
+        self.putChild('comet', AdminComet())
+        self.putChild('acceptComet', AcceptComet())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -1373,3 +1375,23 @@ class EditHow(Resource):
         d = couch.saveDoc(simplejson.loads(doc))
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
+
+
+class AdminComet(Resource):
+    def render_GET(self, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(globals()['_comet_users'].keys()))
+        request.finish()
+
+
+class AcceptComet(Resource):
+    def render_GET(self, request):
+        _id = request.args.get('id', [None])[0]
+        if _id is not None and _id in globals()['_comet_users']:
+            globals()['_comet_users'][_id].write('ok')
+            globals()['_comet_users'][_id].finish()
+            globals()['_comet_users'].pop(_id)
+            return "ok"
+        return "fail"
+
