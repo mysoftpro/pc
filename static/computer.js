@@ -1577,7 +1577,7 @@ head.ready(function(){
 				     success:function(data){
 					 if (data == "ok"){
 					     $('#model_area')
-						 .html('<iframe id="chatframe" src="http://localhost:8080"></iframe>');
+						 .html('<iframe id="chatframe" src="http://buildpc.ru:8080"></iframe>');
 					 }
 				     }
 				 });}, 1000);
