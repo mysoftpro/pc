@@ -1618,3 +1618,7 @@ a.modelicon img{
     color:#B9D3E1;
     opacity:0;
 }
+#chatframe{
+    width:520px;
+    margin-right:10px;
+}
