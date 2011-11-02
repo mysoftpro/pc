@@ -433,24 +433,17 @@ class Root(Cookable):
 
 class Comet(Resource):
     def finish(self, request):
-        user = request.getCookie('pc_user')
-        if user in globals()['_comet_users']:# and globals()['_comet_users'][user]:
-            request.write('ok')
-        else:
-            request.write('fail')
-        if user in globals()['_comet_users']:
-            globals()['_comet_users'].pop(user)
+        request.write('fail')
         request.finish()
 
     def fail(self, err, call, user):
         if user in globals()['_comet_users']:
             globals()['_comet_users'].pop(user)
         call.cancel()
-    def render_GET(self, request):
+    def render_GET(self, request): 
         user = request.getCookie('pc_user')
         if user not in globals()['_comet_users']:
             globals()['_comet_users'].update({user:request})
-
         call = reactor.callLater(60, self.finish, request)
         request.notifyFinish().addErrback(self.fail, call, user)
         return NOT_DONE_YET
