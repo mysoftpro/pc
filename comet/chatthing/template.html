@@ -3,18 +3,17 @@
     nevow:render="liveElement">
     <form name="chatBox">
         <athena:handler event="onsubmit" handler="doSay" />
-        <div name="scrollArea" 
-             style="border: 1px solid gray; padding: 5; margin: 5">
+        <div name="scrollArea" class="scrollArea">
         </div>
         <div name="sendLine" style="display: none">
-	  <div>Текст сообщения</div>
-	  <input name="userMessage" /><input type="submit" value="Отправить" />
+	  <div class="invitation">Текст сообщения</div>
+	  <input class="textInput" name="userMessage" />
+	  <input class="submitInput" type="submit" value="Отправить" />
 	</div>
     </form>
     <form name="chooseBox">
         <athena:handler event="onsubmit" handler="doSetUsername" />
         Выберите имя: <input name="username" />
-        <input type="submit" name="GO" value="Установить"/>
-    </form>
-    <div name="loggedInAs" style="display:none"><span>Вы под именем </span></div>
+        <input type="submit" class="submitInput" name="GO" value="Отправить"/>
+    </form>    
 </div>

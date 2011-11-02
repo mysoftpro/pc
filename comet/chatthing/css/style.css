@@ -1,3 +1,36 @@
 body{
- color:#7fa00b;   
+    color:#7fa00b;   
+}
+
+.scrollArea {
+    border: 1px solid gray; 
+    background-color: #333333;
+    border: 1px solid #777777;
+    border-radius: 5px 5px 5px 5px;
+    padding: 5; 
+    margin: 5;
+    font-size:12px;
+    
+}
+.invitation{
+    color:#999;
+    font-size:12px;
+    margin-left:5px;
+}
+input{
+    width:400px;
+    background-color: #444444;
+    border: 1px solid #777777;
+    border-radius: 5px 5px 5px 5px;
+    color: #BBBBBB;
+    font-size: 16px;
+    padding: 2px;
+    margin-left: 5px;
+    margin-top: 2px;
+}
+.submitInput{
+     background-color:#AAAAAA !important;
+     width:auto !important;
+     color:black !important;
+     font-size:12px !important;
 }

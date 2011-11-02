@@ -1534,7 +1534,7 @@ head.ready(function(){
 		       var td = $('#'+replaced[i]);
 		       if (td.css('display')=='none')
 			   td = td.prev();
-		       td.css('border','1px solid red');	      
+		       td.css('border','1px solid red');
 		       guider.createGuider({
 					       attachTo: td,
 					       description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
@@ -1570,8 +1570,18 @@ head.ready(function(){
 	       }
 	       $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 	       $('#addplease').animate({'opacity':'1.0'},1000);
-	       $('#model_area').html('<iframe id="chatframe" src="http://localhost:8080"></iframe>');
-	       if (document.location.hash == '#master'){
-	       	   head.js('/static/master.js');
-	       }
+
+	       _.delay(function(){
+			  $.ajax({
+				     url:'/comet',
+				     success:function(data){
+					 if (data == "ok"){
+					     $('#model_area')
+						 .html('<iframe id="chatframe" src="http://localhost:8080"></iframe>');
+					 }
+				     }
+				 });}, 1000);
+	       // if (document.location.hash == '#master'){
+	       // 	   head.js('/static/master.js');
+	       // }
 	   });

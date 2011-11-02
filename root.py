@@ -23,6 +23,7 @@ from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
 from pc.faq import faq, StoreFaq
+from twisted.internet.task import deferLater
 
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер.',
@@ -365,6 +366,7 @@ class Cookable(Resource):
                               expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
 
+_comet_users = {}
 
 class Root(Cookable):
     def __init__(self, host_url, index_page):
@@ -416,6 +418,9 @@ class Root(Cookable):
         self.putChild('sitemap.xml',SiteMap())
         self.putChild('robots.txt',File(os.path.join(static_dir,'robots.txt')))
 
+        self.putChild('comet', Comet())
+
+
     def getChild(self, name, request):
         self.checkCookie(request)
         u = str(request.URLPath())
@@ -424,6 +429,32 @@ class Root(Cookable):
         return self
 
 
+
+
+class Comet(Resource):
+    def finish(self, request):
+        user = request.getCookie('pc_user')
+        if user in globals()['_comet_users'] and globals()['_comet_users'][user]:
+            request.write('ok')
+        else:
+            request.write('fail')
+        if user in globals()['_comet_users']:
+            globals()['_comet_users'].pop(user)
+        request.finish()
+
+    def fail(self, err, call, user):
+        if user in globals()['_comet_users']:
+            globals()['_comet_users'].pop(user)
+        call.cancel()
+    def render_GET(self, request):
+        user = request.getCookie('pc_user')
+        if user not in globals()['_comet_users']:
+            globals()['_comet_users'].update({user:False})
+
+        call = reactor.callLater(5, self.finish, request)
+        request.notifyFinish().addErrback(self.fail, call, user)
+        return NOT_DONE_YET
+        
 
 class TemplateRenderrer(Cookable):
     def __init__(self, static, name, default_name=None, title=None):

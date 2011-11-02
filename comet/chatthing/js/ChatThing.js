@@ -7,7 +7,7 @@ Nevow.Athena.Widget.subclass(ChatThing, 'ChatterWidget').methods(
 	self.sendLine = self.nodeByAttribute('name', 'sendLine');
         self.usernameField = self.nodeByAttribute('name', 'username');
         self.userMessage = self.nodeByAttribute('name', 'userMessage');
-        self.loggedInAs = self.nodeByAttribute('name', 'loggedInAs');
+        //self.loggedInAs = self.nodeByAttribute('name', 'loggedInAs');
     },
 
     function doSetUsername(self) {
@@ -16,8 +16,8 @@ Nevow.Athena.Widget.subclass(ChatThing, 'ChatterWidget').methods(
             function (result) {
                 self.chooseBox.style.display = "none";
                 self.sendLine.style.display = "block";
-                self.loggedInAs.appendChild(document.createTextNode(username));
-                self.loggedInAs.style.display = "block";
+                //self.loggedInAs.appendChild(document.createTextNode(username));
+                //self.loggedInAs.style.display = "block";
             });
         return false;
     },
