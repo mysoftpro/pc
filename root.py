@@ -111,7 +111,13 @@ class SiteMap(Resource):
         loc.text = 'http://buildpc.ru/'+location
         lastmod = etree.Element('lastmod')
         today = datetime.today()
-        lastmod.text = '-'.join((str(today.year),str(today.month),str(today.day)))
+        _mo = str(today.month)
+        if (len(_mo))==1:
+            _mo = "0"+_mo
+        _da = str(today.day)
+        if (len(_da))==1:
+            _da = "0"+_da
+        lastmod.text = '-'.join((str(today.year),_mo,_da))
         changefreq = etree.Element('changefreq')
         changefreq.text = freq
         priority = etree.Element('priority')
@@ -125,6 +131,7 @@ class SiteMap(Resource):
     def siteMap(self, models, request):
         request.setHeader('Content-Type', 'text/xml;charset=utf-8')
         root = etree.XML('<urlset></urlset>')
+        root.set('xmlns',"http://www.sitemaps.org/schemas/sitemap/0.9")
         root.append(self.buildElement(''))
         root.append(self.buildElement('computer'))
         for model in models['rows']:
