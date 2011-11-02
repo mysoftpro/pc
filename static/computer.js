@@ -1571,16 +1571,16 @@ head.ready(function(){
 	       $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 	       $('#addplease').animate({'opacity':'1.0'},1000);
 
-	       // _.delay(function(){
-	       // 		  $.ajax({
-	       // 			     url:'/comet',
-	       // 			     success:function(data){
-	       // 				 if (data == "ok"){
-	       // 				     $('#model_area')
-	       // 					 .html('<iframe id="chatframe" src="http://buildpc.ru:8080"></iframe>');
-	       // 				 }
-	       // 			     }
-	       // 			 });}, 1000);
+	       _.delay(function(){
+	       		  $.ajax({
+	       			     url:'/comet',
+	       			     success:function(data){
+					 if (data == "ok"){
+	       				     $('#model_area')
+	       					 .html('<iframe id="chatframe" src="http://buildpc.ru:8080"></iframe>');
+	       				 }
+	       			     }
+	       			 });}, 1000);
 	       // if (document.location.hash == '#master'){
 	       // 	   head.js('/static/master.js');
 	       // }
