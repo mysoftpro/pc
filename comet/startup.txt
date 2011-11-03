@@ -1,0 +1,1 @@
+twistd athena-widget --element=chatthing.chatterbox.chat

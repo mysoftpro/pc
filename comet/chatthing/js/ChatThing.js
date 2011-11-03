@@ -29,9 +29,11 @@ Nevow.Athena.Widget.subclass(ChatThing, 'ChatterWidget').methods(
     },
 
     function displayMessage(self, message) {
-        var newNode = document.createElement('div');
-        newNode.appendChild(document.createTextNode(message));
-        self.scrollArea.appendChild(newNode);
+        var newNode = document.createElement('div');	
+        newNode.appendChild(document.createTextNode(message));        
+	self.scrollArea.appendChild(newNode);
+	if (message.match('_'))
+	    newNode.style.color = '#B9D3E1';
         document.body.scrollTop = document.body.scrollHeight;
     },
 
