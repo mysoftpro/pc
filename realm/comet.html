@@ -22,12 +22,18 @@
       }            
       })
       });
-		$('#show').click();	   
+		$('#show').click();
+	        _.delay(function(){window.location.href=window.location.href},10000);
+			   $('#clear').click(function(e){
+			   $.ajax({'url':'acceptComet', 'data':{'clear':'clear'}});
 			   });
+});			   
+			   
     </script>
   </head>
 <body>
   <input id="show" type="submit" value="Пользователи онлайн"/>
+  <input id="clear" type="submit" value="Почистить"/>
   <div id="buttons"></div>
 </body>
 </html>

@@ -1386,5 +1386,8 @@ class AcceptComet(Resource):
             globals()['_comet_users'][_id].finish()
             globals()['_comet_users'].pop(_id)
             return "ok"
+        _clear = request.args.get('clear', [None])[0]
+        if _clear is not None:
+            globals()['_comet_users'] = {}
+            return "ok"
         return "fail"
-
