@@ -1,5 +1,6 @@
 $(function(){
       var description = $('#model_description');
+      $('#addplease').remove();
       var textarea = $(document.createElement('textarea'));
       textarea.val(description.html());
       textarea.css('width','500px');
