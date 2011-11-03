@@ -10,8 +10,9 @@
       $.ajax({
       url:'comet',
       success:function(data){
+          $('#buttons').html('');
           for (var i=0;i<data.length;i++){
-          $('body').append('<input type="submit" name="' + i + '" class="user" value="'+data[i]+'"/>');
+          $('#buttons').append('<input type="submit" name="' + i + '" class="user" value="'+data[i]+'"/>');
       $('.user').click(function(e){
          var _id = $(e.target).val();
          $.ajax({'url':'acceptComet', 'data':{'id':_id}, success:function(data){
@@ -21,10 +22,12 @@
       }            
       })
       });
-      });
+		$('#show').click();	   
+			   });
     </script>
   </head>
 <body>
   <input id="show" type="submit" value="Пользователи онлайн"/>
+  <div id="buttons"></div>
 </body>
 </html>
