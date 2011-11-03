@@ -447,7 +447,7 @@ function installBodies(){
 		     var _id = target.attr('id');
 		     for (var i=0,l=bodies.length;i<l;i++){
 			 var _body = $(bodies.get(i));
-			 _body.html(_body.text());
+			 _body.html(_body.html());
 			 var select_block = jgetSelectBlock(_body);
 			 if (_body.attr('id') == _id){
 			     current_row = _body.parent().attr('id');
@@ -474,7 +474,8 @@ function installBodies(){
 		 });
     //what a fuck is that? ff caches select values? chosen sucks?
     for (var j=0,l=bodies.length;j<l;j++){
-	var b = $(bodies.get(j));
+	var b = $(bodies.get(j));	
+	b.html(b.text());	
 	var select = jgetSelect(b);
 	var _id = b.attr('id');
 	select.val(_id);
@@ -488,6 +489,7 @@ function installBodies(){
 	}
 	var te = b.text();
 	b.text(te.substring(0,80));
+	//b.text(b.text().replace(/<font [^>]*>/g,'').replace('!','').replace('!','').replace('!','').replace('SALE',''));
 	// if (j==0)
 	//     updateDescription(_id, _id);
     }
