@@ -1,15 +1,26 @@
-function CartAndContacts(){    
+function CartAndContacts(){
     var cart = $.cookie('pc_cart');
-    var faq = $('#faqli a');	
-    if (cart){	
+    var faq = $('#faqli a');
+    if (cart){
+	var link = $.cookie('pc_user');
+	if (document.location.href.match('skin')){
+	    var splitted = document.location.search.split('?')[1];
+	    var pairs = splitted.split('&');
+	    for (var i=0;i<pairs.length;i++){
+		var spli = pairs[i].split('=');
+		if (spli[0]=='skin'){
+		    link+='?skin='+spli[1];
+		    break;
+		}
+	    }
+	}
 	$('#main_menu')
-	    .append('<li style="width:0;"><a id="cart" href="/cart/' +
-		    $.cookie('pc_user')+
+	    .append('<li style="width:0;"><a id="cart" href="/cart/' +link+
 		    '">Корзина('+cart+')</a></li>');
 	$('#cart').parent().animate({'width':'94px'},400);
     }
     if (!document.location.href.match('faq'))
-	_.delay(function(){	   	    
+	_.delay(function(){
 		    faq.animate({opacity:'1'},300);
 		}, 800);
 
@@ -24,4 +35,17 @@ function CartAndContacts(){
 
 head.ready(function(){
 	       CartAndContacts();
+	       var astro = $('#astro');
+	       astro.attr('href',document.location.href.split('?')[0]);	       
+	       var autumn = $('#autumn');
+	       autumn.attr('href',document.location.href.split('?')[0]+'?skin=home');
+	       // if (document.location.search.match('skin')){
+	       // 	   autumn.css('margin-left','-5px');
+	       // 	   astro.css('margin-left','5px');
+	       // }
+	       // else{
+	       // 	   autumn.css('margin-left','5px');
+	       // 	   astro.css('margin-left','-5px');
+	       // }
+
 	   });

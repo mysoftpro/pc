@@ -132,7 +132,7 @@ head.ready(function(){
 				    var descr = doc['description'];
 				    note_description.animate({'opacity':'0.0'}, 300);
 				    note_description.jScrollPaneRemove();
-				    var name = '<strong style="color:#B6C974">'+descr['name']+'</strong>';
+				    var name = '<strong id="ndname">'+descr['name']+'</strong>';
 				    $('#notebookfullname').text(descr['name']);
 				    note_description
 					.html(name+'<br/>'+descr['comments']);

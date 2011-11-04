@@ -13,7 +13,12 @@ function getPartName(_id){
 }
 
 function blink($target, bcolor){
-    $target.css('background-color','#7B9C0A');
+    var color = '#7B9C0A';
+    if (document.location.href.match('home')){
+	color = '#ffba62';
+	bcolor = '#ddd';
+    }
+    $target.css('background-color',color);
     _.delay(function(e){$target.css('background-color',bcolor);},200);
 }
 
@@ -1574,6 +1579,7 @@ head.ready(function(){
 		   $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 		   $('#addplease').animate({'opacity':'1.0'},1000);
 	       }	       
+
 
 	       _.delay(function(){
 	       		  $.ajax({
