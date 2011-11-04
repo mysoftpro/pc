@@ -700,6 +700,13 @@ def computer(template, skin, request):
     return d
 
 
+
+model_categories = {'home':['storage','spline','shade'],
+                    'work':['compiler','render','raytrace'],
+                    'admin':['ping','cell','zoom'],
+                    'game':['compiler','render','raytrace']}
+
+
 class ModelForModelsPage(object):
     def __init__(self, request, model, model_snippet, this_is_cart, json_prices, icon, container):
 	self.model_snippet = model_snippet
@@ -713,6 +720,7 @@ class ModelForModelsPage(object):
         divs = self.model_snippet.findall('div')
         self.model_div = divs[0]
         self.description_div = divs[1]
+        self.category = request.args.get('cat',[None])[0]
 
     def fillModelDiv(self):	
 	if 'processing' in self.model and self.model['processing']:
@@ -732,8 +740,7 @@ class ModelForModelsPage(object):
 	    self.icon.set('href','/computer/'+self.model['_id'])
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
-        if not self.this_is_cart:
-            self.model_div.set('id','m'+self.model['_id'])
+        
 	self.container.append(self.model_div)
 
     def fillDescriptionDiv(self):
@@ -759,7 +766,19 @@ class ModelForModelsPage(object):
     def render(self):
         self.fillModelDiv()
         self.fillDescriptionDiv()
-
+        if not self.this_is_cart:
+            self.model_div.set('id','m'+self.model['_id'])
+            if self.category in model_categories:
+                if self.model['_id'] in model_categories[self.category]:                    
+                    div = etree.Element('div')
+                    div.set('id', 'desc_'+self.model_div.get('id'))
+                    div.set('class', 'full_desc')
+                    if 'modeldesc' in self.model:
+                        div.text = self.model['modeldesc']
+                    self.container.append(div)
+                else:
+                    self.model_div.set('style',"height:0;overflow:hidden")
+                    self.description_div.set('style',"height:0;overflow:hidden")
 
 class NoteBookForCartPage(object):
     def __init__(self,notebook, note, note_results, icon, container):
