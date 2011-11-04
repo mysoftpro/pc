@@ -53,4 +53,9 @@ head.ready(function(){
 	       var joined = pairs_filtered.join('&');
 	       astro.attr('href','?'+joined);
 	       autumn.attr('href','?'+joined+'&skin=home');
+	       	       
+	       if ($.browser.opera){
+	       	   $('html').css('height','auto');
+	       }
+
 	   });
