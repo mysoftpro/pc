@@ -40,7 +40,7 @@ head.ready(function(){
 
 	       var splitted = document.location.search.split('?')[1];
 	       if (splitted==undefined){
-		   $('#autumn').attr('href','?skin=home');
+		   $('#autumn').attr('href','?'+'skin=home');
 		   return;
 	       }
 	       var pairs = splitted.split('&');

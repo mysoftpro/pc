@@ -27,9 +27,9 @@
   <script type="text/javascript">
     scripts['next'] = {'top':['/static/jquery.cookie.min.js']};
     head.ready(function(){
-        var splitted = document.location.href.split('/');
-        $('#h'+splitted[splitted.length-1]).remove();
-        //$('#how').html($('#how').text())
+        var url = document.location.href.split('?')[0];
+        var splitted = url.split('/');
+        $('#h'+splitted[splitted.length-1]).remove();        
     });
   </script>
 </middle>
