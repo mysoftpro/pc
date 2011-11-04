@@ -326,7 +326,7 @@ class CachedStatic(File):
 		d = self.renderTemplate(fileForReading, last_modified, request)
 		d.addCallback(self._gzip, None, last_modified)
 		d.addCallback(self.render_GSIPPED, request)
-		d.addErrback(lambda e:request.finish())
+		# d.addErrback(lambda e:request.finish())
 		return NOT_DONE_YET
 	    else:
 		content = fileForReading.read()
@@ -336,8 +336,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-	if _name is not None and "js" in _name and "min." not in _name:
-	    _content = jsmin(_content)
+	# if _name is not None and "js" in _name and "min." not in _name:
+	#     _content = jsmin(_content)
 	buff = StringIO()
 	f = gzip.GzipFile(_name,'wb',9, buff)
 	f.write(_content)
@@ -439,7 +439,7 @@ class Root(Cookable):
 	self.putChild('robots.txt',File(os.path.join(static_dir,'robots.txt')))
 
 	self.putChild('comet', Comet())
-
+        self.putChild('modeldesc', ModelDesc())
 
     def getChild(self, name, request):
 	self.checkCookie(request)
@@ -449,10 +449,27 @@ class Root(Cookable):
 	return self
 
 
+class ModelDesc(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'text/html;charset=utf-8')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        if 'modeldesc' in doc:
+            request.write(doc['modeldesc'].encode('utf-8'))
+        request.finish()
 
+    def render_GET(self, request):        
+        _id = request.args.get('id', [None])[0]
+        if _id is not None:
+            d = couch.openDoc(_id)
+            d.addCallback(self.finish, request)
+            d.addErrback(lambda x: request.finish())
+            return NOT_DONE_YET
+        request.finish()
 
 class Comet(Resource):
-    def finish(self, request):
+    def finish(self, request, user):
+        if user in globals()['_comet_users']:
+	    globals()['_comet_users'].pop(user)
 	request.write('fail')
 	request.finish()
 
@@ -464,7 +481,7 @@ class Comet(Resource):
 	user = request.getCookie('pc_user')
 	if user not in globals()['_comet_users']:
 	    globals()['_comet_users'].update({user:request})
-	call = reactor.callLater(60, self.finish, request)
+	call = reactor.callLater(60, self.finish, request, user)
 	request.notifyFinish().addErrback(self.fail, call, user)
 	return NOT_DONE_YET
 

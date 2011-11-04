@@ -35,17 +35,22 @@ function CartAndContacts(){
 
 head.ready(function(){
 	       CartAndContacts();
-	       var astro = $('#astro');
-	       astro.attr('href',document.location.href.split('?')[0]);	       
-	       var autumn = $('#autumn');
-	       autumn.attr('href',document.location.href.split('?')[0]+'?skin=home');
-	       // if (document.location.search.match('skin')){
-	       // 	   autumn.css('margin-left','-5px');
-	       // 	   astro.css('margin-left','5px');
-	       // }
-	       // else{
-	       // 	   autumn.css('margin-left','5px');
-	       // 	   astro.css('margin-left','-5px');
-	       // }
+	       var astro = $('#astro');	       
+	       var autumn = $('#autumn');	       
 
+	       var splitted = document.location.search.split('?')[1];
+	       if (splitted==undefined){
+		   $('#autumn').attr('href','?skin=home');
+		   return;
+	       }
+	       var pairs = splitted.split('&');
+	       var pairs_filtered = [];
+	       for (var i=0;i<pairs.length;i++){
+		   var spli = pairs[i].split('=');
+		   if (spli[0]=='skin')continue;
+		   pairs_filtered.push(pairs[i]);
+	       }
+	       var joined = pairs_filtered.join('&');
+	       astro.attr('href','?'+joined);
+	       autumn.attr('href','?'+joined+'&skin=home');
 	   });

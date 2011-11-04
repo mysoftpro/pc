@@ -1647,3 +1647,31 @@ a.modelicon img{
 #autumn{
     background-image:url('autumn.png');
 }
+#categories{
+    position: fixed;
+    left: 0;
+    top: 310px;
+    z-index: 99999;
+}
+#categories a{
+    width:64px;
+    height:64px;
+    display:block;
+}
+#home{
+    background-image:url('home.png');
+}
+#work{
+    background-image:url('brief_case.png');
+}
+#game{
+    background-image:url('blueCar.png');
+}
+#admin{
+    background-image:url('gearing.png');
+}
+.full_desc{
+    float:left;
+    height:220px;
+    width:600px;
+}

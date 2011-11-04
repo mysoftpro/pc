@@ -1664,3 +1664,9 @@ a.modelicon img{
 #admin{
     background-image:url('gearing.png');
 }
+.full_desc{
+    float:left;
+    height:220px;
+    width:600px;
+    font-size:18px;
+}
