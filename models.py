@@ -858,8 +858,10 @@ def computers(template,skin,request):
 	    for n in result['notebooks']['rows']:
 		note = deepcopy(note_div)
 
-		keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']][0]
-		key = keys[0]
+		keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']]
+                if len(keys == 0):
+                    continue
+		key = keys[0][0]
 		result['notebook_keys'].pop(key)
 
 		note_name = note.xpath('//div[@class="cnname"]')[0]
