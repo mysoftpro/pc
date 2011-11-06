@@ -785,16 +785,15 @@ class ModelForModelsPage(object):
 		    self.description_div.set('style',"height:0;overflow:hidden")
 
 class NoteBookForCartPage(object):
-    def __init__(self,notebook, note, note_results, icon, container):
+    def __init__(self,notebook, note, key, icon, container):
 	self.icon = icon
 	self.notebook = notebook
 	self.note = note
-	self.note_results = note_results
 	self.container = container
+	self.key = key
 
-    def render(self, key):
-	self.note_results.pop(key)
-
+    def render(self):
+	key = self.key
 	note_name = self.note.xpath('//div[@class="cnname"]')[0]
 	note_name.text = self.notebook['doc']['text']
 	note_name.set('id',key+'_'+self.notebook['doc']['_id'])
@@ -852,7 +851,7 @@ def computers(template,skin,request):
 	    total +=1
 
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
-	if 'notebooks' in result and 'notebook_keys' in result and 'user_doc' in result:
+	if 'notebooks' in result and 'user_doc' in result:
 	    total_notes = []
 	    need_cleanup = False
 	    note_div = template.root().find('notebook').find('div')
@@ -866,31 +865,31 @@ def computers(template,skin,request):
 		if n['doc'] is None:
 		    need_cleanup = True
 		    continue
-		keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']]
+		keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
 		if len(keys) == 0:
+		    need_cleanup = True
 		    continue
 		key = keys[0][0]
-		note_view = NoteBookForCartPage(n,deepcopy(note_div),
-						result['notebook_keys'],
+		note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
 						deepcopy(tree.find('model_icon').find('a')),
 						container)
-		note_view.render(key)
-		total+=1
+		note_view.render()
 		total_notes.append(n['doc']['_id'])
 
-	    if need_cleanup and request.getCookie('pc_key') == result['user_doc']:
+            # clean only for the owner of the cart!
+	    if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
 		# some notes, possible will be deleted from store!
 		to_clean = []
 		for k,v in result['user_doc']['notebooks'].items():
 		    if v not in total_notes:
 			to_clean.append(k)
 		for k in to_clean:
+
 		    result['user_doc']['notebooks'].pop(k)
 		# update user_doc
-		couch.saveDoc(result['user_doc'])
-		# clean only for the owner of the cart!
+		couch.saveDoc(result['user_doc'])		
 		request.addCookie('pc_cart',
-			  str(total),
+			  str(total+len(result['user_doc']['notebooks'])),
 			  expires=datetime.now().\
 				  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			  path='/')
@@ -926,10 +925,10 @@ def computers(template,skin,request):
 	d = couch.openDoc(name)
 	def glueModelsAndNotes(li, _user):
 	    models = li[0][1]
-	    notebooks = li[1][1][1]
-	    notebook_keys = li[1][1][0]
+	    notebooks = li[1][1]
+	    # notebook_keys = li[1][1][0]
 	    models['notebooks'] = notebooks
-	    models['notebook_keys'] = notebook_keys
+	    # models['notebook_keys'] = notebook_keys
 	    models['user_doc'] = _user
 	    return models
 	def getModelsAndNotes(user_doc):
@@ -937,7 +936,7 @@ def computers(template,skin,request):
 	    if not 'notebooks' in user_doc:
 		return models
 	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-	    notes.addCallback(lambda res: (user_doc['notebooks'],res))
+	    # notes.addCallback(lambda res: (user_doc['notebooks'],res))
 	    d = defer.DeferredList((models, notes))
 	    d.addCallback(glueModelsAndNotes, user_doc)
 	    return d
