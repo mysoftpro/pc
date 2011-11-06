@@ -702,9 +702,9 @@ def computer(template, skin, request):
 
 
 model_categories = {'home':['storage','spline','shade'],
-                    'work':['localhost','scroll','chart'],
-                    'admin':['ping','cell','compiler'],
-                    'game':['zoom','render','raytrace']}
+		    'work':['localhost','scroll','chart'],
+		    'admin':['ping','cell','compiler'],
+		    'game':['zoom','render','raytrace']}
 
 
 class ModelForModelsPage(object):
@@ -713,16 +713,16 @@ class ModelForModelsPage(object):
 	self.request = request
 	self.model = model
 	self.this_is_cart = this_is_cart
-        self.json_prices = json_prices        
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
+	self.json_prices = json_prices
+	self.icon = icon
+	self.container = container
+	self.components = []
+	divs = self.model_snippet.findall('div')
+	self.model_div = divs[0]
+	self.description_div = divs[1]
+	self.category = request.args.get('cat',[None])[0]
 
-    def fillModelDiv(self):	
+    def fillModelDiv(self):
 	if 'processing' in self.model and self.model['processing']:
 	    header = self.model_div.find('h2')
 	    header.set('class', header.get('class')+ ' processing')
@@ -740,77 +740,75 @@ class ModelForModelsPage(object):
 	    self.icon.set('href','/computer/'+self.model['_id'])
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
-        
+
 	self.container.append(self.model_div)
 
     def fillDescriptionDiv(self):
-        # description_div = divs[1]
-        ul = etree.Element('ul')
-        ul.set('class','description')
-        for cfm in self.components:
-            ul.append(cfm.render())
-        self.description_div.append(ul)
+	# description_div = divs[1]
+	ul = etree.Element('ul')
+	ul.set('class','description')
+	for cfm in self.components:
+	    ul.append(cfm.render())
+	self.description_div.append(ul)
 
-        h3 = self.description_div.find('h3')
-        if not self.this_is_cart:		
-            h3.text = self.model['title']
-            for el in html.fragments_fromstring(self.model['description']):
-                self.description_div.append(el)
-            ul.set('style','display:none')
-        else:
-            h3.text = u'Пользовательская конфигурация'            
-            if 'title' in self.model:
-                h3.text = self.model['title']
-                if 'name' in self.model:
-                    h3.text = self.model['name'] + '. ' +h3.text
-            self.description_div.set('class','cart_description')
-        self.container.append(self.description_div)
+	h3 = self.description_div.find('h3')
+	if not self.this_is_cart:
+	    h3.text = self.model['title']
+	    for el in html.fragments_fromstring(self.model['description']):
+		self.description_div.append(el)
+	    ul.set('style','display:none')
+	else:
+	    h3.text = u'Пользовательская конфигурация'
+	    if 'title' in self.model:
+		h3.text = self.model['title']
+		if 'name' in self.model:
+		    h3.text = self.model['name'] + '. ' +h3.text
+	    self.description_div.set('class','cart_description')
+	self.container.append(self.description_div)
 
 
     def render(self):
-        self.fillModelDiv()
-        self.fillDescriptionDiv()
-        if not self.this_is_cart:
-            self.model_div.set('id','m'+self.model['_id'])
-            if self.category in model_categories:
-                if self.model['_id'] in model_categories[self.category]:                    
-                    div = etree.Element('div')
-                    div.set('id', 'desc_'+self.model_div.get('id'))
-                    div.set('class', 'full_desc')
-                    if 'modeldesc' in self.model:
-                        div.text = self.model['modeldesc']
-                    self.container.append(div)
-                else:
-                    self.model_div.set('style',"height:0;overflow:hidden")
-                    self.description_div.set('style',"height:0;overflow:hidden")
+	self.fillModelDiv()
+	self.fillDescriptionDiv()
+	if not self.this_is_cart:
+	    self.model_div.set('id','m'+self.model['_id'])
+	    if self.category in model_categories:
+		if self.model['_id'] in model_categories[self.category]:
+		    div = etree.Element('div')
+		    div.set('id', 'desc_'+self.model_div.get('id'))
+		    div.set('class', 'full_desc')
+		    if 'modeldesc' in self.model:
+			div.text = self.model['modeldesc']
+		    self.container.append(div)
+		else:
+		    self.model_div.set('style',"height:0;overflow:hidden")
+		    self.description_div.set('style',"height:0;overflow:hidden")
 
 class NoteBookForCartPage(object):
     def __init__(self,notebook, note, note_results, icon, container):
-        self.icon = icon
-        self.notebook = notebook
-        self.note = note
-        self.note_results = note_results
-        self.container = container
+	self.icon = icon
+	self.notebook = notebook
+	self.note = note
+	self.note_results = note_results
+	self.container = container
 
-    def render(self):
-        keys = [(k,v) for k,v in self.note_results.items() if v == self.notebook['doc']['_id']][0]
-        key = keys[0]
-        self.note_results.pop(key)
+    def render(self, key):
+	self.note_results.pop(key)
 
-        note_name = self.note.xpath('//div[@class="cnname"]')[0]
-        note_name.text = self.notebook['doc']['text']
-        note_name.set('id',key+'_'+self.notebook['doc']['_id'])
+	note_name = self.note.xpath('//div[@class="cnname"]')[0]
+	note_name.text = self.notebook['doc']['text']
+	note_name.set('id',key+'_'+self.notebook['doc']['_id'])
 
-        self.note.xpath('//strong[@class="modellink"]')[0].text = key
+	self.note.xpath('//strong[@class="modellink"]')[0].text = key
 
-        price = makeNotePrice(self.notebook['doc'])
+	price = makeNotePrice(self.notebook['doc'])
 
-        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+	self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
 
-        # icon = deepcopy(tree.find('model_icon').find('a'))
-        self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
-        self.note.insert(0,self.icon)
-        self.container.append(self.note)
+	# icon = deepcopy(tree.find('model_icon').find('a'))
+	self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
+	self.note.insert(0,self.icon)
+	self.container.append(self.note)
 
 
 def computers(template,skin,request):
@@ -825,9 +823,10 @@ def computers(template,skin,request):
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
 
     def render(result):
-        #fix cookies here!
+
 	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
-        total = 0
+	#fix cookies here!
+	total = 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
 	else:
@@ -844,27 +843,57 @@ def computers(template,skin,request):
 	json_prices = {}
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	for m in models:
-            view = ModelForModelsPage(request, m, deepcopy(tree.find('model')),
-                                      this_is_cart,json_prices,
-                                      deepcopy(tree.find('model_icon').find('a')),
-                                      container)
-            view.render()
-            total+=1
-            
+
+	    view = ModelForModelsPage(request, m, deepcopy(tree.find('model')),
+				      this_is_cart,json_prices,
+				      deepcopy(tree.find('model_icon').find('a')),
+				      container)
+	    view.render()
+	    total +=1
+
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
-	if 'notebooks' in result and 'notebook_keys' in result:
-            note_div = template.root().find('notebook').find('div')
+	if 'notebooks' in result and 'notebook_keys' in result and 'user_doc' in result:
+	    total_notes = []
+	    need_cleanup = False
+	    note_div = template.root().find('notebook').find('div')
 	    clear_div = etree.Element('div')
 	    clear_div.set('style','clear:both')
 	    container.append(clear_div)
 	    for n in result['notebooks']['rows']:
-                note_view = NoteBookForCartPage(n,deepcopy(note_div), 
-                                                result['notebook_keys'],
-                                                deepcopy(tree.find('model_icon').find('a')),
-                                                container)
-                note_view.render()
-                total+=1
+		if not 'doc' in n:
+		    need_cleanup = True
+		    continue
+		if n['doc'] is None:
+		    need_cleanup = True
+		    continue
+		keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']]
+		if len(keys) == 0:
+		    continue
+		key = keys[0][0]
+		note_view = NoteBookForCartPage(n,deepcopy(note_div),
+						result['notebook_keys'],
+						deepcopy(tree.find('model_icon').find('a')),
+						container)
+		note_view.render(key)
+		total+=1
+		total_notes.append(n['doc']['_id'])
 
+	    if need_cleanup and request.getCookie('pc_key') == result['user_doc']:
+		# some notes, possible will be deleted from store!
+		to_clean = []
+		for k,v in result['user_doc']['notebooks'].items():
+		    if v not in total_notes:
+			to_clean.append(k)
+		for k in to_clean:
+		    result['user_doc']['notebooks'].pop(k)
+		# update user_doc
+		couch.saveDoc(result['user_doc'])
+		# clean only for the owner of the cart!
+		request.addCookie('pc_cart',
+			  str(total),
+			  expires=datetime.now().\
+				  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			  path='/')
 
 	_prices = 'undefined'
 
@@ -874,10 +903,6 @@ def computers(template,skin,request):
 	    cart_divs = cart.findall('div')
 	    for d in cart_divs:
 		template.top.append(d)
-            request.addCookie('pc_cart',
-			      str(total),
-			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			      path='/')
 	else:
 	    _prices =simplejson.dumps(json_prices) + ';'
 	    header = deepcopy(template.root().find('top_models'))
@@ -899,12 +924,13 @@ def computers(template,skin,request):
     # RENDER cart here!!!!
     else:
 	d = couch.openDoc(name)
-	def glueModelsAndNotes(li):
+	def glueModelsAndNotes(li, _user):
 	    models = li[0][1]
 	    notebooks = li[1][1][1]
 	    notebook_keys = li[1][1][0]
 	    models['notebooks'] = notebooks
 	    models['notebook_keys'] = notebook_keys
+	    models['user_doc'] = _user
 	    return models
 	def getModelsAndNotes(user_doc):
 	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)
@@ -913,7 +939,7 @@ def computers(template,skin,request):
 	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
 	    notes.addCallback(lambda res: (user_doc['notebooks'],res))
 	    d = defer.DeferredList((models, notes))
-	    d.addCallback(glueModelsAndNotes)
+	    d.addCallback(glueModelsAndNotes, user_doc)
 	    return d
 	d.addCallback(getModelsAndNotes)
 	d.addCallback(render)
