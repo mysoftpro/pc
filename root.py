@@ -662,7 +662,7 @@ class ModelSave(Save):
                 catalog_model.pop('_id')
                 catalog_model.pop('_rev')
                 catalog_model.pop('_attachments')
-                catalog_model.pop('modeldesc')
+                catalog_model.pop('ours')
                 return self.saveModel(list_res, user_id,model_id,catalog_model, request)
             li.addCallback(fake_new_model)
 	    return NOT_DONE_YET

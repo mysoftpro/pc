@@ -1579,16 +1579,16 @@ head.ready(function(){
 	       }	       
 
 
-	       _.delay(function(){
-	       		  $.ajax({
-	       			     url:'/comet',
-	       			     success:function(data){
-					 if (data == "ok"){
-	       				     $('#model_area')
-	       					 .html('<iframe id="chatframe" src="http://buildpc.ru:8080"></iframe>');
-	       				 }
-	       			     }
-	       			 });}, 1000);
+	       // _.delay(function(){
+	       // 		  $.ajax({
+	       // 			     url:'/comet',
+	       // 			     success:function(data){
+	       // 				 if (data == "ok"){
+	       // 				     $('#model_area')
+	       // 					 .html('<iframe id="chatframe" src="http://buildpc.ru:8080"></iframe>');
+	       // 				 }
+	       // 			     }
+	       // 			 });}, 1000);
 	       // if (document.location.hash == '#master'){
 	       // 	   head.js('/static/master.js');
 	       // }

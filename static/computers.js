@@ -74,6 +74,7 @@ function renderCategories(idses){
 									   .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
 
 								   }
+								   alert('Получилось!');
 							       }
 							   });
 						    });
@@ -349,17 +350,33 @@ head.ready(function(){
 	       $('#home').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mstorage','mspline','mshade']);
+				    document.location.hash = '#home';
 				});;
 	       $('#work').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mscroll','mlocalhost','mchart']);
+				    document.location.hash = '#work';
 				});
 	       $('#admin').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mping','mcell','mcompiler']);
+				     document.location.hash = '#admin';
 				});
 	       $('#game').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mzoom','mrender','mraytrace']);
+				    document.location.hash = '#game';
 				});
+	       if (document.location.hash.match('home')){
+		   $('#home').click();
+	       }
+	       if (document.location.hash.match('admin')){
+		   $('#admin').click();
+	       }
+	       if (document.location.hash.match('game')){
+		   $('#game').click();
+	       }
+	       if (document.location.hash.match('work')){
+		   $('#work').click();
+	       }
 	   });
