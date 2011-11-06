@@ -48,7 +48,7 @@ function savemodel(el){
 		       else{
 			   $('#main_menu')
 			       .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
-			   
+
 		       }
 		       alert('Получилось!');
 		   }
@@ -59,8 +59,17 @@ function savemodel(el){
 
 function gotomodel(el){
     return function(e){
-	document.location.href='/computer/'+el.substring(1,el.length);	
-    };    
+	var href = '/computer/'+el.substring(1,el.length);
+	var splitted = document.location.search.split('&');
+	for (var i=0;i<splitted.length;i++){
+	    var pair = splitted[i].split('=');
+	    if (pair[0].match('skin')){
+		href+='?skin='+pair[1];
+		break;
+	    }
+	}
+	document.location.href=href;    
+    };
 }
 
 
@@ -401,8 +410,8 @@ head.ready(function(){
 			 .click(savemodel(el));
 		     container
 			 .find('.small_reset')
-			 .click(gotomodel(el));	 
+			 .click(gotomodel(el));
 		 }
 	       }
-	       
+
 	   });
