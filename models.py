@@ -702,9 +702,9 @@ def computer(template, skin, request):
 
 
 model_categories = {'home':['storage','spline','shade'],
-                    'work':['compiler','render','raytrace'],
-                    'admin':['ping','cell','zoom'],
-                    'game':['compiler','render','raytrace']}
+                    'work':['localhost','scroll','chart'],
+                    'admin':['ping','cell','compiler'],
+                    'game':['zoom','render','raytrace']}
 
 
 class ModelForModelsPage(object):

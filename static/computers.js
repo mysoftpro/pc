@@ -329,10 +329,10 @@ head.ready(function(){
 				});
 	       $('#admin').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mping','mcell','mzoom']);
+				    renderCategories(['mping','mcell','mcompiler']);
 				});
 	       $('#game').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mcompiler','mrender','mraytrace']);
+				    renderCategories(['mzoom','mrender','mraytrace']);
 				});
 	   });
