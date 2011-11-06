@@ -34,6 +34,36 @@ function itemHide(item){
     item.next().css(hi);
 }
 
+
+function savemodel(el){
+    function _savemodel(e){
+	$.ajax({
+		   url:'savemodel',
+		   data:{model:el.substring(1,el.length)},
+		   success:function(data){
+		       var cart_el = $('#cart');
+		       if (cart_el.length>0){
+			   cart_el.text('Корзина('+$.cookie('pc_cart')+')');
+		       }
+		       else{
+			   $('#main_menu')
+			       .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
+			   
+		       }
+		       alert('Получилось!');
+		   }
+	       });
+    }
+    return _savemodel;
+}
+
+function gotomodel(el){
+    return function(e){
+	document.location.href='/computer/'+el.substring(1,el.length);	
+    };    
+}
+
+
 function renderCategories(idses){
 
     $('.full_desc').remove();
@@ -60,30 +90,10 @@ function renderCategories(idses){
 				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
 				     container
 					 .find('.small_cart')
-					 .click(function(e){
-						    $.ajax({
-							       url:'savemodel',
-							       data:{model:el.substring(1,el.length)},
-							       success:function(data){
-								   var cart_el = $('#cart');
-								   if (cart_el.length>0){
-								       cart_el.text('Корзина('+$.cookie('pc_cart')+')');
-								   }
-								   else{
-								       $('#main_menu')
-									   .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
-
-								   }
-								   alert('Получилось!');
-							       }
-							   });
-						    });
-						    container
-							.find('.small_reset')
-							.click(function(e){
-								   document.location.href='/computer/'+el.substring(1,el.length);
-							       });
-
+					 .click(savemodel(el));
+				     container
+					 .find('.small_reset')
+					 .click(gotomodel(el));
 				 }
 			     });
 		  });
@@ -379,4 +389,20 @@ head.ready(function(){
 	       if (document.location.hash.match('work')){
 		   $('#work').click();
 	       }
+	       var full_descr = $('.full_desc');
+	       if (full_descr.length>0 && $('.small_square_button').length==0){
+		 for (var i=0;i<full_descr.length;i++){
+		     var container = $(full_descr.get(i));
+		     var el = container.attr('id').substring('desc_'.length,container.attr('id')
+							     .length);
+		     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
+		     container
+		   .find('.small_cart')
+			 .click(savemodel(el));
+		     container
+			 .find('.small_reset')
+			 .click(gotomodel(el));	 
+		 }
+	       }
+	       
 	   });
