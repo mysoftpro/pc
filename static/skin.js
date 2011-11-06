@@ -25,11 +25,11 @@ function CartAndContacts(){
 		}, 800);
 
     function swapPhone(text){
-	return function(e){$('#phone').text(text);};
+	return function(e){$('#phone').html(text);};
     }
     $('#beeline').click(swapPhone('8 (909) 792-22-39'));
     $('#mts').click(swapPhone('8 (911) 462-42-52'));
-    $('#emailc').click(swapPhone('inbox@buildpc.ru'));
+    $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
     $('#skype').click(swapPhone('buildpc.ru'));
 }
 

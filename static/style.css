@@ -1670,3 +1670,7 @@ a.modelicon img{
     width:600px;
     font-size:18px;
 }
+#phone a {
+    color:white;
+    text-decoration:none;
+}
