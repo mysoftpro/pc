@@ -861,6 +861,7 @@ def computers(template,skin,request):
                 if n['doc'] is None:
                     continue
 		note = deepcopy(note_div)                
+
 		keys = [(k,v) for k,v in result['notebook_keys'].items() if v == n['doc']['_id']]
                 if len(keys == 0):
                     continue
