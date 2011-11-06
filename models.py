@@ -825,7 +825,9 @@ def computers(template,skin,request):
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
 
     def render(result):
+        #fix cookies here!
 	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
+        total = 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
 	else:
@@ -847,7 +849,7 @@ def computers(template,skin,request):
                                       deepcopy(tree.find('model_icon').find('a')),
                                       container)
             view.render()
-
+            total+=1
             
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	if 'notebooks' in result and 'notebook_keys' in result:
@@ -861,6 +863,7 @@ def computers(template,skin,request):
                                                 deepcopy(tree.find('model_icon').find('a')),
                                                 container)
                 note_view.render()
+                total+=1
 
 
 	_prices = 'undefined'
@@ -871,6 +874,10 @@ def computers(template,skin,request):
 	    cart_divs = cart.findall('div')
 	    for d in cart_divs:
 		template.top.append(d)
+            request.addCookie('pc_cart',
+			      str(total),
+			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			      path='/')
 	else:
 	    _prices =simplejson.dumps(json_prices) + ';'
 	    header = deepcopy(template.root().find('top_models'))
