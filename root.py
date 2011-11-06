@@ -816,7 +816,9 @@ class DeleteAll(Resource):
     def deleteAll(self, models, user_doc,request):
 	defs = []
 	for row in models['rows']:
-	    doc = row['doc']
+	    if not 'doc' in row:
+                continue
+            doc = row['doc']
 	    if doc is None:
 		continue
 	    if 'processing' in doc and doc['processing']:continue

@@ -728,7 +728,7 @@ class ModelForModelsPage(object):
 	    header.set('class', header.get('class')+ ' processing')
 	a = self.model_div.find('.//a')
 	a.set('href','/computer/%s' % self.model['_id'])
-	if 'name' in self.model:
+	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
 	else:
 	    a.text = self.model['_id']
@@ -758,9 +758,11 @@ class ModelForModelsPage(object):
                 self.description_div.append(el)
             ul.set('style','display:none')
         else:
-            h3.text = u'Пользовательская конфигурация'
+            h3.text = u'Пользовательская конфигурация'            
             if 'title' in self.model:
                 h3.text = self.model['title']
+                if 'name' in self.model:
+                    h3.text = self.model['name'] + '. ' +h3.text
             self.description_div.set('class','cart_description')
         self.container.append(self.description_div)
 
