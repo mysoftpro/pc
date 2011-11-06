@@ -1652,6 +1652,9 @@ a.modelicon img{
 #autumn{
     background-image:url('autumn.png');
 }
+
+
+
 #categories{
     position: fixed;
     left: 0;
@@ -1659,22 +1662,25 @@ a.modelicon img{
     z-index: 99999;
 }
 #categories a{
-    width:64px;
-    height:64px;
+    width:80px;
+    height:70px;
     display:block;
+    background-image:url('categories_sprite.png');
 }
 #home{
-    background-image:url('home.png');
+    background-position:0px 0px;
 }
 #work{
-    background-image:url('brief_case.png');
+    background-position:0px 218px;
 }
 #game{
-    background-image:url('blueCar.png');
+    background-position:0px 64px;
 }
 #admin{
-    background-image:url('gearing.png');
+    background-position: 0px 140px;
 }
+
+
 
 .full_desc{
     float:left;

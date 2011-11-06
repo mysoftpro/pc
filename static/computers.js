@@ -68,7 +68,7 @@ function gotomodel(el){
 		break;
 	    }
 	}
-	document.location.href=href;    
+	document.location.href=href;
     };
 }
 
@@ -413,5 +413,23 @@ head.ready(function(){
 			 .click(gotomodel(el));
 		 }
 	       }
+	       var cats_binded = {};
+	       $('#categories a').mouseover(function(e){
+						var target = $(e.target);
+						var pos = target.css('background-position');
+						var hor = pos.split(' ')[1];
+						target.css('background-position','72px '+hor);
+						if (cats_binded[target.attr('id')])
+						    return;
+						target.unbind('mouseleve')
+						    .mouseleave(function(e){
+								    target
+									.css('background-position'
+									     ,pos);
+								    cats_binded[taget.attr('id')] = true;
+								    
+								    
+								});
+					});
 
 	   });
