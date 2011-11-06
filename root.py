@@ -145,7 +145,13 @@ class SiteMap(Resource):
 	root.append(self.buildElement('video'))
 	root.append(self.buildElement('processor'))
 	root.append(self.buildElement('notebook'))
-	request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
+	
+        root.append(self.buildElement('computer?cat=home'))
+        root.append(self.buildElement('computer?cat=work'))
+        root.append(self.buildElement('computer?cat=admin'))
+        root.append(self.buildElement('computer?cat=game'))
+
+        request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
 	request.finish()
 
     def render_GET(self, request):

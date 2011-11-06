@@ -706,6 +706,10 @@ model_categories = {'home':['storage','spline','shade'],
 		    'admin':['ping','cell','compiler'],
 		    'game':['zoom','render','raytrace']}
 
+model_categories_titles = {'home':u'Домашние компьютеры.',
+                           'work':u'Компьюетры для работы.',
+                           'admin':u'Компьютеры для айтишников',
+                           'game':u'Игровые компьютеры'}
 
 class ModelForModelsPage(object):
     def __init__(self, request, model, model_snippet, this_is_cart, json_prices, icon, container):
@@ -772,7 +776,7 @@ class ModelForModelsPage(object):
 	self.fillDescriptionDiv()
 	if not self.this_is_cart:
 	    self.model_div.set('id','m'+self.model['_id'])
-	    if self.category in model_categories:
+	    if self.category in model_categories:                
 		if self.model['_id'] in model_categories[self.category]:
 		    div = etree.Element('div')
 		    div.set('id', 'desc_'+self.model_div.get('id'))
@@ -910,8 +914,16 @@ def computers(template,skin,request):
 		template.top.append(d)
 
 	template.middle.find('script').text = 'var prices=' + _prices;
-	title = skin.root().xpath('//title')[0]
-	title.text += u' Готовые модели компьютеров'
+
+        category = request.args.get('cat',[None])[0]
+        
+        if category is not None and category in model_categories_titles:
+            title = skin.root().xpath('//title')[0]
+            title.text += ' '+model_categories_titles[category]
+        else:
+            title = skin.root().xpath('//title')[0]
+            title.text += u' Готовые модели компьютеров'
+
 	skin.top = template.top
 	skin.middle = template.middle
 	return skin.render()
