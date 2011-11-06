@@ -30,7 +30,7 @@ function CartAndContacts(){
     $('#beeline').click(swapPhone('8 (909) 792-22-39'));
     $('#mts').click(swapPhone('8 (911) 462-42-52'));
     $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
-    $('#skype').click(swapPhone('buildpc.ru'));
+    $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
 }
 
 head.ready(function(){
