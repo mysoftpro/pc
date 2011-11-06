@@ -759,6 +759,8 @@ class ModelForModelsPage(object):
             ul.set('style','display:none')
         else:
             h3.text = u'Пользовательская конфигурация'
+            if 'title' in self.model:
+                h3.text = self.model['title']
             self.description_div.set('class','cart_description')
         self.container.append(self.description_div)
 
@@ -821,7 +823,7 @@ def computers(template,skin,request):
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
 
     def render(result):
-	models = [row['doc'] for row in result['rows'] if row['doc'] is not None]
+	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
 	else:

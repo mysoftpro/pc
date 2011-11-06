@@ -55,7 +55,21 @@ function renderCategories(idses){
 		      $.ajax({
 				 url:'/modeldesc?id='+el.substring(1,el.length),
 				 success:function(data){
-				     $('#'+desc_id).html(data);
+				     var container = $('#'+desc_id);
+				     container.html(data);
+				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
+				     container.find('.small_cart').click(function(e){
+									     $.ajax({
+											url:'savemodel',
+											data:{model:el.substring(1,el.length)}
+										    });
+									 });
+				     container
+					 .find('.small_reset')
+					 .click(function(e){
+						    document.location.href='/computer/'+el.substring(1,el.length);
+						});
+				     
 				 }
 			     });
 		  });
