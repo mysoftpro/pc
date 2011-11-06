@@ -1321,6 +1321,11 @@ a.modelicon{
     background-color:white;
     width:136px;
     border-radius: 15px 15px 15px 15px;
+    -moz-border-radius:15px 15px 15px 15px;
+    -webkit-border-bottom-left-radius:15px;
+    -webkit-border-bottom-right-radius:15px;
+    -webkit-border-top-left-radius:15px;
+    -webkit-border-top-right-radius:15px;
 }
 a.modelicon .gallery-shadow{
     display:block;
@@ -1672,6 +1677,16 @@ a.modelicon img{
 }
 .full_desc{
     float:left;
-    height:220px;
+    height:180px;
+    margin-bottom:40px;
     width:600px;
+    font-size:18px;
+
+    border:1px solid #dddddd;
+    border-radius:10px;
+    -moz-border-radius:10px 10px 10px 10px;
+    -webkit-border-bottom-left-radius:10px;
+    -webkit-border-bottom-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;    
 }

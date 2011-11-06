@@ -55,7 +55,35 @@ function renderCategories(idses){
 		      $.ajax({
 				 url:'/modeldesc?id='+el.substring(1,el.length),
 				 success:function(data){
-				     $('#'+desc_id).html(data);
+				     var container = $('#'+desc_id);
+				     container.html(data);
+				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
+				     container
+					 .find('.small_cart')
+					 .click(function(e){
+						    $.ajax({
+							       url:'savemodel',
+							       data:{model:el.substring(1,el.length)},
+							       success:function(data){
+								   var cart_el = $('#cart');
+								   if (cart_el.length>0){
+								       cart_el.text('Корзина('+$.cookie('pc_cart')+')');
+								   }
+								   else{
+								       $('#main_menu')
+									   .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
+
+								   }
+								   alert('Получилось!');
+							       }
+							   });
+						    });
+						    container
+							.find('.small_reset')
+							.click(function(e){
+								   document.location.href='/computer/'+el.substring(1,el.length);
+							       });
+
 				 }
 			     });
 		  });
@@ -322,17 +350,33 @@ head.ready(function(){
 	       $('#home').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mstorage','mspline','mshade']);
+				    document.location.hash = '#home';
 				});;
 	       $('#work').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mscroll','mlocalhost','mchart']);
+				    document.location.hash = '#work';
 				});
 	       $('#admin').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mping','mcell','mzoom']);
+				    renderCategories(['mping','mcell','mcompiler']);
+				     document.location.hash = '#admin';
 				});
 	       $('#game').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mcompiler','mrender','mraytrace']);
+				    renderCategories(['mzoom','mrender','mraytrace']);
+				    document.location.hash = '#game';
 				});
+	       if (document.location.hash.match('home')){
+		   $('#home').click();
+	       }
+	       if (document.location.hash.match('admin')){
+		   $('#admin').click();
+	       }
+	       if (document.location.hash.match('game')){
+		   $('#game').click();
+	       }
+	       if (document.location.hash.match('work')){
+		   $('#work').click();
+	       }
 	   });

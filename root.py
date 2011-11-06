@@ -425,6 +425,7 @@ class Root(Cookable):
 	self.putChild('image', ImageProxy())
 
 	self.putChild('save', Save())
+        self.putChild('savemodel', ModelSave())
 	self.putChild('savenote', SaveNote())
 	self.putChild('delete',Delete())
 	self.putChild('deleteNote',DeleteNote())
@@ -644,6 +645,30 @@ class Save(Resource):
 
 
 
+
+class ModelSave(Save):
+    def render_GET(self, request):
+	model = request.args.get('model', [None])[0]
+        
+	if model is not None:
+	    # jmodel = simplejson.loads(model)	    
+	    user_id = request.getCookie('pc_user')
+	    d1 = couch.openDoc(user_id)
+	    d2 = couch.openDoc(model)
+            model_id = base36.gen_id()
+	    li = defer.DeferredList([d1,d2])
+            def fake_new_model(list_res):
+                catalog_model = list_res[1][1]
+                catalog_model.pop('_id')
+                catalog_model.pop('_rev')
+                catalog_model.pop('_attachments')
+                catalog_model.pop('ours')
+                return self.saveModel(list_res, user_id,model_id,catalog_model, request)
+            li.addCallback(fake_new_model)
+	    return NOT_DONE_YET
+	return 'fail'
+
+
 class SaveNote(Resource):
     def finish(self, res, note_id, request):
 	request.write(note_id)
@@ -791,7 +816,9 @@ class DeleteAll(Resource):
     def deleteAll(self, models, user_doc,request):
 	defs = []
 	for row in models['rows']:
-	    doc = row['doc']
+	    if not 'doc' in row:
+                continue
+            doc = row['doc']
 	    if doc is None:
 		continue
 	    if 'processing' in doc and doc['processing']:continue

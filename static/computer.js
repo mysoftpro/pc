@@ -1416,11 +1416,9 @@ function to_cartSuccess(data){
 		       }));
 	$('#computerlink').click(function(e){e.target.select();});
 	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
-	var cart_ammo = $.cookie('pc_cart');
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
-	    var int_amo = parseInt(cart_ammo);
-	    cart_el.text('Корзина('+int_amo+')');
+	    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
 	}
 	else{
 	    if (!data['edit'])
@@ -1591,7 +1589,7 @@ head.ready(function(){
 	       // 				 }
 	       // 			     }
 	       // 			 });}, 1000);
-	       // 
+
 	       // if (document.location.hash == '#master'){
 	       // 	   head.js('/static/master.js');
 	       // }
