@@ -1704,3 +1704,10 @@ a.modelicon img{
     color:white;
     text-decoration:none;
 }
+#categories #all{
+    color:white;
+    font-size:18px;
+    background:inherit;
+    margin-bottom:-40px;
+    padding-left:20px;
+}
