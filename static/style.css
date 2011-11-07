@@ -1644,7 +1644,7 @@ a.modelicon img{
 #categories{
     position: fixed;
     left: 0;
-    top: 310px;
+    top: 210px;
     z-index: 99999;
 }
 #categories a{

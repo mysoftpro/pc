@@ -73,7 +73,7 @@ function gotomodel(el){
 }
 
 
-function renderCategories(idses){
+function renderCategories(idses, hash){
 
     $('.full_desc').remove();
     var to_hide = _($('.computeritem').toArray())
@@ -83,6 +83,7 @@ function renderCategories(idses){
     to_hide.each(function(el){itemHide($('#'+el));});
     var get_id = function(id){return function(){return id;};};
     _(idses).each(function(el){
+		      document.location.hash = '#'+hash;
 		      var desc_id = 'desc_'+el+'';
 		      $('#'+el)
 			  .css({'height':'inherit', overflow:'visible'})
@@ -96,7 +97,7 @@ function renderCategories(idses){
 				 success:function(data){
 				     var container = $('#'+desc_id);
 				     container.html(data);
-				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
+				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');				     
 				     container
 					 .find('.small_cart')
 					 .click(savemodel(el));
@@ -368,23 +369,19 @@ head.ready(function(){
 
 	       $('#home').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mstorage','mspline','mshade']);
-				    document.location.hash = '#home';
+				    renderCategories(['mstorage','mspline','mshade'],'home');
 				});;
 	       $('#work').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mscroll','mlocalhost','mchart']);
-				    document.location.hash = '#work';
+				    renderCategories(['mscroll','mlocalhost','mchart'],'work');
 				});
 	       $('#admin').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mping','mcell','mcompiler']);
-				     document.location.hash = '#admin';
+				    renderCategories(['mping','mcell','mcompiler'], 'admin');
 				});
 	       $('#game').click(function(e){
 				    e.preventDefault();
-				    renderCategories(['mzoom','mrender','mraytrace']);
-				    document.location.hash = '#game';
+				    renderCategories(['mzoom','mrender','mraytrace'],'game');
 				});
 	       if (document.location.hash.match('home')){
 		   $('#home').click();
@@ -427,9 +424,8 @@ head.ready(function(){
 									.css('background-position'
 									     ,pos);
 								    cats_binded[taget.attr('id')] = true;
-								    
-								    
+
+
 								});
 					});
-
 	   });
