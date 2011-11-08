@@ -161,37 +161,105 @@ class SiteMap(Resource):
 
 
 class PriceForMarket(Resource):
-    def prices(self, request):
+    def prices(self, result, request):
         request.setHeader('Content-Type', 'text/xml;charset=utf-8')
-        root = etree.XML('<yml_catalog></yml_catalog>')        
-        lut = lastUpdateTime().split(' ')
+        xml = '<!DOCTYPE yml_catalog SYSTEM "shops.dtd"><yml_catalog></yml_catalog>'
+        tree = etree.parse(StringIO(xml))
+        root = tree.getroot()
+        # root = etree.XML('<yml_catalog></yml_catalog>')
+        # tree = root.getroottree()
+        # tree.docinfo.doctype = '<!DOCTYPE yml_catalog SYSTEM "shops.dtd">'
+        # tree.DocInfo
+        lut = lastUpdateTime()
         da,ta = lut.split(' ')
-        lida = da.split('-')
+        lida = da.split('.')
         lida.reverse()
         da = '-'.join(lida)
         root.set('date', da+' '+ta)
-        # root.set('xmlns',"http://www.sitemaps.org/schemas/sitemap/0.9")
-        # shop = etree.Element('shop')
+
+        shop = etree.Element('shop')
+
+        name = etree.Element('name')
+        name.text = 'buildpc.ru'
+        shop.append(name)
+
+        company = etree.Element('company')
+        company.text = u'ИП Ганжа А.Ю.'
+        shop.append(company)
+
+        url = etree.Element('url')
+        url.text = 'http://buildpc.ru'
+        shop.append(url)
+
+
+        currencies = etree.Element('currencies')
+        currency = etree.Element('currency')
+        currency.set('id','RUR')
+        currency.set('rate','1')
+        currency.set('plus','0')
         
-        # root.append(self.buildElement(''))
-        # root.append(self.buildElement('computer'))
-        # for model in models['rows']:
-        #     root.append(self.buildElement('computer/'+model['key'], freq='daily'))
-        # root.append(self.buildElement('howtochoose'))
-        # root.append(self.buildElement('howtobuy'))
-        # root.append(self.buildElement('howtouse'))
-        # root.append(self.buildElement('warranty'))
-        # root.append(self.buildElement('motherboard'))
-        # root.append(self.buildElement('video'))
-        # root.append(self.buildElement('processor'))
-        # root.append(self.buildElement('notebook'))
+        currencies.append(currency)
+        shop.append(currencies)
 
-        # root.append(self.buildElement('computer?cat=home'))
-        # root.append(self.buildElement('computer?cat=work'))
-        # root.append(self.buildElement('computer?cat=admin'))
-        # root.append(self.buildElement('computer?cat=game'))
+        categories = etree.Element('categories')
+        category  = etree.Element('category')
+        category.set('id','2')
+        category.text = u'Ноутбуки Asus'
+        categories.append(category)
+        shop.append(categories)
+        local_delivery_cost = etree.Element('local_delivery_cost')
+        local_delivery_cost.text ="0"
+        shop.append(local_delivery_cost)
+        
+        offers = etree.Element('offers')
+        for r in result['rows']:
+            if 'doc' not in r: continue
+            doc = r['doc']
+            if doc is None: continue
+            offer = etree.Element('offer')
 
-        request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
+            url = etree.Element('url')
+            url.text = 'http://localhost/notebook'
+            offer.append(url)
+
+            price = etree.Element('price')
+            price.text = unicode(makeNotePrice(doc))
+            offer.append(price)
+
+            currencyId = etree.Element('currencyId')
+            currencyId.text = 'RUR'
+            offer.append(currencyId)
+            
+            for a in doc['_attachments']:
+                if doc['_attachments'][a]['content_type']=="image/jpeg":
+                    picture = etree.Element('picture')
+                    picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+a
+                    offer.append(picture)
+                    break
+            
+            delivery = etree.Element('delivery')
+            delivery.text = 'true'
+            offer.append(delivery)
+            _local_delivery_cost = etree.Element('local_delivery_cost')
+            _local_delivery_cost.text = '0'
+            offer.append(_local_delivery_cost)
+            
+            typePrefix = etree.Element('typePrefix')
+            typePrefix.text = u'Ноутбук'
+            offer.append(typePrefix)
+            
+            vendor = etree.Element('vendor')
+            vendor.text = 'Asus'
+            
+            _name = etree.Element('name')
+            _name.text = doc['text']
+            offer.append(name)
+            
+            offers.append(offer)
+
+        shop.append(offers)
+        root.append(shop)
+        request.write(etree.tostring(tree, encoding='utf-8', xml_declaration=True))
         request.finish()
 
     def render_GET(self, request):
@@ -200,7 +268,7 @@ class PriceForMarket(Resource):
         asus_15 = ["7362","7404","7468"]
         asus_17 = ["7362","7404","7704"]
         d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
-                           keys = [asus_12,asus_14,asus_15,asus_17])        
+                           keys = [asus_12,asus_14,asus_15,asus_17])
         d.addCallback(self.prices, request)
         return NOT_DONE_YET
 
@@ -493,6 +561,8 @@ class Root(Cookable):
 
         self.putChild('comet', Comet())
         self.putChild('modeldesc', ModelDesc())
+
+        self.putChild('prices_for_market',PriceForMarket())
 
     def getChild(self, name, request):
         self.checkCookie(request)
