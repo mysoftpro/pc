@@ -370,18 +370,22 @@ head.ready(function(){
 	       $('#home').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mstorage','mspline','mshade'],'home');
+				    $('h1').first().text('Компьютеры для дома');
 				});;
 	       $('#work').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mscroll','mlocalhost','mchart'],'work');
+				    $('h1').first().text('Компьютеры для работы');
 				});
 	       $('#admin').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mping','mcell','mcompiler'], 'admin');
+				     $('h1').first().text('Компьютеры для айтишников');
 				});
 	       $('#game').click(function(e){
 				    e.preventDefault();
 				    renderCategories(['mzoom','mrender','mraytrace'],'game');
+				    $('h1').first().text('Игровые компьютеры');
 				});
 	       if (document.location.hash.match('home')){
 		   $('#home').click();
