@@ -246,6 +246,15 @@ class PriceForMarket(Resource):
                     offer.append(picture)
                     break
                             
+            delivery = etree.Element('delivery')
+            delivery.text = 'true'
+            offer.append(delivery)
+            
+            _local_delivery_cost = etree.Element('local_delivery_cost')
+            _local_delivery_cost.text = '0'
+            offer.append(_local_delivery_cost)                        
+
+
             typePrefix = etree.Element('typePrefix')
             typePrefix.text = u'Ноутбук'
             offer.append(typePrefix)
@@ -257,14 +266,6 @@ class PriceForMarket(Resource):
             model = etree.Element('model')
             model.text = doc['text']
             offer.append(model)
-
-            delivery = etree.Element('delivery')
-            delivery.text = 'true'
-            offer.append(delivery)
-            
-            _local_delivery_cost = etree.Element('local_delivery_cost')
-            _local_delivery_cost.text = '0'
-            offer.append(_local_delivery_cost)                        
             
             available = etree.Element('available')
             available.text = 'true'
