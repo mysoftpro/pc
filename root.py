@@ -237,7 +237,8 @@ class PriceForMarket(Resource):
             categoryId = etree.Element('categoryId')
             categoryId.set('type','Own')
             categoryId.text = "2"
-            
+            offer.append(categoryId)
+
             for a in doc['_attachments']:
                 if doc['_attachments'][a]['content_type']=="image/jpeg":
                     picture = etree.Element('picture')
