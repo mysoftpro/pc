@@ -218,6 +218,10 @@ class PriceForMarket(Resource):
             if doc is None: continue
             offer = etree.Element('offer')
             offer.set('id', doc['_id'])
+            
+            offer.set('type',"vendor.model")
+            offer.set('available',"true")
+
             url = etree.Element('url')
             url.text = 'http://localhost/notebook'
             offer.append(url)
@@ -230,30 +234,39 @@ class PriceForMarket(Resource):
             currencyId.text = 'RUR'
             offer.append(currencyId)
             
+            categoryId = etree.Element('categoryId')
+            categoryId.set('type','Own')
+            categoryId.text = "2"
+            
             for a in doc['_attachments']:
                 if doc['_attachments'][a]['content_type']=="image/jpeg":
                     picture = etree.Element('picture')
                     picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+a
                     offer.append(picture)
                     break
-            
-            delivery = etree.Element('delivery')
-            delivery.text = 'true'
-            offer.append(delivery)
-            _local_delivery_cost = etree.Element('local_delivery_cost')
-            _local_delivery_cost.text = '0'
-            offer.append(_local_delivery_cost)
-            
+                            
             typePrefix = etree.Element('typePrefix')
             typePrefix.text = u'Ноутбук'
             offer.append(typePrefix)
-            
+                
             vendor = etree.Element('vendor')
             vendor.text = 'Asus'
+            offer.append(vendor)
+
+            model = etree.Element('model')
+            model.text = doc['text']
+            offer.append(model)
+
+            delivery = etree.Element('delivery')
+            delivery.text = 'true'
+            offer.append(delivery)
             
-            _name = etree.Element('name')
-            _name.text = doc['text']
-            offer.append(_name)
+            _local_delivery_cost = etree.Element('local_delivery_cost')
+            _local_delivery_cost.text = '0'
+            offer.append(_local_delivery_cost)                        
+            
+            available = etree.Element('available')
+            available.text = 'true'
             
             manufacturer_warranty = etree.Element('manufacturer_warranty')
             manufacturer_warranty.text = doc['warranty_type']
