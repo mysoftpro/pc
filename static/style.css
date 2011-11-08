@@ -507,13 +507,16 @@ h3 {
 
 #modelname{
     background-color:#730606;
-    color:white;
+    color:#999;
     margin-top:5px;
     max-width:200px;
     padding:5px;
     text-align:center;
     vertical-align:center;
     margin-right:10px;
+}
+#modelname strong{
+    color:white;
 }
 
 .component_select{
