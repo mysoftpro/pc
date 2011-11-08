@@ -217,7 +217,7 @@ class PriceForMarket(Resource):
             doc = r['doc']
             if doc is None: continue
             offer = etree.Element('offer')
-
+            offer.set('id', doc['_id'])
             url = etree.Element('url')
             url.text = 'http://localhost/notebook'
             offer.append(url)
@@ -253,8 +253,11 @@ class PriceForMarket(Resource):
             
             _name = etree.Element('name')
             _name.text = doc['text']
-            offer.append(name)
+            offer.append(_name)
             
+            manufacturer_warranty = etree.Element('manufacturer_warranty')
+            manufacturer_warranty.text = doc['warranty_type']
+            offer.append(manufacturer_warranty)
             offers.append(offer)
 
         shop.append(offers)
