@@ -1,5 +1,5 @@
 function(doc){
-    if (doc['author']){
+    if (doc['building']&&doc['author']){
 	emit(doc['author'],null);
     }
 }

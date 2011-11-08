@@ -197,7 +197,7 @@ class PriceForMarket(Resource):
         currency.set('id','RUR')
         currency.set('rate','1')
         currency.set('plus','0')
-        
+
         currencies.append(currency)
         shop.append(currencies)
 
@@ -210,7 +210,7 @@ class PriceForMarket(Resource):
         local_delivery_cost = etree.Element('local_delivery_cost')
         local_delivery_cost.text ="0"
         shop.append(local_delivery_cost)
-        
+
         offers = etree.Element('offers')
         for r in result['rows']:
             if 'doc' not in r: continue
@@ -218,7 +218,7 @@ class PriceForMarket(Resource):
             if doc is None: continue
             offer = etree.Element('offer')
             offer.set('id', doc['_id'])
-            
+
             offer.set('type',"vendor.model")
             offer.set('available',"true")
 
@@ -233,7 +233,7 @@ class PriceForMarket(Resource):
             currencyId = etree.Element('currencyId')
             currencyId.text = 'RUR'
             offer.append(currencyId)
-            
+
             categoryId = etree.Element('categoryId')
             categoryId.set('type','Own')
             categoryId.text = "2"
@@ -245,20 +245,20 @@ class PriceForMarket(Resource):
                     picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+a
                     offer.append(picture)
                     break
-                            
+
             delivery = etree.Element('delivery')
             delivery.text = 'true'
             offer.append(delivery)
-            
+
             _local_delivery_cost = etree.Element('local_delivery_cost')
             _local_delivery_cost.text = '0'
-            offer.append(_local_delivery_cost)                        
+            offer.append(_local_delivery_cost)
 
 
             typePrefix = etree.Element('typePrefix')
             typePrefix.text = u'Ноутбук'
             offer.append(typePrefix)
-                
+
             vendor = etree.Element('vendor')
             vendor.text = 'Asus'
             offer.append(vendor)
@@ -266,10 +266,10 @@ class PriceForMarket(Resource):
             model = etree.Element('model')
             model.text = doc['text']
             offer.append(model)
-            
+
             available = etree.Element('available')
             available.text = 'true'
-            
+
             manufacturer_warranty = etree.Element('manufacturer_warranty')
             manufacturer_warranty.text = doc['warranty_type']
             offer.append(manufacturer_warranty)
@@ -830,6 +830,7 @@ class SaveNote(Resource):
                           str(in_cart),
                           expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                               path='/')
+        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
         return note_id
 
 
@@ -1248,7 +1249,7 @@ class FindOrder(Resource):
 
     def addComponents(self, model_user, _id):
         defs = []
-        if not model_user[0][0]:
+        if not 'items' in model_user[0][1]:
             return self.notebook(model_user, _id)
         def addCount(count):
             def add(doc):
@@ -1378,7 +1379,7 @@ class FindOrder(Resource):
 
     def getModel(self, error, _id, request):
         d = couch.openDoc(_id)
-        def getUser(model):            
+        def getUser(model):
             d1 = couch.openDoc(model['author'])
             mock = defer.Deferred()
             mock.addCallback(lambda x: model)
@@ -1391,23 +1392,28 @@ class FindOrder(Resource):
         return d
 
 
-    def getThree(self, result, request):        
-        # d = couch.openDoc(request.getCookie('pc_user'))
-        user_id = request.getCookie('pc_user')
+    def getThree(self, result, request):
         model = None
         for r in result['rows']:
-            doc = r['doc']
-            if doc['author']==user_id:
-                model = doc
-                break
-        d = defer.Deferred()
-        d.addCallback(lambda x:model)
-        d.callback(None)
-        d1 = couch.openDoc(user_id)
-        li = defer.DeferredList([d,d1])
+            model = r['doc']
+            break
+        d1 = couch.openDoc(model['author'])
+        mock = defer.Deferred()
+        mock.addCallback(lambda x: model)
+        mock.callback(None)
+        li = defer.DeferredList([mock,d1])
         li.addCallback(self.addComponents, model['_id'])
         li.addCallback(self.finish, request)
         return li
+
+        # d = defer.Deferred()
+        # d.addCallback(lambda x:model)
+        # d.callback(None)
+        # d1 = couch.openDoc(user_id)
+        # li = defer.DeferredList([d,d1])
+        # li.addCallback(self.addComponents, model['_id'])
+        # li.addCallback(self.finish, request)
+        # return li
 
     def render_GET(self, request):
         _id = request.args.get('id')[0]
