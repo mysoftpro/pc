@@ -1237,8 +1237,6 @@ class FindOrder(Resource):
     def notebook(self, model_user, notebook_id):
         code = model_user[1][1]['notebooks'][notebook_id]
         def makeNotebook(note_doc):
-            mock = {'building':False,'dvd':False,'installing':False,'_id':notebook_id}
-            model_user[0] = (True,mock)
             note_doc[0][1]['count'] = 1
             note_doc[0][1]['ourprice'] = makeNotePrice(note_doc[0][1])
             return (model_user,note_doc)
