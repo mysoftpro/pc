@@ -223,7 +223,7 @@ class PriceForMarket(Resource):
             offer.set('available',"true")
 
             url = etree.Element('url')
-            url.text = 'http://localhost/notebook'
+            url.text = 'http://buildpc.ru/notebook'
             offer.append(url)
 
             price = etree.Element('price')
@@ -1315,6 +1315,7 @@ class FindOrder(Resource):
             return cheapeast
         from pc import models
         from copy import deepcopy
+
         for k,v in model_user[0][1]['items'].items():
             component = None
             if v is not None:
@@ -1377,20 +1378,49 @@ class FindOrder(Resource):
 
     def getModel(self, error, _id, request):
         d = couch.openDoc(_id)
-        d1 = couch.openDoc(request.getCookie('pc_user'))
-        model_user = defer.DeferredList([d,d1])
-        model_user.addCallback(self.addComponents, _id)
-        model_user.addCallback(self.finish, request)
-        return model_user
+        def getUser(model):            
+            d1 = couch.openDoc(model['author'])
+            mock = defer.Deferred()
+            mock.addCallback(lambda x: model)
+            mock.callback(None)
+            li = defer.DeferredList([mock,d1])
+            li.addCallback(self.addComponents, _id)
+            li.addCallback(self.finish, request)
+            return li
+        d.addCallback(getUser)
+        return d
+
+
+    def getThree(self, result, request):        
+        # d = couch.openDoc(request.getCookie('pc_user'))
+        user_id = request.getCookie('pc_user')
+        model = None
+        for r in result['rows']:
+            doc = r['doc']
+            if doc['author']==user_id:
+                model = doc
+                break
+        d = defer.Deferred()
+        d.addCallback(lambda x:model)
+        d.callback(None)
+        d1 = couch.openDoc(user_id)
+        li = defer.DeferredList([d,d1])
+        li.addCallback(self.addComponents, model['_id'])
+        li.addCallback(self.finish, request)
+        return li
 
     def render_GET(self, request):
         _id = request.args.get('id')[0]
-        order_d = couch.openDoc('order_'+_id)
-        order_d.addCallback(self.finish, request)
-        # if no order -> get model
-        order_d.addErrback(self.getModel, _id, request)
-        # if problem with the order -> finish any way
-        order_d.addErrback(self.graceFull, request)
+        if len(_id)>3:
+            order_d = couch.openDoc('order_'+_id)
+            order_d.addCallback(self.finish, request)
+            # if no order -> get model
+            order_d.addErrback(self.getModel, _id, request)
+            # if problem with the order -> finish any way
+            order_d.addErrback(self.graceFull, request)
+        else:
+            d = couch.openView(designID, 'last_free', key=_id, include_docs=True)
+            d.addCallback(self.getThree, request)
         return NOT_DONE_YET
 
 # REMEMBER! each order linked to model by id!
