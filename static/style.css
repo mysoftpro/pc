@@ -1717,3 +1717,9 @@ a.modelicon img{
 .modellink strong{
     color:#ccc;
 }
+.game {
+    min-height:400px;
+}
+#deus_ex{
+    background-image:url('games/deus_ex_1.jpg');
+}
