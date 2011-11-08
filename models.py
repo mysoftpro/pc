@@ -1049,6 +1049,28 @@ def buildPrices(model, json_prices, price_span):
     return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
+def lastUpdateTime():
+    now = datetime.now()
+    hour = now.hour+8
+    retval = ''
+    mo = str(now.month)
+    if len(mo)<2:
+        mo = "0"+mo
+    da = str(now.day)
+    if len(da)<2:
+        da = "0"+da
+    if hour>18:
+        retval = '.'.join((da,mo,str(now.year))) +' 18:20'
+    elif hour<9:
+        delta = timedelta(days=-1)
+        now = now + delta
+        retval = '.'.join((da,mo,str(now.year))) +' 18:20'
+    else:
+        if now.minute<14:
+            hour-=1
+        retval = '.'.join((da,mo,str(now.year))) +\
+            ' '+str(hour)+':' + str(14+randint(1,6))
+    return retval
 
 def index(template, skin, request):
 
@@ -1079,19 +1101,7 @@ def index(template, skin, request):
 	    if i==len(imgs): i=0
 	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
 	last_update = template.middle.xpath('//span[@id="last_update"]')[0]
-	now = datetime.now()
-	hour = now.hour+7
-	if hour>18:
-	    last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +' 18:20'
-	elif hour<9:
-	    delta = timedelta(days=-1)
-	    now = now + delta
-	    last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +' 18:20'
-	else:
-	    if now.minute<14:
-		hour-=1
-	    last_update.text = '.'.join((str(now.day),str(now.month),str(now.year)[2:])) +\
-		' '+str(hour)+':' + str(14+randint(1,6))
+	last_update.text = lastUpdateTime()
 
 	skin.top = template.top
 	skin.middle = template.middle

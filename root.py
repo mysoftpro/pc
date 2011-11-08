@@ -14,7 +14,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -158,6 +158,52 @@ class SiteMap(Resource):
         d = couch.openView(designID, 'models')
         d.addCallback(self.siteMap, request)
         return NOT_DONE_YET
+
+
+class PriceForMarket(Resource):
+    def prices(self, request):
+        request.setHeader('Content-Type', 'text/xml;charset=utf-8')
+        root = etree.XML('<yml_catalog></yml_catalog>')        
+        lut = lastUpdateTime().split(' ')
+        da,ta = lut.split(' ')
+        lida = da.split('-')
+        lida.reverse()
+        da = '-'.join(lida)
+        root.set('date', da+' '+ta)
+        # root.set('xmlns',"http://www.sitemaps.org/schemas/sitemap/0.9")
+        # shop = etree.Element('shop')
+        
+        # root.append(self.buildElement(''))
+        # root.append(self.buildElement('computer'))
+        # for model in models['rows']:
+        #     root.append(self.buildElement('computer/'+model['key'], freq='daily'))
+        # root.append(self.buildElement('howtochoose'))
+        # root.append(self.buildElement('howtobuy'))
+        # root.append(self.buildElement('howtouse'))
+        # root.append(self.buildElement('warranty'))
+        # root.append(self.buildElement('motherboard'))
+        # root.append(self.buildElement('video'))
+        # root.append(self.buildElement('processor'))
+        # root.append(self.buildElement('notebook'))
+
+        # root.append(self.buildElement('computer?cat=home'))
+        # root.append(self.buildElement('computer?cat=work'))
+        # root.append(self.buildElement('computer?cat=admin'))
+        # root.append(self.buildElement('computer?cat=game'))
+
+        request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
+        request.finish()
+
+    def render_GET(self, request):
+        asus_12 = ["7362","7404","7586"]
+        asus_14 = ["7362","7404","7495"]
+        asus_15 = ["7362","7404","7468"]
+        asus_17 = ["7362","7404","7704"]
+        d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                           keys = [asus_12,asus_14,asus_15,asus_17])        
+        d.addCallback(self.prices, request)
+        return NOT_DONE_YET
+
 
 
 class Template(object):
