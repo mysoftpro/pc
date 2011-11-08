@@ -464,7 +464,8 @@ class CachedStatic(File):
                 d = self.renderTemplate(fileForReading, last_modified, request)
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
-                d.addErrback(lambda e:request.finish())
+                #TODO! not just finish, but send email with error!
+                # d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()

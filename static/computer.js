@@ -1403,7 +1403,10 @@ function to_cartSuccess(data){
 	alert('Что пошло не так :(');
     else{
 	uuid = data['id'];
-	$('#modelname').text(data['id']);
+	var len = data['id'].length;
+	var first = data['id'].substring(0,len-3);
+	var last = data['id'].substring(len-3,len);
+	$('#modelname').html(first+'<strong>'+last+'</strong>');
 	if (!added_cached){
 	    added_cached = decodeURI($('#added').html());
 	    $('#added').html('');

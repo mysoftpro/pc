@@ -734,8 +734,11 @@ class ModelForModelsPage(object):
 	a.set('href','/computer/%s' % self.model['_id'])
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
-	else:
-	    a.text = self.model['_id']
+	else:            
+	    a.text = self.model['_id'][:-3]
+            strong= etree.Element('strong')
+            strong.text = self.model['_id'][-3:]
+            a.append(strong)
 	price_span = self.model_div.find('.//span')
 	price_span.set('id',self.model['_id'])
 	self.components = buildPrices(self.model, self.json_prices, price_span)
@@ -802,8 +805,11 @@ class NoteBookForCartPage(object):
 	note_name.text = self.notebook['doc']['text']
 	note_name.set('id',key+'_'+self.notebook['doc']['_id'])
 
-	self.note.xpath('//strong[@class="modellink"]')[0].text = key
-
+        link = self.note.xpath('//strong[@class="modellink"]')[0]
+	link.text = key[:-3]
+        strong = etree.Element('strong')
+        strong.text = key[-3:]
+        link.append(strong)
 	price = makeNotePrice(self.notebook['doc'])
 
 	self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
