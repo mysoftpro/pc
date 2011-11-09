@@ -25,7 +25,7 @@ from pc.mail import Sender
 from pc.faq import faq, StoreFaq
 from twisted.internet.task import deferLater
 from pc.game import gamePage
-from pc.payments import DOValidateUser
+from pc.payments import DOValidateUser,DONotifyPayment
 
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер.',
@@ -590,7 +590,7 @@ class Root(Cookable):
         # self.putChild('game', TemplateRenderrer(self.static, 'game.html'))
         self.putChild('modelstats', ModelStats())
         self.putChild('do_validate_user', DOValidateUser())
-
+        self.putChild('do_notify_payment', DONotifyPayment())
 
     def getChild(self, name, request):
         self.checkCookie(request)
