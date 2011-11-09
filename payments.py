@@ -7,13 +7,14 @@ from copy import deepcopy
 from twisted.web.server import NOT_DONE_YET
 from pc.couch import couch, designID
 from twisted.internet import reactor, defer
+from pc.mail import send_email
 
 class DOValidateUser(Resource):
     def __init__(self):
         self.xml = etree.XML('<result></result>')
         code = etree.Element('code')
         self.xml.append(code)
-    
+
     def render_POST(self, request):
         userid = request.args.get('userid',[None])[0]
         userid_extra = request.args.get('userid_extra',[None])[0]
@@ -40,11 +41,11 @@ class DONotifyPayment(Resource):
         self.xml = etree.XML('<result></result>')
         id = etree.Element('id')
         code = etree.Element('code')
-        # comment = etree.Element('comment')
+        comment = etree.Element('comment')
         # course = etree.Element('course')
         self.xml.append(id)
         self.xml.append(code)
-        # self.xml.append(comment)
+        self.xml.append(comment)
         # self.xml.append(course)
 
 
@@ -53,35 +54,63 @@ class DONotifyPayment(Resource):
         request.write(etree.tostring(answer, encoding='utf-8', xml_declaration=True))
         request.finish()
 
+    def fail(self, fail, answer, request):
+        answer.find('comment').text = str(fail)
+        answer.find('code').text = 'NO'
+        request.setHeader('Content-Type', 'text/xml;charset=utf-8')
+        request.write(etree.tostring(answer, encoding='utf-8', xml_declaration=True))
+        request.finish()
+
     # user['payments']= {'their_id':['our_id']}--> {'12345':['dabsd','db123''}]}
     def storePayment(self, payment_user, raw_payment, answer, request):
         if payment_user[0][0] and payment_user[1][0]:
-            _payment = payment_user[0][1]
-            _user = payment_user[1][1]
+
+            _payment = payment_user[1][1]
+            _user = payment_user[0][1]
             # has payments
             if 'payments' in _user:
                 stored = False
-                for their_id,li in _user['payments'].items():                    
+                for their_id,li in _user['payments'].items():
                     # same payment again
-                    if their_id == _payment['id']:
-                        li.append(_payment['_id'])
+                    if their_id == raw_payment['paymentid']:
+                        li.append(_payment['id'])
                         stored = True
                         break
                 # new payment
                 if not stored:
-                    _user['payments'].update({_payment['id']:[_payment['_id']]})                    
+                    _user['payments'].update({raw_payment['paymentid']:[_payment['id']]})
+            else:
+                _user['payments'] = {raw_payment['paymentid']:[_payment['id']]}
             d = couch.saveDoc(_user)
             answer.find('code').text = 'YES'
-            answer.find('id').text = _payment['_id']
+            answer.find('id').text = _payment['id']
             d.addCallback(self.finish, answer, request)
-
-        # if not 'payments' in user_doc:
-        #     user_doc.payments.update({payment['paymentid']:
+            send_email('admin@buildpc.ru',
+                       u'Совершен платеж',
+                       _payment['id']+' '+_user['_id'],
+                       sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+            return d
+        else:
+            answer.find('code').text = 'NO'
+            # payment is stored, but no user
+            if payment_user[1][0]:
+                answer.find('id').text = payment_user[1][1]['id']
+                answer.find('comment').text = u'No such user '+raw_payment['userid']
+                d = defer.Deferred()
+                d.addCallback(self.finish, answer, request)
+                d.callback(None)
+                return d
+            else:                
+                answer.find('comment').text = u'Cant store payment '+raw_payment['paymentid']
+                d = defer.Deferred()
+                d.addCallback(self.finish, answer, request)
+                d.callback(None)
+                return d
 
 
 # curl -X POST 'localhost/do_notify_payment?amount=1&userid=2&paymentid=3&key=b3246e84884cd7bf732d1f5876b771d6'
-    
-    def render_POST(self, request):
+
+    def render_GET(self, request):
         # userid_extra = request.args.get('userid_extra',[None])[0]
         amount = request.args.get('amount',[None])[0]
         userid = request.args.get('userid',[None])[0]
@@ -101,19 +130,22 @@ class DONotifyPayment(Resource):
         up(userid)
         up(paymentid)
         up(do_key)
-        
+
         di = ha.hexdigest()
-        
+
         answer = deepcopy(self.xml)
-        
-        if key is not None and di == key:            
+
+        if key is not None and di == key:
             payment = {'userid':userid,'userid_extra':userid_extra,'paymentid':paymentid,'key':key,
-                       'paymode':paymode,'orderid':orderid,'serverid':serverid,'amount':amount}
+                       'paymode':paymode,'orderid':orderid,'serverid':serverid,'amount':amount,
+                       'type':'do_payment'}
             d = couch.openDoc(userid)
             d1 = couch.saveDoc(payment)
             li = defer.DeferredList([d,d1])
-            li.addCallback(self.storePayment,payment,request)            
+            li.addCallback(self.storePayment,payment,answer,request)
+            li.addErrback(self.fail, answer, request)
             return NOT_DONE_YET
         else:
             answer.find('code').text = 'No'
+            answer.find('comment').text = u'Invalid key'
             return etree.tostring(answer, encoding='utf-8', xml_declaration=True)
