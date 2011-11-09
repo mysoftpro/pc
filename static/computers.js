@@ -4,7 +4,7 @@ _.templateSettings = {
 };
 
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
-
+var panel_template = '<div class="d_panel"> <div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
 function storeModelStat(href){
     var splitted = href.split('/');
@@ -89,7 +89,7 @@ function renderCategories(idses, hash){
 				 success:function(data){
 				     var container = $('#'+desc_id);
 				     container.html(data);
-				     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');				     
+				     container.append(panel_template);				     
 				     container
 					 .find('.small_cart')
 					 .click(savemodel(el));
@@ -397,7 +397,9 @@ head.ready(function(){
 		     var container = $(full_descr.get(i));
 		     var el = container.attr('id').substring('desc_'.length,container.attr('id')
 							     .length);
-		     container.append('<div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div>');
+		     container.html(container.text());
+		     container.append(panel_template);
+		     $('h1').text($('title').text().split('. ')[1]);
 		     container
 		   .find('.small_cart')
 			 .click(savemodel(el));
@@ -432,5 +434,5 @@ head.ready(function(){
 		   storeModelStat(href);
 	       }
 	       $('.modelicon').click(stats);
-	       $('.modellink').click(stats);
+	       $('.modellink').click(stats);	       
 	   });
