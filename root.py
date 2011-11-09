@@ -24,7 +24,7 @@ from copy import deepcopy
 from pc.mail import Sender
 from pc.faq import faq, StoreFaq
 from twisted.internet.task import deferLater
-
+from pc.game import gamePage
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер.',
     '/howtouse':u' Как пользоваться сайтом.',
@@ -72,7 +72,7 @@ def renderPartPage(doc, header, template, skin):
     title = skin.root().xpath('//title')[0]
     title.text += header
     skin.top = template.top
-    skin.middle = template.middle
+    skin.middle = template.middle    
     # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
     # skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
     return skin
@@ -95,7 +95,8 @@ static_hooks = {
     'warranty.html':simplePage,
     'part.html':partPage,
     'notebook.html':notebooks,
-    'faq.html':faq
+    'faq.html':faq,
+    'game.html':gamePage
     }
 
 
@@ -145,7 +146,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('video'))
         root.append(self.buildElement('processor'))
         root.append(self.buildElement('notebook'))
-
+        
         root.append(self.buildElement('computer?cat=home'))
         root.append(self.buildElement('computer?cat=work'))
         root.append(self.buildElement('computer?cat=admin'))
@@ -545,6 +546,7 @@ class Root(Cookable):
         self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))
         self.putChild('warranty', TemplateRenderrer(self.static, 'warranty.html'))
 
+
         self.putChild('motherboard', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('processor', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('video', TemplateRenderrer(self.static, 'part.html'))
@@ -582,6 +584,9 @@ class Root(Cookable):
         self.putChild('modeldesc', ModelDesc())
 
         self.putChild('prices_for_market',PriceForMarket())
+
+        self.putChild('game', TemplateRenderrer(self.static, 'game.html'))
+
 
     def getChild(self, name, request):
         self.checkCookie(request)

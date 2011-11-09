@@ -80,5 +80,5 @@ head.ready(function(){
 			     new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
 			 $('#'+mid).text(new_price + ' р');
 		     }
-		 });
+		 });	       
   });

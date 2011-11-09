@@ -388,16 +388,16 @@ head.ready(function(){
 				    $('h1').first().text('Игровые компьютеры');
 				});
 	       if (document.location.hash.match('home')){
-		   $('#home').click();
+	       	   $('#home').click();
 	       }
 	       if (document.location.hash.match('admin')){
-		   $('#admin').click();
+	       	   $('#admin').click();
 	       }
 	       if (document.location.hash.match('game')){
-		   $('#game').click();
+	       	   $('#game').click();
 	       }
 	       if (document.location.hash.match('work')){
-		   $('#work').click();
+	       	   $('#work').click();
 	       }
 	       var full_descr = $('.full_desc');
 	       if (full_descr.length>0 && $('.small_square_button').length==0){
