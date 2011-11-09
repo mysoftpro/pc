@@ -110,7 +110,7 @@ class DONotifyPayment(Resource):
 
 # curl -X POST 'localhost/do_notify_payment?amount=1&userid=2&paymentid=3&key=b3246e84884cd7bf732d1f5876b771d6'
 
-    def render_GET(self, request):
+    def render_POST(self, request):
         # userid_extra = request.args.get('userid_extra',[None])[0]
         amount = request.args.get('amount',[None])[0]
         userid = request.args.get('userid',[None])[0]
