@@ -5,22 +5,13 @@ _.templateSettings = {
 
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
-// function _compLinks(){
-//     return $('.computeritem').find('a');
-// }
-// var compLinks = _.memoize(_compLinks, function(){return 1;});
 
-// function itemById(_id){
-//     var links = compLinks();
-//     for (var i=0;i<links.length;i++){
-// 	var li = $(links[i]);
-
-// 	var hrs = li.attr('href').split('/');	;
-// 	if (_id == hrs[hrs.length-1]){
-// 	    return li.parent();
-// 	}
-//     }
-// }
+function storeModelStat(href){
+    var splitted = href.split('/');
+    var clean = splitted[splitted.length-1];
+    clean= clean.split('?')[0];
+    $.ajax({url:'modelstats',data:{id:clean}});
+}
 function itemNext(item){
     return item.next().next();
 }
@@ -68,6 +59,7 @@ function gotomodel(el){
 		break;
 	    }
 	}
+	storeModelStat(href);
 	document.location.href=href;
     };
 }
@@ -432,4 +424,13 @@ head.ready(function(){
 
 								});
 					});
+	       function stats(e){
+		   var target = $(e.target);
+		   var href = target.attr('href');
+		   if (href==undefined)
+		       href = target.parent().attr('href');
+		   storeModelStat(href);
+	       }
+	       $('.modelicon').click(stats);
+	       $('.modellink').click(stats);
 	   });

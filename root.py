@@ -466,7 +466,7 @@ class CachedStatic(File):
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 #TODO! not just finish, but send email with error!
-                # d.addErrback(lambda e:request.finish())
+                d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -585,8 +585,8 @@ class Root(Cookable):
 
         self.putChild('prices_for_market',PriceForMarket())
 
-        self.putChild('game', TemplateRenderrer(self.static, 'game.html'))
-
+        # self.putChild('game', TemplateRenderrer(self.static, 'game.html'))
+        self.putChild('modelstats', ModelStats())
 
     def getChild(self, name, request):
         self.checkCookie(request)
@@ -595,6 +595,20 @@ class Root(Cookable):
             return self.static.getChild(name, request)
         return self
 
+
+class ModelStats(Resource):
+    def render_GET(self, request):
+        _id = request.args.get('id',[None])[0]
+        if _id is not None:
+            d = couch.openDoc(_id)
+            def incr(doc):
+                if 'hits' in doc:
+                    doc['hits']=doc['hits']+1
+                else:
+                    doc['hits'] = 1
+                couch.saveDoc(doc)
+            d.addCallback(incr)
+        return "ok"
 
 class ModelDesc(Resource):
     def finish(self, doc, request):
