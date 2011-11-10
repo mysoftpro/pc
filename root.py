@@ -468,7 +468,7 @@ class CachedStatic(File):
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 #TODO! not just finish, but send email with error!
-                d.addErrback(lambda e:request.finish())
+                # d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
