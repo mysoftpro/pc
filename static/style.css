@@ -1756,8 +1756,7 @@ a.modelicon img{
 .dragdealer .red-bar {
 	width: 10px;
 	height: 20px;
-	background:  red;
-	color: #FFF;
+	background:  #222;
 	margin-top:-5px;
 }
 .dragdealer .disabled {

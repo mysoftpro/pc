@@ -530,7 +530,12 @@ head.ready(function(){
                                             //              'video_code':video_code
                                             //             });
                                             $('#m'+m).next().append('<div id="slider'+m+'" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
-					    new Dragdealer('slider'+m).setValue(0.5);
+					    
+					    new Dragdealer('slider'+m,{
+							       x:0.5,
+							       animationCallback: function(x, y){console.log(x);}
+					    });
+					//	.setValue(0.5);					        
                                        });
                           }
                       });	       
