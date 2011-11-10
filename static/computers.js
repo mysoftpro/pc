@@ -498,46 +498,46 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-               $.ajax({
-                          url:'zip_components',
-                          success:function(data){
-                              var lis =  _($('.description').toArray())
-                                  .each(function(el){
-                                            var chi =$(el).children();
-                                            var mother = chi.first();
-                                            var proc = mother.next();
-                                            var proc_code = proc.attr('id').split('_')[1];
-                                            var video = proc.next();
-                                            var video_code = video.attr('id').split('_')[1];
-                                            var splitted = mother.attr('id').split('_');
-                                            var m = splitted[0];
-                                            var mother_code = splitted[1];
-                                            var line = _(data['mp']).chain()
-                                                .select(function(socket){
-                                                         var mos = socket[0];
-                                                         var procs = socket[1];
-                                                         var mos_found = _(mos)
-                                                             .select(function(ob){
-                                                                         //console.log(ob);
-                                                                         return ob[mother_code];
-                                                                       });
-                                                         return mos_found.length>0;
-                                                     })
-                                            .first();
-                                            // $('#m'+m).data({'mp':line,'v':data['v'],
-                                            //              'mother_code':mother_code,
-                                            //              'proc_code':proc_code,
-                                            //              'video_code':video_code
-                                            //             });
-                                            $('#m'+m).next().append('<div id="slider'+m+'" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
+               // $.ajax({
+               //            url:'zip_components',
+               //            success:function(data){
+               //                var lis =  _($('.description').toArray())
+               //                    .each(function(el){
+               //                              var chi =$(el).children();
+               //                              var mother = chi.first();
+               //                              var proc = mother.next();
+               //                              var proc_code = proc.attr('id').split('_')[1];
+               //                              var video = proc.next();
+               //                              var video_code = video.attr('id').split('_')[1];
+               //                              var splitted = mother.attr('id').split('_');
+               //                              var m = splitted[0];
+               //                              var mother_code = splitted[1];
+               //                              var line = _(data['mp']).chain()
+               //                                  .select(function(socket){
+               //                                           var mos = socket[0];
+               //                                           var procs = socket[1];
+               //                                           var mos_found = _(mos)
+               //                                               .select(function(ob){
+               //                                                           //console.log(ob);
+               //                                                           return ob[mother_code];
+               //                                                         });
+               //                                           return mos_found.length>0;
+               //                                       })
+               //                              .first();
+               //                              $('#m'+m).data({'mp':line,'v':data['v'],
+               //                                           'mother_code':mother_code,
+               //                                           'proc_code':proc_code,
+               //                                           'video_code':video_code
+               //                                          });
+               //                              $('#m'+m).next().append('<div id="slider'+m+'" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
 					    
-					    new Dragdealer('slider'+m,{
-							       x:0.5,
-							       animationCallback: function(x, y){console.log(x);}
-					    });
-					//	.setValue(0.5);					        
-                                       });
-                          }
-                      });	       
+	       // 				    new Dragdealer('slider'+m,{
+	       // 				    		       x:0.5,
+	       // 				    		       animationCallback: function(x, y){console.log(x);}
+	       // 				    });
+               //                         });
+               //            }
+               //        });
+	       
 
            });
