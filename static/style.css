@@ -1734,7 +1734,32 @@ a.modelicon img{
     background-image:url('human.png');
     background-repeat:repeat-x;
     width:12px;
-    height:24px;
-    float:left;
+    height:24px;    
     margin-left:10px;
+    float:left;
+}
+
+.dragdealer {
+	position: relative;
+	height: 10px;
+	background: #333;
+	width:75px;	
+	float:right;
+	margin-right:60px;
+	margin-top:8px;
+}
+
+.dragdealer .handle {
+	position: absolute;
+	cursor: pointer;
+}
+.dragdealer .red-bar {
+	width: 10px;
+	height: 20px;
+	background:  red;
+	color: #FFF;
+	margin-top:-5px;
+}
+.dragdealer .disabled {
+	background: #898989;
 }

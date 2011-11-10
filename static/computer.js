@@ -1509,8 +1509,9 @@ head.ready(function(){
 		       replaced.push(code);
 		   delete model[code]['replaced'];
 	       }
+	       
 	       new_model = _.clone(model);
-
+	       
 	       checkOptions();
 
 	       $('select').chosen().change(manualChange);
@@ -1580,6 +1581,22 @@ head.ready(function(){
 		   $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 		   $('#addplease').animate({'opacity':'1.0'},1000);
 	       }	       
+
+	       
+	       if (document.location.search.match('data')){
+		   var le = document.location.search.length;
+		   var pairs = document.location.search.substring(1,le).split('&');
+		   var data = _(pairs).chain()
+		       .select(function(p){
+				   return p.split('=')[0]==='data';
+			       })
+		       .map(function(p){
+				return eval('('+decodeURI(p.split('=')[1])+')');
+			    }).first().value();
+		   for (var co in data){
+		       setCode(co,data[co]);
+		   }
+	       }
 
 
 	       // _.delay(function(){
