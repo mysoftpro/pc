@@ -1727,7 +1727,14 @@ a.modelicon img{
     margin-bottom:-40px;
     padding-left:20px;
 }
-
+.m_popular{
+    background-image:url('human.png');
+    background-repeat:repeat-x;
+    width:48px;
+    height:48px;
+    float:left;
+    margin-left:10px;
+}
 .d_popular {
     background-image:url('popular.png');
     background-repeat:repeat-x;

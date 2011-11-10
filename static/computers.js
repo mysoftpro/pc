@@ -9,6 +9,7 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 var panel_template = '<div class="d_panel"> <div class="d_popular" title="Популярнось"></div><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
 var hits = {};
+var full_view_hits = {};
 
 function storeModelStat(href){
     var splitted = href.split('/');
@@ -69,18 +70,18 @@ function gotomodel(el){
 }
 
 
-function fillPopularity(){
-    if(_(hits).keys().length<3) return;
+function fillPopularity(data, finder, height){
+    if(_(data).keys().length<3) return;
     var smallest =99999999;
-    for (var el in hits){
-	if (hits[el]<smallest)
-	    smallest = hits[el];	
+    for (var el in data){
+	if (data[el]<smallest)
+	    smallest = data[el];	
     }
-    for (var el in hits){
-	var times = hits[el]/smallest;
+    for (var el in data){
+	var times = data[el]/smallest;
 	if (times>5)
 	    times = 5;
-	$('#desc_'+el).find('.d_popular').css('width',times*48);
+	finder(el).css('width',times*height);
     }
     
 }
@@ -113,7 +114,11 @@ function renderCategories(idses, hash){
 					 hits[el] = 1;
 				     else
 					 hits[el] = data['hits'];
-				     _.delay(fillPopularity,200);
+				     _.delay(function(){fillPopularity(hits,
+								       function(el){
+									   return $('#desc_'+el)
+									       .find('.d_popular');
+								       },48);},200);
 				     container.append(panel_template);				     
 				     container
 					 .find('.small_cart')
@@ -404,6 +409,7 @@ head.ready(function(){
 				    renderCategories(['mzoom','mrender','mraytrace'],'game');
 				    $('h1').first().text('Игровые компьютеры');
 				});
+
 	       if (document.location.hash.match('home')){
 	       	   $('#home').click();
 	       }
@@ -418,7 +424,8 @@ head.ready(function(){
 	       }
 	       var full_descr = $('.full_desc');
 	       if (full_descr.length>0 && $('.small_square_button').length==0){
-		 for (var i=0;i<full_descr.length;i++){
+		   //category view. install buttons.
+		   for (var i=0;i<full_descr.length;i++){
 		     var container = $(full_descr.get(i));
 		     var el = container.attr('id').substring('desc_'.length,container.attr('id')
 							     .length);
@@ -433,6 +440,36 @@ head.ready(function(){
 			 .click(gotomodel(el));
 		 }
 	       }
+	       else{
+		   //full view
+		   var descrs = $('.computers_description').toArray();
+		   _(descrs).each(function(el){
+				      $(el).append('<div title="Популярнось" class="m_popular"></div>');
+				  });
+		   $.ajax({
+			      url:'modeldesc?hitsonly=true',
+			      success:function(data){
+				  fillPopularity(data, function(el){
+						     return $('#'+el).next().find('.m_popular');
+						 },24);
+				  // var smallest = 99999999;
+				  // for (var el in data){
+				  //     if (data[el]<smallest)
+				  // 	  smallest = data[el];
+				  // }
+				  // for (var el in data){
+				  //     var times = data[el]/smallest;
+				  //     if (times>5)
+				  // 	  times = 5;
+				  //     $('#'+el).next().find('.m_popular').css('width',times*24);
+				  // }
+				  
+			      }
+			  });
+		   
+	       }
+	       
+	       
 	       var cats_binded = {};
 	       $('#categories a').mouseover(function(e){
 						var target = $(e.target);

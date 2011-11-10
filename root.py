@@ -629,11 +629,31 @@ class ModelDesc(Resource):
         # request.write(doc['modeldesc'].encode('utf-8'))
         request.finish()
 
+    def finishHitsOnly(self, result, request):
+        print "yooooooooooooooooooooooooooo77"
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        res = {}
+        for r in result['rows']:
+            doc = r['doc']
+            if 'hits' in doc:
+                res.update({'m'+doc['_id']:doc['hits']})
+            else:
+                res.update({'m'+doc['_id']:1})
+        request.write(simplejson.dumps(res))
+        request.finish()
+                           
     def render_GET(self, request):
         _id = request.args.get('id', [None])[0]
         if _id is not None:
             d = couch.openDoc(_id)
             d.addCallback(self.finish, request)
+            d.addErrback(lambda x: request.finish())
+            return NOT_DONE_YET
+        hitsonly = request.args.get('hitsonly', [None])[0]
+        if hitsonly is not None:
+            d = couch.openView(designID,'models',include_docs=True,stale=False)
+            d.addCallback(self.finishHitsOnly, request)
             d.addErrback(lambda x: request.finish())
             return NOT_DONE_YET
         request.finish()

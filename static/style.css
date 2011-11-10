@@ -1730,3 +1730,10 @@ a.modelicon img{
     height:48px;
     float:left;
 }
+.m_popular{
+    background-image:url('human.png');
+    background-repeat:repeat-x;
+    width:24px;
+    height:24px;
+    float:left;
+}
