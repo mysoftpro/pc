@@ -6,7 +6,7 @@ _.templateSettings = {
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 //TODO! d_popular starts with width = 0. even if ajax is come allready
 
-var panel_template = '<div class="d_panel"> <div class="d_popular" title="Популярнось"></div><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
+var panel_template = '<div class="d_panel"> <div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
 var hits = {};
 var full_view_hits = {};
@@ -114,11 +114,11 @@ function renderCategories(idses, hash){
                                          hits[el] = 1;
                                      else
                                          hits[el] = data['hits'];
-                                     _.delay(function(){fillPopularity(hits,
-                                                                       function(el){
-                                                                           return $('#desc_'+el)
-                                                                               .find('.d_popular');
-                                                                       },48);},200);
+				     // _.delay(function(){fillPopularity(hits,
+                                     //                                   function(el){
+                                     //                                       return $('#desc_'+el)
+                                     //                                           .find('.d_popular');
+                                     //                                   },48);},200);
                                      container.append(panel_template);
                                      container
                                          .find('.small_cart')
