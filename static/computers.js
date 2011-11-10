@@ -451,7 +451,7 @@ head.ready(function(){
 			      success:function(data){
 				  fillPopularity(data, function(el){
 						     return $('#'+el).next().find('.m_popular');
-						 },24);
+						 },12);
 				  // var smallest = 99999999;
 				  // for (var el in data){
 				  //     if (data[el]<smallest)
