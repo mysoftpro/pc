@@ -616,10 +616,17 @@ class ModelStats(Resource):
 
 class ModelDesc(Resource):
     def finish(self, doc, request):
-        request.setHeader('Content-Type', 'text/html;charset=utf-8')
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        # request.setHeader('Content-Type', 'text/html;charset=utf-8')
+        # request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        res = {}
         if 'modeldesc' in doc:
-            request.write(doc['modeldesc'].encode('utf-8'))
+            res.update({'modeldesc':doc['modeldesc']})
+        if 'hits' in doc:
+            res.update({'hits':doc['hits']})
+        request.write(simplejson.dumps(res))
+        # request.write(doc['modeldesc'].encode('utf-8'))
         request.finish()
 
     def render_GET(self, request):

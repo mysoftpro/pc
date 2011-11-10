@@ -1723,3 +1723,10 @@ a.modelicon img{
 #deus_ex{
     background-image:url('games/deus_ex_1.jpg');
 }
+.d_popular {
+    background-image:url('popular.png');
+    background-repeat:repeat-x;
+    width:48px;
+    height:48px;
+    float:left;
+}

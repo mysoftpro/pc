@@ -4,7 +4,11 @@ _.templateSettings = {
 };
 
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
-var panel_template = '<div class="d_panel"> <div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
+//TODO! d_popular starts with width = 0. even if ajax is come allready
+
+var panel_template = '<div class="d_panel"> <div class="d_popular" title="Популярнось"></div><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
+
+var hits = {};
 
 function storeModelStat(href){
     var splitted = href.split('/');
@@ -65,8 +69,24 @@ function gotomodel(el){
 }
 
 
-function renderCategories(idses, hash){
+function fillPopularity(){
+    if(_(hits).keys().length<3) return;
+    var smallest =99999999;
+    for (var el in hits){
+	if (hits[el]<smallest)
+	    smallest = hits[el];	
+    }
+    for (var el in hits){
+	var times = hits[el]/smallest;
+	if (times>5)
+	    times = 5;
+	$('#desc_'+el).find('.d_popular').css('width',times*48);
+    }
+    
+}
 
+function renderCategories(idses, hash){
+    hits = {};
     $('.full_desc').remove();
     var to_hide = _($('.computeritem').toArray())
 	.chain()
@@ -88,7 +108,12 @@ function renderCategories(idses, hash){
 				 url:'/modeldesc?id='+el.substring(1,el.length),
 				 success:function(data){
 				     var container = $('#'+desc_id);
-				     container.html(data);
+				     container.html(data['modeldesc']);
+				     if (!data['hits'])
+					 hits[el] = 1;
+				     else
+					 hits[el] = data['hits'];
+				     _.delay(fillPopularity,200);
 				     container.append(panel_template);				     
 				     container
 					 .find('.small_cart')
