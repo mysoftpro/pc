@@ -1466,6 +1466,8 @@ function setCode(catalog,code){
     var part = eval("parts['" + catalog + "']");
     var select = jgetSelectByRow($('#' + part));
     var body = jgetBody(select);
+    if (code=='no')
+    	code = 'no'+part;
     changeComponent(body, choices[code], new_model[select.val()]);
     installCountButtons(body);
 }

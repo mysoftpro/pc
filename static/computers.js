@@ -24,6 +24,13 @@ function itemNext(item){
 function itemPrev(item){
     return item.prev().prev();
 }
+function getCode(ob){
+    return _(ob).keys()[0];
+}
+function getPrice(ob){
+    return _(ob).values()[0];
+}
+
 
 function itemHide(item){
     var hi = {'height':'0','overflow':'hidden'};
@@ -35,20 +42,23 @@ function moveModel(model_id, new_pos){
     var model = $('#m'+model_id);
     var data = model.data();
     var to_move = new_pos-data['current_pos'];
-    // console.log(data['current_pos']);
-    // console.log(new_pos);
+
     var proc = data['procs'].value()[data['proc_index']];
     var mother = data['mothers'].value()[data['mother_index']];
     var video = data['videos'].value()[data['video_index']];
     var initial_price = _([proc,mother,video]).reduce(function(memo,el){
-                                                        return _(el).values()[0]+memo;
+                                                        return getPrice(el)+memo;
                                                     },0);
     function setLast(token, set){
         var answer = false;
         var old_index = data[token+'_index'];
-        var new_index = data[token+'_index']-1;
+        var delta = -1;
+        if (to_move>0)
+            delta = 1;
+        var new_index = data[token+'_index']+delta;
         var rows = data[token+'s'].value();
-        if (old_index>0){
+	answer = rows[new_index];
+	if (answer){
             answer = rows[new_index];
             data[token+'_index'] = new_index;
             set(answer);
@@ -59,7 +69,7 @@ function moveModel(model_id, new_pos){
     function moveLast(_last){
         var done;
         if (_last==proc){
-            done = setLast('proc',function(_new){mother=_new;});
+            done = setLast('proc',function(_new){proc=_new;});
         }
         if (_last==mother){
             done = setLast('mother',function(_new){mother=_new;});
@@ -69,39 +79,56 @@ function moveModel(model_id, new_pos){
         }
         return done;
     }
-    if (to_move<0){
-        // move down. first try to move the most expensive
-        function move(){
-            var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
-            var _last = sorted.pop();
 
-            while (!moveLast(_last)){
-                if (sorted.length==0)
+    function move(){
+        var sorted = _([proc,mother,video]).sortBy(getPrice);
+        if (to_move>0)
+            sorted = sorted.reverse();
+        var _last = sorted.pop();
+
+        while (!moveLast(_last)){
+            if (sorted.length==0)
                 break;
-                _last = sorted.pop();
-            }
-            data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];
-        }
-        while (data['current_pos']>new_pos){
-            move();
-            if (data['current_pos']==0)
-                break;
-        }
-        //model.data(data);
-	var new_price = _([proc,mother,video]).reduce(function(memo,el){
-                                                        return _(el).values()[0]+memo;
-                                                    },0);
-	var price =$('#'+model_id); 
-	var text = price.text().split(' ')[0];
-	price.text(parseInt(text)-initial_price+new_price+' р');
-        	
+            _last = sorted.pop();            
+	}
+        data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];
     }
+    var cond = function(x,y){
+        if (to_move>0)
+            return x<y;
+        return x>y;
+    };
+    var guard = 0;
+    while (cond(data['current_pos'],new_pos)){
+        move();
+        if (data['current_pos']==0 || data['current_pos']>=data['steps']-3)
+            break;
+    }
+
+    var new_price = _([proc,mother,video]).reduce(function(memo,el){
+                                                      return getPrice(el)+memo;
+                                                  },0);
+    var price =$('#'+model_id);
+    var text = price.text().split(' ')[0];
+    price.text(parseInt(text)-initial_price+new_price+' р');
+    var links = $('#m'+model_id).find('a').toArray();
+    _(links).each(function(el){
+                      var link = $(el);
+                      var href = link.attr('href');
+                      if (!href)return;
+                      var splitted = href.split('?');                      
+                      link.attr('href',splitted[0]+'?data='+
+                                encodeURI(
+                                    JSON.stringify(
+                                        {'mother':getCode(mother),
+                                         'proc':getCode(proc),'video':getCode(video)})));
+                  });
+
+
 }
 
 function getComponentIndex(rows, code){
-    return rows.map(function(ob){
-                         return _(ob).keys()[0];
-                    })
+    return rows.map(getCode)
         .indexOf(code)
          .value();
 }
@@ -191,10 +218,10 @@ function fillPopularity(data, finder, height){
         if (data[el]<smallest)
             smallest = data[el];
     }
-    for (var el in data){	
+    for (var el in data){
         var times = data[el]/smallest;
-	times = Math.round(Math.log(times))+1;
-	if (times>5)
+        times = Math.round(Math.log(times))+1;
+        if (times>5)
             times = 5;
         finder(el).css('width',times*height);
     }
@@ -605,51 +632,49 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-               // $.ajax({
-               //            url:'zip_components',
-               //            success:function(data){
-               //                var lis =  _($('.description').toArray())
-               //                    .each(function(el){
-               //                              var chi =$(el).children();
-               //                              var mother = chi.first();
-               //                              var proc = mother.next();
-               //                              var proc_code = proc.attr('id').split('_')[1];
-               //                              var video = proc.next();
-               //                              var video_code = video.attr('id').split('_')[1];
-               //                              if (video_code.match('no'))
-               //                                  video_code = 'no';
-               //                              var splitted = mother.attr('id').split('_');
-               //                              var m = splitted[0];
-               //                              var mother_code = splitted[1];
-               //                              var line = _(data['mp']).chain()
-               //                                  .select(function(socket){
-               //                                              var mos = socket[0];
-               //                                              var procs = socket[1];
-               //                                              var mos_found = _(mos)
-               //                                                  .select(function(ob){
-               //                                                              return ob[mother_code];
-               //                                                          });
-               //                                              return mos_found.length>0;
-               //                                          })
-               //                                  .first();
-               //                              var mothers = line
-               //                                  .first()
-               //                                  .sortBy(function(ob){return _(ob).values()[0];});
-               //                              var procs = line
-               //                                  .last()
-               //                                  .sortBy(function(ob){return _(ob).values()[0];});
+               $.ajax({
+                          url:'zip_components',
+                          success:function(data){
+                              var lis =  _($('.description').toArray())
+                                  .each(function(el){
+                                            var chi =$(el).children();
+                                            var mother = chi.first();
+                                            var proc = mother.next();
+                                            var proc_code = proc.attr('id').split('_')[1];
+                                            var video = proc.next();
+                                            var video_code = video.attr('id').split('_')[1];
+                                            if (video_code.match('no'))
+                                                video_code = 'no';
+                                            var splitted = mother.attr('id').split('_');
+                                            var m = splitted[0];
+                                            var mother_code = splitted[1];
+                                            var line = _(data['mp']).chain()
+                                                .select(function(socket){
+                                                            var mos = socket[0];
+                                                            var procs = socket[1];
+                                                            var mos_found = _(mos)
+                                                                .select(function(ob){
+                                                                            return ob[mother_code];
+                                                                        });
+                                                            return mos_found.length>0;
+                                                        })
+                                                .first();
+                                            var mothers = line
+                                                .first()
+                                                .sortBy(getPrice);
+                                            var procs = line
+                                                .last()
+                                                .sortBy(getPrice);
 
-               //                              data['v'].push({'no':0});
-               //                              var videos = _(data['v'])
-               //                                  .chain()
-               //                                  .sortBy(function(ob){return _(ob).values()[0];});
-
-               //                              makeSlider(mothers,procs,videos,m,{'m':mother_code,
-               //                                                                 'p':proc_code,
-               //                                                                 'v':video_code});
-               //                          });
-               //            }
-               //        });
-
+                                            data['v'].push({'no':0});
+                                            var videos = _(data['v'])
+                                                .chain()
+                                                .sortBy(getPrice);
+                                            makeSlider(mothers,procs,videos,m,{'m':mother_code,
+                                                                               'p':proc_code,
+                                                                               'v':video_code});
+                                        });
+                          }
+                      });
 
            });

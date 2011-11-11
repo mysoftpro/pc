@@ -125,9 +125,7 @@ def walkOnChoices(name = None, _filter=None):
 
 
 def getCatalogsKey(doc):
-    if 'catalogs' not in doc:
-        print "fuuuuuuuuuuuuuuuuuuuuck!"
-        print doc
+    if 'catalogs' not in doc:        
         return 'no'
     if type(doc['catalogs'][0]) is dict:
         cats = []
