@@ -1254,14 +1254,14 @@ class ZipConponents(Resource):
     def render_GET(self, request):
         mothers = []
         procs = []
-        videos = {}
+        videos = []
         for sockets in globals()['gChoices'][mother]:
             mothers.append(sockets[1][1]['rows'])
         for sockets in globals()['gChoices'][proc]:
             procs.append(sockets[1][1]['rows'])
         for sockets in globals()['gChoices'][video]:
             for r in sockets[1][1]['rows']:
-                videos.update(self.getPriceAndCode(r))
+                videos.append(self.getPriceAndCode(r))
 
         mothers_mapping = {}
         for m in mothers:

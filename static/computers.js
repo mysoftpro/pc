@@ -1,3 +1,4 @@
+var consolr = console;
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
@@ -8,6 +9,7 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 var panel_template = '<div class="d_panel"><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
+var slider_template = _.template('<div id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
 var hits = {};
 var full_view_hits = {};
 
@@ -28,6 +30,78 @@ function itemHide(item){
     var hi = {'height':'0','overflow':'hidden'};
     item.css(hi);
     item.next().css(hi);
+}
+
+function moveModel(model_id, new_pos){
+    var model = $('#m'+model_id);
+    var data = model.data();
+    var to_move = new_pos-data['current_pos'];
+
+    var proc = data['procs'].value()[data['proc_index']];
+    var mother = data['mothers'].value()[data['mother_index']];
+    var video = data['videos'].value()[data['video_index']];
+
+    
+    if (to_move<0){
+	// move down. first try to move the most expensive
+	var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
+	var last = sorted.pop();
+	if (last==proc){
+	    if (data['proc_index']>0){
+		var new_proc_index = data['proc_index']-1;
+		var new_proc = data['procs'].value()[new_proc_index];
+		console.log('new_proc');
+		console.log(new_proc);
+	    }
+	}
+	if (last==mother){
+	    if (data['mother_index']>0){
+		var new_mother_index = data['mother_index']-1;
+		var new_mother = data['mothers'].value()[new_mother_index];
+		console.log('new_mother');
+		console.log(new_mother);
+	    }
+	}
+	if (last==video){
+	    if (data['video_index']>0){
+		var new_video_index = data['video_index']-1;
+		var new_video = data['videos'].value()[new_video_index];
+		console.log('new_video');
+		console.log(new_video);
+	    }
+	}
+    }
+
+}
+function makeSlider(mothers, procs, videos, model_id, model_components){
+    var model = $('#m'+model_id);
+    model.next().append(slider_template({m:model_id}));
+    var mother_index = mothers
+        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['m'])
+        .value();
+    var proc_index = procs
+        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['p'])
+        .value();
+    var video_index = videos
+        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['v'])
+        .value();
+
+
+    var steps = procs.size().value()+mothers.size().value()+videos.size().value();
+    var pos = proc_index+mother_index+video_index;
+    if (model_id=='raytrace')
+        pos = steps;
+    model.data({'current_pos':pos,'steps':steps,'mothers':mothers,'procs':procs,'videos':videos, 
+	       'components':model_components, 'mother_index':mother_index,'proc_index':proc_index,
+	       'video_index':video_index});
+    new Dragdealer('slider'+model_id,{
+                       x:pos/steps,
+                       snap:true,
+                       steps:steps,
+                       callback:function(x){
+                           moveModel(model_id, this.stepRatios.indexOf(x));
+                       }
+                   });
 }
 
 
@@ -128,7 +202,7 @@ function renderCategories(idses, hash){
                                          hits[el] = 1;
                                      else
                                          hits[el] = data['hits'];
-				     // _.delay(function(){fillPopularity(hits,
+                                     // _.delay(function(){fillPopularity(hits,
                                      //                                   function(el){
                                      //                                       return $('#desc_'+el)
                                      //                                           .find('.d_popular');
@@ -414,10 +488,10 @@ head.ready(function(){
                                     $('h1').first().text('Компьютеры для работы');
                                 });
                $('#admin').click(function(e){
-                                    e.preventDefault();
-                                    renderCategories(['mping','mcell','mcompiler'], 'admin');
+                                     e.preventDefault();
+                                     renderCategories(['mping','mcell','mcompiler'], 'admin');
                                      $('h1').first().text('Компьютеры для айтишников');
-                                });
+                                 });
                $('#game').click(function(e){
                                     e.preventDefault();
                                     renderCategories(['mzoom','mrender','mraytrace'],'game');
@@ -426,40 +500,40 @@ head.ready(function(){
 
                if (document.location.hash.match('home')){
                    $('#home').click();
-		   getPopularity();
+                   getPopularity();
                }
                if (document.location.hash.match('admin')){
                    $('#admin').click();
-		   getPopularity();
+                   getPopularity();
                }
                if (document.location.hash.match('game')){
                    $('#game').click();
-		   getPopularity();
+                   getPopularity();
                }
                if (document.location.hash.match('work')){
                    $('#work').click();
-		   getPopularity();
+                   getPopularity();
                }
                var full_descr = $('.full_desc');
                if (full_descr.length>0 && $('.small_square_button').length==0){
                    //category view. install buttons.
                    for (var i=0;i<full_descr.length;i++){
-                     var container = $(full_descr.get(i));
-                     var el = container.attr('id').substring('desc_'.length,container.attr('id')
-                                                             .length);
-                     container.html(container.text());
-                     container.append(panel_template);
-                     $('h1').text($('title').text().split('. ')[1]);
-                     container
-                   .find('.small_cart')
-                         .click(savemodel(el));
-                     container
-                         .find('.small_reset')
-                         .click(gotomodel(el));
-                 }
+                       var container = $(full_descr.get(i));
+                       var el = container.attr('id').substring('desc_'.length,container.attr('id')
+                                                               .length);
+                       container.html(container.text());
+                       container.append(panel_template);
+                       $('h1').text($('title').text().split('. ')[1]);
+                       container
+                           .find('.small_cart')
+                           .click(savemodel(el));
+                       container
+                           .find('.small_reset')
+                           .click(gotomodel(el));
+                   }
                }
                else{
-		   getPopularity();
+                   getPopularity();
                    // //full view
                    // var descrs = $('.computers_description').toArray();
                    // _(descrs).each(function(el){
@@ -494,7 +568,7 @@ head.ready(function(){
 
 
                                                                 });
-                                        });
+                                            });
                function stats(e){
                    var target = $(e.target);
                    var href = target.attr('href');
@@ -505,46 +579,65 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-               // $.ajax({
-               //            url:'zip_components',
-               //            success:function(data){
-               //                var lis =  _($('.description').toArray())
-               //                    .each(function(el){
-               //                              var chi =$(el).children();
-               //                              var mother = chi.first();
-               //                              var proc = mother.next();
-               //                              var proc_code = proc.attr('id').split('_')[1];
-               //                              var video = proc.next();
-               //                              var video_code = video.attr('id').split('_')[1];
-               //                              var splitted = mother.attr('id').split('_');
-               //                              var m = splitted[0];
-               //                              var mother_code = splitted[1];
-               //                              var line = _(data['mp']).chain()
-               //                                  .select(function(socket){
-               //                                           var mos = socket[0];
-               //                                           var procs = socket[1];
-               //                                           var mos_found = _(mos)
-               //                                               .select(function(ob){
-               //                                                           //console.log(ob);
-               //                                                           return ob[mother_code];
-               //                                                         });
-               //                                           return mos_found.length>0;
-               //                                       })
-               //                              .first();
-               //                              $('#m'+m).data({'mp':line,'v':data['v'],
-               //                                           'mother_code':mother_code,
-               //                                           'proc_code':proc_code,
-               //                                           'video_code':video_code
-               //                                          });
-               //                              $('#m'+m).next().append('<div id="slider'+m+'" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
-					    
-	       // 				    new Dragdealer('slider'+m,{
-	       // 				    		       x:0.5,
-	       // 				    		       animationCallback: function(x, y){console.log(x);}
-	       // 				    });
-               //                         });
-               //            }
-               //        });
-	       
+               $.ajax({
+                          url:'zip_components',
+                          success:function(data){
+                              var lis =  _($('.description').toArray())
+                                  .each(function(el){
+                                            var chi =$(el).children();
+                                            var mother = chi.first();
+                                            var proc = mother.next();
+                                            var proc_code = proc.attr('id').split('_')[1];
+                                            var video = proc.next();
+                                            var video_code = video.attr('id').split('_')[1];
+                                            if (video_code.match('no'))
+                                                video_code = 'no';
+                                            var splitted = mother.attr('id').split('_');
+                                            var m = splitted[0];
+                                            var mother_code = splitted[1];
+                                            var line = _(data['mp']).chain()
+                                                .select(function(socket){
+                                                            var mos = socket[0];
+                                                            var procs = socket[1];
+                                                            var mos_found = _(mos)
+                                                                .select(function(ob){
+                                                                            //console.log(ob);
+                                                                            return ob[mother_code];
+                                                                        });
+                                                            return mos_found.length>0;
+                                                        })
+                                                .first();
+                                            var mothers = line
+                                                .first()
+                                                .sortBy(function(ob){return _(ob).values()[0];});
+                                            var procs = line
+                                                .last()
+                                                .sortBy(function(ob){return _(ob).values()[0];});
+
+                                            data['v'].push({'no':0});
+                                            var videos = _(data['v'])
+                                                .chain()
+                                                .sortBy(function(ob){return _(ob).values()[0];});
+
+                                            makeSlider(mothers,procs,videos,m,{'m':mother_code,
+                                                                           'p':proc_code,
+                                                                           'v':video_code});
+
+                                            // $('#m'+m).data({'mp':line,'v':data['v'],
+                                            //              'mother_code':mother_code,
+                                            //              'proc_code':proc_code,
+                                            //              'video_code':video_code
+                                            //             });
+                                            // $('#m'+m).next().append(slider_template({m:m}));
+                                            // new Dragdealer('slider'+m,{
+                                            //                 x:0.5,
+                                            //                 animationCallback: function(x, y){
+
+                                            //                 }
+                                            // });
+                                        });
+                          }
+                      });
+
 
            });
