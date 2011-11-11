@@ -168,7 +168,8 @@ function moveModel(model_id, new_pos){
                                 encodeURI(
                                     JSON.stringify(
                                         {'mother':getCode(mother),
-                                         'proc':getCode(proc),'video':getCode(video)})));
+                                         'proc':getCode(proc),'video':getCode(video)}))+
+			       '&'+splitted[1]);
                   });
 
 
