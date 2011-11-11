@@ -6,7 +6,7 @@ _.templateSettings = {
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 //TODO! d_popular starts with width = 0. even if ajax is come allready
 
-var panel_template = '<div class="d_panel"> <div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
+var panel_template = '<div class="d_panel"> <div class="d_popular" title="Популярнось"></div><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
 var hits = {};
 var full_view_hits = {};
