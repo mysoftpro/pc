@@ -1413,7 +1413,7 @@ function to_cartSuccess(data){
 	var len = data['id'].length;
 	var first = data['id'].substring(0,len-3);
 	var last = data['id'].substring(len-3,len);
-	$('#modelname').html(first+'<strong>'+last+'</strong>');
+	$('#modelname').html(first+'<strong>'+last+'</strong>').css('color','#999');
 	if (!added_cached){
 	    added_cached = decodeURI($('#added').html());
 	    $('#added').html('');
@@ -1605,8 +1605,7 @@ head.ready(function(){
 		   for (var co in data){
 		       setCode(co,data[co]);
 		   }
-	       }
-
+	       }	       
 
 	       // _.delay(function(){
 	       // 		  $.ajax({

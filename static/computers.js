@@ -8,7 +8,7 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 var panel_template = '<div class="d_panel"><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
-var slider_template = _.template('<div id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"></div></div>');
+var slider_template = _.template('<div title="Управление ценой" id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"><div class="dragfiller"></div></div></div>');
 var hits = {};
 var full_view_hits = {};
 
@@ -38,6 +38,53 @@ function itemHide(item){
     item.next().css(hi);
 }
 
+function addSlider(){
+
+    $.ajax({
+               url:'zip_components',
+               success:function(data){
+                   var lis =  _($('.description').toArray())
+                       .each(function(el){
+                                 var chi =$(el).children();
+                                 var mother = chi.first();
+                                 var proc = mother.next();
+                                 var proc_code = proc.attr('id').split('_')[1];
+                                 var video = proc.next();
+                                 var video_code = video.attr('id').split('_')[1];
+                                 if (video_code.match('no'))
+                                     video_code = 'no';
+                                 var splitted = mother.attr('id').split('_');
+                                 var m = splitted[0];
+                                 var mother_code = splitted[1];
+                                 var line = _(data['mp']).chain()
+                                     .select(function(socket){
+                                                 var mos = socket[0];
+                                                 var procs = socket[1];
+                                                 var mos_found = _(mos)
+                                                     .select(function(ob){
+                                                                 return ob[mother_code];
+                                                             });
+                                                 return mos_found.length>0;
+                                             })
+                                     .first();
+                                 var mothers = line
+                                     .first()
+                                     .sortBy(getPrice);
+                                 var procs = line
+                                     .last()
+                                     .sortBy(getPrice);
+
+                                 data['v'].push({'no':0});
+                                 var videos = _(data['v'])
+                                     .chain()
+                                     .sortBy(getPrice);
+                                 makeSlider(mothers,procs,videos,m,{'m':mother_code,
+                                                                    'p':proc_code,
+                                                                    'v':video_code});
+                             });
+               }
+           });
+}
 function moveModel(model_id, new_pos){
     var model = $('#m'+model_id);
     var data = model.data();
@@ -57,8 +104,8 @@ function moveModel(model_id, new_pos){
             delta = 1;
         var new_index = data[token+'_index']+delta;
         var rows = data[token+'s'].value();
-	answer = rows[new_index];
-	if (answer){
+        answer = rows[new_index];
+        if (answer){
             answer = rows[new_index];
             data[token+'_index'] = new_index;
             set(answer);
@@ -89,8 +136,8 @@ function moveModel(model_id, new_pos){
         while (!moveLast(_last)){
             if (sorted.length==0)
                 break;
-            _last = sorted.pop();            
-	}
+            _last = sorted.pop();
+        }
         data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];
     }
     var cond = function(x,y){
@@ -116,7 +163,7 @@ function moveModel(model_id, new_pos){
                       var link = $(el);
                       var href = link.attr('href');
                       if (!href)return;
-                      var splitted = href.split('?');                      
+                      var splitted = href.split('?');
                       link.attr('href',splitted[0]+'?data='+
                                 encodeURI(
                                     JSON.stringify(
@@ -226,8 +273,9 @@ function fillPopularity(data, finder, height){
         finder(el).css('width',times*height);
     }
 }
-
+var all_cats_come = 0;
 function renderCategories(idses, hash){
+    console.log(1);
     hits = {};
     $('.full_desc').remove();
     var to_hide = _($('.computeritem').toArray())
@@ -235,7 +283,7 @@ function renderCategories(idses, hash){
         .map(function(el){return el.id;})
         .difference(idses);
     to_hide.each(function(el){itemHide($('#'+el));});
-    var get_id = function(id){return function(){return id;};};
+    var get_id = function(id){return function(){return id;};};    
     _(idses).each(function(el){
                       document.location.hash = '#'+hash;
                       var desc_id = 'desc_'+el+'';
@@ -248,7 +296,8 @@ function renderCategories(idses, hash){
                                            {_id:desc_id}));
                       $.ajax({
                                  url:'/modeldesc?id='+el.substring(1,el.length),
-                                 success:function(data){
+                                 success:function(data){				     
+                                     all_cats_come+=1;
                                      var container = $('#'+desc_id);
                                      container.html(data['modeldesc']);
                                      if (!data['hits'])
@@ -267,6 +316,13 @@ function renderCategories(idses, hash){
                                      container
                                          .find('.small_reset')
                                          .click(gotomodel(el));
+
+                                     if (all_cats_come==3){
+					 $('.dragdealer').remove();
+                                         addSlider();
+					 all_cats_come=0;
+                                     }
+
                                  }
                              });
                   });
@@ -551,22 +607,14 @@ head.ready(function(){
                                     $('h1').first().text('Игровые компьютеры');
                                 });
 
-               if (document.location.hash.match('home')){
-                   $('#home').click();
-                   getPopularity();
-               }
-               if (document.location.hash.match('admin')){
-                   $('#admin').click();
-                   getPopularity();
-               }
-               if (document.location.hash.match('game')){
-                   $('#game').click();
-                   getPopularity();
-               }
-               if (document.location.hash.match('work')){
-                   $('#work').click();
-                   getPopularity();
-               }
+
+               _(['home','admin','work','game']).each(function(e){
+                                                          if (document.location.hash.match(e)){
+                                                              $('#'+e).click();
+                                                              getPopularity();
+                                                          }
+                                                      });
+
                var full_descr = $('.full_desc');
                if (full_descr.length>0 && $('.small_square_button').length==0){
                    //category view. install buttons.
@@ -587,20 +635,6 @@ head.ready(function(){
                }
                else{
                    getPopularity();
-                   // //full view
-                   // var descrs = $('.computers_description').toArray();
-                   // _(descrs).each(function(el){
-                   //                    $(el).append('<div title="Популярнось" class="m_popular"></div>');
-                   //                });
-                   // $.ajax({
-                   //            url:'modeldesc?hitsonly=true',
-                   //            success:function(data){
-                   //                fillPopularity(data, function(el){
-                   //                                   return $('#'+el).next().find('.m_popular');
-                   //                               },12);
-                   //            }
-                   //        });
-
                }
 
 
@@ -632,49 +666,6 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-               $.ajax({
-                          url:'zip_components',
-                          success:function(data){
-                              var lis =  _($('.description').toArray())
-                                  .each(function(el){
-                                            var chi =$(el).children();
-                                            var mother = chi.first();
-                                            var proc = mother.next();
-                                            var proc_code = proc.attr('id').split('_')[1];
-                                            var video = proc.next();
-                                            var video_code = video.attr('id').split('_')[1];
-                                            if (video_code.match('no'))
-                                                video_code = 'no';
-                                            var splitted = mother.attr('id').split('_');
-                                            var m = splitted[0];
-                                            var mother_code = splitted[1];
-                                            var line = _(data['mp']).chain()
-                                                .select(function(socket){
-                                                            var mos = socket[0];
-                                                            var procs = socket[1];
-                                                            var mos_found = _(mos)
-                                                                .select(function(ob){
-                                                                            return ob[mother_code];
-                                                                        });
-                                                            return mos_found.length>0;
-                                                        })
-                                                .first();
-                                            var mothers = line
-                                                .first()
-                                                .sortBy(getPrice);
-                                            var procs = line
-                                                .last()
-                                                .sortBy(getPrice);
 
-                                            data['v'].push({'no':0});
-                                            var videos = _(data['v'])
-                                                .chain()
-                                                .sortBy(getPrice);
-                                            makeSlider(mothers,procs,videos,m,{'m':mother_code,
-                                                                               'p':proc_code,
-                                                                               'v':video_code});
-                                        });
-                          }
-                      });
-
+               addSlider();
            });
