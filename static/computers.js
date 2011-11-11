@@ -36,11 +36,12 @@ function moveModel(model_id, new_pos){
     var model = $('#m'+model_id);
     var data = model.data();
     var to_move = new_pos-data['current_pos'];
-
+    // console.log(data['current_pos']);
+    // console.log(new_pos);
     var proc = data['procs'].value()[data['proc_index']];
     var mother = data['mothers'].value()[data['mother_index']];
     var video = data['videos'].value()[data['video_index']];
-
+    
 
     function setLast(token, set){
         var answer = false;
@@ -70,41 +71,39 @@ function moveModel(model_id, new_pos){
     }
     if (to_move<0){
         // move down. first try to move the most expensive
-	console.log(mother,proc,video);
-        var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
-        var _last = sorted.pop();
-	
-        
-        while (!moveLast(_last)){
-            if (sorted.length==0)
+	function move(){
+	    var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
+            var _last = sorted.pop();
+	    
+            while (!moveLast(_last)){
+		if (sorted.length==0)
                 break;
-            _last = sorted.pop();
-        }
-	console.log(mother,proc,video);
+		_last = sorted.pop();
+            }
+	    data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];    
+	}        
+	while (data['current_pos']>new_pos){
+	    move();    
+	    if (data['current_pos']==0)
+		break;
+	}
     }
 }
 
 function getComponentIndex(rows, code){
-    return rows..map(function(ob){return _(ob).keys()[0];}).indexOf(code)
+    return rows.map(function(ob){
+			 return _(ob).keys()[0];
+		    })
+	.indexOf(code)
          .value();
-    // var mother_index = mothers
-    //     .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['m'])
-    //     .value();
 }
 
 function makeSlider(mothers, procs, videos, model_id, model_components){
     var model = $('#m'+model_id);
     model.next().append(slider_template({m:model_id}));
-    var mother_index = mothers
-        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['m'])
-        .value();
-    var proc_index = procs
-        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['p'])
-        .value();
-    var video_index = videos
-        .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['v'])
-        .value();
-
+    var mother_index = getComponentIndex(mothers, model_components['m']);
+    var proc_index = getComponentIndex(procs, model_components['p']);
+    var video_index = getComponentIndex(videos, model_components['v']);
 
     var steps = procs.size().value()+mothers.size().value()+videos.size().value();
     var pos = proc_index+mother_index+video_index;
