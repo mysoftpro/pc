@@ -1,4 +1,3 @@
-var consolr = console;
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
@@ -41,8 +40,9 @@ function moveModel(model_id, new_pos){
     var proc = data['procs'].value()[data['proc_index']];
     var mother = data['mothers'].value()[data['mother_index']];
     var video = data['videos'].value()[data['video_index']];
-    
-
+    var initial_price = _([proc,mother,video]).reduce(function(memo,el){
+                                                        return _(el).values()[0]+memo;
+                                                    },0);
     function setLast(token, set){
         var answer = false;
         var old_index = data[token+'_index'];
@@ -55,7 +55,7 @@ function moveModel(model_id, new_pos){
         }
         return answer;
     }
-    
+
     function moveLast(_last){
         var done;
         if (_last==proc){
@@ -71,30 +71,38 @@ function moveModel(model_id, new_pos){
     }
     if (to_move<0){
         // move down. first try to move the most expensive
-	function move(){
-	    var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
+        function move(){
+            var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
             var _last = sorted.pop();
-	    
+
             while (!moveLast(_last)){
-		if (sorted.length==0)
+                if (sorted.length==0)
                 break;
-		_last = sorted.pop();
+                _last = sorted.pop();
             }
-	    data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];    
-	}        
-	while (data['current_pos']>new_pos){
-	    move();    
-	    if (data['current_pos']==0)
-		break;
-	}
+            data['current_pos'] = data['proc_index']+data['mother_index']+data['video_index'];
+        }
+        while (data['current_pos']>new_pos){
+            move();
+            if (data['current_pos']==0)
+                break;
+        }
+        //model.data(data);
+	var new_price = _([proc,mother,video]).reduce(function(memo,el){
+                                                        return _(el).values()[0]+memo;
+                                                    },0);
+	var price =$('#'+model_id); 
+	var text = price.text().split(' ')[0];
+	price.text(parseInt(text)-initial_price+new_price+' р');
+        	
     }
 }
 
 function getComponentIndex(rows, code){
     return rows.map(function(ob){
-			 return _(ob).keys()[0];
-		    })
-	.indexOf(code)
+                         return _(ob).keys()[0];
+                    })
+        .indexOf(code)
          .value();
 }
 
@@ -183,13 +191,13 @@ function fillPopularity(data, finder, height){
         if (data[el]<smallest)
             smallest = data[el];
     }
-    for (var el in data){
-        var times = data[el]/smallest;
-        if (times>5)
+    for (var el in data){	
+        //var times = data[el]/smallest;
+	var times = Math.round(Math.log(data[el]))+1;
+	if (times>5)
             times = 5;
         finder(el).css('width',times*height);
     }
-
 }
 
 function renderCategories(idses, hash){
@@ -597,64 +605,51 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-               $.ajax({
-                          url:'zip_components',
-                          success:function(data){
-                              var lis =  _($('.description').toArray())
-                                  .each(function(el){
-                                            var chi =$(el).children();
-                                            var mother = chi.first();
-                                            var proc = mother.next();
-                                            var proc_code = proc.attr('id').split('_')[1];
-                                            var video = proc.next();
-                                            var video_code = video.attr('id').split('_')[1];
-                                            if (video_code.match('no'))
-                                                video_code = 'no';
-                                            var splitted = mother.attr('id').split('_');
-                                            var m = splitted[0];
-                                            var mother_code = splitted[1];
-                                            var line = _(data['mp']).chain()
-                                                .select(function(socket){
-                                                            var mos = socket[0];
-                                                            var procs = socket[1];
-                                                            var mos_found = _(mos)
-                                                                .select(function(ob){
-                                                                            return ob[mother_code];
-                                                                        });
-                                                            return mos_found.length>0;
-                                                        })
-                                                .first();
-                                            var mothers = line
-                                                .first()
-                                                .sortBy(function(ob){return _(ob).values()[0];});
-                                            var procs = line
-                                                .last()
-                                                .sortBy(function(ob){return _(ob).values()[0];});
+               // $.ajax({
+               //            url:'zip_components',
+               //            success:function(data){
+               //                var lis =  _($('.description').toArray())
+               //                    .each(function(el){
+               //                              var chi =$(el).children();
+               //                              var mother = chi.first();
+               //                              var proc = mother.next();
+               //                              var proc_code = proc.attr('id').split('_')[1];
+               //                              var video = proc.next();
+               //                              var video_code = video.attr('id').split('_')[1];
+               //                              if (video_code.match('no'))
+               //                                  video_code = 'no';
+               //                              var splitted = mother.attr('id').split('_');
+               //                              var m = splitted[0];
+               //                              var mother_code = splitted[1];
+               //                              var line = _(data['mp']).chain()
+               //                                  .select(function(socket){
+               //                                              var mos = socket[0];
+               //                                              var procs = socket[1];
+               //                                              var mos_found = _(mos)
+               //                                                  .select(function(ob){
+               //                                                              return ob[mother_code];
+               //                                                          });
+               //                                              return mos_found.length>0;
+               //                                          })
+               //                                  .first();
+               //                              var mothers = line
+               //                                  .first()
+               //                                  .sortBy(function(ob){return _(ob).values()[0];});
+               //                              var procs = line
+               //                                  .last()
+               //                                  .sortBy(function(ob){return _(ob).values()[0];});
 
-                                            data['v'].push({'no':0});
-                                            var videos = _(data['v'])
-                                                .chain()
-                                                .sortBy(function(ob){return _(ob).values()[0];});
+               //                              data['v'].push({'no':0});
+               //                              var videos = _(data['v'])
+               //                                  .chain()
+               //                                  .sortBy(function(ob){return _(ob).values()[0];});
 
-                                            makeSlider(mothers,procs,videos,m,{'m':mother_code,
-                                                                           'p':proc_code,
-                                                                           'v':video_code});
-
-                                            // $('#m'+m).data({'mp':line,'v':data['v'],
-                                            //              'mother_code':mother_code,
-                                            //              'proc_code':proc_code,
-                                            //              'video_code':video_code
-                                            //             });
-                                            // $('#m'+m).next().append(slider_template({m:m}));
-                                            // new Dragdealer('slider'+m,{
-                                            //                 x:0.5,
-                                            //                 animationCallback: function(x, y){
-
-                                            //                 }
-                                            // });
-                                        });
-                          }
-                      });
+               //                              makeSlider(mothers,procs,videos,m,{'m':mother_code,
+               //                                                                 'p':proc_code,
+               //                                                                 'v':video_code});
+               //                          });
+               //            }
+               //        });
 
 
            });
