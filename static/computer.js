@@ -757,18 +757,24 @@ function cheaperBetter(){
 	doNotStress = true;
 	var body = jgetBody(select);
 	var old_component = new_model[select.val()];
-	//here
-	// if (isRam(body)
-	//     && changeRamIfPossible(old_component, direction))
-	//     return;
-	body.click();
+	body.click();	
 	var appr_components = getNearestComponent(old_component.price,
 						  getCatalogs(old_component),
-						  delta, false);
+						  delta, false);	
 	if (!appr_components[0])
 	    return;
 	var new_component = appr_components[0];
-	changeComponent(body, new_component, old_component);
+	//here the case when i have amd fm1 proc and no mother for it
+	var changed = changeComponent(body, new_component, old_component);
+	if (!changed){
+	    //try only once for now!
+	    appr_components = getNearestComponent(new_component.price,
+						  getCatalogs(new_component),
+						  delta, false);	
+	    if (!appr_components[0])
+		return;
+	    changeComponent(body, appr_components[0], old_component);
+	}
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
     $('.better').click(function(e){_cheaperBetter(e,1);});
@@ -1202,19 +1208,20 @@ function changeComponent(body, new_component, old_component, nosocket){
 	}
     };
     // TODO! whats then nosocket!?
+    var changed = true;
     if (!nosocket){
 	if ((isProc(body) || isMother(body))
 	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){
 	    confirmPopup(function(){
-			     if (changeSocket(new_component, body,
-					      delta))
-				 change();
+			     changed = changeSocket(new_component, body,delta);
+			     if (changed)change();
 			 },
-			 function(){});
-	    return;
+			 function(){});	    
+	    return changed;
 	}
     }
     change();
+    return changed;
 }
 
 
