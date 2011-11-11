@@ -42,50 +42,56 @@ function moveModel(model_id, new_pos){
     var video = data['videos'].value()[data['video_index']];
 
 
-    function getLast(token){
+    function setLast(token, set){
         var answer = false;
-        if (data[token+'_index']>0){
-            var new_index = data[token+'_index']-1;
-            answer = data[token+'s'].value()[new_index];
-
-	    data[token+'_index'] = data[token+'s'].map(function(el){
-						       return _(el).keys()[0];
-						   }).indexOf(_(answer).keys()[0]);
-	    console.log('new position for '+token);
-	    console.log(data[token+'_index'].value());
+        var old_index = data[token+'_index'];
+        var new_index = data[token+'_index']-1;
+        var rows = data[token+'s'].value();
+        if (old_index>0){
+            answer = rows[new_index];
+            data[token+'_index'] = new_index;
+            set(answer);
         }
         return answer;
     }
-
+    
+    function moveLast(_last){
+        var done;
+        if (_last==proc){
+            done = setLast('proc',function(_new){mother=_new;});
+        }
+        if (_last==mother){
+            done = setLast('mother',function(_new){mother=_new;});
+        }
+        if (_last==video){
+            done = setLast('video',function(_new){video=_new;});
+        }
+        return done;
+    }
     if (to_move<0){
         // move down. first try to move the most expensive
+	console.log(mother,proc,video);
         var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
-        console.log(sorted);
-	var _last = sorted.pop();
-        function moveLast(_last){
-            var done;
-            if (_last==proc){
-                done = getLast('proc');                
-            }
-            if (_last==mother){
-                done = getLast('mother');
-            }
-            if (_last==video){
-		done = getLast('video');
-            }
-            return done;
-
-        }
+        var _last = sorted.pop();
+	
+        
         while (!moveLast(_last)){
             if (sorted.length==0)
                 break;
             _last = sorted.pop();
         }
-	console.log(sorted);
-
-
+	console.log(mother,proc,video);
     }
 }
+
+function getComponentIndex(rows, code){
+    return rows..map(function(ob){return _(ob).keys()[0];}).indexOf(code)
+         .value();
+    // var mother_index = mothers
+    //     .map(function(ob){return _(ob).keys()[0];}).indexOf(model_components['m'])
+    //     .value();
+}
+
 function makeSlider(mothers, procs, videos, model_id, model_components){
     var model = $('#m'+model_id);
     model.next().append(slider_template({m:model_id}));
