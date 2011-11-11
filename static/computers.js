@@ -200,7 +200,7 @@ function makeSlider(mothers, procs, videos, model_id, model_components){
                        snap:true,
                        steps:steps,
                        callback:function(x){
-                           moveModel(model_id, this.stepRatios.indexOf(x));
+                           moveModel(model_id, _(this.stepRatios).indexOf(x));
                        }
                    });
 }
