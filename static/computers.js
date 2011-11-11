@@ -69,7 +69,21 @@ function gotomodel(el){
     };
 }
 
-
+function getPopularity(){
+    //full view
+    var descrs = $('.computers_description').toArray();
+    _(descrs).each(function(el){
+                       $(el).append('<div title="Популярнось" class="m_popular"></div>');
+                   });
+    $.ajax({
+               url:'modeldesc?hitsonly=true',
+               success:function(data){
+                   fillPopularity(data, function(el){
+                                      return $('#'+el).next().find('.m_popular');
+                                  },12);
+               }
+           });
+}
 function fillPopularity(data, finder, height){
     if(_(data).keys().length<3) return;
     var smallest =99999999;
@@ -412,15 +426,19 @@ head.ready(function(){
 
                if (document.location.hash.match('home')){
                    $('#home').click();
+		   getPopularity();
                }
                if (document.location.hash.match('admin')){
                    $('#admin').click();
+		   getPopularity();
                }
                if (document.location.hash.match('game')){
                    $('#game').click();
+		   getPopularity();
                }
                if (document.location.hash.match('work')){
                    $('#work').click();
+		   getPopularity();
                }
                var full_descr = $('.full_desc');
                if (full_descr.length>0 && $('.small_square_button').length==0){
@@ -441,31 +459,20 @@ head.ready(function(){
                  }
                }
                else{
-                   //full view
-                   var descrs = $('.computers_description').toArray();
-                   _(descrs).each(function(el){
-                                      $(el).append('<div title="Популярнось" class="m_popular"></div>');
-                                  });
-                   $.ajax({
-                              url:'modeldesc?hitsonly=true',
-                              success:function(data){
-                                  fillPopularity(data, function(el){
-                                                     return $('#'+el).next().find('.m_popular');
-                                                 },12);
-                                  // var smallest = 99999999;
-                                  // for (var el in data){
-                                  //     if (data[el]<smallest)
-                                  //      smallest = data[el];
-                                  // }
-                                  // for (var el in data){
-                                  //     var times = data[el]/smallest;
-                                  //     if (times>5)
-                                  //      times = 5;
-                                  //     $('#'+el).next().find('.m_popular').css('width',times*24);
-                                  // }
-
-                              }
-                          });
+		   getPopularity();
+                   // //full view
+                   // var descrs = $('.computers_description').toArray();
+                   // _(descrs).each(function(el){
+                   //                    $(el).append('<div title="Популярнось" class="m_popular"></div>');
+                   //                });
+                   // $.ajax({
+                   //            url:'modeldesc?hitsonly=true',
+                   //            success:function(data){
+                   //                fillPopularity(data, function(el){
+                   //                                   return $('#'+el).next().find('.m_popular');
+                   //                               },12);
+                   //            }
+                   //        });
 
                }
 
