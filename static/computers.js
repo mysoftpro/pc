@@ -192,8 +192,8 @@ function fillPopularity(data, finder, height){
             smallest = data[el];
     }
     for (var el in data){	
-        //var times = data[el]/smallest;
-	var times = Math.round(Math.log(data[el]))+1;
+        var times = data[el]/smallest;
+	times = Math.round(Math.log(times))+1;
 	if (times>5)
             times = 5;
         finder(el).css('width',times*height);
