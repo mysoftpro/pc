@@ -41,37 +41,50 @@ function moveModel(model_id, new_pos){
     var mother = data['mothers'].value()[data['mother_index']];
     var video = data['videos'].value()[data['video_index']];
 
-    
-    if (to_move<0){
-	// move down. first try to move the most expensive
-	var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
-	var last = sorted.pop();
-	if (last==proc){
-	    if (data['proc_index']>0){
-		var new_proc_index = data['proc_index']-1;
-		var new_proc = data['procs'].value()[new_proc_index];
-		console.log('new_proc');
-		console.log(new_proc);
-	    }
-	}
-	if (last==mother){
-	    if (data['mother_index']>0){
-		var new_mother_index = data['mother_index']-1;
-		var new_mother = data['mothers'].value()[new_mother_index];
-		console.log('new_mother');
-		console.log(new_mother);
-	    }
-	}
-	if (last==video){
-	    if (data['video_index']>0){
-		var new_video_index = data['video_index']-1;
-		var new_video = data['videos'].value()[new_video_index];
-		console.log('new_video');
-		console.log(new_video);
-	    }
-	}
+
+    function getLast(token){
+        var answer = false;
+        if (data[token+'_index']>0){
+            var new_index = data[token+'_index']-1;
+            answer = data[token+'s'].value()[new_index];
+
+	    data[token+'_index'] = data[token+'s'].map(function(el){
+						       return _(el).keys()[0];
+						   }).indexOf(_(answer).keys()[0]);
+	    console.log('new position for '+token);
+	    console.log(data[token+'_index'].value());
+        }
+        return answer;
     }
 
+    if (to_move<0){
+        // move down. first try to move the most expensive
+        var sorted = _([proc,mother,video]).sortBy(function(el){return _(el).values()[0];});
+        console.log(sorted);
+	var _last = sorted.pop();
+        function moveLast(_last){
+            var done;
+            if (_last==proc){
+                done = getLast('proc');                
+            }
+            if (_last==mother){
+                done = getLast('mother');
+            }
+            if (_last==video){
+		done = getLast('video');
+            }
+            return done;
+
+        }
+        while (!moveLast(_last)){
+            if (sorted.length==0)
+                break;
+            _last = sorted.pop();
+        }
+	console.log(sorted);
+
+
+    }
 }
 function makeSlider(mothers, procs, videos, model_id, model_components){
     var model = $('#m'+model_id);
@@ -91,9 +104,9 @@ function makeSlider(mothers, procs, videos, model_id, model_components){
     var pos = proc_index+mother_index+video_index;
     if (model_id=='raytrace')
         pos = steps;
-    model.data({'current_pos':pos,'steps':steps,'mothers':mothers,'procs':procs,'videos':videos, 
-	       'components':model_components, 'mother_index':mother_index,'proc_index':proc_index,
-	       'video_index':video_index});
+    model.data({'current_pos':pos,'steps':steps,'mothers':mothers,'procs':procs,'videos':videos,
+               'components':model_components, 'mother_index':mother_index,'proc_index':proc_index,
+               'video_index':video_index});
     new Dragdealer('slider'+model_id,{
                        x:pos/steps,
                        snap:true,
@@ -601,7 +614,6 @@ head.ready(function(){
                                                             var procs = socket[1];
                                                             var mos_found = _(mos)
                                                                 .select(function(ob){
-                                                                            //console.log(ob);
                                                                             return ob[mother_code];
                                                                         });
                                                             return mos_found.length>0;
