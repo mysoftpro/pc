@@ -468,7 +468,7 @@ class CachedStatic(File):
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 #TODO! not just finish, but send email with error!
-                # d.addErrback(lambda e:request.finish())
+                d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -478,8 +478,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
