@@ -8,7 +8,7 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 var panel_template = '<div class="d_panel"><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
-var slider_template = _.template('<div title="Управление ценой" id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"><div class="dragfiller"></div></div></div><div style="clear:both;"></div>');
+var slider_template = _.template('<div title="Управление ценой" id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"><div class="dragfiller"></div></div></div>');
 var hits = {};
 var full_view_hits = {};
 
@@ -183,12 +183,16 @@ function moveModel(model_id, new_pos){
                           json['kbrd'] = 'no';
                           json['mouse'] = 'no';
                       }
-                      var clean = splitted[1].split('&');
-                      clean = _(clean).map(function(param){
-                                               var spli = param.split('=');
-                                               if (spli[0]!='data')
-                                                   return spli.join('=');
-                                           }).join('&');
+		      var clean = '';
+		      if (splitted.length>1){
+			  clean = splitted[1].split('&');
+			  clean = _(clean).map(function(param){
+						   var spli = param.split('=');
+						   if (spli[0]!='data')
+                                                       return spli.join('=');
+                                               }).join('&');	  
+		      }
+                      
                       link.attr('href',splitted[0]+'?data='+
                                 encodeURI(JSON.stringify(json))+'&'+splitted[1]);
                   });
