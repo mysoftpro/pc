@@ -125,7 +125,7 @@ def walkOnChoices(name = None, _filter=None):
 
 
 def getCatalogsKey(doc):
-    if 'catalogs' not in doc:        
+    if 'catalogs' not in doc:
         return 'no'
     if type(doc['catalogs'][0]) is dict:
         cats = []
@@ -1245,10 +1245,10 @@ def notebooks(template, skin, request):
     return d
 
 class ZipConponents(Resource):
-    
+
     def getPriceAndCode(self, row):
         return {row['doc']['_id']:makePrice(row['doc'])}
-    
+
     def render_GET(self, request):
         mothers = []
         procs = []
@@ -1278,7 +1278,20 @@ class ZipConponents(Resource):
             if  tm in mothers_mapping and tp in proc_mapping:
                 mother_procs.append([[self.getPriceAndCode(c) for c in mothers_mapping[tm]],
                                      [self.getPriceAndCode(c) for c in proc_mapping[tp]]])
-        
+
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")        
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps({'mp':mother_procs,'v':videos})
+
+
+class CatalogsFor(Resource):
+    def render_GET(self, request):
+        codes = request.args.get('c',[])
+        if len(codes)==0:
+            request.finish()
+        res = {}
+        for c in codes:
+            res.update({c:getCatalogsKey(globals()['gChoices_flatten'][c])})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps(res)

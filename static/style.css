@@ -601,7 +601,6 @@ text-align:left;
 background-image:url('/static/under_model.png');
 background-repeat: no-repeat;
 background-position: 0px 20px;
-padding-bottom:10px;
 padding-bottom:5px;
 height:40px;
 color:#7b9c0a;
@@ -863,8 +862,8 @@ color:#7b9c0a;
 .computeritem h2 {
     margin:0;
     padding:0;
-    margin-top:-30px;
-    margin-left:20px;
+    margin-top:-25px;
+    margin-left:55px;
 }
 .computeritem h3 {
     margin-top:30px;
@@ -873,7 +872,7 @@ color:#7b9c0a;
 .computers_description{
     float:left;
     width:211px;
-    height:220px;
+    height:230px;
 }
 .cart_description{
     float:left;
@@ -908,7 +907,7 @@ color:#7b9c0a;
     margin: 0 0 0 18px;
 }
 .computeritem .section{
-    width: 205px;
+    width: 225px;
     text-align:center;
 }
 
@@ -1781,4 +1780,24 @@ a.modelicon img{
     height:14px;
     margin-top:3px;
     margin-left:2px;
+}
+.mvendors{
+    height:30px;
+    width:38px;
+    background-image:url('vendors.png');
+    margin-top:-25px;    
+    float:left;
+}
+._7363_7399_7451{
+    background-position:0px 72px;
+}
+
+._7363_7399_7700{
+    background-position:0px 39px;
+}
+._7363_7396_7613{
+    background-position:0px 105px;
+}
+._7363_7399_18027{
+    background-position:0px 72px;
 }

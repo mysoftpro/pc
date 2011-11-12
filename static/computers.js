@@ -8,7 +8,7 @@ var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 
 var panel_template = '<div class="d_panel"><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';
 
-var slider_template = _.template('<div title="Управление ценой" id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"><div class="dragfiller"></div></div></div>');
+var slider_template = _.template('<div title="Управление ценой" id="slider{{m}}" class="dragdealer rounded-cornered"><div class="red-bar handle"><div class="dragfiller"></div></div></div><div style="clear:both;"></div>');
 var hits = {};
 var full_view_hits = {};
 
@@ -38,6 +38,22 @@ function itemHide(item){
     item.next().css(hi);
 }
 
+
+function getMainCodes(hidden_ul){
+    var chi =hidden_ul.children();
+    var mother = chi.first();
+    var proc = mother.next();
+    var proc_code = proc.attr('id').split('_')[1];
+    var video = proc.next();
+    var video_code = video.attr('id').split('_')[1];
+    if (video_code.match('no'))
+        video_code = 'no';
+    var splitted = mother.attr('id').split('_');
+    var m = splitted[0];
+    var mother_code = splitted[1];
+    return {'model':m,'mother':mother_code,'video':video_code,'proc':proc_code};
+}
+
 function addSlider(){
 
     $.ajax({
@@ -45,24 +61,14 @@ function addSlider(){
                success:function(data){
                    var lis =  _($('.description').toArray())
                        .each(function(el){
-                                 var chi =$(el).children();
-                                 var mother = chi.first();
-                                 var proc = mother.next();
-                                 var proc_code = proc.attr('id').split('_')[1];
-                                 var video = proc.next();
-                                 var video_code = video.attr('id').split('_')[1];
-                                 if (video_code.match('no'))
-                                     video_code = 'no';
-                                 var splitted = mother.attr('id').split('_');
-                                 var m = splitted[0];
-                                 var mother_code = splitted[1];
+                                 var info = getMainCodes($(el));
                                  var line = _(data['mp']).chain()
                                      .select(function(socket){
                                                  var mos = socket[0];
                                                  var procs = socket[1];
                                                  var mos_found = _(mos)
                                                      .select(function(ob){
-                                                                 return ob[mother_code];
+                                                                 return ob[info['mother']];
                                                              });
                                                  return mos_found.length>0;
                                              })
@@ -78,9 +84,9 @@ function addSlider(){
                                  var videos = _(data['v'])
                                      .chain()
                                      .sortBy(getPrice);
-                                 makeSlider(mothers,procs,videos,m,{'m':mother_code,
-                                                                    'p':proc_code,
-                                                                    'v':video_code});
+                                 makeSlider(mothers,procs,videos,info['model'],{'m':info['mother'],
+                                                                    'p':info['proc'],
+                                                                    'v':info['video']});
                              });
                }
            });
@@ -169,7 +175,7 @@ function moveModel(model_id, new_pos){
                                     JSON.stringify(
                                         {'mother':getCode(mother),
                                          'proc':getCode(proc),'video':getCode(video)}))+
-			       '&'+splitted[1]);
+                               '&'+splitted[1]);
                   });
 
 
@@ -284,7 +290,7 @@ function renderCategories(idses, hash){
         .map(function(el){return el.id;})
         .difference(idses);
     to_hide.each(function(el){itemHide($('#'+el));});
-    var get_id = function(id){return function(){return id;};};    
+    var get_id = function(id){return function(){return id;};};
     _(idses).each(function(el){
                       document.location.hash = '#'+hash;
                       var desc_id = 'desc_'+el+'';
@@ -297,7 +303,7 @@ function renderCategories(idses, hash){
                                            {_id:desc_id}));
                       $.ajax({
                                  url:'/modeldesc?id='+el.substring(1,el.length),
-                                 success:function(data){				     
+                                 success:function(data){
                                      all_cats_come+=1;
                                      var container = $('#'+desc_id);
                                      container.html(data['modeldesc']);
@@ -319,9 +325,9 @@ function renderCategories(idses, hash){
                                          .click(gotomodel(el));
 
                                      if (all_cats_come==3){
-					 $('.dragdealer').remove();
+                                         $('.dragdealer').remove();
                                          addSlider();
-					 all_cats_come=0;
+                                         all_cats_come=0;
                                      }
 
                                  }
@@ -667,6 +673,35 @@ head.ready(function(){
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
 
-
                addSlider();
+               var uls = $('.description');
+               var url = '/catalogs_for?';
+               var infos = [];
+               _(uls).each(function(el){
+                               var info = getMainCodes($(el));
+                               infos.push(info);
+                               _(info).chain().keys().each(function(key){
+                                                               if (key=='model')return;
+                                                               var value = info[key];
+                                                               if (value.match('no'))return;
+                                                               url+='c='+info[key]+'&';
+                                                   });
+                           });
+               $.ajax({url:url,
+                       success:function(data){
+                           _(infos).each(function(ob){
+                                             var i = $('#m'+ob['model']).find('.info');
+                                             
+					     i.after('<div class="mvendors"></div><div class="mvendors"></div><div style="clear:both;"></div>');
+					     i.next().attr('class', 'mvendors _'+ data[ob['proc']].join('_'));
+					     if (ob['video']=='no'){
+						 i.next().next().remove();
+						 i.next().css('margin-left','17px');
+					     }						 
+					     else
+						 i.next().next().attr('class', 'mvendors _'+ data[ob['video']].join('_'));
+					     
+                                         });
+                       }
+                      });
            });
