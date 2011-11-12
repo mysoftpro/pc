@@ -170,12 +170,21 @@ function moveModel(model_id, new_pos){
                       var href = link.attr('href');
                       if (!href)return;
                       var splitted = href.split('?');
-                      link.attr('href',splitted[0]+'?data='+
-                                encodeURI(
-                                    JSON.stringify(
-                                        {'mother':getCode(mother),
-                                         'proc':getCode(proc),'video':getCode(video)}))+
-                               '&'+splitted[1]);
+		      var json = {'mother':getCode(mother),
+                                         'proc':getCode(proc),'video':getCode(video)};
+		      
+		      if (!$('#isoft').is(':checked'))
+			  json['soft'] = 'no';
+		      if (!$('#idisplay').is(':checked'))
+			  json['displ'] = 'no';
+		      if (!$('#iaudio').is(':checked'))
+			  json['audio'] = 'no';
+		      if (!$('#iinput').is(':checked')){
+			  json['kbrd'] = 'no';
+			  json['mouse'] = 'no';
+		      }			  
+		      link.attr('href',splitted[0]+'?data='+
+                                encodeURI(JSON.stringify(json))+'&'+splitted[1]);
                   });
 
 
