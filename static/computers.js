@@ -183,16 +183,16 @@ function moveModel(model_id, new_pos){
                           json['kbrd'] = 'no';
                           json['mouse'] = 'no';
                       }
-		      var clean = '';
-		      if (splitted.length>1){
-			  clean = splitted[1].split('&');
-			  clean = _(clean).map(function(param){
-						   var spli = param.split('=');
-						   if (spli[0]!='data')
+                      var clean = '';
+                      if (splitted.length>1){
+                          clean = splitted[1].split('&');
+                          clean = _(clean).map(function(param){
+                                                   var spli = param.split('=');
+                                                   if (spli[0]!='data')
                                                        return spli.join('=');
-                                               }).join('&');	  
-		      }
-                      
+                                               }).join('&');
+                      }
+
                       link.attr('href',splitted[0]+'?data='+
                                 encodeURI(JSON.stringify(json))+'&'+splitted[1]);
                   });
@@ -710,15 +710,13 @@ head.ready(function(){
                            _(infos).each(function(ob){
                                              var i = $('#m'+ob['model']).find('.info');
 
-                                             i.after('<div></div><div></div><div style="clear:both;"></div>');
+                                             i.after('<div></div><div></div>');
                                              i.next()
                                                  .attr('class', 'mvendors mproc _'+ data[ob['proc']]
                                                        .join('_'))
                                                  .attr('title','Процессор');
                                              if (ob['video']=='no'){
                                                  i.next().next().remove();
-                                                 // i.next().css('margin-left','17px');
-                                                 // i.next().next().next().css('margin-left','45px');
                                              }
                                              else
                                                  i
