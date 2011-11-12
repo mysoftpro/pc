@@ -710,20 +710,20 @@ head.ready(function(){
                            _(infos).each(function(ob){
                                              var i = $('#m'+ob['model']).find('.info');
 
-                                             i.after('<div class="mvendors"></div><div class="mvendors"></div><div style="clear:both;"></div>');
+                                             i.after('<div></div><div></div><div style="clear:both;"></div>');
                                              i.next()
-                                                 .attr('class', 'mvendors _'+ data[ob['proc']]
+                                                 .attr('class', 'mvendors mproc _'+ data[ob['proc']]
                                                        .join('_'))
                                                  .attr('title','Процессор');
                                              if (ob['video']=='no'){
                                                  i.next().next().remove();
-                                                 i.next().css('margin-left','17px');
-                                                 i.next().next().next().css('margin-left','45px');
+                                                 // i.next().css('margin-left','17px');
+                                                 // i.next().next().next().css('margin-left','45px');
                                              }
                                              else
                                                  i
                                                  .next().next()
-                                                 .attr('class', 'mvendors _'+ data[ob['video']]
+                                                 .attr('class', 'mvendors mvideo _'+ data[ob['video']]
                                                        .join('_'))
                                              .attr('title','Видеокарта');
 

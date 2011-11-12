@@ -871,7 +871,6 @@ label:hover{
     margin:0;
     padding:0;
     margin-top:-26px;
-    margin-left:67px;
 }
 .computeritem h3 {
     margin-top:30px;
@@ -1790,22 +1789,28 @@ a.modelicon img{
     height:30px;
     width:38px;
     background-image:url('vendors_home.png');
-    margin-top:-25px;    
-    float:left;
+    margin-top:-30px;    
+    position:relative;
 }
 ._7363_7399_7451{
-    background-position:0px 75px;
+    background-position:0px 72px;
 }
 
 ._7363_7399_7700{
-    background-position:0px 42px;
+    background-position:0px 38px;
 }
 ._7363_7396_7613{
-    background-position:0px 107px;
+    background-position:0px 104px;
 }
 ._7363_7399_18027{
-    background-position:0px 75px;
+    background-position:0px 72px;
 }
 ._7363_7396_7607{
-    background-position:0px 2px;
+    background-position:0px -1px;
+}
+.mproc{
+    right:-220px;    
+}
+.mvideo{
+    right:-255px;    
 }
