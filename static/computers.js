@@ -192,9 +192,8 @@ function moveModel(model_id, new_pos){
                                                        return spli.join('=');
                                                }).join('&');
                       }
-
                       link.attr('href',splitted[0]+'?data='+
-                                encodeURI(JSON.stringify(json))+'&'+splitted[1]);
+                                encodeURI(JSON.stringify(json))+'&'+clean);
                   });
 
 
@@ -451,7 +450,7 @@ function changePrices(e){
                                   has_data = true;
                               }
                           }
-                          else{                              
+                          else{
                               href+='?data='+encodeURI(JSON.stringify(data));
                           }
                           link.attr('href',href);
