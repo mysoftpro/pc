@@ -872,7 +872,7 @@ color:#7b9c0a;
 .computers_description{
     float:left;
     width:211px;
-    height:230px;
+    height:240px;
 }
 .cart_description{
     float:left;
@@ -1789,15 +1789,18 @@ a.modelicon img{
     float:left;
 }
 ._7363_7399_7451{
-    background-position:0px 72px;
+    background-position:0px 75px;
 }
 
 ._7363_7399_7700{
-    background-position:0px 39px;
+    background-position:0px 42px;
 }
 ._7363_7396_7613{
-    background-position:0px 105px;
+    background-position:0px 109px;
 }
 ._7363_7399_18027{
-    background-position:0px 72px;
+    background-position:0px 75px;
+}
+._7363_7396_7607{
+    background-position:0px 2px;
 }

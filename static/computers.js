@@ -282,7 +282,6 @@ function fillPopularity(data, finder, height){
 }
 var all_cats_come = 0;
 function renderCategories(idses, hash){
-    console.log(1);
     hits = {};
     $('.full_desc').remove();
     var to_hide = _($('.computeritem').toArray())
@@ -691,16 +690,24 @@ head.ready(function(){
                        success:function(data){
                            _(infos).each(function(ob){
                                              var i = $('#m'+ob['model']).find('.info');
-                                             
-					     i.after('<div class="mvendors"></div><div class="mvendors"></div><div style="clear:both;"></div>');
-					     i.next().attr('class', 'mvendors _'+ data[ob['proc']].join('_'));
-					     if (ob['video']=='no'){
-						 i.next().next().remove();
-						 i.next().css('margin-left','17px');
-					     }						 
-					     else
-						 i.next().next().attr('class', 'mvendors _'+ data[ob['video']].join('_'));
-					     
+
+                                             i.after('<div class="mvendors"></div><div class="mvendors"></div><div style="clear:both;"></div>');
+                                             i.next()
+                                                 .attr('class', 'mvendors _'+ data[ob['proc']]
+                                                       .join('_'))
+                                                 .attr('title','Процессор');
+                                             if (ob['video']=='no'){
+                                                 i.next().next().remove();
+                                                 i.next().css('margin-left','17px');
+                                                 i.next().next().next().css('margin-left','45px');
+                                             }
+                                             else
+                                                 i
+                                                 .next().next()
+                                                 .attr('class', 'mvendors _'+ data[ob['video']]
+                                                       .join('_'))
+                                             .attr('title','Видеокарта');
+
                                          });
                        }
                       });
