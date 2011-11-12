@@ -382,102 +382,79 @@ function showDescription(_id){
     return _show;
 }
 function changePrices(e){
-    
+
     var target = $(e.target);
+    var _id = target.attr('id');
+    var _checked = target.is(':checked');
     var delta = 0;
     var data = {};
+    function set(itoken,dtoken, ex){
+        if (_id==itoken){
+            delta = prices[mid][dtoken];
+            if (ex) delta+=ex;
+            if (!_checked){
+                data[dtoken] = 'no';
+            }
+            else
+                data[dtoken] = 'yes';
+        }
+        return delta;
+    }
     for (var mid in prices){
-	if (target.attr('id')=='isoft'){
-	    delta = prices[mid]['soft']+800;
-	    if (!target.is(':checked'))data['soft'] = 'no';
-	}	
-	else if (target.attr('id')=='idisplay'){
-	    delta = prices[mid]['displ'];
-	    if (!target.is(':checked'))data['displ'] = 'no';
-	}
-	
-	else if (target.attr('id')=='iaudio'){
-	    delta = prices[mid]['audio'];
-	    if (!target.is(':checked'))data['audio'] = 'no';
-	}
-	
-	else if (target.attr('id')=='iinput'){
-	    delta = prices[mid]['kbrd']+prices[mid]['mouse'];
-	    if (!target.is(':checked')){data['kbrd'] = 'no';data['mouse'] = 'no';};
-	}
 
-	if (target.is(':checked')){
-	    target.next().css('background-position','-1px -76px');
-	}        
-	else{
-	    target.next().css('background-position','-1px -93px');
-	    delta = 0-delta;
-	}
+        set('isoft','soft',800);
+        set('iaudio','audio');
+        set('idisplay','displ');
+        set('iinput','kbrd',set('iinput','mouse'));
+        if (_checked){
+            target.next().css('background-position','-1px -76px');
+        }
+        else{
+            target.next().css('background-position','-1px -93px');
+            delta = 0-delta;
+        }
 
-	var new_price = parseInt($('#'+mid).text().split(' ')[0])+delta;
-        
-	// var no_soft = !$('#isoft').is(':checked');
-	// var no_displ = !$('#idisplay').is(':checked');
-	// var no_audio = !$('#iaudio').is(':checked');
-	// var no_input = !$('#iinput').is(':checked');
-
-	// for (var mid in prices){
-	// 	//TODO! what if switch price back??????
-	//     var new_price = parseInt($('#'+mid).text().split(' ')[0]);//prices[mid]['total'];
-	//     var data = {};
-	//     if (no_soft){
-	//         new_price -= prices[mid]['soft']+800;
-	//         data['soft'] = 'no';
-	//     }
-
-	//     if (no_displ){
-	//         new_price -= prices[mid]['displ'];
-	//         data['displ'] = 'no';
-	//     }
-
-	//     if (no_audio){
-	//         new_price -= prices[mid]['audio'];
-	//         data['audio'] = 'no';
-	//     }
-
-	//     if (no_input){
-	//         new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
-	//         data['mouse']='no';data['kbrd'] = 'no';
-	//     }
-	$('#'+mid).text(new_price + ' р');
-	var links = $('#m'+mid).find('a').toArray();
-	_(links).each(function(li){
-			  var link = $(li);
-			  var href = link.attr('href');
-			  if (!href)return;
-			  var splitted = href.split('?');
-			  var has_data = false;
-			  if (splitted.length>1){
-			      var params = splitted[1].split('&');
+        var new_price = parseInt($('#'+mid).text().split(' ')[0])+delta;
+        $('#'+mid).text(new_price + ' р');
+        var links = $('#m'+mid).find('a').toArray();
+        _(links).each(function(li){
+                          var link = $(li);
+                          var href = link.attr('href');
+                          if (!href)return;
+                          var splitted = href.split('?');
+                          var has_data = false;
+                          if (splitted.length>1){
+                              var params = splitted[1].split('&');
                               params = _(params)
-				  .map(function(pa){
-					   var pair = pa.split('=');
-					   if (pair[0]=='data'){
+                                  .map(function(pa){
+                                           var pair = pa.split('=');
+                                           if (pair[0]=='data'){
                                                var _data = eval('('+decodeURI(pair[1])+')');
                                                _(data).chain().keys().each(function(key){
-									       _data[key] = data[key];
-									   });
+                                                                               if (data[key]=='no')
+                                                                                   _data[key] = 'no';
+                                                                               else
+                                                                                   delete _data[key];
+                                                                           });
                                                has_data = true;
+                                               if (_(_data).keys().length==0)
+                                                    return '';
                                                return 'data='+encodeURI(JSON.stringify(_data));
-					   }
-					   else{
+                                           }
+                                           else{
                                                return pa;
-					   }
+                                           }
                                        });
                               href = splitted[0]+'?'+params.join('&');
-			      if (!has_data){
-				  href+='&data='+encodeURI(JSON.stringify(data));
-				  has_data = true;
-			      }				  
-			  }
-			  else
-			      href+='?data='+encodeURI(JSON.stringify(data));			  
-			  link.attr('href',href);
+                              if (!has_data){
+                                  href+='&data='+encodeURI(JSON.stringify(data));
+                                  has_data = true;
+                              }
+                          }
+                          else{                              
+                              href+='?data='+encodeURI(JSON.stringify(data));
+                          }
+                          link.attr('href',href);
                       });
     }
 }
