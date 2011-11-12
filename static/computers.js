@@ -382,30 +382,106 @@ function showDescription(_id){
     return _show;
 }
 function changePrices(e){
+    
     var target = $(e.target);
-    if (target.is(':checked'))
-        target.next().css('background-position','-1px -76px');//('background-image',"url('/static/checkbox.png')");
-    else
-        target.next().css('background-position','-1px -93px');//('background-image',"url('/static/checkbox_empty.png')");
-
-    var no_soft = !$('#isoft').is(':checked');
-    var no_displ = !$('#idisplay').is(':checked');
-    var no_audio = !$('#iaudio').is(':checked');
-    var no_input = !$('#iinput').is(':checked');
-
+    var delta = 0;
+    var data = {};
     for (var mid in prices){
-        var new_price = prices[mid]['total'];
-        if (no_soft)
-            new_price -= prices[mid]['soft']+800;
-        if (no_displ)
-            new_price -= prices[mid]['displ'];
-        if (no_audio)
-            new_price -= prices[mid]['audio'];
-        if (no_input)
-            new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
-        $('#'+mid).text(new_price + ' р');
+	if (target.attr('id')=='isoft'){
+	    delta = prices[mid]['soft']+800;
+	    if (!target.is(':checked'))data['soft'] = 'no';
+	}	
+	else if (target.attr('id')=='idisplay'){
+	    delta = prices[mid]['displ'];
+	    if (!target.is(':checked'))data['displ'] = 'no';
+	}
+	
+	else if (target.attr('id')=='iaudio'){
+	    delta = prices[mid]['audio'];
+	    if (!target.is(':checked'))data['audio'] = 'no';
+	}
+	
+	else if (target.attr('id')=='iinput'){
+	    delta = prices[mid]['kbrd']+prices[mid]['mouse'];
+	    if (!target.is(':checked')){data['kbrd'] = 'no';data['mouse'] = 'no';};
+	}
+
+	if (target.is(':checked')){
+	    target.next().css('background-position','-1px -76px');
+	}        
+	else{
+	    target.next().css('background-position','-1px -93px');
+	    delta = 0-delta;
+	}
+
+	var new_price = parseInt($('#'+mid).text().split(' ')[0])+delta;
+        
+	// var no_soft = !$('#isoft').is(':checked');
+	// var no_displ = !$('#idisplay').is(':checked');
+	// var no_audio = !$('#iaudio').is(':checked');
+	// var no_input = !$('#iinput').is(':checked');
+
+	// for (var mid in prices){
+	// 	//TODO! what if switch price back??????
+	//     var new_price = parseInt($('#'+mid).text().split(' ')[0]);//prices[mid]['total'];
+	//     var data = {};
+	//     if (no_soft){
+	//         new_price -= prices[mid]['soft']+800;
+	//         data['soft'] = 'no';
+	//     }
+
+	//     if (no_displ){
+	//         new_price -= prices[mid]['displ'];
+	//         data['displ'] = 'no';
+	//     }
+
+	//     if (no_audio){
+	//         new_price -= prices[mid]['audio'];
+	//         data['audio'] = 'no';
+	//     }
+
+	//     if (no_input){
+	//         new_price -= prices[mid]['kbrd']+prices[mid]['mouse'];
+	//         data['mouse']='no';data['kbrd'] = 'no';
+	//     }
+	$('#'+mid).text(new_price + ' р');
+	var links = $('#m'+mid).find('a').toArray();
+	_(links).each(function(li){
+			  var link = $(li);
+			  var href = link.attr('href');
+			  if (!href)return;
+			  var splitted = href.split('?');
+			  var has_data = false;
+			  if (splitted.length>1){
+			      var params = splitted[1].split('&');
+                              params = _(params)
+				  .map(function(pa){
+					   var pair = pa.split('=');
+					   if (pair[0]=='data'){
+                                               var _data = eval('('+decodeURI(pair[1])+')');
+                                               _(data).chain().keys().each(function(key){
+									       _data[key] = data[key];
+									   });
+                                               has_data = true;
+                                               return 'data='+encodeURI(JSON.stringify(_data));
+					   }
+					   else{
+                                               return pa;
+					   }
+                                       });
+                              href = splitted[0]+'?'+params.join('&');
+			      if (!has_data){
+				  href+='&data='+encodeURI(JSON.stringify(data));
+				  has_data = true;
+			      }				  
+			  }
+			  else
+			      href+='?data='+encodeURI(JSON.stringify(data));			  
+			  link.attr('href',href);
+                      });
     }
 }
+
 function showComponent(e){
     e.preventDefault();
     var _id = e.target.id.split('_')[1];
