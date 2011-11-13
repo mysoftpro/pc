@@ -170,16 +170,16 @@ function moveModel(model_id, new_pos){
                     var proc_class = '_'+data[new_proc_code].join('_');
                     var video_class = '_'+data[new_video_code].join('_');
                     mproc.attr('class','mvendors mproc '+proc_class);
-		    if (mvideo.length==0){
-			mproc.after('<div class="mvendors mvideo '+video_class+'"></div>');
-		    }
-		    else
-			mvideo.attr('class','mvendors mvideo '+video_class);
+                    if (mvideo.length==0){
+                        mproc.after('<div class="mvendors mvideo '+video_class+'"></div>');
+                    }
+                    else
+                        mvideo.attr('class','mvendors mvideo '+video_class);
                 }});
     }
     else{
-	if (mvideo.length>0)
-	    mvideo.remove();
+        if (mvideo.length>0)
+            mvideo.remove();
     }
     var new_price = _([proc,mother,video]).reduce(function(memo,el){
                                                       return getPrice(el)+memo;
@@ -298,26 +298,27 @@ function getPopularity(){
     $.ajax({
                url:'modeldesc?hitsonly=true',
                success:function(data){
-                   fillPopularity(data, function(el){
-                                      return $('#'+el).next().find('.m_popular');
-                                  },12);
+                   fillPopularity(data);
                }
            });
 }
-function fillPopularity(data, finder, height){
+function fillPopularity(data, finder){
     if(_(data).keys().length<3) return;
     var smallest =99999999;
+    var greatest = 0;
     for (var el in data){
         if (data[el]<smallest)
             smallest = data[el];
+        if (data[el]>greatest)
+            greatest = data[el];
     }
-    for (var el in data){
-        var times = data[el]/smallest;
-        times = Math.round(Math.log(times))+1;
-        if (times>5)
-            times = 5;
-        finder(el).css('width',times*height);
-    }
+    var step = (greatest-smallest)/5;
+    _(data).chain().keys().each(function(key){                                    
+                                    var offset = Math.round(data[key]/step);
+				    if (offset==0)offset=1;
+				    $('#'+key).next().find('.m_popular')
+					.css('width',offset*12+'px');
+    });
 }
 var all_cats_come = 0;
 function renderCategories(idses, hash){
@@ -349,11 +350,6 @@ function renderCategories(idses, hash){
                                          hits[el] = 1;
                                      else
                                          hits[el] = data['hits'];
-                                     // _.delay(function(){fillPopularity(hits,
-                                     //                                   function(el){
-                                     //                                       return $('#desc_'+el)
-                                     //                                           .find('.d_popular');
-                                     //                                   },48);},200);
                                      container.append(panel_template);
                                      container
                                          .find('.small_cart')
