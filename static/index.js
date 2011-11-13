@@ -95,10 +95,20 @@ head
                                            guider.show();
                                            var gu = $('.guider');
                                            _.delay(function(){
-                                                       gu.animate({'opacity':0},500);
+                                                       gu.animate({'opacity':0},500,
+								 function(){gu.remove();});
                                                    },2000);
-                                           _.delay(function(){gu.remove();},2500);
                                        },1500);
                            });
                }
+	       var banner =$('#greeting_banner');
+	       // _.delay(function(){
+	       // 		   banner.find('img').animate({'width':0,'height':0}, 
+	       // 					      1000,
+	       // 					      function(){
+	       // 						  var divs = banner.find('div');
+	       // 						  $('#bline1').html(banner_line1);
+	       // 						  $('#bline2').html(banner_line2);
+	       // 					      });
+	       // 	       }, 4000);
            });

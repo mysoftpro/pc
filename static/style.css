@@ -81,9 +81,12 @@ h2 {
     height:240px;
 }
 #greeting_banner div{
+    height:130px;
     margin:0;
     padding:0;
-    height:130px;
+}
+#ogrnip{
+    display:none;
 }
 .title {
        text-transform:uppercase;
@@ -196,15 +199,6 @@ p {
         clear:both;
         background-color: #3f3f3f;
 }
-
-
-#footer a {
-        color: #555;
-}
-#footer a:hover {
-        color: #690;
-}
-
 
 .clear-block:after {
   content: ".";
