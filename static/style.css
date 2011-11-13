@@ -44,6 +44,17 @@ h2 {
     float:left;
     padding-top:10px;
 }
+
+#logo a{
+    text-decoration:none;
+}
+#logo span{
+    display:block;
+    margin-top:-10px;
+    font-size:20px;
+    text-shadow: 0px 2px 3px #506a12;
+}
+
 #links{
     float:right;
     z-index:9999;
