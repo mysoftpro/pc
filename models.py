@@ -467,7 +467,7 @@ def renderComputer(model, template, skin):
                                                     ';var parts=',simplejson.dumps(parts_aliases)
                                                     ))
     title = skin.root().xpath('//title')[0]
-    title.text += u' Изменение конфигурации компьютера '+_name
+    title.text = u' Изменение конфигурации компьютера '+_name
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
@@ -709,8 +709,8 @@ model_categories = {'home':['storage','spline','shade'],
                     'admin':['ping','cell','compiler'],
                     'game':['zoom','render','raytrace']}
 
-model_categories_titles = {'home':u'Домашние компьютеры.',
-                           'work':u'Компьюетры для работы.',
+model_categories_titles = {'home':u'Домашние компьютеры',
+                           'work':u'Компьюетры для работы',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
@@ -929,10 +929,10 @@ def computers(template,skin,request):
 
         if category is not None and category in model_categories_titles:
             title = skin.root().xpath('//title')[0]
-            title.text += ' '+model_categories_titles[category]
+            title.text = model_categories_titles[category]
         else:
             title = skin.root().xpath('//title')[0]
-            title.text += u' Готовые модели компьютеров'
+            title.text = u'Готовые модели компьютеров'
 
         skin.top = template.top
         skin.middle = template.middle
@@ -1232,7 +1232,7 @@ def notebooks(template, skin, request):
 
         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
         title = skin.root().xpath('//title')[0]
-        title.text += u' Ноутбуки Asus'
+        title.text = u'Ноутбуки Asus'
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()

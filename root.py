@@ -28,16 +28,16 @@ from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
 
 simple_titles = {
-    '/howtochoose':u' Как выбирать компьютер.',
-    '/howtouse':u' Как пользоваться сайтом.',
-    '/howtobuy':u' Как покупать.',
-    '/warranty':u' Гарантии.'
+    '/howtochoose':u' Как выбирать компьютер',
+    '/howtouse':u'Как пользоваться сайтом',
+    '/howtobuy':u'Как покупать',
+    '/warranty':u'Гарантии'
 }
 
 def simplePage(template, skin, request):
     if request.path in simple_titles:
         title = skin.root().xpath('//title')[0]
-        title.text += simple_titles[request.path]
+        title.text = simple_titles[request.path]
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
@@ -72,7 +72,7 @@ def renderPartPage(doc, header, template, skin):
             container.append(el)
     template.top.find('h1').text = header
     title = skin.root().xpath('//title')[0]
-    title.text += header
+    title.text = header
     skin.top = template.top
     skin.middle = template.middle    
     # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
