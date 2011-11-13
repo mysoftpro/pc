@@ -782,7 +782,7 @@ class ModelForModelsPage(object):
         self.fillDescriptionDiv()
         if not self.this_is_cart:
             self.model_div.set('id','m'+self.model['_id'])
-            if self.category in model_categories:
+            if self.category in model_categories:                
                 if self.model['_id'] in model_categories[self.category]:
                     div = etree.Element('div')
                     div.set('id', 'desc_'+self.model_div.get('id'))
@@ -790,6 +790,7 @@ class ModelForModelsPage(object):
                     if 'modeldesc' in self.model:
                         div.text = self.model['modeldesc']
                     self.container.append(div)
+                    self.description_div.set('style','height:220px')
                 else:
                     self.model_div.set('style',"height:0;overflow:hidden")
                     self.description_div.set('style',"height:0;overflow:hidden")
