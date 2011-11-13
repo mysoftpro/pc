@@ -1815,9 +1815,11 @@ a.modelicon img{
 ._7363_7396_7607{
     background-position:0px -1px;
 }
-.mproc{
-    right:-220px;
+.mproc{    
+    left: -5px;
+    top: -53px;
 }
 .mvideo{
-    right:-255px;
+    left: 31px;
+    top: -54px;    
 }

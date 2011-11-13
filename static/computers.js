@@ -769,6 +769,10 @@ head.ready(function(){
                                                  .attr('title','Процессор');
                                              if (ob['video']=='no'){
                                                  i.next().next().remove();
+                                                 // var sec = i.next().next();
+                                                 // sec.prev().
+                                                 //     css('left',sec.find('a').width()+
+                                                 //         sec.find('span').width()+50+'px');
                                              }
                                              else
                                                  i
