@@ -151,13 +151,36 @@ function moveModel(model_id, new_pos){
             return x<y;
         return x>y;
     };
-    var guard = 0;
+
     while (cond(data['current_pos'],new_pos)){
         move();
         if (data['current_pos']==0 || data['current_pos']>=data['steps']-3)
             break;
     }
+    //here
 
+    var new_proc_code = getCode(proc);
+    var new_video_code = getCode(video);
+    var mproc = $('#m'+model_id).find('.mproc');
+    var mvideo = $('#m'+model_id).find('.mvideo');
+    if (!new_video_code.match('no')){
+        //proc is not required. it is always the same
+        var url = '/catalogs_for?c='+new_proc_code+'&c='+new_video_code;
+        $.ajax({url:url,success:function(data){
+                    var proc_class = '_'+data[new_proc_code].join('_');
+                    var video_class = '_'+data[new_video_code].join('_');
+                    mproc.attr('class','mvendors mproc '+proc_class);
+		    if (mvideo.length==0){
+			mproc.after('<div class="mvendors mvideo '+video_class+'"></div>');
+		    }
+		    else
+			mvideo.attr('class','mvendors mvideo '+video_class);
+                }});
+    }
+    else{
+	if (mvideo.length>0)
+	    mvideo.remove();
+    }
     var new_price = _([proc,mother,video]).reduce(function(memo,el){
                                                       return getPrice(el)+memo;
                                                   },0);
@@ -195,8 +218,6 @@ function moveModel(model_id, new_pos){
                       link.attr('href',splitted[0]+'?data='+
                                 encodeURI(JSON.stringify(json))+'&'+clean);
                   });
-
-
 }
 
 function getComponentIndex(rows, code){
