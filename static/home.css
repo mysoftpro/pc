@@ -814,12 +814,13 @@ label:hover{
 }
 .midlle_computer{
  margin: 0px auto;padding: 0;width:1000px;
- margin-top:-40px !important;
+ margin-top:-35px !important;
 }
 #model_description{
-    max-height:200px;
+    max-height:100px;
     font-size:13px;
     padding:3px;
+    overflow:hidden;
 }
 #model_description ul{
     padding:0;
@@ -966,6 +967,11 @@ label:hover{
 }
 #models_top{
     height:180px;
+}
+#models_top span {
+    background-color: #F3C312;
+    color: black;
+    padding: 2px;
 }
 
 #pricetext{
