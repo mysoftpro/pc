@@ -44,9 +44,6 @@ head.ready(function(){
 	       $('.expandable').click(function(e){
 					  console.log(e.target);
 				      });
-	       $('a').click(function(e){
-				e.preventDefault();
-			    });	       
 
 
 
