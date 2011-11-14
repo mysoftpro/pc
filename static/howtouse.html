@@ -26,7 +26,7 @@
       Можно открыть <span>несколько таких окошек</span> и посмотреть,
       чем один компьютер отличается от другого.
     </div>
-    
+
     <div class="sentence_float" style="width:600px">
       Под каждым компьютером есть <span>слайдер</span>.
       Его можно подвигать туда-сюда, чтобы установить <span>нужную вам цену</span>.
@@ -110,18 +110,21 @@
       <option>Можете выбирать любой</option>
     </select>
     <div style="clear:both;"></div>
-    <div class="sentence_float" >Возможно вам покажется удобней использовать кнопки справа</div>
+    <div class="sentence_float" style="margin-bottom:130px;">Возможно вам покажется удобней использовать кнопки справа</div>
     <div class="sentence_right">
       <div class="sentence">
-	<img src="/static/down_small.png" alt="дешевле"/> - выбирает ближайший компонент с меньшей ценой.
+        <table><tr><td class="controls cheaper" style="height:31px;"><a>дешевле</a></td><tr></table>
+        выбирает ближайший компонент с меньшей ценой.
       </div>
 
       <div class="sentence">
-	<img src="/static/up_small.png" alt="лучше"/> - выбирает ближайший компонент с большей ценой.
+        <table><tr><td class="controls better" style="height:31px;"><a>лучше</a></td><tr></table>
+        выбирает ближайший компонент с большей ценой.
       </div>
 
       <div class="sentence">
-	<img src="/static/reset_small.png" alt="сбросить"/> - выбирает изначально установленный компонент.
+        <table><tr><td class="controls reset" style="height:31px;"> <a href="?skin=home">сбросить </a></td></tr></table>
+        выбирает изначально установленный компонент.
       </div>
     </div>
 
@@ -139,10 +142,10 @@
     <div class="sentence">
       <div style="float:left;margin-top:15px;">
         Кнопками "дешевле" и "лучше" можно автоматически выбирать компоненты.
-	Наше приложение выбирает замену для компонента,
-	который по его оценке не соответсвует остальным компонентам компьютера.
-	Описание их работы можно прочитать на страничке 
-	<a href="/howtochoose">как выбирать компьютер</a>
+        Наше приложение выбирает замену для компонента,
+        который по его оценке не соответсвует остальным компонентам компьютера.
+        Описание их работы можно прочитать на страничке
+        <a href="/howtochoose">как выбирать компьютер</a>
       </div>
       <div style="margin-right:70px;" class="large_button" id="gbetter">лучше</div>
       <div class="large_button" id="gcheaper">дешевле</div>
