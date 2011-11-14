@@ -300,9 +300,6 @@ ul#main_menu li {
 }
 ul#main_menu li a {
         margin: 0 0 0 16px;
-        padding: 0;
-        height: 18px;
-        display: block;
 }
 
 
@@ -869,7 +866,7 @@ color:#7b9c0a;
 .computeritem h2 {
     margin:0;
     padding:0;
-    margin-top:-25px;
+    margin-top:-32px;
 }
 .computeritem h3 {
     margin-top:30px;
@@ -1396,7 +1393,6 @@ a.modelicon img{
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     content: "";
-
     left: 5px;
     position: relative;
     top: -5px;
@@ -1815,4 +1811,45 @@ a.modelicon img{
 .mvideo{
     left: 31px;
     top: -54px;    
+}
+
+.expandable:before {
+    border-top: 6px solid #999999;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    content: "";
+    cursor:pointer;
+    margin-right:-11px;
+    margin-left:8px;
+    left: 2px;
+    position: relative;
+    top: 14px;
+}
+#howtochoseexpandable{
+     background-image:url("/static/binocular.png");
+     padding-left:256px;
+     min-height:165px;
+     width:255px;
+     margin-left:-250px;
+}
+.expanded{
+    border:1px solid #999;
+    position: absolute;
+    z-index:999;
+    background-color:#3F3F3F;
+    margin-left: 12px;
+    margin-top: 4px;
+    background-repeat:no-repeat;
+    opacity:0;
+}
+.expanded div{    
+    text-align:left;
+    padding:2px;
+    padding-right:10px;
+}
+.expanded a{    
+    color:#bbb;
+}
+.expanded a:hover{
+    color:#B6C974
 }
