@@ -8,7 +8,7 @@ from twisted.web.server import NOT_DONE_YET
 from pc.couch import couch, designID
 from twisted.internet import reactor, defer
 from pc.mail import send_email
-
+# http://www.onlinedengi.ru/wmpaycheck.php?project=867&amount=5&nickname=187e61f8&mode_type=60&source=buildpc.ru&order_id=187e70d0
 class DOValidateUser(Resource):
     def __init__(self):
         self.xml = etree.XML('<result></result>')
