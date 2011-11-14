@@ -98,7 +98,9 @@ static_hooks = {
     'part.html':partPage,
     'notebook.html':notebooks,
     'faq.html':faq,
-    'game.html':gamePage
+    'game.html':gamePage,
+    'payment_success.html':simplePage,
+    'payment_fail.html':simplePage    
     }
 
 
@@ -595,8 +597,8 @@ class Root(Cookable):
 
         self.putChild('catalogs_for',CatalogsFor())
 
-        # self.putChild('do_payment_success',DoPaymentSuccess())
-        # self.putChild('do_payment_fail',DoPaymentFail())
+        self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
+        self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
 
     def getChild(self, name, request):
         self.checkCookie(request)
