@@ -157,10 +157,10 @@ function moveModel(model_id, new_pos){
         if (data['current_pos']==0 || data['current_pos']>=data['steps']-3)
             break;
     }
-    //here
 
     var new_proc_code = getCode(proc);
     var new_video_code = getCode(video);
+
     var mproc = $('#m'+model_id).find('.mproc');
     var mvideo = $('#m'+model_id).find('.mvideo');
     if (!new_video_code.match('no')){
@@ -181,6 +181,22 @@ function moveModel(model_id, new_pos){
         if (mvideo.length>0)
             mvideo.remove();
     }
+
+    var new_mother_code = getCode(mother);
+    $.ajax({
+               url:'/names_for?c='+new_proc_code+'&c='+new_video_code+'&c='+new_mother_code,
+               success:function(data){
+                   var lis = $('#m'+model_id).next().find('ul.description').children();
+                   var update = function(el,code){
+                       el.text(data[code]).attr('id',model_id+'_'+code);
+                   };
+                   var fi = lis.first();
+                   update(fi, new_mother_code);
+		   update(fi.next(), new_proc_code);
+		   update(fi.next().next(), new_video_code);
+               }
+           });
+
     var new_price = _([proc,mother,video]).reduce(function(memo,el){
                                                       return getPrice(el)+memo;
                                                   },0);
@@ -313,11 +329,11 @@ function fillPopularity(data, finder){
             greatest = data[el];
     }
     var step = (greatest-smallest)/5;
-    _(data).chain().keys().each(function(key){                                    
+    _(data).chain().keys().each(function(key){
                                     var offset = Math.round(data[key]/step);
-				    if (offset==0)offset=1;
-				    $('#'+key).next().find('.m_popular')
-					.css('width',offset*12+'px');
+                                    if (offset==0)offset=1;
+                                    $('#'+key).next().find('.m_popular')
+                                        .css('width',offset*12+'px');
     });
 }
 var all_cats_come = 0;

@@ -14,7 +14,8 @@ import simplejson
 from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
+    NamesFor
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -596,6 +597,7 @@ class Root(Cookable):
         self.putChild('zip_components', ZipConponents())
 
         self.putChild('catalogs_for',CatalogsFor())
+        self.putChild('names_for', NamesFor())
 
         self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))

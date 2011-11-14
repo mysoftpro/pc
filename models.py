@@ -1296,3 +1296,17 @@ class CatalogsFor(Resource):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps(res)
+
+
+class NamesFor(Resource):
+    def render_GET(self, request):
+        codes = request.args.get('c',[])
+        if len(codes)==0:
+            request.finish()
+        res = {}
+        for c in codes:
+            component = globals()['gChoices_flatten'][c]
+            res.update({c:component['text'] + ' '+unicode(makePrice(component)) + u' р'})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps(res)
