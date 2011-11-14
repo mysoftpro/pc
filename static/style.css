@@ -1828,6 +1828,7 @@ a.modelicon img{
 #howtochoseexpandable{
      background-image:url("/static/binocular.png");
      padding-left:256px;
+     padding-top:20px;
      min-height:165px;
      width:255px;
      margin-left:-250px;
