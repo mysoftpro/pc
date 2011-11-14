@@ -183,6 +183,13 @@ function moveModel(model_id, new_pos){
     }
 
     var new_mother_code = getCode(mother);
+    //clean guider
+    try{
+	guider._guiderById('m'+model_id).elem.find('.guiderclose').click();
+    } catch (x) {
+
+    }
+    
     $.ajax({
                url:'/names_for?c='+new_proc_code+'&c='+new_video_code+'&c='+new_mother_code,
                success:function(data){
@@ -596,12 +603,12 @@ head.ready(function(){
                                                                        });
                                                 });
                    ul.append('<div style="clear:both;"></div>');
-                   guider.createGuider({
+		   guider.createGuider({
                                            attachTo: target,
                                            description: ul,
                                            position: hour,
                                            width: 500,
-                                           id:'ass'
+                                           id:target.parent().attr('id')
                                        }).show();
                    ul.parent().before('<div class="closeg"></div>');
                    ul.parent().prev().click(function(e){$(e.target).parent().find('.guiderclose').click();});
