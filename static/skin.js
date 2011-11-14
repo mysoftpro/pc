@@ -34,7 +34,23 @@ function CartAndContacts(){
 }
 
 head.ready(function(){
+	       	       	       
+	       if ($.browser.opera){
+	       	   $('html').css('height','auto');
+	       }
+	       
 	       CartAndContacts();
+
+	       $('.expandable').click(function(e){
+					  console.log(e.target);
+				      });
+	       $('a').click(function(e){
+				e.preventDefault();
+			    });	       
+
+
+
+
 	       var astro = $('#astro');	       
 	       var autumn = $('#autumn');	       
 
@@ -53,9 +69,4 @@ head.ready(function(){
 	       var joined = pairs_filtered.join('&');
 	       astro.attr('href','?'+joined);
 	       autumn.attr('href','?'+joined+'&skin=home');
-	       	       
-	       if ($.browser.opera){
-	       	   $('html').css('height','auto');
-	       }
-
 	   });
