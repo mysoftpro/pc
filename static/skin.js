@@ -56,13 +56,20 @@ function expandMenu(link){
     var div = $(document.createElement('div'));
     div.html('');
     div.attr('class','expanded');
-    var expas = expands[link.attr('href').split('?')[0]];
+    var _splitted = link.attr('href').split('?');
+    var expas = expands[_splitted[0]];
     _(expas['urls'])
         .each(function(el){
                   div.append(etempate(el));
               });
     div.attr('id',link.attr('id')+'expandable');
     link.after(div);
+    if (_splitted.length>1)
+	_(div.find('a').toArray()).each(function(l){
+					    var li = $(l);
+					    var hr = li.attr('href');
+					    li.attr('href',hr+'?'+_splitted[1]);
+					});
     div.animate({'opacity':'1.0'},400);
 
     function hideexpa(delta){
