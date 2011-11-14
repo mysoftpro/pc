@@ -1323,11 +1323,9 @@ h1.bold.left{
 .sentence span{
     color:#B00606;
 }
-
-
-
-
-
+.sentence_float span{
+    color:#B00606;
+}
 
 a.modelicon{
     position:relative;
