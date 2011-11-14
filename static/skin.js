@@ -19,9 +19,11 @@ function CartAndContacts(){
                 }
             }
         }
-        $('#main_menu')
-            .append('<li style="width:0;"><a id="cart" href="/cart/' +link+
-                    '">Корзина('+cart+')</a></li>');
+        var cart_template= _.template('<li style="{{style}}"><a id="cart" href="/cart/{{link}}">Корзина({{ammo}})</a></li>');
+	var style = 'width:0';
+	if ($.browser.msie || $.browser.opera)
+	    style = 'width:94';
+	$('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
         $('#cart').parent().animate({'width':'94px'},400);
     }
     if (!document.location.href.match('faq'))
@@ -39,32 +41,39 @@ function CartAndContacts(){
 }
 
 
-var expands = {'/howtochoose':{'urls':[
+var expands = {'howtochose':{'urls':[
                                    {url:'/howtouse',title:"Как пользоваться сайтом"},
                                    {url:'/howtochoose',title:'Как выбирать компьютер'},
                                    {url:'/processor',title:'Как выбирать процессор'},
                                    {url:'/motherboard',title:'Как выбирать материнскую плату'},
                                    {url:'/video',title:'Как выбирать видеокарту'}
                                ],
-                               'picture':'binocular.png',
+                               'lock':undefined
+                              },
+	       'more':{'urls':[
+                                   {url:'/about',title:"Про магазин"},
+                                   {url:'/warranty',title:'Гарантии'}
+                               ],
                                'lock':undefined
                               }};
 
 var etempate = _.template('<div><a href={{url}}>{{title}}</a></div>');
 
 function expandMenu(link){
+    $('.expanded').remove();
     var div = $(document.createElement('div'));
     div.html('');
     div.attr('class','expanded');
-    var _splitted = link.attr('href').split('?');
-    var expas = expands[_splitted[0]];
+
+    var expas = expands[link.attr('id')];
     _(expas['urls'])
         .each(function(el){
                   div.append(etempate(el));
               });
     div.attr('id',link.attr('id')+'expandable');
     link.after(div);
-    if (_splitted.length>1)
+    var _splitted = link.attr('href').split('?');
+    if (_splitted.length>1 && _splitted[1]!=="")
 	_(div.find('a').toArray()).each(function(l){
 					    var li = $(l);
 					    var hr = li.attr('href');
@@ -74,7 +83,7 @@ function expandMenu(link){
 
     function hideexpa(delta){
         _.delay(function(e){
-                    if (expas['lock'])return;
+		    if (expas['lock'])return;
                     div.animate({'opacity':'0.0'},400,function(){div.remove();});
             }, delta);
     }
