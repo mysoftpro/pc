@@ -32,7 +32,8 @@ simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
     '/howtouse':u'Как пользоваться сайтом',
     '/howtobuy':u'Как покупать',
-    '/warranty':u'Гарантии'
+    '/warranty':u'Гарантии',
+    '/about':u'Про магазин'
 }
 
 def simplePage(template, skin, request):
@@ -601,6 +602,9 @@ class Root(Cookable):
 
         self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
+        
+        self.putChild('about',TemplateRenderrer(self.static, 'about.html'))
+
 
     def getChild(self, name, request):
         self.checkCookie(request)

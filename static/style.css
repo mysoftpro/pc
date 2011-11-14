@@ -1854,3 +1854,11 @@ a.modelicon img{
 .expanded a:hover{
     color:#B6C974
 }
+#moreexpandable {
+    background-image: url("/static/microscope.png");
+    margin-left: -250px;
+    min-height: 90px;
+    padding-left: 78px;
+    padding-top: 20px;
+    width: 200px;
+}
