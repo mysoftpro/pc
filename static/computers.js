@@ -188,7 +188,7 @@ function moveModel(model_id, new_pos){
                success:function(data){
                    var lis = $('#m'+model_id).next().find('ul.description').children();
                    var update = function(el,code){
-                       el.text(data[code]).attr('id',model_id+'_'+code);
+                       el.html(data[code]).attr('id',model_id+'_'+code);
                    };
                    var fi = lis.first();
                    update(fi, new_mother_code);

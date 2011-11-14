@@ -1306,7 +1306,7 @@ class NamesFor(Resource):
         res = {}
         for c in codes:
             component = globals()['gChoices_flatten'][c]
-            res.update({c:component['text'] + ' '+unicode(makePrice(component)) + u' р'})
+            res.update({c:component['text'] + ' <strong>'+unicode(makePrice(component)) + u' р</strong>'})
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps(res)
