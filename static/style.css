@@ -1873,6 +1873,7 @@ a.modelicon img{
     width:34px;
     background-image:url('vendors_switchers.png');
     cursor:pointer;
+    margin-top:10px;
 }
 #vamd{
     background-position: 0px -1px;

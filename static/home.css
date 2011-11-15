@@ -1887,13 +1887,14 @@ a.modelicon img{
     position: fixed;
     left: 0;
     top: 230px;
-    z-index: 99999;
+    z-index: 99999;    
 }
 #vendors div{
     height:29px;
     width:34px;
     background-image:url('vendors_switchers_home.png');
     cursor:pointer;
+    margin-top:10px;
 }
 #vamd{
     background-position: 0px -1px;
