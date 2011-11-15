@@ -155,6 +155,15 @@ head.ready(function()
                                                    position: 7,
                                                    width: 140
                                                }).show();
+			   
+			   
+			    guider.createGuider({
+                                                   attachTo: "#vendors",
+                                                   description: "Эти кнопки позволяют исключить одного из производителей процессоров и видеокарт. После исключения, кнопки 'луше' и 'дешевле' будут перебирать только оставшегося производителя.",
+                                                   id: "GCheaperGBetter",
+                                                   position: 3,
+                                                   width: 140
+                                               }).show();
 
                            guider.createGuider({
                                                    attachTo: "#component_title",
