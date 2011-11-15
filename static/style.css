@@ -1865,7 +1865,7 @@ a.modelicon img{
 #vendors{
     position: fixed;
     left: 0;
-    top: 10px;
+    top: 230px;
     z-index: 99999;
 }
 #vendors div{
