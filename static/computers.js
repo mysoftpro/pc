@@ -59,7 +59,7 @@ function addSlider(){
     $.ajax({
                url:'zip_components',
                success:function(data){
-		   if (data==0)return;
+		   if (data=="")return;
                    var lis =  _($('.description').toArray())
                        .each(function(el){
                                  var info = getMainCodes($(el));
