@@ -82,6 +82,8 @@ function getRamFromText(text){
     retval = 4;
     else if (text.match('8192MB'))
     retval = 8;
+    else if (text.match('16GB'))
+    retval = 16;
     return retval;
 }
 
@@ -776,8 +778,7 @@ function getNearestComponent(price, catalogs, delta, same_socket){
             spare_component = other_components[i];
             spare_diff = Math.abs(_diff);
         }
-    }
-    console.log([component, spare_component]);
+    }    
     return [component, spare_component];
 }
 
