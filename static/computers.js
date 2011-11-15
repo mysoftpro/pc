@@ -59,6 +59,7 @@ function addSlider(){
     $.ajax({
                url:'zip_components',
                success:function(data){
+		   if (data==0)return;
                    var lis =  _($('.description').toArray())
                        .each(function(el){
                                  var info = getMainCodes($(el));
@@ -326,6 +327,7 @@ function getPopularity(){
            });
 }
 function fillPopularity(data, finder){
+    if (data=="")return;
     if(_(data).keys().length<3) return;
     var smallest =99999999;
     var greatest = 0;
