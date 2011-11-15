@@ -3,6 +3,25 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
+// LGA1155, LGA1156, LGA1366 (для процессоров Intel Core i3/i5/i7)
+// LGA775 (для процессоров Intel Dual&Quad Core)
+// SOCKET AM2 (для процессоров AMD Sephron, Athlon, Phenom)
+// SOCKET FM1 (для процессоров А6).
+var catalogsForVendors = {
+    mothers:{
+        'vamd':[['7363','7388','7699'],['7363','7388','19238']],
+        'vintel':[['7363','7388','17961'],['7363','7388','12854'],['7363','7388','18029'],['7363','7388','7449']]
+    },
+    procs:{
+        'vamd':[['7363','7399','7700'],['7363','7399','19257']],
+        'vintel':[['7363','7399','18027'],['7363','7399','18028'],['7363','7399','9422'],['7363','7399','7451']]
+    },
+    videos:{
+        'vnvidia':['7363','7396','7607'],
+        'vati':['7363','7396','7613']
+    }
+};
+
 function getPartName(_id){
     var cats = getCatalogs(choices[_id]);
     for (var i=0;i<cats.length;i++){
@@ -494,9 +513,6 @@ function installBodies(){
         }
         var te = b.text();
         b.text(te.substring(0,80));
-        //b.text(b.text().replace(/<font [^>]*>/g,'').replace('!','').replace('!','').replace('!','').replace('SALE',''));
-        // if (j==0)
-        //     updateDescription(_id, _id);
     }
     bodies.first().click();
     init = false;
@@ -704,7 +720,7 @@ function getNearestComponent(price, catalogs, delta, same_socket){
             spare_component = other_components[i];
             spare_diff = Math.abs(_diff);
         }
-    }    
+    }
     return [component, spare_component];
 }
 
@@ -760,17 +776,17 @@ function cheaperBetter(){
                                                   getCatalogs(old_component),
                                                   delta, false);
 
-	//here
+        //here
         if (!appr_components[0])
             return;
         var new_component = appr_components[0];
-	// here is the case for novideo
-	var hasNoVideo = true;    
-	if(isVideo(body) && new_component['_id'].match('no')){	
-	    var mother_select = jgetSelectByRow($('#' + parts['mother']));
-	    hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
-	}
-	if (!hasNoVideo)return;
+        // here is the case for novideo
+        var hasNoVideo = true;
+        if(isVideo(body) && new_component['_id'].match('no')){
+            var mother_select = jgetSelectByRow($('#' + parts['mother']));
+            hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
+        }
+        if (!hasNoVideo)return;
         //here the case when i have amd fm1 proc and no mother for it
         var changed = changeComponent(body, new_component, old_component);
         if (!changed){
@@ -1182,10 +1198,10 @@ function shadowCheBe(_delta, body, component){
     if (_delta>0)
         swap();
     //here
-    var hasNoVideo = true;    
-    if(isVideo(body) && next_components[0] && next_components[0]['_id'].match('no')){	
-	var mother_select = jgetSelectByRow($('#' + parts['mother']));
-	hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
+    var hasNoVideo = true;
+    if(isVideo(body) && next_components[0] && next_components[0]['_id'].match('no')){
+        var mother_select = jgetSelectByRow($('#' + parts['mother']));
+        hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
     }
     if (!next_components[0] || !hasNoVideo){
         next.css({'opacity':'0.5','cursor':'default'});

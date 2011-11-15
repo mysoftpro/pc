@@ -1862,3 +1862,27 @@ a.modelicon img{
     padding-top: 20px;
     width: 200px;
 }
+#vendors{
+    position: fixed;
+    left: 0;
+    top: 10px;
+    z-index: 99999;
+}
+#vendors div{
+    height:29px;
+    width:34px;
+    background-image:url('vendors_switchers.png');
+    cursor:pointer;
+}
+#vamd{
+    background-position: 0px -1px;
+}
+#vintel{
+    background-position: 0px 88px;
+}
+#vnvidia{
+    background-position: 0px 58px;
+}
+#vati{
+    background-position: 0px 149px;
+}
