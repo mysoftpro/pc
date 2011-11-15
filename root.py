@@ -76,7 +76,7 @@ def renderPartPage(doc, header, template, skin):
     title = skin.root().xpath('//title')[0]
     title.text = header
     skin.top = template.top
-    skin.middle = template.middle    
+    skin.middle = template.middle
     # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
     # skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
     return skin
@@ -102,7 +102,8 @@ static_hooks = {
     'faq.html':faq,
     'game.html':gamePage,
     'payment_success.html':simplePage,
-    'payment_fail.html':simplePage    
+    'payment_fail.html':simplePage,
+    'about.html':simplePage
     }
 
 
@@ -152,7 +153,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('video'))
         root.append(self.buildElement('processor'))
         root.append(self.buildElement('notebook'))
-        
+
         root.append(self.buildElement('computer?cat=home'))
         root.append(self.buildElement('computer?cat=work'))
         root.append(self.buildElement('computer?cat=admin'))
@@ -482,8 +483,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        if _name is not None and "js" in _name and "min." not in _name:
-            _content = jsmin(_content)
+        # if _name is not None and "js" in _name and "min." not in _name:
+        #     _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -602,7 +603,7 @@ class Root(Cookable):
 
         self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
-        
+
         self.putChild('about',TemplateRenderrer(self.static, 'about.html'))
 
 
@@ -655,7 +656,7 @@ class ModelDesc(Resource):
                 res.update({'m'+doc['_id']:1})
         request.write(simplejson.dumps(res))
         request.finish()
-                           
+
     def render_GET(self, request):
         _id = request.args.get('id', [None])[0]
         if _id is not None:
