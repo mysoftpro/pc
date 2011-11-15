@@ -3,10 +3,6 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-// LGA1155, LGA1156, LGA1366 (для процессоров Intel Core i3/i5/i7)
-// LGA775 (для процессоров Intel Dual&Quad Core)
-// SOCKET AM2 (для процессоров AMD Sephron, Athlon, Phenom)
-// SOCKET FM1 (для процессоров А6).
 var catalogsForVendors = {
     mothers:{
         'vamd':[['7363','7388','7699'],['7363','7388','19238']],
@@ -703,18 +699,21 @@ function _jgetVendor(id){
 }
 var jgetVendor = _.memoize(_jgetVendor,function(_id){return _id;});
 
+
+
+
 function filterByFilter(res){
     var amd_fltr = jgetVendor('amd');
     var intel_fltr = jgetVendor('intel');
     var nvidia_fltr = jgetVendor('nvidia');
     var ati_fltr = jgetVendor('ati');
-    
-    if(_([amd_fltr, intel_fltr,nvidia_fltr,ati_fltr]).select(function(el){ 
-								 return el.data('filter');
-							      }).length==0) {
-	return res;
+    var all_fltrs = _([amd_fltr, intel_fltr,nvidia_fltr,ati_fltr]);
+    if(all_fltrs.select(function(el){
+                            return el.data('filter');
+                        }).length==0){
+        return res;
     }
-    
+
     var first = res[0];
     var inmodel = filterByCatalogs(_(model).values(),getCatalogs(first))[0];
     var body = jgetBodyById(inmodel['_id']);
@@ -729,12 +728,30 @@ function filterByFilter(res){
         fltr = 'videos';
     }
     if (!catalogsForVendors[fltr]){
-	return res;
+        return res;
     }
-	
-    return res;
+    var required_catalogs = catalogsForVendors[fltr];
+    var ids = _(required_catalogs).chain().keys();
+    var proper_filter = ids.intersect(all_fltrs
+                                      .select(function(el){return !el.data('filter');})
+                                      .map(function(el){return el.attr('id');}));;
+
+    // 0 if something wrong. 2 if both buttons are unpressed
+    // i.e. video filter is pressed but all procs buttons are unpressed
+    // and we select proc or mother. 2 is magic number, sory :(
+    var sz = proper_filter.size().value();
+    if (sz==0 || sz==2){
+        return res;
+    }
+
+    var cats_to_filter = required_catalogs[proper_filter.first().value()];
+    var proper_res = [];
+    _(cats_to_filter).each(function(cat){
+                               var filtered = filterByCatalogs(res, cat, true);
+                               proper_res = _.union(proper_res,filtered);
+                           });
+    return proper_res;
 }
-var consolr = console;
 //zaza
 
 function getNearestComponent(price, catalogs, delta, same_socket){
@@ -760,6 +777,7 @@ function getNearestComponent(price, catalogs, delta, same_socket){
             spare_diff = Math.abs(_diff);
         }
     }
+    console.log([component, spare_component]);
     return [component, spare_component];
 }
 
@@ -833,8 +851,10 @@ function cheaperBetter(){
             appr_components = getNearestComponent(new_component.price,
                                                   getCatalogs(new_component),
                                                   delta, false);
-            if (!appr_components[0])
+            if (!appr_components[0]){
                 return;
+            }
+
             changeComponent(body, appr_components[0], old_component);
         }
     }
@@ -1302,17 +1322,20 @@ function changePinedComponent(old_component, pins, no_perifery){
     if (isRam(model_body))
     {
         appr_components = changeRamIfPossible(old_component, pins.direction);
-        if (!appr_components)
+        if (!appr_components){
             return true;//counter was changed
+	}
     }
-    else
-        appr_components = getNearestComponent(old_component.price,
-                                              old_cats, pins.delta, false);
+    else{	
+	appr_components = getNearestComponent(old_component.price,
+                                              old_cats, pins.delta, false);	
+    }
+    
     if (!appr_components[0]){
         if (!no_perifery){
             changePeriferyComponent(pins);
-        }
-        return false;
+        }        
+	return false;
     }
     var appr_component = appr_components[0];
 
@@ -1327,8 +1350,8 @@ function changePinedComponent(old_component, pins, no_perifery){
         if (last.delta == pins.delta){
             if (_(this.apprs).filter(function(_ob){return _ob['_id']==_id;}).length>1){
                 //get same component. loooooooooop
-                this.apprs.push(ob);
-                return changePinedComponent(appr_component, pins, no_perifery);
+                this.apprs.push(ob);                
+		return changePinedComponent(appr_component, pins, no_perifery);
             }
             else
                 this.apprs.push(ob);
@@ -1345,7 +1368,7 @@ function changePinedComponent(old_component, pins, no_perifery){
     else if (isVideo(model_body)){
         var videoselect = jgetSelectByRow($('#' + parts['video']));
         installCountButtons(jgetBody(videoselect));
-    }
+    }    
     return true;
 }
 
@@ -1674,7 +1697,6 @@ head.ready(function(){
                        setCode(co,data[co]);
                    }
                }
-
                // _.delay(function(){
                //                 $.ajax({
                //                            url:'/comet',
