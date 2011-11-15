@@ -17,8 +17,8 @@ var catalogsForVendors = {
         'vintel':[['7363','7399','18027'],['7363','7399','18028'],['7363','7399','9422'],['7363','7399','7451']]
     },
     videos:{
-        'vnvidia':['7363','7396','7607'],
-        'vati':['7363','7396','7613']
+        'vnvidia':[['7363','7396','7607']],
+        'vati':[['7363','7396','7613']]
     }
 };
 
@@ -698,9 +698,48 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
+function _jgetVendor(id){
+    return $('#v'+id);
+}
+var jgetVendor = _.memoize(_jgetVendor,function(_id){return _id;});
+
+function filterByFilter(res){
+    var amd_fltr = jgetVendor('amd');
+    var intel_fltr = jgetVendor('intel');
+    var nvidia_fltr = jgetVendor('nvidia');
+    var ati_fltr = jgetVendor('ati');
+    
+    if(_([amd_fltr, intel_fltr,nvidia_fltr,ati_fltr]).select(function(el){ 
+								 return el.data('filter');
+							      }).length==0) {
+	return res;
+    }
+    
+    var first = res[0];
+    var inmodel = filterByCatalogs(_(model).values(),getCatalogs(first))[0];
+    var body = jgetBodyById(inmodel['_id']);
+    var fltr='no_any_filter';
+    if (isMother(body)){
+        fltr = 'mothers';
+    }
+    if (isProc(body)){
+        fltr = 'procs';
+    }
+    if (isVideo(body)){
+        fltr = 'videos';
+    }
+    if (!catalogsForVendors[fltr]){
+	return res;
+    }
+	
+    return res;
+}
+var consolr = console;
+//zaza
 
 function getNearestComponent(price, catalogs, delta, same_socket){
-    var other_components = filterByCatalogs(_(choices).values(), catalogs, same_socket);
+    var other_components = filterByFilter(filterByCatalogs(_(choices).values(),
+                                                           catalogs, same_socket));
     var diff = 1000000;
     var component;
     var spare_diff = 1000000;

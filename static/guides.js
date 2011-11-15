@@ -232,21 +232,29 @@ head.ready(function()
       $('.inactive').click(swapTabs);
       $('.body').click(function(){fillSelectHelps(function(){});});
       $('.our').hide();
-      
+
       _($('#vendors div').toArray())
-	  .each(function(d){
-		      var div = $(d);
-		      div.data({'filter':false});		      
-		      div.click(function(e){						
-				    var splitted = div.css('background-position').split(' ');
-				    if (splitted[0] == '0px' || splitted[0] == '0'){
-                            div.css({'background-position':'58px '+splitted[1]});
-					div.data({'filter':true});
-				    }
-				    else{
-					div.css({'background-position':'0px '+splitted[1]});
-					div.data({'filter':false});
-				    }
-				});
-		  });
+          .each(function(d, i){
+                    var div = $(d);
+                    div.data({'filter':false});
+                    div.click(function(e){
+                                  var splitted = div.css('background-position').split(' ');
+                                  if (splitted[0] == '0px' || splitted[0] == '0'){
+				      // can switch off only if other is not switchet off
+				      var other;
+				      if (i%2==0) other = function(el){return el.next();};
+				      else other = function(el){return el.prev();};
+				      var other_splitted = other(div).
+					  css('background-position').split(' ');
+				      if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
+					  return;
+                                      div.css({'background-position':'58px '+splitted[1]});
+                                      div.data({'filter':true});
+                                  }
+                                  else{                                      
+                                      div.css({'background-position':'0px '+splitted[1]});
+                                      div.data({'filter':false});
+                                  }
+                              });
+                });
   });
