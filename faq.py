@@ -13,8 +13,6 @@ def renderFaq(res, template,skin, request):
     faqs = template.middle.find('div')
     current_record = None
     for r in res['rows']:
-        # print 'parent' in r['doc']
-        # if not 'parent' in r['doc']:
         faq_viewlet = deepcopy(template.root().find('faq').find('div'))
         # else:
         faq_viewlet.set('id',r['doc']['_id'])
@@ -32,6 +30,7 @@ def renderFaq(res, template,skin, request):
             current_record = faq_viewlet
         else:
             faq_viewlet.set('class',faq_viewlet.get('class')+' fanswer')
+            # this will remove the links from answers
             faq_viewlet.remove(faq_viewlet.xpath('//div[@class="faqlinks"]')[0])
             current_record.append(faq_viewlet)        
     skin.top = template.top
@@ -98,3 +97,15 @@ class StoreFaq(Resource):
         d = couch.saveDoc(doc)
         d.addCallback(self.finish, doc, request)
         return NOT_DONE_YET               
+
+
+
+def blog(template, skin, request):
+    d = couch.openView(designID,'blog',include_docs=True,stale=True,
+                       startkey=['z'],endkey=['1'], descending=True,limit=20)
+    d.addCallback(renderFaq, template, skin, request)
+    return d
+
+
+class StoreBlog(StoreFaq):
+    pass

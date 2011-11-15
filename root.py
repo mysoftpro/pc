@@ -23,7 +23,7 @@ from twisted.python.failure import Failure
 from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
-from pc.faq import faq, StoreFaq
+from pc.faq import faq, StoreFaq, blog, StoreBlog
 from twisted.internet.task import deferLater
 from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
@@ -100,6 +100,7 @@ static_hooks = {
     'part.html':partPage,
     'notebook.html':notebooks,
     'faq.html':faq,
+    'blog.html':blog,
     'game.html':gamePage,
     'payment_success.html':simplePage,
     'payment_fail.html':simplePage,
@@ -567,7 +568,9 @@ class Root(Cookable):
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
 
         self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
+        # self.putChild('blog', TemplateRenderrer(self.static, 'blog.html'))
         self.putChild('storefaq', StoreFaq())
+        self.putChild('storeblog', StoreBlog())
         self.putChild('xml',XmlGetter())
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())

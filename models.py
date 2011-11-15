@@ -488,13 +488,19 @@ def pr(some):
 gChoices = None
 gChoices_flatten = {}
 
-def cleanFlattenChoice(doc):
+font_pat_1 = '<font[^>]*>[^<]*</font>'
+font_pat_2 = '<font[^>]*>'
+
+def cleanFlattenChoice(doc):    
     def _pop(name):
         if 'descriptions' in doc and name in doc['descriptions']:
             doc['descriptions'].pop(name)
     _pop('img')
     _pop('name')
-    _pop('comments')
+    _pop('comments')    
+    doc['text'] = re.sub(font_pat_1,'',doc['text'])
+    doc['text'] = re.sub(font_pat_2,'',doc['text'])
+    
 
 def flatChoices(res):
     for name,choices in globals()['gChoices'].items():
@@ -502,7 +508,7 @@ def flatChoices(res):
             for el in choices:
                 if el[0]:
                     for ch in el[1][1]['rows']:
-                        cleanFlattenChoice(ch['doc'])
+                        cleanFlattenChoice(ch['doc'])                        
                         globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
         else:
             for ch in choices['rows']:
