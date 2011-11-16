@@ -273,11 +273,13 @@ head.ready(function()
 				      if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
 					  return;
                                       div.css({'background-position':'58px '+splitted[1]});
+				      div.attr('title', div.attr('title').replace('Исключить','Включить'));
                                       div.data({'filter':true});
                                   }
                                   else{                                      
                                       div.css({'background-position':'0px '+splitted[1]});
-                                      div.data({'filter':false});
+                                      div.attr('title', div.attr('title').replace('Включить','Исключить'));
+				      div.data({'filter':false});
                                   }
                               });
                 });
