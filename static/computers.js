@@ -55,7 +55,7 @@ function getMainCodes(hidden_ul){
 }
 
 function addSlider(){
-
+    if (document.location.href.match('cart'))return;
     $.ajax({
                url:'zip_components',
                success:function(data){
@@ -314,6 +314,7 @@ function gotomodel(el){
 }
 
 function getPopularity(){
+    if (document.location.href.match('cart'))return;
     //full view
     var descrs = $('.computers_description').toArray();
     _(descrs).each(function(el){
@@ -775,16 +776,18 @@ head.ready(function(){
 
                                                                 });
                                             });
-               function stats(e){
+               if (document.location.href.match('cart'))return;
+	       function stats(e){
                    var target = $(e.target);
                    var href = target.attr('href');
                    if (href==undefined)
                        href = target.parent().attr('href');
                    storeModelStat(href);
                }
+
                $('.modelicon').click(stats);
                $('.modellink').click(stats);
-
+	       
                addSlider();
                var uls = $('.description');
                var url = '/catalogs_for?';
