@@ -1201,40 +1201,41 @@ function changeRamIfPossible(component, direction){
     if (direction == 'down')
         delta = -1;
     var retval = false;
-    if (component.count){
-        var old_component = filterByCatalogs(_(model).values(),
-                                             getCatalogs(component))[0];
-        var body = jgetBodyById(old_component['_id']);
-        var counters = possibleComponentCount(body,direction);
-        if (counters.new_count<=counters.max_count && counters.new_count !=0){
-            changeComponentCount(body,direction);
-            retval = false;
-        }
-        else{
-            //TODO! do not touch fucken choices!
-            var appr_components = _.clone(getNearestComponent(component.price,
-                                                              getCatalogs(component),
-                                                              delta, false));
-            if (appr_components[0]){
-                var new_component = appr_components[0];
-                new_component['count'] = 1;
-                var ram_select = jgetSelectByRow($('#' + parts['ram']));
-                var ram_body = jgetBody(ram_select);
-                var text = jgetChosenTitle(jgetSelect(ram_body)).text();
-                var ramvolume = getRamFromText(text);
-                var tottal_ram = ramvolume*counters.count;
-                var new_option = jgetOption(ram_select, new_component['_id']);
-                var new_ramvolume = getRamFromText(new_option.text());
+    if (!component.count)
+	component.count = 1;
+    
+    var old_component = filterByCatalogs(_(model).values(),
+                                         getCatalogs(component))[0];
+    var body = jgetBodyById(old_component['_id']);
+    var counters = possibleComponentCount(body,direction);
+    if (counters.new_count<=counters.max_count && counters.new_count !=0){
+	changeComponentCount(body,direction);
+        retval = false;
+    }
+    else{	    
+        //TODO! do not touch fucken choices!
+        var appr_components = _.clone(getNearestComponent(component.price,
+                                                          getCatalogs(component),
+                                                          delta, false));
+        if (appr_components[0]){
+            var new_component = appr_components[0];
+            new_component['count'] = 1;
+            var ram_select = jgetSelectByRow($('#' + parts['ram']));
+            var ram_body = jgetBody(ram_select);
+            var text = jgetChosenTitle(jgetSelect(ram_body)).text();
+            var ramvolume = getRamFromText(text);
+            var tottal_ram = ramvolume*counters.count;
+            var new_option = jgetOption(ram_select, new_component['_id']);
+            var new_ramvolume = getRamFromText(new_option.text());
 
-                var new_tottalram = new_ramvolume*new_component.count;
-                while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
-                    new_component.count +=1;
-                    new_tottalram = new_ramvolume*new_component.count;
-                    //thats all! just install new count to choices!
-                    //component will be changed later!
-                }
-                retval = appr_components;
+            var new_tottalram = new_ramvolume*new_component.count;
+            while(new_tottalram < tottal_ram && new_component.count<counters.max_count){
+                new_component.count +=1;
+                new_tottalram = new_ramvolume*new_component.count;
+                //thats all! just install new count to choices!
+                //component will be changed later!
             }
+            retval = appr_components;
         }
     }
     return retval;
