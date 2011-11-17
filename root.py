@@ -568,7 +568,7 @@ class Root(Cookable):
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
 
         self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
-        # self.putChild('blog', TemplateRenderrer(self.static, 'blog.html'))
+        self.putChild('blog', TemplateRenderrer(self.static, 'blog.html'))
         self.putChild('storefaq', StoreFaq())
         self.putChild('storeblog', StoreBlog())
         self.putChild('xml',XmlGetter())

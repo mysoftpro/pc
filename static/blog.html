@@ -1,23 +1,20 @@
 <top>
-  <div id="faq_top">
-    <textarea class="computers_top">Напишите здесь вопрос, пожелание или просьбу. Что угодно.</textarea>
-    <ul>
-      <li><input name="name" class="computers_top" type="text" value="имя"></li>
-      <li><input name="email" class="computers_top" type="text" value="email"></li>
-    </ul>
-    <em>Если хотите получить уведомление об ответе, укажите email.
-      Ответ можно посмотреть на этой странице.</em>
-    <span class="sendfaq">Отправить</span>
-    <div style="clear:both;"></div>
+  <div id="blog_top">
+    <p>Здесь <span class="bright_blue">новости</span> нашего магазина, но и не только это.
+      Мы собираем всякие <span class="bright_blue">околокопьютерные</span> 
+      новости и байки по просторам интернета.
+      Также сюда постятся <span class="bright_blue">статьи о компьютерном железе</span>, максимально адаптированные 
+      для пользователей 'не специалистов'.
+    </p>
   </div>
 </top>
 <middle>
-  <div id="faq"></div>
+  <div id="blog"></div>
   <script type="text/javascript">
-    scripts['next'] = {'top':['/static/jquery.cookie.min.js','/static/faq.js']};
+    scripts['next'] = {'top':['/static/jquery.cookie.min.js','/static/blog.js']};
   </script>
 </middle>
-<faq>
+<blog>
   <div class="faqrecord">
     <div class="faqauthor"></div>
     <div class="faqdate"></div>
@@ -25,4 +22,4 @@
     <div class="faqbody"></div>
     <div class="faqlinks"><a name="answer">ответить</a></div>
   </div>
-</faq>
+</blog>
