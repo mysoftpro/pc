@@ -1076,11 +1076,11 @@ def lastUpdateTime():
     if len(da)<2:
         da = "0"+da
     if hour>18:
-        retval = '.'.join((da,mo,str(now.year))) +' 18:20'
+        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
     elif hour<9:
         delta = timedelta(days=-1)
         now = now + delta
-        retval = '.'.join((da,mo,str(now.year))) +' 18:20'
+        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
     else:
         if now.minute<14:
             hour-=1

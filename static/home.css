@@ -258,6 +258,9 @@ p {
 #skype{
     background-position:0px -19px;
 }
+#vkontakte{
+    background-position:0px -212px;
+}
 #operators span {
     padding-left:16px;
     background-repeat:no-repeat;
@@ -294,7 +297,7 @@ p {
     width:290px;
     padding-right:5px;
     text-align:center;
-    margin-left:10px;
+    margin-left:20px;
     color:white;
 }
 

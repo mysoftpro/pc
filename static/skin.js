@@ -38,6 +38,7 @@ function CartAndContacts(){
     $('#mts').click(swapPhone('8 (911) 462-42-52'));
     $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
     $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
+    $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Люди и компы</a>'));
 }
 
 
