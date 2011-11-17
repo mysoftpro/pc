@@ -341,7 +341,8 @@ function fillPopularity(data, finder){
     var step = (greatest-smallest)/5;
     _(data).chain().keys().each(function(key){
                                     var offset = Math.round(data[key]/step);
-                                    if (offset==0)offset=1;
+				    if (offset > 5) offset = 5;
+				    if (offset==0)offset=1;
                                     $('#'+key).next().find('.m_popular')
                                         .css('width',offset*12+'px');
     });
