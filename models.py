@@ -1085,7 +1085,7 @@ def lastUpdateTime():
         if now.minute<14:
             hour-=1
         retval = '.'.join((da,mo,str(now.year))) +\
-            ' '+str(hour)+':' + str(14+randint(1,6))
+            ' '+str(hour)+':15'
     return retval
 
 def index(template, skin, request):
