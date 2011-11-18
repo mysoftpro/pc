@@ -23,7 +23,7 @@ from twisted.python.failure import Failure
 from lxml import etree, html
 from copy import deepcopy
 from pc.mail import Sender
-from pc.faq import faq, StoreFaq, blog, StoreBlog
+from pc.faq import faq, StoreFaq
 from twisted.internet.task import deferLater
 from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
@@ -100,7 +100,7 @@ static_hooks = {
     'part.html':partPage,
     'notebook.html':notebooks,
     'faq.html':faq,
-    'blog.html':blog,
+    'blog.html':faq,
     'game.html':gamePage,
     'payment_success.html':simplePage,
     'payment_fail.html':simplePage,
@@ -474,7 +474,7 @@ class CachedStatic(File):
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
                 #TODO! not just finish, but send email with error!
-                d.addErrback(lambda e:request.finish())
+                # d.addErrback(lambda e:request.finish())
                 return NOT_DONE_YET
             else:
                 content = fileForReading.read()
@@ -568,13 +568,12 @@ class Root(Cookable):
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
 
         self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
-        self.putChild('blog', TemplateRenderrer(self.static, 'blog.html'))
+        self.putChild('blog', TemplateRenderrer(self.static, 'faq.html'))
         self.putChild('storefaq', StoreFaq())
-        self.putChild('storeblog', StoreBlog())
         self.putChild('xml',XmlGetter())
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
-
+        
         self.putChild('save', Save())
         self.putChild('savemodel', ModelSave())
         self.putChild('savenote', SaveNote())
@@ -608,7 +607,8 @@ class Root(Cookable):
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
 
         self.putChild('about',TemplateRenderrer(self.static, 'about.html'))
-
+        
+        self.putChild('rss', Rss())
 
     def getChild(self, name, request):
         self.checkCookie(request)
@@ -1076,6 +1076,12 @@ class ImageProxy(Resource):
 
         return self.proxy.getChild(path, request)
 
+class Rss(Resource):
+    def __init__(self, *args, **kwargs):
+        Resource.__init__(self, *args, **kwargs)
+        self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_list/rss/rss?descending=true&limit=20', reactor=reactor)
+    def render_GET(self, request):
+        return self.proxy.render(request)
 
 class SelectHelpsProxy(Resource):
     def __init__(self, *args, **kwargs):
@@ -1196,6 +1202,7 @@ class AdminGate(Resource):
         self.putChild('edit_how', EditHow())
         self.putChild('comet', AdminComet())
         self.putChild('acceptComet', AcceptComet())
+        self.putChild('session', SessionGetter())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -1710,3 +1717,10 @@ class AcceptComet(Resource):
             globals()['_comet_users'] = {}
             return "ok"
         return "fail"
+
+class SessionGetter(Resource):
+    def render_GET(self, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")        
+        return simplejson.dumps({'Authorization':request.getHeader('authorization')})
+        

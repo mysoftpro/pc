@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+      .sendfaq{border:1px solid black;}
+    </style>
+    <script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
+    <script type="text/javascript" src="/static/underscore-min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+      var area = $('#faq_top textarea');
+      var email = $('#faq_top input[name="email"]');
+      var name = $('#faq_top input[name="name"]');
+      var send = function(){
+      var to_send = {txt:area.val()};
+      to_send['email'] = email.val();
+      to_send['name'] = name.val();
+      to_send['type'] = 'blog';
+      $.ajax({
+            url:'/admin/session',
+            success:function(data){
+                     $.ajax({
+                       url:'/storefaq',
+                       data:to_send,
+                       headers:data,
+                       type:'post'
+                     })
+             },
+            headers:{'ass':'bass'}
+      })
+      
+      }
+      $('.sendfaq').click(send);
+      })
+    </script>
+  </head>
+  <body>
+    <div id="faq_top">
+    <textarea class="computers_top">
+    </textarea>
+    <ul>
+      <li><input name="name" class="computers_top" type="text" value="builder"></li>
+      <li><input name="email" class="computers_top" type="text" value="public@buildpc.ru"></li>
+    </ul>
+    <em>Если хотите получить уведомление об ответе, укажите email.
+      Ответ можно посмотреть на этой странице.</em>
+    <span class="sendfaq">Отправить</span>
+    <div style="clear:both;"></div>
+  </div>
+  </body>
+</html>

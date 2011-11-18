@@ -45,6 +45,11 @@ head.ready(function(){
 		       parent = target.parent().attr('id');
 		   }
 		   var to_send = {txt:_area.val()};
+		   var path = document.location.href.split('?')[0];
+		   if (path.match('blog'))
+		       to_send['type']='blog';
+		   else
+		       to_send['type']='faq';
 		   if (to_send['txt'] == ta_initial || to_send['txt'].length==0
 		       || to_send['txt']==answer_initial)
 		       area.css('border-color','red');
@@ -71,7 +76,7 @@ head.ready(function(){
 				      var author = $.cookie('pc_user');
 				      if (to_send['name'])
 					  author = to_send['name'];
-				      var links = '<div class="faqlinks"><a name="answer">ответить</a></div>';
+				      var links = '<div class="faqlinks"><a name="answer">комментировать</a></div>';
 				      var before_append = function(_html){
 					  middle.children().first().before(_html);
 				      };
@@ -101,7 +106,7 @@ head.ready(function(){
 				      var aa = after_append();
 				      aa.attr('id',data).animate({'opacity':'1.0'},500);
 				      if (!parent){
-					      aa.find('a').click(postAnswer);
+					  aa.find('a').click(postAnswer);
 				      }
 				  }
 			      });
@@ -111,7 +116,7 @@ head.ready(function(){
 
 	       var form = $('#faq_top').html();
 	       var answer  =$(document
-			 .createElement('div'))
+			      .createElement('div'))
 		   .attr('id','faqanswer')
 		   .html(form);
 	       answer.find('textarea').val(taa_initial).click(clear(taa_initial));

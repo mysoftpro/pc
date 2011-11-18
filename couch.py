@@ -31,6 +31,8 @@ def syncViews(designDoc):
     new_design = {'views':{}}
     new_design['_id'] = design_id
     new_design['_rev'] = designDoc['_rev']
+    if 'lists' in designDoc:
+        new_design['lists'] = designDoc['lists']
     map_files = [f for f in  files if 'map' in f.split('.')]
 
     for f in map_files:
