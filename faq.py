@@ -46,9 +46,8 @@ class Faq(object):
         current_record = None
         for r in res['rows']:
             faq_viewlet = deepcopy(self.template.root().find('faq').find('div'))
-            
             if 'title' in r['doc']:
-                ti = faq_viewlet.xpath('//div[@class="faqbody"]')[0]
+                ti = faq_viewlet.xpath('//h3[@class="faqtitle"]')[0]
                 ti.text = r['doc']['title']
                 ti.set('style','display:block')
             # else:
@@ -177,6 +176,11 @@ class StoreFaq(Resource):
         parent = request.args.get('parent',[None])
         if parent[0] is not None:
             doc['parent'] = parent
+
+        title = request.args.get('title',[None])[0]
+        if title is not None:
+            doc['title'] = title
+
         blog = request.args.get('blog', [None])[0]
         if blog is not None:
             return self.storeBlog(doc, request)

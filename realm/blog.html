@@ -9,11 +9,13 @@
     <script type="text/javascript" src="/static/underscore-min.js"></script>
     <script type="text/javascript">
       $(function(){
+      var title = $('#faq_top input[name="title"]');
       var area = $('#faq_top textarea');
       var email = $('#faq_top input[name="email"]');
       var name = $('#faq_top input[name="name"]');
       var send = function(){
       var to_send = {txt:area.val()};
+      to_send['title'] = title.val();
       to_send['email'] = email.val();
       to_send['name'] = name.val();
       to_send['type'] = 'blog';
@@ -37,6 +39,7 @@
   </head>
   <body>
     <div id="faq_top">
+      <input name="title" value="Название"/>
     <textarea class="computers_top">
     </textarea>
     <ul>
