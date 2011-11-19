@@ -147,7 +147,7 @@ head.ready(function(){
                    .waypoint(function(event, direction){
                                  if (direction == 'up')return;
                                  $.fn.waypoint('destroy');
-                                 var last = $('.faqrecord').first();//.last();
+                                 var last = $('.faqrecord').last();
                                  var id = last.attr('id');
                                  var key = [];
                                  var after = last;
