@@ -39,6 +39,7 @@ function CartAndContacts(){
     $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
     $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
     $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Люди и компы</a>'));
+    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850">Люди и компы</a>'));    
 }
 
 
