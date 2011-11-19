@@ -10,6 +10,6 @@ function(doc){
 	if (!doc['parent']){
 	    to_emit.push('z');
 	}
-	emit(to_emit);
+	emit(to_emit,doc['date']);
     }
 }

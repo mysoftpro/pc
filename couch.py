@@ -34,8 +34,8 @@ def syncViews(designDoc):
     if 'lists' in designDoc:
         new_design['lists'] = designDoc['lists']
     map_files = [f for f in  files if 'map' in f.split('.')]
-
     for f in map_files:
+        if '#' in f or '~' in f: continue
         view_name = f.split('/')[-1].split('.')[0]
         map_file = open(os.path.join(os.path.dirname(this_file), 'json', f))
         _map = map_file.read()

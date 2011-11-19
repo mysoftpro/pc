@@ -152,10 +152,14 @@ class SiteMap(Resource):
             root.append(self.buildElement('computer/'+model['key'], freq='daily'))
         for p in posts:
             if p['key'][1] != 'z': continue
-            root.append(self.buildElement('blog?key='+p['key'][0], freq='mothhly'))
+            gd = lambda i: int(p['value'][i])
+            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))
+            root.append(self.buildElement('blog?key='+p['key'][0], freq='mothhly', today=n))
         for p in faqs:
             if p['key'][1] != 'z': continue
-            root.append(self.buildElement('faq?key='+p['key'][0], freq='mothhly'))
+            gd = lambda i: int(p['value'][i])
+            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))            
+            root.append(self.buildElement('faq?key='+p['key'][0], freq='mothhly', today=n))
         root.append(self.buildElement('blog'))
         root.append(self.buildElement('faq'))
         root.append(self.buildElement('howtochoose'))
