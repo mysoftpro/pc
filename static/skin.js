@@ -39,7 +39,7 @@ function CartAndContacts(){
     $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
     $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
     $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Люди и компы</a>'));
-    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850">Люди и компы</a>'));    
+    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850">Люди и компы</a>'));
 }
 
 
@@ -101,6 +101,23 @@ function expandMenu(link){
     hideexpa(3000);
 
 }
+function ask(e){
+    var target = $(e.target);
+    var key = [target.attr('id'),'z'];
+    var jskey = encodeURI(JSON.stringify(key));
+    $.ajax({
+               url:'fromBlog?key='+jskey+'&include_docs=true',	       
+               success:function(_data){
+		   var data = eval('('+_data+')');
+                   var div = $(document.createElement('div'));
+                   div.html('<div class="closeg" style="padding:0;"></div>'+data['rows'][0]['doc']['txt']);
+                   div.attr('class','expanded askresponse');
+		   target.after(div);
+		   div.animate({'opacity':'1.0'},300);
+		   div.find('.closeg').click(function(){div.remove();});
+               }
+           });
+}
 head.ready(function(){
 
                if ($.browser.opera){
@@ -108,6 +125,8 @@ head.ready(function(){
                }
 
                CartAndContacts();
+
+               $('.ask').click(ask);
 
                $('.expandable').click(function(e){
                                           expandMenu($(e.target).next());

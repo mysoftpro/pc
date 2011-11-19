@@ -634,12 +634,25 @@ class Root(Cookable):
         
         self.putChild('rss', Rss())
 
+        self.putChild('fromBlog', FromBlog())
+
     def getChild(self, name, request):
         self.checkCookie(request)
         u = str(request.URLPath())
         if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
             return self.static.getChild(name, request)
         return self
+
+
+
+class FromBlog(Resource):
+    def __init__(self, *args, **kwargs):
+        Resource.__init__(self, *args, **kwargs)
+        self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blog', reactor=reactor)
+    def render_GET(self, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return self.proxy.render(request)
 
 
 class ModelStats(Resource):
@@ -655,6 +668,7 @@ class ModelStats(Resource):
                 couch.saveDoc(doc)
             d.addCallback(incr)
         return "ok"
+
 
 class ModelDesc(Resource):
     def finish(self, doc, request):
