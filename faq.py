@@ -13,6 +13,7 @@ from lxml import etree, html
 
 class Faq(object):
     _id = 'faq'
+    title = u'Вопросы пользователей'
     def __init__(self, template, skin, request):
         self.template = template
         self.skin = skin
@@ -40,8 +41,10 @@ class Faq(object):
         for el in viewlet:
             self.template.top.append(el)
 
-    def render(self, res):
-        self.fillTheTop()
+    def render(self, res):        
+        self.fillTheTop()        
+        title = self.skin.root().xpath('//title')[0]
+        title.text = self.title
         faqs = self.template.middle.find('div')
         current_record = None
         for r in res['rows']:
@@ -86,7 +89,7 @@ class Faq(object):
 
 class Blog(Faq):
     _id = 'blog'
-
+    title = u'Блог'
     def fillTheTop(self):
         super(Blog, self).fillTheTop()
         form = deepcopy(self.template.root().xpath('//div[@id="faq_top"]')[0])

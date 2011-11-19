@@ -162,6 +162,7 @@ class SiteMap(Resource):
             root.append(self.buildElement('faq?key='+p['key'][0], freq='mothhly', today=n))
         root.append(self.buildElement('blog'))
         root.append(self.buildElement('faq'))
+        root.append(self.buildElement('about'))
         root.append(self.buildElement('howtochoose'))
         root.append(self.buildElement('howtobuy'))
         root.append(self.buildElement('howtouse'))
@@ -175,6 +176,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('computer?cat=work'))
         root.append(self.buildElement('computer?cat=admin'))
         root.append(self.buildElement('computer?cat=game'))
+
 
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
@@ -396,10 +398,13 @@ class Skin(Template):
             self.tree.getroot().find('head').find('link')\
                 .set('href',self.skins[selected_skin])
 
+    except_links = ['/rss']
+
     def render(self):
         if self.selected_skin is not None:
-            for link in self.tree.getroot().find('body').xpath('//a'):
+            for link in self.tree.getroot().find('body').xpath('//a'):                
                 old = link.get('href')
+                if old in self.except_links: continue
                 if old is not None:
                     if '?' in old:
                         link.set('href',old+'&skin='+self.selected_skin)

@@ -1901,3 +1901,10 @@ a.modelicon img{
 .faqtitle{
     display:none;
 }
+#rss{
+    background-image:url('rss.png');
+    display:block;
+    width:24px;
+    height:24px;
+    float:left;
+}

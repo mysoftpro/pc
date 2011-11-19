@@ -20,10 +20,10 @@ function CartAndContacts(){
             }
         }
         var cart_template= _.template('<li style="{{style}}"><a id="cart" href="/cart/{{link}}">Корзина({{ammo}})</a></li>');
-	var style = 'width:0';
-	if ($.browser.msie || $.browser.opera)
-	    style = 'width:94';
-	$('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
+        var style = 'width:0';
+        if ($.browser.msie || $.browser.opera)
+            style = 'width:94';
+        $('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
         $('#cart').parent().animate({'width':'94px'},400);
     }
     if (!document.location.href.match('faq'))
@@ -51,12 +51,13 @@ var expands = {'howtochose':{'urls':[
                                ],
                                'lock':undefined
                               },
-	       'more':{'urls':[
-                                   {url:'/about',title:"Про магазин"},
-                                   {url:'/warranty',title:'Гарантии'}
-                               ],
-                               'lock':undefined
-                              }};
+               'more':{'urls':[
+                           {url:'/about',title:"Про магазин"},
+                           {url:'/blog',title:'Блог'},
+                           {url:'/warranty',title:'Гарантии'}
+                       ],
+                       'lock':undefined
+                      }};
 
 var etempate = _.template('<div><a href={{url}}>{{title}}</a></div>');
 
@@ -75,16 +76,16 @@ function expandMenu(link){
     link.after(div);
     var _splitted = link.attr('href').split('?');
     if (_splitted.length>1 && _splitted[1]!=="")
-	_(div.find('a').toArray()).each(function(l){
-					    var li = $(l);
-					    var hr = li.attr('href');
-					    li.attr('href',hr+'?'+_splitted[1]);
-					});
+        _(div.find('a').toArray()).each(function(l){
+                                            var li = $(l);
+                                            var hr = li.attr('href');
+                                            li.attr('href',hr+'?'+_splitted[1]);
+                                        });
     div.animate({'opacity':'1.0'},400);
 
     function hideexpa(delta){
         _.delay(function(e){
-		    if (expas['lock'])return;
+                    if (expas['lock'])return;
                     div.animate({'opacity':'0.0'},400,function(){div.remove();});
             }, delta);
     }
