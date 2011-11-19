@@ -1927,3 +1927,85 @@ a.modelicon img{
     height:24px;
     float:left;
 }
+.expandable:before {
+    border-top: 6px solid #999999;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    content: "";
+    cursor:pointer;
+    margin-right:-11px;
+    margin-left:8px;
+    left: 2px;
+    position: relative;
+    top: 14px;
+}
+#howtochoseexpandable{
+     background-image:url("/static/binocular.png");
+     padding-left:256px;
+     padding-top:20px;
+     min-height:165px;
+     width:255px;
+     margin-left:-250px;
+}
+
+#moreexpandable {
+    background-image: url("/static/microscope.png");
+    margin-left: -250px;
+    min-height: 90px;
+    padding-left: 78px;
+    padding-top: 20px;
+    width: 200px;
+}
+#vendors{
+    position: fixed;
+    left: 0;
+    top: 230px;
+    z-index: 99999;
+}
+#vendors div{
+    height:29px;
+    width:34px;
+    background-image:url('vendors_switchers.png');
+    cursor:pointer;
+    margin-top:10px;
+}
+#vamd{
+    background-position: 0px -1px;
+}
+#vintel{
+    background-position: 0px 86px;
+}
+#vnvidia{
+    background-position: 0px 58px;
+}
+#vati{
+    background-position: 0px 151px;
+}
+#blog_top{
+    font-size:18px;
+    line-height:22px;
+    color:#bbb;
+}
+.faqtitle{
+    display:none;
+}
+#rss{
+    background-image:url('rss.png');
+    display:block;
+    width:24px;
+    height:24px;
+    float:left;
+}
+.ask{
+    cursor:pointer;
+    color:black;
+}
+.askresponse{
+    padding:20px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+}
