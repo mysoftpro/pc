@@ -648,11 +648,16 @@ class Root(Cookable):
 class FromBlog(Resource):
     def __init__(self, *args, **kwargs):
         Resource.__init__(self, *args, **kwargs)
-        self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blog', reactor=reactor)
+        self.blog_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blog', reactor=reactor)
+        self.faq_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/faq', reactor=reactor)
+
     def render_GET(self, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        return self.proxy.render(request)
+        proxy = self.blog_proxy
+        if 'faq' in request.getHeader('Referer'):
+            proxy = self.faq_proxy
+        return proxy.render(request)
 
 
 class ModelStats(Resource):

@@ -191,7 +191,7 @@ head.ready(function(){
                                                                                  {'body':doc['txt'],
                                                                                   'author':doc['author'],
                                                                                   'date':doc['date'],
-                                                                                  'links':link_template,
+                                                                                  'links':'',
                                                                                   'klass':'faqrecord fanser'}));                                                                  
                                                                   after.children().last().animate({opacity:'1.0'},300);
                                                               }
