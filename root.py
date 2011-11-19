@@ -115,12 +115,13 @@ static_dir = os.path.join(os.path.dirname(__file__), 'static')
 
 
 class SiteMap(Resource):
-    def buildElement(self, location, freq="monthly", prior="0.8"):
+    def buildElement(self, location, freq="monthly", prior="0.8", today=None):
         url = etree.Element('url')
         loc = etree.Element('loc')
         loc.text = 'http://buildpc.ru/'+location
         lastmod = etree.Element('lastmod')
-        today = datetime.today()
+        if today is None:
+            today = datetime.today()
         _mo = str(today.month)
         if (len(_mo))==1:
             _mo = "0"+_mo
@@ -138,14 +139,25 @@ class SiteMap(Resource):
         url.append(priority)
         return url
 
-    def siteMap(self, models, request):
+    def siteMap(self, res, request):
+        models = res[0][1]['rows']
+        posts = res[1][1]['rows']
+        faqs = res[2][1]['rows']
         request.setHeader('Content-Type', 'text/xml;charset=utf-8')
         root = etree.XML('<urlset></urlset>')
         root.set('xmlns',"http://www.sitemaps.org/schemas/sitemap/0.9")
         root.append(self.buildElement(''))
         root.append(self.buildElement('computer'))
-        for model in models['rows']:
+        for model in models:
             root.append(self.buildElement('computer/'+model['key'], freq='daily'))
+        for p in posts:
+            if p['key'][1] != 'z': continue
+            root.append(self.buildElement('blog?key='+p['key'][0], freq='mothhly'))
+        for p in faqs:
+            if p['key'][1] != 'z': continue
+            root.append(self.buildElement('faq?key='+p['key'][0], freq='mothhly'))
+        root.append(self.buildElement('blog'))
+        root.append(self.buildElement('faq'))
         root.append(self.buildElement('howtochoose'))
         root.append(self.buildElement('howtobuy'))
         root.append(self.buildElement('howtouse'))
@@ -165,7 +177,10 @@ class SiteMap(Resource):
 
     def render_GET(self, request):
         d = couch.openView(designID, 'models')
-        d.addCallback(self.siteMap, request)
+        d1 = couch.openView(designID, 'blog')
+        d2 = couch.openView(designID, 'faq')
+        li = defer.DeferredList([d,d1,d2])
+        li.addCallback(self.siteMap, request)
         return NOT_DONE_YET
 
 
