@@ -155,16 +155,13 @@ head.ready(function(){
                                  if (last.attr('class').match('answer')){
                                      key.push(last.parent().attr('id'));
                                      after = last;
-                                     //only posts for now
                                      key.push(last.attr('id'));
                                      from_answer = true;
                                  }
                                  else{
-                                     key.push(last.attr('id'));
-                                     //only posts for now
+                                     key.push(last.attr('id'));                                     
                                      key.push('z');
                                  }
-                                 //key.push('z');
                                  $.ajax({
                                             url:'fromBlog?startkey='+encodeURI(JSON.stringify(key))+
                                                 '&limit=20&include_docs=true&descending=true',
@@ -183,9 +180,11 @@ head.ready(function(){
                                                                                   'links':link_template,
                                                                                   'klass':'faqrecord'}));
                                                                   after = after.next();
+								  after.find('a[name="answer"]').click(postAnswer);
                                                                   after.animate({opacity:'1.0'},300);
                                                               }
                                                               else{
+								  console.log(after);
 								  after
                                                                       .append(faq_template(
                                                                                  {'body':doc['txt'],
