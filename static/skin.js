@@ -115,6 +115,7 @@ function ask(e){
 		   target.after(div);
 		   div.animate({'opacity':'1.0'},300);
 		   div.find('.closeg').click(function(){div.remove();});
+		   div.find('.ask').click(ask);
                }
            });
 }
