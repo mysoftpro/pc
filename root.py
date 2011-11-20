@@ -1229,8 +1229,7 @@ class AdminGate(Resource):
         self.putChild('clear_attachments',ClearAttachments())
         self.putChild('update_prices',UpdatePrices())
         self.putChild('edit_model', EditModel())
-        self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,
-                                                         '/_utils', reactor=reactor))
+        self.putChild('couch',proxy.ReverseProxyResource('127.0.0.1', 5984,'', reactor=reactor))
         self.putChild('findorder', FindOrder())
         self.putChild('storeorder', StoreOrder())
         self.putChild('storemodel', StoreModel())
