@@ -10,4 +10,3 @@ function(doc){
 	     });
     }
 }
-var n = new Date();n.setFullYear(value[date][0]);n.setMonth(value[date][1]);n.setDate(value[date][2]);n.setHours(0);n.setMinutes(0);n.setSeconds(0);n = n.toUTCString()
