@@ -88,7 +88,7 @@ function getRamFromText(text){
 }
 function showRank(pins){
     var minpin = pins.sort(function(x,y){return x-y;})[0];
-    var wi = (Math.log(minpin)/2.1*148-70)*2.1;
+    var wi = (Math.log(minpin)/2*112-52)*1.8;    
     var rank = $('#rank');
     if (rank.length==0){
 	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Нормально</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft 2</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare 3</div><div class="rank"></div></li></ul></div>'));
@@ -99,13 +99,13 @@ function showRank(pins){
     _(divs).each(function(div, i){
 		     var dwi = (i+1)*wi;
 		     if (i==4 || i==3){
-			 dwi = dwi*i;
+			 dwi = dwi*i/1.5;
 		     }
 		     if (i==1){
 			 dwi = dwi/1.2;
 		     }
-		     if (dwi>148)
-			 dwi = 148;
+		     if (dwi>112)
+			 dwi = 112;
 		     $(div).css('width', dwi+'px');
 		 });
 }
@@ -166,7 +166,7 @@ function recalculate(){
 	tottal += new_model[id].price*mult;
 	pins.push(calculatePin(new_model[id]));
     }
-    //showRank(pins);
+    showRank(pins);
     if (jgetBuild().is(':checked')){
 	tottal += buildprice;
     }

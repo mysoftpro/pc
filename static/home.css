@@ -2015,15 +2015,15 @@ a.modelicon img{
     position:absolute;
     top:64px;
     right:0;
-    width:147px;
-    padding:10px;
+    width:112px;
+    padding:5px;
     padding-top:0px;
-    border-radius: 10px 10px 10px 10px;
-    -moz-border-radius:10px 10px 10px 10px;
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
     border:1px solid #999;
     background-color:#DDD;    
 }
@@ -2034,13 +2034,13 @@ a.modelicon img{
 }
 #rank ul li{
     margin-top:3px;
+    font-size:10px;
 }
 #rank span {
-    font-size:10px;
-    margin:2px;
+    font-size:9px;
 }
 #rank .rank{
-    height:4px;
+    height:2px;
     width:60px;
     background-image:url('rank.jpg');
 }
