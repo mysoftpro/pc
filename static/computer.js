@@ -91,7 +91,7 @@ function showRank(pins){
     var wi = (Math.log(minpin)/2.1*148-70)*2.1;
     var rank = $('#rank');
     if (rank.length==0){
-	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Нормально</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare</div><div class="rank"></div></li></ul></div>'));
+	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Нормально</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft 2</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare 3</div><div class="rank"></div></li></ul></div>'));
 	rank = $('#rank');
     }
     //var novideo = jgetSelectByRow($('#' + parts['video'])).val().match('no');

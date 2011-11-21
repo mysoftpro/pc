@@ -1930,31 +1930,48 @@ a.modelicon img{
 }
 #rank{
     position:absolute;
-    top:67px;
+    top:64px;
     right:0;
-    width:188px;
+    width:147px;
+    padding:10px;
+    padding-top:0px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    border:1px solid #999;
+    background-color:#3f3f3f;
 }
 #rank ul{
     list-style-type:none;
+    padding:0;
+    margin:0;
+}
+#rank ul li{
+    margin-top:4px;
 }
 #rank span {
     font-size:10px;
     margin:2px;
 }
 #rank .rank{
-    height:3px;
-    border-top:1px solid red;
+    height:2px;
     width:60px;
     background-image:url('rank.jpg');
 }
 #rslow{
     color:#ff0902;
+    text-shadow: 0px 2px 3px #ff0902;
 }
 #rnormal{
     color:#e6e300;
+    text-shadow: 0px 2px 3px #e6e300;
 }
 #rfast{
     color:#85ff03;
+    text-shadow: 0px 2px 3px #85ff03;
 }
 .softbrand{
     background-image:url('build_icons.png');
