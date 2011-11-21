@@ -1060,7 +1060,7 @@ function _geRamSlotsFromMother(){
     }
     return max_count;
 }
-var geRamSlotsFromMother= function(mother_component){
+var geRamSlotsFromMother= function(mother_component, component){
     var retval;
     if (mother_component['ramslots'] == undefined)
 	retval = _geRamSlotsFromMother();
@@ -1107,8 +1107,22 @@ function possibleComponentCount(body, direction){
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
     // !evcounts! this required checking for ram and for the video!
     var max_count = 1;
-    if (isRam(body))
-	max_count = geRamSlotsFromMother(choices[mother_select.val()]);
+    if (isRam(body)){
+	var mother_component = choices[mother_select.val()];
+	var _max_count = geRamSlotsFromMother(mother_component);
+	//here
+	var ramselect = jgetSelectByRow($('#' + parts['ram']));
+	var ramoption = jgetOption(ramselect,component['_id']);
+	var ramammo = getRamFromText(ramoption.text());
+	var maxram = mother_component.maxram;
+	if (!maxram)
+	    maxram = 8;
+        while(ramammo*_max_count>maxram)	    
+	   _max_count-=1;
+	if (_max_count>0)
+	    max_count = _max_count;
+    }
+	
     else if (isVideo(body))
     max_count = geVideoSlotsFromMother(choices[mother_select.val()],
 				       component
