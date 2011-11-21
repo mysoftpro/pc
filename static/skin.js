@@ -137,6 +137,12 @@ head.ready(function(){
                                                  expandMenu($(e.target));
                                       });
 
+	       var gwidth = $(window).width();
+	       if (gwidth <= 1010)
+		   return;
+	       if (gwidth <= 1150)
+		   $('#rank').remove();
+
                var astro = $('#astro');
                var autumn = $('#autumn');
 
