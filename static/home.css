@@ -2001,7 +2001,7 @@ a.modelicon img{
     color:#C64410;
 }
 .askresponse{
-    padding:20px;
+    padding:20px !important;
     border-radius: 10px 10px 10px 10px;
     -moz-border-radius:10px 10px 10px 10px;
     -webkit-border-top-left-radius: 10px;
