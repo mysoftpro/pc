@@ -166,7 +166,7 @@ function recalculate(){
 	tottal += new_model[id].price*mult;
 	pins.push(calculatePin(new_model[id]));
     }
-    showRank(pins);
+    //showRank(pins);
     if (jgetBuild().is(':checked')){
 	tottal += buildprice;
     }
