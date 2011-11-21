@@ -138,8 +138,11 @@ head.ready(function(){
                                       });
 
 	       var gwidth = $(window).width();
-	       if (gwidth <= 1010)
+	       if (gwidth <= 1010){
+		   $('#vendors').remove();$('#rank').remove();$('#themes').remove();
 		   return;
+	       }
+		   
 	       if (gwidth <= 1150)
 		   $('#rank').remove();
 
