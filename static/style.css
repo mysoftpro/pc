@@ -1999,6 +1999,7 @@ a.modelicon img{
 .pproc div{
     float:left;
     margin-right:2px;
+    font-size:12px;
 }
 .computeritem h2 {
     margin:0;
@@ -2017,8 +2018,6 @@ a.modelicon img{
     background-position:0px -367px;
     padding-left:14px;
     background-repeat:no-repeat;
-    height:16px;
-    font-size:10px;
+    height:16px; 
     margin-left:2px;
-    margin-top:2px;
 }

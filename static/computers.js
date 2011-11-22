@@ -182,6 +182,13 @@ function moveModel(model_id, new_pos){
 	if (mvideo.length>0)
 	    mvideo.remove();
     }
+    
+    $.ajax({url:'/params_for?c='+new_proc_code+'&type=proc',
+	   success:function(data){
+	       var params = $('#m'+model_id).find('.pproc');
+	       params.html('');
+	       //here
+	   }});
 
     var new_mother_code = getCode(mother);
     //clean guider
@@ -553,6 +560,11 @@ function addLogos(){
 	   });
 }
 
+
+function renderProcParams(model, data){
+    
+}
+
 function addProcs(infos, url){
     var proc_template = _.template('<div class="pproc">'+
 				   '{{co}}'+
@@ -860,6 +872,5 @@ head.ready(function(){
 	       $('.modellink').click(stats);
 
 	       addSlider();
-	       addLogos();
-	       //addProcs();
+	       addLogos();	       
 	   });
