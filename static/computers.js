@@ -182,12 +182,10 @@ function moveModel(model_id, new_pos){
 	if (mvideo.length>0)
 	    mvideo.remove();
     }
-    
+
     $.ajax({url:'/params_for?c='+new_proc_code+'&type=proc',
 	   success:function(data){
-	       var params = $('#m'+model_id).find('.pproc');
-	       params.html('');
-	       //here
+	       renderProcParams(model_id, data[new_proc_code]);
 	   }});
 
     var new_mother_code = getCode(mother);
@@ -561,32 +559,33 @@ function addLogos(){
 }
 
 
-function renderProcParams(model, data){
-    
-}
-
-function addProcs(infos, url){
+function renderProcParams(model, params){
+    var core_template = '<div class="cores" title="количество ядер"></div>';
     var proc_template = _.template('<div class="pproc">'+
 				   '{{co}}'+
 				   '<div class="pbrand">{{br}}</div>'+
 				   '<div class="cache" title="Кэш процессора">{{ca}}</div>'+
 				   '<div style="clear:both;"></div></div>');
-    var core_template = '<div class="cores" title="количество ядер"></div>';
+    var crs = [""];
+    for (var i=0;i<params['cores'];i++)
+	crs.push('');
+    $('#m'+model).find('.pproc').remove();
+    var h2 = $('#'+model).parent();
+    h2.before(proc_template({
+				'co':crs.join(core_template),
+				'br':params['brand'],
+				'ca':params['cache']
+			    }));
+}
+
+function addProcs(infos, url){
     var uls = $('.description');
     $.ajax({
 	       url:'/params_for?'+url+'&type=proc',
 	       success:function(data){
 		   _(infos).each(function(ob){
 				     var params = data[ob.proc];
-				     var crs = [""];
-				     for (var i=0;i<params['cores'];i++)
-					 crs.push('');				     
-				     var h2 = $('#'+ob['model']).parent();
-				     h2.before(proc_template({
-								 'co':crs.join(core_template),
-								 'br':params['brand'],
-								 'ca':params['cache']
-							     }));
+				     renderProcParams(ob['model'], params);
 				 });
 	       }
 	   });
@@ -872,5 +871,5 @@ head.ready(function(){
 	       $('.modellink').click(stats);
 
 	       addSlider();
-	       addLogos();	       
+	       addLogos();
 	   });
