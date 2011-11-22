@@ -869,11 +869,6 @@ color:#7b9c0a;
     float:left;
     /* cursor:pointer; */
 }
-.computeritem h2 {
-    margin:0;
-    padding:0;
-    margin-top:-32px;
-}
 .computeritem h3 {
     margin-top:30px;
 }
@@ -1993,4 +1988,37 @@ a.modelicon img{
 }
 #warfare{
     background-position:0px -334px;
+}
+.pproc{
+    position:relative;
+    top:-44px;
+    left:133px;
+    width:200px;
+    overflow:visible;
+}
+.pproc div{
+    float:left;
+    margin-right:2px;
+}
+.computeritem h2 {
+    margin:0;
+    padding:0;
+    margin-top:-25px;
+}
+.cores{
+    width:12px;
+    height:12px;
+    background-image:url('build_icons.png');
+    margin-top:6px;
+    background-position:0px -358px;
+}
+.cache{
+    background-image:url('build_icons.png');
+    background-position:0px -367px;
+    padding-left:14px;
+    background-repeat:no-repeat;
+    height:16px;
+    font-size:10px;
+    margin-left:2px;
+    margin-top:2px;
 }

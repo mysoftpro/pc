@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
-    NamesFor
+    NamesFor, ParamsFor
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -626,6 +626,7 @@ class Root(Cookable):
 
         self.putChild('catalogs_for',CatalogsFor())
         self.putChild('names_for', NamesFor())
+        self.putChild('params_for', ParamsFor())
 
         self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
@@ -1235,6 +1236,8 @@ class AdminGate(Resource):
         self.putChild('storemodel', StoreModel())
         self.putChild('mothers', Mothers())
         self.putChild('store_mother', StoreMother())
+        self.putChild('procs', Procs())
+        self.putChild('store_proc', StoreProc())
         self.putChild('videos', Videos())
         self.putChild('store_video', StoreVideo())
         self.putChild('notebooks', NoteBooks())
@@ -1308,6 +1311,44 @@ class Videos(Resource):
                                include_docs=True, key=models.radeon, stale=False),
                 # .addCallback(lambda res: ("Radeon",res)),
                 ]).addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+
+class Procs(Resource):
+    def finish(self, result, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps(result))
+        request.finish()
+
+    def render_GET(self, request):
+        from pc import models
+        defer.DeferredList([couch.openView(designID,
+                                           "catalogs",
+                                           include_docs=True,key=models.proc_1155, stale=False),
+                            #.addCallback(lambda res:('LGA1155',res)),
+                            couch.openView(designID,
+                                           'catalogs',
+                                           include_docs=True,key=models.proc_1156, stale=False),
+                            # .addCallback(lambda res:('LGA1156',res)),
+                            # couch.openView(designID,
+                            #              'catalogs',
+                            #              include_docs=True,key=proc_1366, stale=False)
+                            #              .addCallback(lambda res:('LGA1366',res)),
+                            couch.openView(designID,
+                                           'catalogs',
+                                           include_docs=True,key=models.proc_am23, stale=False),
+                            #.addCallback(lambda res:('AM2 3',res)),
+                            couch.openView(designID,
+                                           'catalogs',
+                                           include_docs=True,key=models.proc_775, stale=False),
+                            #.addCallback(lambda res:('LGA7755',res)),
+                            couch.openView(designID,
+                                           'catalogs',
+                                           include_docs=True, key=models.proc_fm1, stale=False),
+                            #.addCallback(lambda res: ("FM1",res))
+                            ]).addCallback(self.finish, request)
         return NOT_DONE_YET
 
 
@@ -1596,6 +1637,21 @@ class StoreVideo(Resource):
         video = request.args.get('video')[0]
         jvideo = simplejson.loads(video)
         d = couch.saveDoc(jvideo)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+class StoreProc(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        proc = request.args.get('proc')[0]
+        jproc = simplejson.loads(proc)
+        d = couch.saveDoc(jproc)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
