@@ -79,8 +79,7 @@ function addSlider(){
 				     .sortBy(getPrice);
 				 var procs = line
 				     .last()
-				     .sortBy(getPrice);
-
+				     .sortBy(getPrice);				 
 				 data['v'].push({'no':0});
 				 var videos = _(data['v'])
 				     .chain()
@@ -96,12 +95,13 @@ function moveModel(model_id, new_pos){
     var model = $('#m'+model_id);
     var data = model.data();
     var to_move = new_pos-data['current_pos'];
-
+    //bug
     var proc = data['procs'].value()[data['proc_index']];
     var mother = data['mothers'].value()[data['mother_index']];
     var video = data['videos'].value()[data['video_index']];
+
     var initial_price = _([proc,mother,video]).reduce(function(memo,el){
-							return getPrice(el)+memo;
+							  return getPrice(el)+memo;
 						    },0);
     function setLast(token, set){
 	var answer = false;
@@ -186,6 +186,7 @@ function moveModel(model_id, new_pos){
     $.ajax({url:'/params_for?c='+new_proc_code+'&type=proc',
 	   success:function(data){
 	       renderProcParams(model_id, data[new_proc_code]);
+
 	   }});
 
     var new_mother_code = getCode(mother);
@@ -195,7 +196,7 @@ function moveModel(model_id, new_pos){
     } catch (x) {
 
     }
-
+    if (!new_video_code.match('no')){
     $.ajax({
 	       url:'/names_for?c='+new_proc_code+'&c='+new_video_code+'&c='+new_mother_code,
 	       success:function(data){
@@ -209,7 +210,7 @@ function moveModel(model_id, new_pos){
 		   update(fi.next().next(), new_video_code);
 	       }
 	   });
-
+    }
     var new_price = _([proc,mother,video]).reduce(function(memo,el){
 						      return getPrice(el)+memo;
 						  },0);
@@ -249,7 +250,7 @@ function moveModel(model_id, new_pos){
 		  });
 }
 
-function getComponentIndex(rows, code){
+function getComponentIndex(rows, code, log){
     return rows.map(getCode)
 	.indexOf(code)
 	 .value();
