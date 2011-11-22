@@ -33,6 +33,7 @@ simple_titles = {
     '/howtouse':u'Как пользоваться сайтом',
     '/howtobuy':u'Как покупать',
     '/warranty':u'Гарантии',
+    '/support':u'Поддержка',
     '/about':u'Про магазин'
 }
 
@@ -97,6 +98,7 @@ static_hooks = {
     'howtouse.html':simplePage,
     'howtobuy.html':simplePage,
     'warranty.html':simplePage,
+    'support.html':simplePage,
     'part.html':partPage,
     'notebook.html':notebooks,
     'faq.html':faq,
@@ -167,6 +169,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('howtobuy'))
         root.append(self.buildElement('howtouse'))
         root.append(self.buildElement('warranty'))
+        root.append(self.buildElement('support'))
         root.append(self.buildElement('motherboard'))
         root.append(self.buildElement('video'))
         root.append(self.buildElement('processor'))
@@ -577,7 +580,7 @@ class Root(Cookable):
         self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
         self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))
         self.putChild('warranty', TemplateRenderrer(self.static, 'warranty.html'))
-
+        self.putChild('support', TemplateRenderrer(self.static, 'support.html'))
 
         self.putChild('motherboard', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('processor', TemplateRenderrer(self.static, 'part.html'))
@@ -1242,7 +1245,7 @@ class AdminGate(Resource):
         self.putChild('store_video', StoreVideo())
         self.putChild('notebooks', NoteBooks())
         self.putChild('store_note', StoreNote())
-        self.putChild('warranty', WarrantyFill())
+        self.putChild('warranty', WarrantyFill())        
         self.putChild('show_how', ShowHow())
         self.putChild('edit_how', EditHow())
         self.putChild('comet', AdminComet())

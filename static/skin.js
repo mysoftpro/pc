@@ -53,9 +53,11 @@ var expands = {'howtochose':{'urls':[
                                'lock':undefined
                               },
                'more':{'urls':[
-                           {url:'/about',title:"Про магазин"},
+                           {url:'/warranty',title:'Гарантии'},
+			   {url:'/support',title:'Поддержка'},
                            {url:'/blog',title:'Блог'},
-                           {url:'/warranty',title:'Гарантии'}
+			   {url:'/about',title:"Про магазин"}
+                           
                        ],
                        'lock':undefined
                       }};
