@@ -88,7 +88,7 @@ function getRamFromText(text){
 }
 function showRank(pins){
     var minpin = pins.sort(function(x,y){return x-y;})[0];
-    var wi = (Math.log(minpin)/2*112-52)*1.8;    
+    var wi = (Math.log(minpin)/2*112-52)*1.8;
     var rank = $('#rank');
     if (rank.length==0){
 	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Нормально</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft 2</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare 3</div><div class="rank"></div></li></ul></div>'));
@@ -1117,12 +1117,12 @@ function possibleComponentCount(body, direction){
 	var maxram = mother_component.maxram;
 	if (!maxram)
 	    maxram = 8;
-        while(ramammo*_max_count>maxram)	    
-	   _max_count-=1;
+	while(ramammo*_max_count>maxram)
+	    _max_count-=1;
 	if (_max_count>0)
 	    max_count = _max_count;
     }
-	
+
     else if (isVideo(body))
     max_count = geVideoSlotsFromMother(choices[mother_select.val()],
 				       component
@@ -1563,9 +1563,9 @@ function to_cartSuccess(data){
 	else{
 	    if (!data['edit'])
 		$('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
-					      {
-						  cart:$.cookie('pc_user')
-					      }));
+						  {
+						      cart:$.cookie('pc_user')
+						  }));
 	}
 	var input = $('#email');
 	input.click(function(e){if (input.val()=='введите email')input.val('');});
@@ -1641,102 +1641,105 @@ function checkOptions(){
 	$("#oinstalling").prop('checked',false).prop('disabled','disabled');
 }
 
-head.ready(function(){
-	       var replaced = [];
-	       for (var code in model){
-		   if (model[code]['replaced'])
-		       replaced.push(code);
-		   delete model[code]['replaced'];
-	       }
+//head.ready(function(){});
 
-	       new_model = _.clone(model);
+var replaced = [];
+for (var code in model){
+    if (model[code]['replaced'])
+	replaced.push(code);
+    delete model[code]['replaced'];
+}
 
-	       checkOptions();
+new_model = _.clone(model);
 
-	       $('select').chosen().change(manualChange);
-	       installBodies();
-	       cheaperBetter();
-	       reset();
-	       var container = $('#descriptions');
-	       container.jScrollPane();
-	       installOptions();
+checkOptions();
 
-	       installCounters();
+$('select').chosen().change(manualChange);
+installBodies();
+cheaperBetter();
+reset();
+var container = $('#descriptions');
+container.jScrollPane();
+installOptions();
 
-	       GCheaperGBeater();
-	       switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
-	       recalculate();
+installCounters();
 
-	       $('#greset').click(function(){window.location.reload();});
-	       $('#tocart').click(function(e){to_cart(false);});
+GCheaperGBeater();
+switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
+recalculate();
 
-	       if (uuid && author==$.cookie('pc_user'))
-		   to_cartSuccess({'id':uuid, 'edit':true});
+$('#greset').click(function(){window.location.reload();});
+$('#tocart').click(function(e){to_cart(false);});
 
-	       $('#installprice').text(installprice+' р');
-	       $('#buildprice').text(buildprice+' р');
-	       $('#dvdprice').text(dvdprice+' р');
+if (uuid && author==$.cookie('pc_user'))
+    to_cartSuccess({'id':uuid, 'edit':true});
 
-	       if (author && $.cookie('pc_user')==author){
-		   for (var i=0;i<replaced.length;i++){
-		       var td = $('#'+replaced[i]);
-		       if (td.css('display')=='none')
-			   td = td.prev();
-		       td.css('border','1px solid red');
-		       guider.createGuider({
-					       attachTo: td,
-					       description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
-					       position: 1,
-					       width: 500
-					   }).show();
-		   }
-		   var guides = $('.guider_content');
-		   for (var i=0;i<guides.length;i++){
-		       $(guides.get(i)).find('p').before('<div class="closeg"></div>');
-		   }
-		   $('.closeg').click(function(e){
-					  $(e.target).parent().parent().remove();
-				      });
-		   if (!processing){
-		       $('#greset')
-			   .css({'background-position':'0 -45px','color':'black'})
-			   .text('Сохранить')
-			   .unbind('click')
-			   .click(function(e){
-				      try{
-					  e.preventDefault();
-					  to_cart(true);
-					  $('td.body').css('border','none');
-					  $('td.component_select').css('border','none');
-					  guider.hideAll();
-				      } catch (x) {
-					  console.log(x);
-				      }
-				      return false;
-				  });
-		   }
-	       }
-	       if (!uuid){
-		   $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
-		   $('#addplease').animate({'opacity':'1.0'},1000);
-	       }
+$('#installprice').text(installprice+' р');
+$('#buildprice').text(buildprice+' р');
+$('#dvdprice').text(dvdprice+' р');
+
+if (author && $.cookie('pc_user')==author){
+    for (var i=0;i<replaced.length;i++){
+	var td = $('#'+replaced[i]);
+	if (td.css('display')=='none')
+	    td = td.prev();
+	td.css('border','1px solid red');
+	guider.createGuider({
+				attachTo: td,
+				description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
+				position: 1,
+				width: 500
+			    }).show();
+    }
+    var guides = $('.guider_content');
+    for (var i=0;i<guides.length;i++){
+	$(guides.get(i)).find('p').before('<div class="closeg"></div>');
+    }
+    $('.closeg').click(function(e){
+			   $(e.target).parent().parent().remove();
+		       });
+    if (!processing){
+	$('#greset')
+	    .css({'background-position':'0 -45px','color':'black'})
+	    .text('Сохранить')
+	    .unbind('click')
+	    .click(function(e){
+		       try{
+			   e.preventDefault();
+			   to_cart(true);
+			   $('td.body').css('border','none');
+			   $('td.component_select').css('border','none');
+			   guider.hideAll();
+		       } catch (x) {
+			   console.log(x);
+		       }
+		       return false;
+		   });
+    }
+}
+if (!uuid){
+    $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
+    $('#addplease').animate({'opacity':'1.0'},1000);
+}
 
 
-	       if (document.location.search.match('data')){
-		   var le = document.location.search.length;
-		   var pairs = document.location.search.substring(1,le).split('&');
-		   var data = _(pairs).chain()
-		       .select(function(p){
-				   return p.split('=')[0]==='data';
-			       })
-		       .map(function(p){
-				return eval('('+decodeURI(p.split('=')[1])+')');
-			    }).first().value();
-		   for (var co in data){
-		       setCode(co,data[co]);
-		   }
-	       }
-	       // _.delay(function(){
+if (document.location.search.match('data')){
+    var le = document.location.search.length;
+    var pairs = document.location.search.substring(1,le).split('&');
+    var data = _(pairs).chain()
+	.select(function(p){
+		    return p.split('=')[0]==='data';
+		})
+	.map(function(p){
+		 return eval('('+decodeURI(p.split('=')[1])+')');
+	     }).first().value();
+    for (var co in data){
+	setCode(co,data[co]);
+    }
+}
+
+
+// _.delay(function(){
 	       //                 $.ajax({
 	       //                            url:'/comet',
 	       //                            success:function(data){
@@ -1750,4 +1753,3 @@ head.ready(function(){
 	       // if (document.location.hash == '#master'){
 	       //          head.js('/static/master.js');
 	       // }
-	   });
