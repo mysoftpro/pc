@@ -10,3 +10,4 @@ prcs.each(function(el,i){
 		  tot+=_int;		  
 	      }
 	  });
+console.log(tot);

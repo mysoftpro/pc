@@ -1918,7 +1918,7 @@ a.modelicon img{
 #rank{
     position:absolute;
     top:64px;
-    right:0;
+    right:4px;
     width:112px;
     padding:5px;
     padding-top:0px;
@@ -1941,7 +1941,8 @@ a.modelicon img{
     font-size:10px;
 }
 #rank span {
-    font-size:9px;    
+    font-size:9px;
+    margin-right:4px;
 }
 #rank .rank{
     height:2px;
@@ -2010,7 +2011,7 @@ a.modelicon img{
     background-position:0px -367px;
     padding-left:14px;
     background-repeat:no-repeat;
-    height:16px; 
+    height:16px;
     margin-left:2px;
 }
 #support{
@@ -2030,10 +2031,10 @@ a.modelicon img{
     width: 200px;
 }
 
-.promotion_top{    
-    height: 88px;
+.promotion_top{
+    height: 110px;
     padding-top: 20px;
-    
+    margin-bottom:50px;
 }
 #prheader{
     text-shadow: 0 5px 10px #506A12;
@@ -2052,14 +2053,13 @@ a.modelicon img{
     padding-left: 26px;
     padding-top: 55px;
     width: 120px;
+    margin-top:-80px;
 }
 #pprice span{
     font-size:14px;
     margin-left:-5px;
 }
 #pdesc{
-    position:relative;
-    top:-70px;
     color:#ddd;
     font-size:20px;
     text-shadow: 0 2px 3px #222;
@@ -2081,7 +2081,7 @@ a.modelicon img{
     text-shadow: 0 1px 2px #222;
 }
 #pdesc .small_cart{
-    margin-right: 300px;
+    margin-right: 20px;
     margin-top: -16px;
     color:#333;
     text-shadow:none;
@@ -2092,4 +2092,7 @@ a.modelicon img{
     background-image:url('promotion/sst-ps05b_1.jpg');
     margin-left: auto;
     margin-right: auto;
+}
+#pdesc p{
+    font-size:16px;
 }
