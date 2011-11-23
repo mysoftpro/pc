@@ -1985,7 +1985,7 @@ a.modelicon img{
 .pproc{
     position:relative;
     top:-44px;
-    left:133px;
+    left:28px;
     width:200px;
     overflow:visible;
 }
@@ -2063,6 +2063,7 @@ a.modelicon img{
     color:#ddd;
     font-size:20px;
     text-shadow: 0 2px 3px #222;
+    margin-top:6px;
 }
 #promostuff{
     float:left;
@@ -2073,7 +2074,9 @@ a.modelicon img{
 }
 #promo_description{
     float:right;
-    width:50%;
+    width:480px;
+    text-align:justify;
+    font-size:18px;
 }
 #pbottom{
     color: #AAA;
@@ -2095,4 +2098,10 @@ a.modelicon img{
 }
 #pdesc p{
     font-size:16px;
+}
+.pprice{
+    display:none;
+}
+#promo_description p{
+    display:none;
 }

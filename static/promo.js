@@ -7,7 +7,20 @@ prcs.each(function(el,i){
 		  tot+=_int*31.4;
 	      }
 	      else{
-		  tot+=_int;		  
+		  tot+=_int;
 	      }
 	  });
 console.log(tot);
+$('#promostuff td').click(function(e){
+			      $('#promo_description p').hide();
+			      $('td').css('color','#ddd');
+			      var target = $(e.target);
+			      //target.css('color','#aadd00');
+			      var p = target.parent();
+			      var all_td = _(p.children().toArray());
+			      all_td.each(function(el){
+					      if (!el.id)return;
+					      $('#_'+el.id).show();
+					      $(el).prev().css('color','#aadd00');
+					  });
+			  });
