@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor
+    NamesFor, ParamsFor, promotion
 from pc.catalog import XmlGetter
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -94,6 +94,7 @@ static_hooks = {
     'index.html':index,
     'computer.html':computer,
     'computers.html':computers,
+    'promotion.html':promotion,    
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,
     'howtobuy.html':simplePage,
@@ -573,6 +574,8 @@ class Root(Cookable):
         self.putChild('static',self.static)
         self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
         self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
+        self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
+        self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
 
         self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
 

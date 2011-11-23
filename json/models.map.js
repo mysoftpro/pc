@@ -1,5 +1,5 @@
 function(doc){
-    if (doc['ours'] ){
+    if (doc['ours'] && !doc['promo']){
 	emit(doc['_id']);
     }
 }

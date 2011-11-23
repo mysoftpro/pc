@@ -840,7 +840,6 @@ def computers(template,skin,request):
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     # cart is only /cart/12345. for /cart and for /computer - all models are shown
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
-
     def render(result):
 
 	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
@@ -1337,3 +1336,25 @@ class ParamsFor(Resource):
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	return simplejson.dumps(res)
+
+def renderPromotion(doc, template, skin):
+    template.top.find('h1').text = doc['name']
+    skin.top = template.top
+    skin.middle = template.middle
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
+    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
+    return skin.render()
+    
+def promotion(template, skin, request):
+    if globals()['gChoices'] is None:
+	d = fillChoices()
+	d.addCallback(lambda some: promotion(template, skin, request))
+	return d
+
+    splitted = request.path.split('/')
+    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+    if len(name) == 0 or name=='promotion':
+	name = 'ajax'
+    d = couch.openDoc(name)
+    d.addCallback(renderPromotion, template, skin)
+    return d

@@ -2029,3 +2029,38 @@ a.modelicon img{
     padding-top: 20px;
     width: 200px;
 }
+
+.promotion_top{    
+    height: 88px;
+    padding-top: 20px;
+    
+}
+#prheader{
+    text-shadow: 0 5px 10px #506A12;
+    color:#75a001;
+    font-size: 45px;
+    float:left;
+}
+#pprice{
+    background-image: url("promotion/price_tag-999px.png");
+    background-repeat: no-repeat;
+    color: white;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    height: 60px;
+    padding-left: 26px;
+    padding-top: 55px;
+    width: 120px;
+}
+#pprice span{
+    font-size:14px;
+    margin-left:-5px;
+}
+#pdesc{
+    position:relative;
+    top:-70px;
+    color:#ddd;
+    font-size:20px;
+    text-shadow: 0 1px 2px white;
+}
