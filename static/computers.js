@@ -593,29 +593,7 @@ function addProcs(infos, url){
 }
 
 
-head.ready(function(){
-	       var _ya_share = $('#ya_share_cart');
-	       if (_ya_share.length>0){
-		   // cart
-		   showYa('ya_share_cart', 'http://buildpc.ru/computer/'+$.cookie('pc_user'));
-		   var input = $('#email_cart');
-		   input.click(function(e){if (input.val()=='введите email')input.val('');});
-		   $('#emailbutton_cart').click(function(e){
-						    e.preventDefault();
-						    $.ajax({
-							       url:'/sender',
-							       data: {uuid:$.cookie('pc_user'), email:input.val()},
-							       success:function(data){
-								   if (data == "ok"){
-								       input.val('получилось!');
-								   }
-								   else{
-								       input.val('не получилось :(');
-								   }
-							       }
-							   });
-						});
-	       }
+var init = function(){	       
 	       $('#pricetext input').prop('checked','checked');
 	       $('#pricetext input').click(changePrices);
 	       var uls = $('ul.description');
@@ -873,4 +851,29 @@ head.ready(function(){
 
 	       addSlider();
 	       addLogos();
+	   };
+init();
+head.ready(function(){
+	       var _ya_share = $('#ya_share_cart');
+	       if (_ya_share.length>0){
+		   // cart
+		   showYa('ya_share_cart', 'http://buildpc.ru/computer/'+$.cookie('pc_user'));
+		   var input = $('#email_cart');
+		   input.click(function(e){if (input.val()=='введите email')input.val('');});
+		   $('#emailbutton_cart').click(function(e){
+						    e.preventDefault();
+						    $.ajax({
+							       url:'/sender',
+							       data: {uuid:$.cookie('pc_user'), email:input.val()},
+							       success:function(data){
+								   if (data == "ok"){
+								       input.val('получилось!');
+								   }
+								   else{
+								       input.val('не получилось :(');
+								   }
+							       }
+							   });
+						});
+	       }	       
 	   });

@@ -210,11 +210,11 @@ function isEqualCatalogs(cat1,cat2, sli){
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
 				     try{
-					 var cats = getCatalogs(c).slice(0, catalogs.length);	 
+					 var cats = getCatalogs(c).slice(0, catalogs.length);
 				     } catch (x) {
 					 console.log(c);
 				     }
-				     
+
 				     var _sli = 2;
 				     if (no_slice)
 					 _sli = cats.length;
@@ -1560,7 +1560,8 @@ function to_cartSuccess(data){
 			   computer:data['id']
 		       }));
 	$('#computerlink').click(function(e){e.target.select();});
-	showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);
+	//this is for user come from cart
+	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
 	    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
