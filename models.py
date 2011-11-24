@@ -1339,6 +1339,37 @@ class ParamsFor(Resource):
 
 def renderPromotion(doc, template, skin):
     template.top.find('h1').text = doc['name']
+    stuff = template.middle.xpath('//table[@id="promostuff"]')[0]
+    record = template.root().find('record')
+
+    def setImage(img, src):
+        img.set('src','/image/'+doc['_id']+'/'+src)
+    components = {}
+    for c in sorted(doc['components'],lambda x,y:x['order']-y['order']):
+        rec = deepcopy(record)
+        tr = rec.find('tr')
+        tds = tr.findall('td')
+        tds[0].find('img').set('src','/static/promotion/'+c['type']+'.png');
+        tds[-1].text = c['name']
+        tr.set('id', c['code'])        
+        stuff.append(tr)
+        if c['order'] == 10:
+            i = template.middle.xpath('//div[@id="promo_image"]')[0].find('img')
+            setImage(i,c['top_image'])
+            desc = template.middle.xpath('//div[@id="promo_description"]')[0]
+            p = etree.Element('p')
+            p.text = c['description']
+            desc.append(p)
+            if 'bottom_images' in c:
+                for i in c['bottom_images']:
+                    img = etree.Element('img')
+                    setImage(img,i)
+                    p.append(img)        
+        c.pop('original_price')            
+        components.update({c['code']:c})
+
+    scr = template.middle.find('script')
+    scr.text = 'var _id="'+doc['_id']+'";var components='+simplejson.dumps(components)+';'
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
