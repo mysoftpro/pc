@@ -332,12 +332,12 @@ def renderComputer(model, template, skin):
 
     def noComponent(name, component_doc, rows):
 	#hack!
-        # if len(rows)==0:
-        #     print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        #     print name.encode('utf-8')
-        #     print component_doc
-        #     return
-        
+   
+
+	try:
+            component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+        except:
+            pass
 	if globals()['no_component_added']:return
 	if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
 	no_doc = noComponentFactory(component_doc, name)
