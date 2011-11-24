@@ -1,8 +1,10 @@
-var prcs = _($('.price').toArray());
+var prcs = _($('.pprice').toArray());
 var sz = prcs.size();
 var tot = 0;
+console.log(sz);
 prcs.each(function(el,i){
 	      var _int = parseInt($(el).text());
+	      console.log(_int);
 	      if (i!==sz-1){
 		  tot+=_int*31.4;
 	      }
