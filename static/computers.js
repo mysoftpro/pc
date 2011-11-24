@@ -593,7 +593,7 @@ function addProcs(infos, url){
 }
 
 
-var init = function(){
+head.ready(function(){
 	       var _ya_share = $('#ya_share_cart');
 	       if (_ya_share.length>0){
 		   // cart
@@ -873,5 +873,4 @@ var init = function(){
 
 	       addSlider();
 	       addLogos();
-	   };
-init();
+	   });
