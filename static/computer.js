@@ -209,7 +209,12 @@ function isEqualCatalogs(cat1,cat2, sli){
 
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
-				     var cats = getCatalogs(c).slice(0, catalogs.length);
+				     try{
+					 var cats = getCatalogs(c).slice(0, catalogs.length);	 
+				     } catch (x) {
+					 console.log(c);
+				     }
+				     
 				     var _sli = 2;
 				     if (no_slice)
 					 _sli = cats.length;
