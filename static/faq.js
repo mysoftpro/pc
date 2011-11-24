@@ -172,11 +172,14 @@ head.ready(function(){
 							      if (i==0)return;
 							      var doc = row.doc;
 							      if (row.key[1]=='z'){
+								  var au = doc['author'];
+								  if (doc['name'])
+								      au = doc['name'];
 								  after
 								      .after(faq_template(
 										 {'body':doc['txt'],
-										  'author':doc['author'],
-										   'date':doc['date'],
+										  'author':au,
+										  'date':doc['date'],
 										  'links':link_template,
 										  'klass':'faqrecord'}));
 								  after = after.next();
