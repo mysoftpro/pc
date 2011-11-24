@@ -7,10 +7,12 @@ $('#promostuff td').click(function(e){
 			      var c = components[tr.attr('id')];
 			      var p = $('#promo_description p');
 			      p.html(c['description']);
+			      while(p.next().length>0)
+				  p.next().remove();
 			      $('#promo_image img').attr('src','/image/'+_id+'/'+c['top_image']);
 			      if (c['bottom_images'])
 				  _(c['bottom_images']).each(function(img){
-								 p.append('<img src="/image/'+
+								 p.after('<img src="/image/'+
 									  _id+'/'+img+'"/>');
 							     });
 
