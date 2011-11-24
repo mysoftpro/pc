@@ -209,12 +209,7 @@ function isEqualCatalogs(cat1,cat2, sli){
 
 function filterByCatalogs(components, catalogs, no_slice){
     return  _(components).filter(function(c){
-				     try{
-					 var cats = getCatalogs(c).slice(0, catalogs.length);
-				     } catch (x) {
-					 console.log(c);
-				     }
-
+				     var cats = getCatalogs(c).slice(0, catalogs.length);
 				     var _sli = 2;
 				     if (no_slice)
 					 _sli = cats.length;
@@ -464,7 +459,6 @@ function changeDescription(index, _id, show, data){
 		_text = 'к сожалению описание не предоставлено поставщиком';
 	    descriptions_cached[_id] = treatDescriptionText(_text);
 	}
-
 	if (!show)
 	    return;
 	descr.find('.manu').html(descriptions_cached[_id]);
@@ -508,7 +502,8 @@ function installBodies(){
 			     }
 			     else{
 				 var select = jgetSelect(_body);
-				 updateDescription(_id,_id);
+				 //??? before it was _id,_id. why???
+				 updateDescription(select.val(),_id);
 			     }
 			 }
 			 else{
@@ -862,18 +857,17 @@ function cheaperBetter(){
 						  getCatalogs(old_component),
 						  delta, false);
 
-	//here
 	if (!appr_components[0])
 	    return;
 	var new_component = appr_components[0];
-	// here is the case for novideo
+
 	var hasNoVideo = true;
 	if(isVideo(body) && new_component['_id'].match('no')){
 	    var mother_select = jgetSelectByRow($('#' + parts['mother']));
 	    hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
 	}
 	if (!hasNoVideo)return;
-	//here the case when i have amd fm1 proc and no mother for it
+
 	var changed = changeComponent(body, new_component, old_component);
 	if (!changed){
 	    //try only once for now!
@@ -1115,7 +1109,7 @@ function possibleComponentCount(body, direction){
     if (isRam(body)){
 	var mother_component = choices[mother_select.val()];
 	var _max_count = geRamSlotsFromMother(mother_component);
-	//here
+
 	var ramselect = jgetSelectByRow($('#' + parts['ram']));
 	var ramoption = jgetOption(ramselect,component['_id']);
 	var ramammo = getRamFromText(ramoption.text());
@@ -1300,7 +1294,7 @@ function shadowCheBe(_delta, body, component){
     var retval = false;
     if (_delta>0)
 	swap();
-    //here
+
     var hasNoVideo = true;
     if(isVideo(body) && next_components[0] && next_components[0]['_id'].match('no')){
 	var mother_select = jgetSelectByRow($('#' + parts['mother']));
@@ -1383,7 +1377,6 @@ function changePinedComponent(old_component, pins, no_perifery){
     }
     var appr_component = appr_components[0];
 
-    // here is a hack preventing infinite loops
     var _id = appr_component['_id'];
     var ob = {'_id':_id,'delta':pins.delta};
     if (!this['apprs']){
@@ -1604,7 +1597,7 @@ function setCode(catalog,code){
     var body = jgetBody(select);
     if (code=='no')
 	code = 'no'+part;
-    changeComponent(body, choices[code], new_model[select.val()]);
+    changeComponent(body, choices[code], new_model[select.val()], true);
     installCountButtons(body);
 }
 
