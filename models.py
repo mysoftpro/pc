@@ -157,8 +157,8 @@ def nameForCode(code,model):
 
 
 
-Margin=1.2
-Course = 31
+Margin=1.15
+Course = 31.7
 
 def makePrice(doc):
     if doc['price'] == 0:
