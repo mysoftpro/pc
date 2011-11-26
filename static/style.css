@@ -1875,7 +1875,7 @@ a.modelicon img{
     background-position: 0px -1px;
 }
 #vintel{
-    background-position: 0px 86px;
+    background-position: 0px 88px;
 }
 #vnvidia{
     background-position: 0px 58px;
@@ -2106,4 +2106,26 @@ a.modelicon img{
 }
 .pprice{
     display:none;
+}
+
+.filter{
+    display:none;
+}
+#proc_filter{
+    position:absolute;
+    top:290px;
+    left:10px;
+    height:29px;
+}
+#proc_filter div{
+    width:34px;
+    height:30px;
+    background-image:url('vendors_switchers.png');
+    cursor:pointer;
+    float:left;
+}
+.filter_list{
+    position:absolute;
+    top:320px;
+    left:10px;   
 }

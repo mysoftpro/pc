@@ -84,8 +84,9 @@ h2 {
     font-size:16px;
     background-color:#ededed;
     border:1px solid #aaa;
-    border-radius: 5px 5px 5px 5px;
-    -moz-border-radius:5px 5px 5px 5px;    
+    border-radius: 3px 3px 3px 3px;
+    -moz-border-radius:3px 3px 3px 3px;
+    /* box-shadow: 0 0 2px rgba(0, 0, 0, 0.8); */
 }
 
 #greeting_banner{
@@ -165,7 +166,7 @@ p {
 #gradient_background {
 	margin: 0;
 	width: 100%;
-	text-align: center;	
+	text-align: center;
 	/* background-image: url("curtain3.png"), url("curtain2.png"), url("curtain1.jpg"); */
 	/* background-size: auto auto, auto auto, auto auto; */
 }
@@ -201,7 +202,7 @@ p {
     width: 100%;
     color: #555;
     text-align: center;
-    clear:both;    
+    clear:both;
 }
 
 
@@ -904,7 +905,7 @@ label:hover{
     margin-bottom:90px;
     margin-top:-20px;
 }
-.computers_description h3{ 
+.computers_description h3{
     margin:0;
     margin-left:10px;
 }
@@ -918,7 +919,7 @@ label:hover{
     background-color:#ededed;
 }
 
-.cart_description ul{    
+.cart_description ul{
     line-height:12px;
     font-size:12px;
 }
@@ -1449,7 +1450,7 @@ a.modelicon img{
 }
 
 .nactive {
-    color:#444;    
+    color:#444;
     font-weight:bold;
     font-size:15px;
 }
@@ -1715,7 +1716,7 @@ a.modelicon img{
     -webkit-border-bottom-left-radius:10px;
     -webkit-border-bottom-right-radius:10px;
     -webkit-border-top-left-radius:10px;
-    -webkit-border-top-right-radius:10px;    
+    -webkit-border-top-right-radius:10px;
 }
 .small_square_button{
     background: url("/static/square_buttons_small_home.png") no-repeat scroll 0 1px transparent;
@@ -1762,40 +1763,40 @@ a.modelicon img{
 }
 
 .dragdealer {
-        position: relative;
-        height: 5px;
-        background: #777;
-        width:75px;
-        float:right;
-        margin-right:60px;
-        margin-top:8px;
+	position: relative;
+	height: 5px;
+	background: #777;
+	width:75px;
+	float:right;
+	margin-right:60px;
+	margin-top:8px;
 	border-radius:3px;
-        -moz-border-radius:3px 3px 3px 3px;
-        -webkit-border-bottom-left-radius:3px;
-        -webkit-border-bottom-right-radius:3px;
-        -webkit-border-top-left-radius:3px;
-        -webkit-border-top-right-radius:3px;
+	-moz-border-radius:3px 3px 3px 3px;
+	-webkit-border-bottom-left-radius:3px;
+	-webkit-border-bottom-right-radius:3px;
+	-webkit-border-top-left-radius:3px;
+	-webkit-border-top-right-radius:3px;
 	border:1px solid #333;
 }
 
 .dragdealer .handle {
-        position: absolute;
-        cursor: pointer;
+	position: absolute;
+	cursor: pointer;
 }
 .dragdealer .red-bar {
-        width: 8px;
-        height: 20px;
-        background:  #7B9C0A;
-        margin-top:-7px;
-        border-radius:3px;
-        -moz-border-radius:3px 3px 3px 3px;
-        -webkit-border-bottom-left-radius:3px;
-        -webkit-border-bottom-right-radius:3px;
-        -webkit-border-top-left-radius:3px;
-        -webkit-border-top-right-radius:3px;
+	width: 8px;
+	height: 20px;
+	background:  #7B9C0A;
+	margin-top:-7px;
+	border-radius:3px;
+	-moz-border-radius:3px 3px 3px 3px;
+	-webkit-border-bottom-left-radius:3px;
+	-webkit-border-bottom-right-radius:3px;
+	-webkit-border-top-left-radius:3px;
+	-webkit-border-top-right-radius:3px;
 }
 .dragdealer .disabled {
-        background: #898989;
+	background: #898989;
 }
 .dragfiller{
     width:1px;
@@ -1808,7 +1809,7 @@ a.modelicon img{
     height:30px;
     width:38px;
     background-image:url('vendors_home.png');
-    margin-top:-25px;    
+    margin-top:-25px;
     position:relative;
 }
 ._7363_7399_7451{
@@ -1830,7 +1831,7 @@ a.modelicon img{
 ._7363_7399_19257{
     background-position:0px 38px;
 }
-.mproc{    
+.mproc{
     left: -5px;
     top: -26px;
 }
@@ -1868,12 +1869,12 @@ a.modelicon img{
     background-repeat:no-repeat;
     opacity:0;
 }
-.expanded div{    
+.expanded div{
     text-align:left;
     padding:2px;
     padding-right:10px;
 }
-.expanded a{    
+.expanded a{
     color:#C64410;
 }
 .expanded a:hover{
@@ -1883,7 +1884,7 @@ a.modelicon img{
     position: fixed;
     left: 0;
     top: 230px;
-    z-index: 99999;    
+    z-index: 99999;
 }
 #vendors div{
     height:29px;
@@ -2012,12 +2013,12 @@ a.modelicon img{
     -webkit-border-bottom-left-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
     border:1px solid #999;
-    background-color:#DDD;    
+    background-color:#DDD;
 }
 #rank ul{
     list-style-type:none;
     padding:0;
-    margin:0;    
+    margin:0;
 }
 #rank ul li{
     margin-top:3px;
@@ -2093,7 +2094,7 @@ a.modelicon img{
     background-position:0px -368px;
     padding-left:14px;
     background-repeat:no-repeat;
-    height:16px; 
+    height:16px;
     margin-left:2px;
 }
 #support{

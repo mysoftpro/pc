@@ -18,6 +18,16 @@ var catalogsForVendors = {
     }
 };
 
+function installFilter(body){
+    if (!(isVideo(body)||
+	isProc(body)))
+	return;
+    $('.filter').hide();
+    if (isProc(body)){
+	$('#proc_filter').show();	
+    }
+}
+
 function getPartName(_id){
     var cats = getCatalogs(choices[_id]);
     for (var i=0;i<cats.length;i++){
@@ -505,6 +515,7 @@ function installBodies(){
 				 //??? before it was _id,_id. why???
 				 updateDescription(select.val(),_id);
 			     }
+			     installFilter(_body);
 			 }
 			 else{
 			     _body.show();
@@ -780,8 +791,10 @@ function filterByFilter(res){
 //zaza
 
 function getNearestComponent(price, catalogs, delta, same_socket){
-    var other_components = filterByFilter(filterByCatalogs(_(choices).values(),
-							   catalogs, same_socket));
+    // var other_components = filterByFilter(filterByCatalogs(_(choices).values(),
+    // 							   catalogs, same_socket));
+    var other_components = filterByCatalogs(_(choices).values(),
+							   catalogs, same_socket);
     var diff = 1000000;
     var component;
     var spare_diff = 1000000;
