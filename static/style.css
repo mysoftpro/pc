@@ -2113,7 +2113,7 @@ a.modelicon img{
 }
 #proc_filter{
     position:absolute;
-    top:290px;
+    top:250px;
     left:10px;
     height:29px;
 }
@@ -2126,6 +2126,6 @@ a.modelicon img{
 }
 .filter_list{
     position:absolute;
-    top:320px;
+    top:290px;
     left:10px;   
 }

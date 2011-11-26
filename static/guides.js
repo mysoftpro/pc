@@ -2,14 +2,13 @@ var proc_filter_template = _.template('<div class="filter_list {{klass}}"><table
 var proc_filter_template_row = _.template('<tr><td><input type="checkbox" checked="checked" name="{{code}}"/></td><td>{{Brand}}</td></tr>');
 
 var proc_codes;
-var proc_exceptions = [];
 
 function setFilterByOption(e){
     var target = $(e.target);
     var codes = target.attr('name').split(',');
-    proc_exceptions = _(proc_exceptions).difference(codes);
+    filtered_codes = _(filtered_codes).difference(codes);
     if (!target.prop('checked')){
-	proc_exceptions = _(proc_exceptions).union(codes);	
+	filtered_codes = _(filtered_codes).union(codes);	
     }
     _(codes).each(function(code){
 		      var select = jgetSelectByRow($('#' + parts['proc']));

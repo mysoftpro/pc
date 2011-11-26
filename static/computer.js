@@ -729,11 +729,12 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
+var filtered_codes = [];
 
 function getNearestComponent(price, catalogs, delta, same_socket){
     var other_components = _(filterByCatalogs(_(choices).values(),
 							   catalogs, same_socket))
-	.select(function(co){return _(proc_exceptions)
+	.select(function(co){return _(filtered_codes)
 			     .select(function(ex){return ex==co['_id'];})==0;});
     var diff = 1000000;
     var component;
