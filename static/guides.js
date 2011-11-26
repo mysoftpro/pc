@@ -2,13 +2,21 @@ var proc_filter_template = _.template('<div class="filter_list {{klass}}"><table
 var proc_filter_template_row = _.template('<tr><td><input type="checkbox" checked="checked" name="{{code}}"/></td><td>{{Brand}}</td></tr>');
 
 var proc_codes;
+var proc_exceptions = [];
+
 function setFilterByOption(e){
     var target = $(e.target);
     var codes = target.attr('name').split(',');
     proc_exceptions = _(proc_exceptions).difference(codes);
-    if (!target.prop('checked'))
-	proc_exceptions = _(proc_exceptions).union(codes);
-    console.log(proc_exceptions);
+    if (!target.prop('checked')){
+	proc_exceptions = _(proc_exceptions).union(codes);	
+    }
+    _(codes).each(function(code){
+		      var select = jgetSelectByRow($('#' + parts['proc']));
+		      var op = jgetOption(select, code);
+		      op.prop('disabled',!target.prop('checked'));
+		      select.trigger("liszt:updated");		      
+		      });
 }
 function installProcFilters(){
     var proc_catalogs = catalogsForVendors['procs'];
@@ -22,11 +30,12 @@ function installProcFilters(){
 	    .each(function(cats){
 		      if (isEqualCatalogs(cats,component['catalogs']))
 		      {
-			     var brand = proc_codes[key].brand;
-			     if (ob[brand])				 
-				 ob[brand]['proc_codes'].push(component['_id']);
-			     else
-				 ob[brand] = {'proc_codes':[component['_id']]};
+			  var brand = proc_codes[key].brand;
+			  if (ob[brand])
+			      ob[brand].push(component['_id']);
+			  else
+			      ob[brand] = [component['_id']];
+			  proc_catalogs[component['_id']] = cats;
 			 }
 		  });
     }
@@ -50,7 +59,7 @@ function installProcFilters(){
 					     .chain()
 					     .keys()
 					     .map(function(key){
-						      var codes = ob[key]['proc_codes'];
+						      var codes = ob[key];
 						      return proc_filter_template_row(
 							  {code:codes.join(','),
 							   Brand:key});
