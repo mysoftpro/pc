@@ -504,7 +504,7 @@ function installBodies(){
 				 var select = jgetSelect(_body);
 				 //??? before it was _id,_id. why???
 				 updateDescription(select.val(),_id);
-			     }			     
+			     }
 			 }
 			 else{
 			     _body.show();
@@ -731,7 +731,6 @@ function getNearestComponent(price, catalogs, delta, same_socket){
 	.select(function(co){return _(filtered_mothers)
 			     .select(function(ex){return ex==co['_id'];})==0;})
 	.value();
-    ;
     var diff = 1000000;
     var component;
     var spare_diff = 1000000;
@@ -818,17 +817,16 @@ function cheaperBetter(){
 	}
 	if (!hasNoVideo)return;
 
-	var changed = changeComponent(body, new_component, old_component);
-	if (!changed){
-	    //try only once for now!
+	var guard = 10;
+	//here check 27.11.2011
+	while(!changeComponent(body, new_component, old_component)){
+	    if (guard==0)return;
+	    guard-=1;
 	    appr_components = getNearestComponent(new_component.price,
-						  getCatalogs(new_component),
-						  delta, false);
-	    if (!appr_components[0]){
-		return;
-	    }
-
-	    changeComponent(body, appr_components[0], old_component);
+	 					getCatalogs(new_component),
+	 					delta, false);	    
+	    new_component = appr_components[0];
+	    changeComponent(body, new_component, old_component);
 	}
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
@@ -1587,7 +1585,7 @@ function init(){
 	replaced.push(code);
 	delete model[code]['replaced'];
     }
-    
+
     new_model = _.clone(model);
     checkOptions();
 
@@ -1673,7 +1671,7 @@ function init(){
 	for (var co in data){
 	    setCode(co,data[co]);
 	}
-    }    
+    }
 }
 init();
 
