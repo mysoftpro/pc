@@ -2,34 +2,39 @@ var proc_filter_template = _.template('<div class="filter_list {{klass}}"><table
 var proc_filter_template_row = _.template('<tr><td><input type="checkbox" checked="checked" name="{{code}}"/></td><td>{{Brand}}</td></tr>');
 
 var proc_codes;
+function setFilterByOption(e){
+    var target = $(e.target);
+    var codes = target.attr('name').split(',');
+    proc_exceptions = _(proc_exceptions).difference(codes);
+    if (!target.prop('checked'))
+	proc_exceptions = _(proc_exceptions).union(codes);
+    console.log(proc_exceptions);
+}
 function installProcFilters(){
     var proc_catalogs = catalogsForVendors['procs'];
-    var intel_catalogs = proc_catalogs['vintel'];
-    var amd_catalogs = proc_catalogs['vamd'];
+    var intel_proc_catalogs = proc_catalogs['vintel'];
+    var amd_proc_catalogs = proc_catalogs['vamd'];
     var intel = {};
     var amd = {};
     function install(key, ob, catalogs){
 	var component = choices[key];
 	_(catalogs)
 	    .each(function(cats){
-		      if (cats[0]==component['catalogs'][0]&&
-			  cats[1]==component['catalogs'][1]&&
-			  cats[2]==component['catalogs'][2]
-			 ){
+		      if (isEqualCatalogs(cats,component['catalogs']))
+		      {
 			     var brand = proc_codes[key].brand;
-			     if (ob[brand])
-				 ob[brand].push(component['_id']);
+			     if (ob[brand])				 
+				 ob[brand]['proc_codes'].push(component['_id']);
 			     else
-				 ob[brand] = [component['_id']];
+				 ob[brand] = {'proc_codes':[component['_id']]};
 			 }
 		  });
     }
     _(proc_codes).chain()
 	.keys().each(function(key){
-			 install(key, intel, intel_catalogs);
-			 install(key, amd, amd_catalogs);
+			 install(key, intel, intel_proc_catalogs);
+			 install(key, amd, amd_proc_catalogs);
 		     });
-
     _($('#proc_filter div').toArray())
 	.each(function(d, i){
 		  var div = $(d);
@@ -38,54 +43,61 @@ function installProcFilters(){
 				 var _id = div.attr('id');
 				 $('.filter_list').hide();
 				 var this_list = $('.'+_id);
-				 if (this_list.length==0){				     
+				 if (this_list.length==0){
 				     var rows = '';
 				     function install(ob){
 					 rows = _(ob)
 					     .chain()
 					     .keys()
 					     .map(function(key){
-						      var codes = ob[key];
+						      var codes = ob[key]['proc_codes'];
 						      return proc_filter_template_row(
 							  {code:codes.join(','),
 							   Brand:key});
 						  }).value().join('');
-				     }				 
+				     }
 				     if(_id=='vamd'){
 					 install(amd);
 				     }
 				     else if (_id=='vintel'){
 					 install(intel);
-				     }				     
-				     $(e.target).parent()
-					 .after(proc_filter_template({klass:_id,
+				     }
+				     var target = $(e.target);
+				     var parent = target.parent();
+				     parent.after(proc_filter_template({klass:_id,
 								      rows:rows
 								     }));
+				     parent.next().find('input').change(setFilterByOption);
 				 }
 				 else
 				     $('.'+_id).show();
 			     });
-		  div.click(function(e){
-				var splitted = div.css('background-position').split(' ');
-				if (splitted[0] == '0px' || splitted[0] == '0'){
-				    // can switch off only if other is not switchet off
-				    var other;
-				    if (i%2==0) other = function(el){return el.next();};
-				    else other = function(el){return el.prev();};
-				    var other_splitted = other(div).
-					css('background-position').split(' ');
-				    if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
-					return;
-				    div.css({'background-position':'58px '+splitted[1]});
-				    div.attr('title', div.attr('title').replace('Исключить','Включить'));
-				    div.data({'filter':true});
-				}
-				else{
-				    div.css({'background-position':'0px '+splitted[1]});
-				    div.attr('title', div.attr('title').replace('Включить','Исключить'));
-				    div.data({'filter':false});
-				}
-			    });
+		  function switchAll(all){
+		      return function (e){
+			  var _id = div.attr('id');
+			  var splitted = div.css('background-position').split(' ');
+			  if (splitted[0] == '0px' || splitted[0] == '0'){
+			      // can switch off only if other is not switchet off
+			      var other;
+			      if (i%2==0) other = function(el){return el.next();};
+			      else other = function(el){return el.prev();};
+			      var other_splitted = other(div).
+				  css('background-position').split(' ');
+			      if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
+				  return;
+			      div.css({'background-position':'58px '+splitted[1]});
+			      div.attr('title', div.attr('title').replace('Исключить','Включить'));
+			  }
+			  else{
+			      div.css({'background-position':'0px '+splitted[1]});
+			      div.attr('title', div.attr('title').replace('Включить','Исключить'));
+			  }
+			  if (all){
+				  $('.'+_id).find('input').click();
+			  }
+		      };
+		  }
+		  div.click(switchAll(true));
 	      });
 };
 

@@ -17,7 +17,7 @@ var catalogsForVendors = {
 	'vati':[['7363','7396','7613']]
     }
 };
-
+var proc_exceptions = [];
 function installFilter(body){
     if (!(isVideo(body)||
 	isProc(body)))
