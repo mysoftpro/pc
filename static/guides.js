@@ -15,20 +15,19 @@ function setFilterByOption(e){
 		      var op = jgetOption(select, code);
 		      op.prop('disabled',!target.prop('checked'));
 		      select.trigger("liszt:updated");
-		      });
-    if (filtered_procs.length>0){
-	    
+		  });
+
     var filtered_catalogs = _(filtered_procs).chain()
 	.map(function(code){return choices[code].catalogs;})
 	.uniq(false,function(a){return a.toString();}).value();
     var rest_components = _(filtered_catalogs).chain().map(function(cat){
-						       var comps =
-							   filterByCatalogs(_(choices).values(),
-									    cat, true);
+							       var comps =
+								   filterByCatalogs(_(choices).values(),
+										    cat, true);
 							       var ret = _(comps)
 								   .map(function(c){return c['_id'];});
 							       return ret;
-						   })
+							   })
 	.flatten()
 	.uniq()
 	.difference(filtered_procs)
@@ -37,28 +36,31 @@ function setFilterByOption(e){
     var rest_cats = _(rest_components).chain().map(function(el){return choices[el].catalogs;})
 	.uniq(false,function(cat){return cat.toString();});
     var cats_to_filter = _(filtered_catalogs).chain().select(function(cat){
-							 var ret = rest_cats
-							     .select(function(ca){
-							 		 return isEqualCatalogs(cat,ca);
-							 	     }).size().value();
-							 return ret==0;
-						     });
-    //var mother_codes_to_filter = [];
+								 var ret = rest_cats
+								     .select(function(ca){
+							 			 return isEqualCatalogs(cat,ca);
+							 		     }).size().value();
+								 return ret==0;
+							     });
     var mother_cats_to_filter = _(proc_to_mother_mapping).chain()
 	.select(function(map){
 		    return cats_to_filter
 			.select(function(ca){return isEqualCatalogs(ca,map[0]);}).size().value()>0;
 		})
-    .map(function(el){return el[1];})    
-    .value();
-    console.log(mother_cats_to_filter);
-    // .each(function(cat){
-    // 	      var ids = filterByCatalogs(_(choices).values(),cat, true);
-    // 	      _(ids).each(function(_id){
-    // 			      mother_codes_to_filter.push(_id);
-    // 			  });
-    // 	  })
-    }
+	.map(function(el){return el[1];});
+
+    filtered_mothers=mother_cats_to_filter
+	.map(function(cat){
+		 return filterByCatalogs(_(choices).values(),cat, true);
+	     })
+	.flatten()
+	.map(function(com){return com['_id'];});
+    var mother_select = jgetSelectByRow($('#' + parts['mother']));
+    mother_select.find('option').prop('disabled',false);
+    filtered_mothers.each(function(code){
+			      jgetOption(mother_select, code).prop('disabled',true);
+			  });
+    mother_select.trigger("liszt:updated");
 }
 
 function installProcFilters(){
@@ -79,7 +81,7 @@ function installProcFilters(){
 			  else
 			      ob[brand] = [component['_id']];
 			  proc_catalogs[component['_id']] = cats;
-			 }
+		      }
 		  });
     }
     _(proc_codes).chain()
@@ -150,8 +152,7 @@ function installProcFilters(){
 		      };
 		  }
 		  div.click(switchAll(true));
-	      });
-    console.log(amd);
+	      });    
 };
 
 var masked = false;
