@@ -6,9 +6,9 @@ var proc_codes;
 function setFilterByOption(e){
     var target = $(e.target);
     var codes = target.attr('name').split(',');
-    filtered_codes = _(filtered_codes).difference(codes);
+    filtered_procs = _(filtered_procs).difference(codes);
     if (!target.prop('checked')){
-	filtered_codes = _(filtered_codes).union(codes);
+	filtered_procs = _(filtered_procs).union(codes);
     }
     _(codes).each(function(code){
 		      var select = jgetSelectByRow($('#' + parts['proc']));
@@ -16,8 +16,9 @@ function setFilterByOption(e){
 		      op.prop('disabled',!target.prop('checked'));
 		      select.trigger("liszt:updated");
 		      });
-    if (filtered_codes.length>0)
-    var filtered_catalogs = _(filtered_codes).chain()
+    if (filtered_procs.length>0){
+	    
+    var filtered_catalogs = _(filtered_procs).chain()
 	.map(function(code){return choices[code].catalogs;})
 	.uniq(false,function(a){return a.toString();}).value();
     var rest_components = _(filtered_catalogs).chain().map(function(cat){
@@ -30,7 +31,7 @@ function setFilterByOption(e){
 						   })
 	.flatten()
 	.uniq()
-	.difference(filtered_codes)
+	.difference(filtered_procs)
 	.value();
 
     var rest_cats = _(rest_components).chain().map(function(el){return choices[el].catalogs;})
@@ -57,6 +58,7 @@ function setFilterByOption(e){
     // 			      mother_codes_to_filter.push(_id);
     // 			  });
     // 	  })
+    }
 }
 
 function installProcFilters(){

@@ -719,13 +719,19 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
-var filtered_codes = [];
+var filtered_procs = [];
+var filtered_mothers = [];
 
 function getNearestComponent(price, catalogs, delta, same_socket){
     var other_components = _(filterByCatalogs(_(choices).values(),
 							   catalogs, same_socket))
-	.select(function(co){return _(filtered_codes)
-			     .select(function(ex){return ex==co['_id'];})==0;});
+	.chain()
+	.select(function(co){return _(filtered_procs)
+			     .select(function(ex){return ex==co['_id'];})==0;})
+	.select(function(co){return _(filtered_mothers)
+			     .select(function(ex){return ex==co['_id'];})==0;})
+	.value();
+    ;
     var diff = 1000000;
     var component;
     var spare_diff = 1000000;
