@@ -1349,7 +1349,7 @@ class Procs(Resource):
                             couch.openView(designID,
                                            'catalogs',
                                            include_docs=True,key=models.proc_775, stale=False),
-                            #.addCallback(lambda res:('LGA7755',res)),
+                            #.addCallback(lambda res:('LGA755',res)),
                             couch.openView(designID,
                                            'catalogs',
                                            include_docs=True, key=models.proc_fm1, stale=False),

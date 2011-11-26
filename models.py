@@ -597,7 +597,7 @@ def fillChoices():
 				    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True,key=proc_775, stale=False)
-						   .addCallback(lambda res:('LGA7755',res)),
+						   .addCallback(lambda res:('LGA755',res)),
 				    couch.openView(designID,
 						   'catalogs',
 						   include_docs=True, key=proc_fm1, stale=False)

@@ -8,13 +8,32 @@ function setFilterByOption(e){
     var codes = target.attr('name').split(',');
     filtered_codes = _(filtered_codes).difference(codes);
     if (!target.prop('checked')){
-	filtered_codes = _(filtered_codes).union(codes);	
+	filtered_codes = _(filtered_codes).union(codes);
     }
+    var mother_codes = _(codes)
+	.chain()
+	.map(function(code){
+		 var proc = choices[code];
+		 var cat = proc.catalogs;
+		 var mother_cat =_(proc_to_mother_mapping).chain()
+		     .select(function(ca){
+				 return isEqualCatalogs(cat, ca[0]);
+						    })
+		     .map(function(li){return li[1];}).first().value();
+		 return 	_(filterByCatalogs(_(choices).values(),
+						   mother_cat, true))
+		     .map(function(co){
+						     return co['_id'];
+			  });
+	     })
+	.flatten()
+	.uniq()
+	.value();    
     _(codes).each(function(code){
 		      var select = jgetSelectByRow($('#' + parts['proc']));
 		      var op = jgetOption(select, code);
 		      op.prop('disabled',!target.prop('checked'));
-		      select.trigger("liszt:updated");		      
+		      select.trigger("liszt:updated");
 		      });
 }
 function installProcFilters(){

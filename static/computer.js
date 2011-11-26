@@ -17,15 +17,6 @@ var catalogsForVendors = {
 	'vati':[['7363','7396','7613']]
     }
 };
-function installFilter(body){
-    if (!(isVideo(body)||
-	isProc(body)))
-	return;
-    $('.filter').hide();
-    if (isProc(body)){
-	$('#proc_filter').show();	
-    }
-}
 
 function getPartName(_id){
     var cats = getCatalogs(choices[_id]);
@@ -513,8 +504,7 @@ function installBodies(){
 				 var select = jgetSelect(_body);
 				 //??? before it was _id,_id. why???
 				 updateDescription(select.val(),_id);
-			     }
-			     installFilter(_body);
+			     }			     
 			 }
 			 else{
 			     _body.show();

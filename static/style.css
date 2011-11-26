@@ -2108,9 +2108,6 @@ a.modelicon img{
     display:none;
 }
 
-.filter{
-    display:none;
-}
 #proc_filter{
     position:absolute;
     top:250px;
