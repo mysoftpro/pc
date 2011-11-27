@@ -3,6 +3,14 @@ var proc_filter_template_row = _.template('<tr><td><input type="checkbox" checke
 
 var proc_codes;
 
+function getBackgroundPos(el){
+    var bpos = el.css('background-position');
+    if (!bpos)
+	bpos = el.css('background-position-x')+' '+
+	el.css('background-position-y');
+    return bpos;
+}
+
 function setFilterByOption(e){
     var target = $(e.target);
     var pa = target.parent();
@@ -17,12 +25,12 @@ function setFilterByOption(e){
     var all_unchecked = _(all).select(function(el){return $(el).prop('checked');}).length==0;
     var _id = pa.parent().attr('class').replace('filter_list ', '');
     var filter = $('#'+_id);
-    var filter_css = filter.css('background-position').split(' ');
+    var filter_css = getBackgroundPos(filter).split(' ');
     if(all_unchecked){
 	var other = filter.next();
 	if (other[0].tagName.toLowerCase()!=='div')
 	    other = filter.prev();
-	var css = other.css('background-position').split(' ');
+	var css = getBackgroundPos(other).split(' ');
 	if (css[0]=='0px' || css[0]=='0'){
 	    //its ok. shadow filter
 	    filter.css('background-position','58px '+filter_css[1]);
@@ -180,14 +188,15 @@ function installProcFilters(){
 		  function switchAll(all){
 		      return function (e){
 			  var _id = div.attr('id');
-			  var splitted = div.css('background-position').split(' ');
+			  var bpos = getBackgroundPos(div);
+			  var splitted = bpos.split(' ');
 			  if (splitted[0] == '0px' || splitted[0] == '0'){
 			      // can switch off only if other is not switchet off
 			      var other;
 			      if (i%2==0) other = function(el){return el.next();};
 			      else other = function(el){return el.prev();};
-			      var other_splitted = other(div).
-				  css('background-position').split(' ');
+			      var other_bpos = getBackgroundPos(other(div));
+			      var other_splitted = other_bpos.split(' ');
 			      if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
 				  return;
 			      div.css({'background-position':'58px '+splitted[1]});
