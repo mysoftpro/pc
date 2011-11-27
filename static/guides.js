@@ -61,6 +61,13 @@ function setFilterByOption(e){
 			      jgetOption(mother_select, code).prop('disabled',true);
 			  });
     mother_select.trigger("liszt:updated");
+    var currentProc = code('proc');
+    if (_(filtered_procs).select(function(c){return c== currentProc;})>0)
+	jgetProcBody().parent().find('.better').click();
+    var currentMother = code('mother');
+    if (_(filtered_procs).select(function(c){return c== currentProc;})>0)
+	jgetMotherBody().parent().find('.better').click();
+    
 }
 
 function installProcFilters(){

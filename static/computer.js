@@ -817,8 +817,7 @@ function cheaperBetter(){
 	}
 	if (!hasNoVideo)return;
 
-	var guard = 10;
-	//here check 27.11.2011
+	var guard = 20;	
 	while(!changeComponent(body, new_component, old_component)){
 	    if (guard==0)return;
 	    guard-=1;
