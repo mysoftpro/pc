@@ -5,6 +5,39 @@ var proc_codes;
 
 function setFilterByOption(e){
     var target = $(e.target);
+    var pa = target.parent();
+    var guard= 10;
+    while (pa[0].tagName.toLowerCase() != 'table'){
+	pa = pa.parent();
+	guard-=1;
+	if (guard==0) break;
+    }
+
+    var all = pa.find('input').toArray();
+    var all_unchecked = _(all).select(function(el){return $(el).prop('checked');}).length==0;
+    var _id = pa.parent().attr('class').replace('filter_list ', '');
+    var filter = $('#'+_id);
+    var filter_css = filter.css('background-position').split(' ');
+    if(all_unchecked){
+	var other = filter.next();
+	if (other[0].tagName.toLowerCase()!=='div')
+	    other = filter.prev();
+	var css = other.css('background-position').split(' ');
+	if (css[0]=='0px' || css[0]=='0'){
+	    //its ok. shadow filter
+	    filter.css('background-position','58px '+filter_css[1]);
+	}
+	else{
+	    // something must be switched on!
+	    target.prop('checked',true);
+	    return;
+	}
+    }
+    else{
+	if (filter_css[0]!=='0px' && filter_css[0]!=='0')
+	    filter.css('background-position','0px '+filter_css[1]);
+    }
+
     var codes = target.attr('name').split(',');
     filtered_procs = _(filtered_procs).difference(codes);
     if (!target.prop('checked')){
@@ -67,7 +100,7 @@ function setFilterByOption(e){
     var currentMother = code('mother');
     if (_(filtered_procs).select(function(c){return c== currentProc;})>0)
 	jgetMotherBody().parent().find('.better').click();
-    
+
 }
 
 function installProcFilters(){
@@ -148,18 +181,24 @@ function installProcFilters(){
 				  return;
 			      div.css({'background-position':'58px '+splitted[1]});
 			      div.attr('title', div.attr('title').replace('Исключить','Включить'));
+			      if (all){
+				  var inps = $('.'+_id).find('input').toArray();
+				  _(inps).each(function(el){
+						var inpt = $(el);
+						if (inpt.prop('checked'))
+						    inpt.click();
+					    });
+
+			      }
 			  }
 			  else{
 			      div.css({'background-position':'0px '+splitted[1]});
 			      div.attr('title', div.attr('title').replace('Включить','Исключить'));
 			  }
-			  if (all){
-				  $('.'+_id).find('input').click();
-			  }
 		      };
 		  }
 		  div.click(switchAll(true));
-	      });    
+	      });
 };
 
 var masked = false;
