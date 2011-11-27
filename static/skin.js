@@ -141,7 +141,7 @@ var init = function(){
 				  });
     var gwidth = $(window).width();
     if (gwidth <= 1010){
-	$('#vendors').remove();$('#rank').remove();$('#themes').remove();
+	$('#vendors').remove();$('#rank').remove();$('#themes').remove();$('#proc_filter').remove();
 	return;
     }
 
