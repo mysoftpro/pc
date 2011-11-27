@@ -1614,26 +1614,39 @@ function init(){
     $('#buildprice').text(buildprice+' р');
     $('#dvdprice').text(dvdprice+' р');
 
-    if (author && $.cookie('pc_user')==author){
+    if (author){
+	var was_replaced_t = _.template("Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. {{save}}");
+	var was_replaced = '';
+	if ($.cookie('pc_user')==author)
+	    was_replaced = was_replaced_t({save:"Нажмите 'Сохранить' чтобы зафиксировать изменения"});
+	else
+	    was_replaced = was_replaced_t({save:""});
+	
+	function clearGuider(gu,td){
+	    return function(e){
+		gu.remove();
+		td.css('border','none');
+	    };
+	}
 	for (var i=0;i<replaced.length;i++){
 	    var td = $('#'+replaced[i]);
+	    var _id = td.attr('id');
 	    if (td.css('display')=='none')
 		td = td.prev();
 	    td.css('border','1px solid red');
 	    guider.createGuider({
 				    attachTo: td,
-				    description: "Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Нажмите 'Сохранить' чтобы зафиксировать изменения",
+				    description: was_replaced,
 				    position: 1,
-				    width: 500
+				    width: 500,
+				    id:_id
 				}).show();
+	    var guider_el = guider._guiderById(_id).elem;
+	    var guider_content =guider_el.find('.guider_content').find('p');
+	    guider_content.before('<div class="closeg"></div>');
+	    console.log(td);
+	    guider_el.find('.closeg').click(clearGuider(guider_el,td));
 	}
-	var guides = $('.guider_content');
-	for (var i=0;i<guides.length;i++){
-	    $(guides.get(i)).find('p').before('<div class="closeg"></div>');
-	}
-	$('.closeg').click(function(e){
-			       $(e.target).parent().parent().remove();
-			   });
 	if (!processing){
 	    $('#greset')
 		.css({'background-position':'0 -45px','color':'black'})
