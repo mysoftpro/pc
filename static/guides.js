@@ -491,15 +491,21 @@ var init = function(){
     $('.our').hide();
 };
 init();
-var procs = _(jgetSelectByRow($('#' + parts['proc']))
-	      .find('option')).map(function(el){
-				       return $(el).val();
-				   })
-    .join('&c=');
-$.ajax({
-	   url:'/params_for?c='+procs+'&type=proc',
-	   success:function(data){
-	       proc_codes = data;
-	       installProcFilters();
-	   }
-       });
+if ($('#proc_filter').length>0){
+    function installFilter(){
+	
+	var procs = _(jgetSelectByRow($('#' + parts['proc']))
+		      .find('option')).map(function(el){
+					       return $(el).val();
+					   })
+	    .join('&c=');
+	$.ajax({
+		   url:'/params_for?c='+procs+'&type=proc',
+		   success:function(data){
+		       proc_codes = data;
+		       installProcFilters();
+		   }
+	       });    
+    }
+    installFilter();
+}
