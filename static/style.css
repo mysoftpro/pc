@@ -2121,8 +2121,24 @@ a.modelicon img{
     cursor:pointer;
     float:left;
 }
+#proc_filter span{
+    display:block;
+    margin-left:13px;
+    font-size:12px;
+}
 .filter_list{
     position:absolute;
-    top:290px;
+    top:315px;
     left:10px;   
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border:1px solid #999;
+    background-color:#3f3f3f;
+    /* -moz-box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
+    /* -webkit-box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
+    /* box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
 }
