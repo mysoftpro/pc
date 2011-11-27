@@ -193,7 +193,9 @@ function recalculate(){
 }
 
 function getCatalogs(component){
-    return component.catalogs;//_(component.catalogs).map(function(el){return el['id'];});
+    if (!component.catalogs)
+	return ['','',''];
+    return component.catalogs;
 }
 
 
@@ -817,13 +819,13 @@ function cheaperBetter(){
 	}
 	if (!hasNoVideo)return;
 
-	var guard = 20;	
+	var guard = 20;
 	while(!changeComponent(body, new_component, old_component)){
 	    if (guard==0)return;
 	    guard-=1;
 	    appr_components = getNearestComponent(new_component.price,
 	 					getCatalogs(new_component),
-	 					delta, false);	    
+	 					delta, false);
 	    new_component = appr_components[0];
 	    changeComponent(body, new_component, old_component);
 	}
