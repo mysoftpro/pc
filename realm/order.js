@@ -45,7 +45,7 @@ function fillForm(_data){
         .sort(function(x,y){return x['order']-y['order'];});
     }
 
-    $('#ordertable').before(_.template('<h3>Заказ модели:{{model}}</h3>',
+    $('#ordertable').before(_.template('<h3>Заказ модели:<a href="/computer/{{model}}">{{model}}</a></h3>',
                                       {model:model['_id']}))
     .before(_.template('<a target="_blank" id="warranty_link" href="/admin/warranty.html?id={{_id}}">Бланк гарантии</a>',
                        {_id:model['_id']}))

@@ -1480,20 +1480,24 @@ class FindOrder(Resource):
         from copy import deepcopy
 
         for k,v in model_user[0][1]['items'].items():
+            print k,v
             component = None
             if v is not None:
-                if type(v) is list:
-                    # component = couch.openDoc(v[0])
-                    # TODO! what if no component in choices?????????
-                    component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
-                    component.addCallback(addCount(len(v)))
-                else:
-                    if not v.startswith('no'):
-                        # component = couch.openDoc(v)
-                        component = wrap(deepcopy(models.gChoices_flatten[v]))
-                        component.addCallback(addCount(1))
+                try:
+                    if type(v) is list:
+                        # component = couch.openDoc(v[0])
+                        # TODO! what if no component in choices?????????
+                        component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
+                        component.addCallback(addCount(len(v)))
                     else:
-                        component = wrap(noComponentFactory({}, k))
+                        if not v.startswith('no'):
+                            # component = couch.openDoc(v)
+                            component = wrap(deepcopy(models.gChoices_flatten[v]))
+                            component.addCallback(addCount(1))
+                        else:
+                            component = wrap(noComponentFactory({}, k))
+                except KeyError:
+                    component = wrap(noComponentFactory({}, k))
             else:
                 component = wrap(noComponentFactory({}, k))
             component.addCallback(addPrice())
