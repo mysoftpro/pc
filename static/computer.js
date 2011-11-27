@@ -1644,7 +1644,6 @@ function init(){
 	    var guider_el = guider._guiderById(_id).elem;
 	    var guider_content =guider_el.find('.guider_content').find('p');
 	    guider_content.before('<div class="closeg"></div>');
-	    console.log(td);
 	    guider_el.find('.closeg').click(clearGuider(guider_el,td));
 	}
 	if (!processing){
