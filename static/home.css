@@ -1953,7 +1953,7 @@ a.modelicon img{
 #vendors div{
     height:29px;
     width:34px;
-    background-image:url('vendors_switchers.png');
+    background-image:url('vendors_switchers_home.png');
     cursor:pointer;
     margin-top:10px;
 }
@@ -2112,4 +2112,116 @@ a.modelicon img{
     padding-left: 130px;
     padding-top: 20px;
     width: 200px;
+}
+
+.promotion_top{
+    height: 110px;
+    padding-top: 20px;
+    margin-bottom:50px;
+}
+#prheader{
+    text-shadow: 0 5px 10px #506A12;
+    color:#75a001;
+    font-size: 45px;
+    float:left;
+}
+#pprice{
+    background-image: url("promotion/price_tag-999px.png");
+    background-repeat: no-repeat;
+    color: white;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    height: 60px;
+    padding-left: 26px;
+    padding-top: 55px;
+    width: 120px;
+    margin-top:-80px;
+}
+#pprice span{
+    font-size:14px;
+    margin-left:-5px;
+}
+#pdesc{
+    color:#ddd;
+    font-size:20px;
+    text-shadow: 0 2px 3px #222;
+    margin-top:6px;
+}
+#promostuff{
+    float:left;
+    width:50%;
+}
+#promostuff td{
+    cursor:pointer;
+}
+#promo_description{
+    float:right;
+    width:480px;
+    text-align:justify;
+    font-size:18px;
+}
+#pbottom{
+    color: #AAA;
+    font-size: 20px;
+    text-shadow: 0 1px 2px #222;
+}
+#pdesc .small_cart{
+    margin-right: 20px;
+    margin-top: -16px;
+    color:#333;
+    text-shadow:none;
+}
+#promo_image{
+    width:500px;
+    height:300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#promo_image img{
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#pdesc p{
+    font-size:16px;
+}
+.pprice{
+    display:none;
+}
+
+#proc_filter{
+    position:absolute;
+    top:250px;
+    left:10px;
+    height:29px;
+}
+#proc_filter div{
+    width:34px;
+    height:30px;
+    background-image:url('vendors_switchers_home.png');
+    cursor:pointer;
+    float:left;
+}
+#proc_filter span{
+    display:block;
+    margin-left:13px;
+    font-size:12px;
+}
+.filter_list{
+    position:absolute;
+    top:315px;
+    left:10px;   
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius:5px 5px 5px 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border:1px solid #999;
+    background-color:white;
+    /* -moz-box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
+    /* -webkit-box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
+    /* box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
 }
