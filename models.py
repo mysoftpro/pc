@@ -172,9 +172,14 @@ def makePrice(doc):
 
 def cleanDoc(doc, price):
     new_doc = {}
+    to_clean = ['id', 'text', '_attachments','description','flags','inCart',
+		     'ordered','reserved','stock1', '_rev', 'warranty_type']
+    if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc) and \
+            (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
+        to_clean.append('sli')
+        to_clean.append('crossfire')
     for token in doc:
-	if token in ['id', 'text', '_attachments','description','flags','inCart',
-		     'ordered','reserved','stock1', '_rev', 'warranty_type']:
+	if token in to_clean:
 	    continue
 	if token == 'catalogs':
 	    new_doc.update({token:getCatalogsKey(doc)})
