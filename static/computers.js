@@ -79,7 +79,7 @@ function addSlider(){
 				     .sortBy(getPrice);
 				 var procs = line
 				     .last()
-				     .sortBy(getPrice);				 
+				     .sortBy(getPrice);
 				 data['v'].push({'no':0});
 				 var videos = _(data['v'])
 				     .chain()
@@ -593,265 +593,266 @@ function addProcs(infos, url){
 }
 
 
-var init = function(){	       
-	       $('#pricetext input').prop('checked','checked');
-	       $('#pricetext input').click(changePrices);
-	       var uls = $('ul.description');
-	       for (var j=0;j<uls.length;j++){
+var init = function(){
+    $('#pricetext input').prop('checked','checked');
+    $('#pricetext input').click(changePrices);
+    var uls = $('ul.description');
+    for (var j=0;j<uls.length;j++){
 
-		   var ul = $(uls.get(j));
-		   var lis = ul.children();
-		   for (var i=0;i<lis.length;i++){
-		       var li = $(lis.get(i));
-		       li.html(li.text());
-		   }
-	       }
-	       var guidermove = '<div class="guidermove">'+
-		   '<a class="guiderup guiderdiv">вверх</a>' +
-		   '<a class="guiderdown guiderdiv">вниз</a>' +
-		   '<a class="guiderleft guiderdiv">влево</a>' +
-		   '<a class="guiderright guiderdiv">вправо</a>';
-	       var guider_hours = {
-		   "guiderup":11,
-		   "guiderdown":6,
-		   "guiderleft":9,
-		   "guiderright":3
-	       };
+	var ul = $(uls.get(j));
+	var lis = ul.children();
+	for (var i=0;i<lis.length;i++){
+	    var li = $(lis.get(i));
+	    li.html(li.text());
+	}
+    }
+    var guidermove = '<div class="guidermove">'+
+	'<a class="guiderup guiderdiv">вверх</a>' +
+	'<a class="guiderdown guiderdiv">вниз</a>' +
+	'<a class="guiderleft guiderdiv">влево</a>' +
+	'<a class="guiderright guiderdiv">вправо</a>';
+    var guider_hours = {
+	"guiderup":11,
+	"guiderdown":6,
+	"guiderleft":9,
+	"guiderright":3
+    };
 
-	       function makeGuider(target, hour){
-		   target.unbind('click');
-		   var data_ul = target.parent().next().find('ul');
-		   var ul = $(document.createElement('ul'));
-		   ul.append(data_ul.html());
-		   ul.find('li').click(function(e){
-					   e.preventDefault();
-					   var _id = e.target.id.split('_')[1];
-					   $.ajax({
-						      url:'/component?id='+_id,
-						      success:showDescription(_id)
-						  });
-
+    function makeGuider(target, hour){
+	target.unbind('click');
+	var data_ul = target.parent().next().find('ul');
+	var ul = $(document.createElement('ul'));
+	ul.append(data_ul.html());
+	ul.find('li').click(function(e){
+				e.preventDefault();
+				var _id = e.target.id.split('_')[1];
+				$.ajax({
+					   url:'/component?id='+_id,
+					   success:showDescription(_id)
 				       });
-		   ul.append('<div class="guiderclose guiderdiv">закрыть</div>');
-		   var guider_body = function(el){
-		       while (el.attr('class')!='guider')
-			   el = el.parent();
-		       return el;
-		   };
-		   ul.find('.guiderclose').click(function(_e){
-						     var el = $(_e.target);
-						     guider_body(el).remove();
-						     target.click(function(e){
-								      e.preventDefault();
-								      makeGuider($(e.target), 11);
-								  });
-						 });
-		   ul.append(guidermove);
-		   ul.find('.guidermove')
-		       .children().click(function(e){
-					     var el = $(e.target);
-					     guider_body(el).remove();
-					     makeGuider(target,guider_hours[el.attr('class').split(' ')[0]]);
-					 });
 
-		   ul.append('<div class="guiderzoom guiderdiv">увеличить</div>');
-		   ul.find('.guiderzoom').click(function(e){
-						    var target = $(e.target);
-						    var gui = guider_body(target);
-						    var width = parseInt(gui.css('width'));
-						    gui.css('width',width+50+'px');
-						    var lisize = parseInt(gui.find('li').css('font-size'));
-						    gui.find('li').css({
-									   'font-size':lisize+1+'px',
-									   'line-height':lisize+3+'px'
-								       });
-						});
-		   ul.append('<div style="clear:both;"></div>');
-		   guider.createGuider({
-					   attachTo: target,
-					   description: ul,
-					   position: hour,
-					   width: 500,
-					   id:target.parent().attr('id')
-				       }).show();
-		   ul.parent().before('<div class="closeg"></div>');
-		   ul.parent().prev().click(function(e){$(e.target).parent().find('.guiderclose').click();});
-	       }
-
-	       $('.info').click(function(e){
-				    var target = $(e.target);
-				    makeGuider(target, 11);
-				});
-	       // $.cookie('pc_user')
-	       var splitted = document.location.href.split('/');
-	       var uuid = splitted[splitted.length-1].split('?')[0];
-	       if (uuid != 'computer'){
-		   $('.computeritem h2 ').css('margin-top','0px');
-		   $('.info').remove();
-		   $('ul.description')
-		       .css('cursor','pointer')
-		       .find('li').click(showComponent);
-	       }
-	       if (!prices && uuid === $.cookie('pc_user')){
-		   var links = $('a.modellink');
-		   function deleteUUID(_id){
-		       function _deleteUUID(e){
-			   e.preventDefault();
-			   $.ajax({
-				      url:'/delete?uuid='+_id,
-				      success:function(data){
-					  if (data == "ok"){
-					      var cart = $.cookie('pc_cart');
-					      $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
-					      var target = $(e.target);
-					      while (target.attr('class')!='computeritem'){
-						  target = target.parent();
-					      }
-					      target.next().remove();
-					      target.remove();
-					  }
-				      }
-				  });
-		       }
-		       return _deleteUUID;
-		   }
-		   for(var i=0;i<links.length;i++){
-		       var span = $(links.get(i)).next();
-		       var _id = span.attr('id');
-		       if (span.parent().attr('class').match('processing')){
-			   span.parent().css('width','600px');
-			   span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
-			   continue;
-		       }
-		       span.parent().css('width','260px');
-		       span.after('<a class="edit_links" href="">удалить</a>');
-		       span.next().click(deleteUUID(_id));
-		   }
-		   $('#models_container')
-		       .append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
-		   $('#deleteall').click(function(e){
-					     e.preventDefault();
-					     $.ajax({
-							url:'/deleteAll',
-							success:function(e){
-							    document.location.href =
-								'http://'+document.location.host;
-							}
-						    });
-					 });
-	       }
-	       $('.cnname').click(showComponent);
-
-	       function deleteNote(noteDiv){
-		   function _deleteNote(e){
-		       var splitted = noteDiv.attr('id').split('_');
-		       $.ajax({
-				  url:'/deleteNote',
-				  data:{'uuid':splitted[0],id:splitted[1]},
-				  success:function(data){
-				      if (data == "ok"){
-					  var cart = $.cookie('pc_cart');
-					  $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
-					  noteDiv.parent().remove();
-				      }
-				  }
+			    });
+	ul.append('<div class="guiderclose guiderdiv">закрыть</div>');
+	var guider_body = function(el){
+	    while (el.attr('class')!='guider')
+		el = el.parent();
+	    return el;
+	};
+	ul.find('.guiderclose').click(function(_e){
+					  var el = $(_e.target);
+					  guider_body(el).remove();
+					  target.click(function(e){
+							   e.preventDefault();
+							   makeGuider($(e.target), 11);
+						       });
+				      });
+	ul.append(guidermove);
+	ul.find('.guidermove')
+	    .children().click(function(e){
+				  var el = $(e.target);
+				  guider_body(el).remove();
+				  makeGuider(target,guider_hours[el.attr('class').split(' ')[0]]);
 			      });
-		   }
-		   return _deleteNote;
-	       }
-	       var note_links = $('strong.modellink');
-	       for (var i=0;i<note_links.length;i++){
-		   var nlink = $(note_links.get(i));
-		   nlink.parent().css('width','260px');
-		   nlink.next().after('<a class="edit_links">удалить</a>');
-		   nlink.next().next().click(deleteNote(nlink.parent().parent().next()));
-	       }
 
-	       $('#home').click(function(e){
-				    e.preventDefault();
-				    renderCategories(['mstorage','mspline','mshade'],'home');
-				    $('h1').first().text('Компьютеры для дома');
-				});;
-	       $('#work').click(function(e){
-				    e.preventDefault();
-				    renderCategories(['mscroll','mlocalhost','mchart'],'work');
-				    $('h1').first().text('Компьютеры для работы');
-				});
-	       $('#admin').click(function(e){
-				     e.preventDefault();
-				     renderCategories(['mping','mcell','mcompiler'], 'admin');
-				     $('h1').first().text('Компьютеры для айтишников');
+	ul.append('<div class="guiderzoom guiderdiv">увеличить</div>');
+	ul.find('.guiderzoom').click(function(e){
+					 var target = $(e.target);
+					 var gui = guider_body(target);
+					 var width = parseInt(gui.css('width'));
+					 gui.css('width',width+50+'px');
+					 var lisize = parseInt(gui.find('li').css('font-size'));
+					 gui.find('li').css({
+								'font-size':lisize+1+'px',
+								'line-height':lisize+3+'px'
+							    });
+				     });
+	ul.append('<div style="clear:both;"></div>');
+	guider.createGuider({
+				attachTo: target,
+				description: ul,
+				position: hour,
+				width: 500,
+				id:target.parent().attr('id')
+			    }).show();
+	ul.parent().before('<div class="closeg"></div>');
+	ul.parent().prev().click(function(e){$(e.target).parent().find('.guiderclose').click();});
+    }
+
+    $('.info').click(function(e){
+			 var target = $(e.target);
+			 makeGuider(target, 11);
+		     });
+    // $.cookie('pc_user')
+    var splitted = document.location.href.split('/');
+    var uuid = splitted[splitted.length-1].split('?')[0];
+    if (uuid != 'computer'){
+	$('.computeritem h2 ').css('margin-top','0px');
+	$('.info').remove();
+	$('ul.description')
+	    .css('cursor','pointer')
+	    .find('li').click(showComponent);
+    }
+    if (!prices && uuid === $.cookie('pc_user')){
+	var links = $('a.modellink');
+	function deleteUUID(_id){
+	    function _deleteUUID(e){
+		e.preventDefault();
+		$.ajax({
+			   url:'/delete?uuid='+_id,
+			   success:function(data){
+			       if (data == "ok"){
+				   var cart = $.cookie('pc_cart');
+				   $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
+				   var target = $(e.target);
+				   while (target.attr('class')!='computeritem'){
+				       target = target.parent();
+				   }
+				   target.next().remove();
+				   target.remove();
+			       }
+			   }
+		       });
+	    }
+	    return _deleteUUID;
+	}
+	for(var i=0;i<links.length;i++){
+	    var span = $(links.get(i)).next();
+	    var _id = span.attr('id');
+	    if (span.parent().attr('class').match('processing')){
+		span.parent().css('width','600px');
+		span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
+		continue;
+	    }
+	    span.parent().css('width','260px');
+	    span.after('<a class="edit_links" href="">удалить</a>');
+	    span.next().click(deleteUUID(_id));
+	}
+	$('#models_container')
+	    .append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
+	$('#deleteall').click(function(e){
+				  e.preventDefault();
+				  $.ajax({
+					     url:'/deleteAll',
+					     success:function(e){
+						 document.location.href =
+						     'http://'+document.location.host;
+					     }
+					 });
+			      });
+    }
+    $('.cnname').click(showComponent);
+
+    function deleteNote(noteDiv){
+	function _deleteNote(e){
+	    var splitted = noteDiv.attr('id').split('_');
+	    $.ajax({
+		       url:'/deleteNote',
+		       data:{'uuid':splitted[0],id:splitted[1]},
+		       success:function(data){
+			   if (data == "ok"){
+			       var cart = $.cookie('pc_cart');
+			       $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
+			       noteDiv.parent().remove();
+			   }
+		       }
+		   });
+	}
+	return _deleteNote;
+    }
+    var note_links = $('strong.modellink');
+    for (var i=0;i<note_links.length;i++){
+	var nlink = $(note_links.get(i));
+	nlink.parent().css('width','260px');
+	nlink.next().after('<a class="edit_links">удалить</a>');
+	nlink.next().next().click(deleteNote(nlink.parent().parent().next()));
+    }
+
+    $('#home').click(function(e){
+			 e.preventDefault();
+			 renderCategories(['mstorage','mspline','mshade'],'home');
+			 $('h1').first().text('Компьютеры для дома');
+		     });;
+    $('#work').click(function(e){
+			 e.preventDefault();
+			 renderCategories(['mscroll','mlocalhost','mchart'],'work');
+			 $('h1').first().text('Компьютеры для работы');
+		     });
+    $('#admin').click(function(e){
+			  e.preventDefault();
+			  renderCategories(['mping','mcell','mcompiler'], 'admin');
+			  $('h1').first().text('Компьютеры для айтишников');
+		      });
+    $('#game').click(function(e){
+			 e.preventDefault();
+			 renderCategories(['mzoom','mrender','mraytrace'],'game');
+			 $('h1').first().text('Игровые компьютеры');
+		     });
+
+
+    _(['home','admin','work','game']).each(function(e){
+					       if (document.location.hash.match(e)){
+						   $('#'+e).click();
+						   getPopularity();
+					       }
+					   });
+
+    var full_descr = $('.full_desc');
+    if (full_descr.length>0 && $('.small_square_button').length==0){
+	//category view. install buttons.
+	for (var i=0;i<full_descr.length;i++){
+	    var container = $(full_descr.get(i));
+	    var el = container.attr('id').substring('desc_'.length,container.attr('id')
+						    .length);
+	    container.html(container.text());
+	    container.append(panel_template);
+	    $('h1').text($('title').text().split('. ')[1]);
+	    container
+		.find('.small_cart')
+		.click(savemodel(el));
+	    container
+		.find('.small_reset')
+		.click(gotomodel(el));
+	}
+    }
+    else{
+	getPopularity();
+    }
+
+
+    var cats_binded = {};
+    $('#categories a').mouseover(function(e){
+				     var target = $(e.target);
+				     var pos = target.css('background-position');
+				     var hor = pos.split(' ')[1];
+				     target.css('background-position','72px '+hor);
+				     if (cats_binded[target.attr('id')])
+					 return;
+				     target.unbind('mouseleve')
+					 .mouseleave(function(e){
+							 target
+							     .css('background-position'
+								  ,pos);
+							 cats_binded[taget.attr('id')] = true;
+
+
+						     });
 				 });
-	       $('#game').click(function(e){
-				    e.preventDefault();
-				    renderCategories(['mzoom','mrender','mraytrace'],'game');
-				    $('h1').first().text('Игровые компьютеры');
-				});
+    if (document.location.href.match('cart'))return;
+    function stats(e){
+	var target = $(e.target);
+	var href = target.attr('href');
+	if (href==undefined)
+	    href = target.parent().attr('href');
+	storeModelStat(href);
+    }
 
+    $('.modelicon').click(stats);
+    $('.modellink').click(stats);
 
-	       _(['home','admin','work','game']).each(function(e){
-							  if (document.location.hash.match(e)){
-							      $('#'+e).click();
-							      getPopularity();
-							  }
-						      });
+    addSlider();
+    addLogos();
 
-	       var full_descr = $('.full_desc');
-	       if (full_descr.length>0 && $('.small_square_button').length==0){
-		   //category view. install buttons.
-		   for (var i=0;i<full_descr.length;i++){
-		       var container = $(full_descr.get(i));
-		       var el = container.attr('id').substring('desc_'.length,container.attr('id')
-							       .length);
-		       container.html(container.text());
-		       container.append(panel_template);
-		       $('h1').text($('title').text().split('. ')[1]);
-		       container
-			   .find('.small_cart')
-			   .click(savemodel(el));
-		       container
-			   .find('.small_reset')
-			   .click(gotomodel(el));
-		   }
-	       }
-	       else{
-		   getPopularity();
-	       }
-
-
-	       var cats_binded = {};
-	       $('#categories a').mouseover(function(e){
-						var target = $(e.target);
-						var pos = target.css('background-position');
-						var hor = pos.split(' ')[1];
-						target.css('background-position','72px '+hor);
-						if (cats_binded[target.attr('id')])
-						    return;
-						target.unbind('mouseleve')
-						    .mouseleave(function(e){
-								    target
-									.css('background-position'
-									     ,pos);
-								    cats_binded[taget.attr('id')] = true;
-
-
-								});
-					    });
-	       if (document.location.href.match('cart'))return;
-	       function stats(e){
-		   var target = $(e.target);
-		   var href = target.attr('href');
-		   if (href==undefined)
-		       href = target.parent().attr('href');
-		   storeModelStat(href);
-	       }
-
-	       $('.modelicon').click(stats);
-	       $('.modellink').click(stats);
-
-	       addSlider();
-	       addLogos();
-	   };
+};
 init();
 head.ready(function(){
 	       var _ya_share = $('#ya_share_cart');
@@ -875,5 +876,11 @@ head.ready(function(){
 							       }
 							   });
 						});
-	       }	       
+	       }
+	       $(window).hashchange(function() {					
+					if (document.location.hash==''){
+					    document.location.href = document.location.href;
+					    console.log(1);
+					}
+				    });
 	   });
