@@ -1242,6 +1242,7 @@ class AdminGate(Resource):
         self.putChild('storemodel', StoreModel())
         self.putChild('mothers', Mothers())
         self.putChild('store_mother', StoreMother())
+        self.putChild('store_promo', StorePromo())        
         self.putChild('procs', Procs())
         self.putChild('store_proc', StoreProc())
         self.putChild('videos', Videos())
@@ -1254,6 +1255,7 @@ class AdminGate(Resource):
         self.putChild('comet', AdminComet())
         self.putChild('acceptComet', AcceptComet())
         self.putChild('session', SessionGetter())
+        self.putChild('promo', Promo())
 
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
@@ -1262,6 +1264,32 @@ class AdminGate(Resource):
         if 'html' in name or 'js' in name or 'jpg' in name:
             return self.static.getChild(name, request)
         return self
+
+
+
+class Promo(Resource):
+    
+    def finish(self, components, promo, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(simplejson.dumps({'components':components, 'promo':promo}))
+        request.finish()
+
+    def fillComponents(self, promo, request):
+        components = []
+        for c in promo['components']:
+            components.append(couch.openDoc(c['code']))
+        li = defer.DeferredList(components)
+        li.addCallback(self.finish, promo, request)
+        return li
+        
+                         
+    def render_GET(self, request):
+        key = request.args.get('key',[None])[0]
+        if key is None: return "ok"
+        promo = couch.openDoc(key)
+        promo.addCallback(self.fillComponents, request)
+        return NOT_DONE_YET
 
 
 class Mothers(Resource):
@@ -1619,6 +1647,24 @@ class StoreOrder(Resource):
         d = couch.saveDoc(model)
         d.addCallback(self.storeOrder, jorder,model,request)
         return NOT_DONE_YET
+
+
+class StorePromo(Resource):
+    def finish(self, doc, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write(str(doc['rev']))
+        request.finish()
+
+    def render_POST(self, request):
+        promo = request.args.get('promo')[0]
+        jpromo = simplejson.loads(promo)
+        d = couch.saveDoc(jpromo)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+
 
 class StoreMother(Resource):
     def finish(self, doc, request):

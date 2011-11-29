@@ -175,9 +175,9 @@ def cleanDoc(doc, price):
     to_clean = ['id', 'text', '_attachments','description','flags','inCart',
 		     'ordered','reserved','stock1', '_rev', 'warranty_type']
     if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc) and \
-            (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
-        to_clean.append('sli')
-        to_clean.append('crossfire')
+	    (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
+	to_clean.append('sli')
+	to_clean.append('crossfire')
     for token in doc:
 	if token in to_clean:
 	    continue
@@ -337,12 +337,12 @@ def renderComputer(model, template, skin):
 
     def noComponent(name, component_doc, rows):
 	#hack!
-   
+
 
 	try:
-            component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
-        except:
-            pass
+	    component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+	except:
+	    pass
 	if globals()['no_component_added']:return
 	if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
 	no_doc = noComponentFactory(component_doc, name)
@@ -1352,30 +1352,29 @@ def renderPromotion(doc, template, skin):
     record = template.root().find('record')
 
     def setImage(img, src):
-        img.set('src','/image/'+doc['_id']+'/'+src)
+	img.set('src','/image/'+doc['_id']+'/'+src)
     components = {}
     for c in sorted(doc['components'],lambda x,y:x['order']-y['order']):
-        rec = deepcopy(record)
-        tr = rec.find('tr')
-        tds = tr.findall('td')
-        tds[0].find('img').set('src','/static/promotion/'+c['type']+'.png');
-        tds[-1].text = c['name']
-        tr.set('id', c['code'])        
-        stuff.append(tr)
-        if c['order'] == 10:
-            i = template.middle.xpath('//div[@id="promo_image"]')[0].find('img')
-            setImage(i,c['top_image'])
-            desc = template.middle.xpath('//div[@id="promo_description"]')[0]
-            p = etree.Element('p')
-            p.text = c['description']
-            desc.append(p)
-            if 'bottom_images' in c:
-                for i in c['bottom_images']:
-                    img = etree.Element('img')
-                    setImage(img,i)
-                    p.append(img)        
-        c.pop('original_price')            
-        components.update({c['code']:c})
+	rec = deepcopy(record)
+	tr = rec.find('tr')
+	tds = tr.findall('td')
+	tds[0].find('img').set('src','/static/promotion/'+c['type']+'.png');
+	tds[-1].text = c['name']
+	tr.set('id', c['code'])
+	stuff.append(tr)
+	if c['order'] == 10:
+	    i = template.middle.xpath('//div[@id="promo_image"]')[0].find('img')
+	    setImage(i,c['top_image'])
+	    desc = template.middle.xpath('//div[@id="promo_description"]')[0]
+	    p = etree.Element('p')
+	    p.text = c['description']
+	    desc.append(p)
+	    if 'bottom_images' in c:
+		for i in c['bottom_images']:
+		    img = etree.Element('img')
+		    setImage(img,i)
+		    p.append(img)
+	components.update({c['code']:c})
 
     scr = template.middle.find('script')
     scr.text = 'var _id="'+doc['_id']+'";var components='+simplejson.dumps(components)+';'
@@ -1384,7 +1383,7 @@ def renderPromotion(doc, template, skin):
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
     skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
     return skin.render()
-    
+
 def promotion(template, skin, request):
     if globals()['gChoices'] is None:
 	d = fillChoices()
