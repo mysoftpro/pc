@@ -33,13 +33,6 @@ function save(){
 				  });
 	      });
     promo_item.components = components;
-    // var to_delete = [];
-    // _(promo_item.components).each(function(c){
-    // 				      if (c['price'])
-    // 					  delete c['price'];
-    // 				      if (c['original_price'])
-    // 					  delete c['original_price'];
-    // 				  });
     $.ajax({
     	       url:'store_promo',
     	       data:{promo:JSON.stringify(promo_item)},
