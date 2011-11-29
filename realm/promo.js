@@ -2,12 +2,17 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
-var component_template = "<td>{{code}}</td><td><textarea class='name'>{{name}}</textarea></td><td><textarea class='description'>{{description}}</textarea></td><td><input name=\"order\" value=\"{{order}}\"/></td><td>${{price}}</td><td></td>";
+var component_template = "<td><input name=\"code\" value=\"{{code}}\"/></td><td><textarea class='name'>{{name}}</textarea></td><td><textarea class='description'>{{description}}</textarea></td><td><input name=\"order\" value=\"{{order}}\"/></td><td>${{price}}</td><td>{{stock1}}</td>";
 
 function setPrice(data, component){
     var pr =  _(data['components'])
 	.select(function(c){return c[1]['_id']==component.code;});
     component['price'] = pr[0][1]['price'];
+}
+function setStock(data, component){
+    var pr =  _(data['components'])
+	.select(function(c){return c[1]['_id']==component.code;});
+    component['stock1'] = pr[0][1]['stock1'];
 }
 var promo_item;
 
@@ -40,6 +45,7 @@ function fillPromo(data){
     _(promo_item['components'].sort(function(x,y){return x['order']-y['order'];}))
 	.each(function(c){
 		  setPrice(data,c);
+		  setStock(data,c);
 		  var tr = $(document.createElement('tr'));
 		  table.append(tr);
 		  tr.html(t(c));		  
