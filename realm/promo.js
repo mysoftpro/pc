@@ -2,7 +2,7 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
-var component_template = "<td><input name=\"code\" value=\"{{code}}\"/></td><td><textarea class='name'>{{name}}</textarea></td><td><textarea class='description'>{{description}}</textarea></td><td><input name=\"order\" value=\"{{order}}\"/></td><td>${{price}}</td><td>{{stock1}}</td>";
+var component_template = "<td><input class=\"code\" name=\"code\" value=\"{{code}}\"/></td><td><textarea class='name'>{{name}}</textarea></td><td><textarea class='description'>{{description}}</textarea></td><td><input name=\"order\" class=\"order\" value=\"{{order}}\"/></td><td>${{price}}</td><td>{{stock1}}</td>";
 
 function setPrice(data, component){
     var pr =  _(data['components'])
@@ -17,25 +17,42 @@ function setStock(data, component){
 var promo_item;
 
 function save(){
-    _(promo_item.components).each(function(c){
-				      if (c['price'])
-					  delete c['price'];
-				      if (c['original_price'])
-					  delete c['original_price'];				      
+    var components = [];
+    _($('tr').toArray())
+	.each(function(el){
+		  var tr = $(el);
+		  var _id = tr.attr('id');
+		  if (!_id)return;
+		  components.push({code:tr.find('.code').val(),
+				   name:tr.find('.name').val(),
+				   description:tr.find('.description').val(),
+				   order:parseInt(tr.find('.order').val()),
+				   type:tr.data('type'),
+				   top_image:tr.data('top_image'),
+				   bottom_images:tr.data('bottom_images')
 				  });
+	      });
+    promo_item.components = components;
+    // var to_delete = [];
+    // _(promo_item.components).each(function(c){
+    // 				      if (c['price'])
+    // 					  delete c['price'];
+    // 				      if (c['original_price'])
+    // 					  delete c['original_price'];
+    // 				  });
     $.ajax({
-	       url:'store_promo',
-	       data:{promo:JSON.stringify(promo_item)},
-	       type:'post',
-	       success:function(some){
-		   promo_item['_rev'] = responseText;
-	       },
-	       error:function(some){
-		   if (some.status==200)
-		       promo_item['_rev'] = some.responseText;
-	       }
-	       
-	   });
+    	       url:'store_promo',
+    	       data:{promo:JSON.stringify(promo_item)},
+    	       type:'post',
+    	       success:function(some){
+    		   promo_item['_rev'] = responseText;
+    	       },
+    	       error:function(some){
+    		   if (some.status==200)
+    		       promo_item['_rev'] = some.responseText;
+    	       }
+
+    	   });
 }
 
 function fillPromo(data){
@@ -48,8 +65,12 @@ function fillPromo(data){
 		  setStock(data,c);
 		  var tr = $(document.createElement('tr'));
 		  tr.attr('id', c['code']);
+		  tr.data('type',c['type']);
+		  tr.data('top_image',c['top_image']);
+		  if (c['bottom_images'])
+		      tr.data('bottom_images',c['bottom_images']);
 		  table.append(tr);
-		  tr.html(t(c));		  
+		  tr.html(t(c));
 	      });
     $('#save').click(save);
 }
@@ -59,6 +80,6 @@ $(function(){
       $.ajax({
 		 url:'promo',
 		 data:{'key':key},
-		 success:fillPromo		 
-	     });      
+		 success:fillPromo
+	     });
 });
