@@ -1693,12 +1693,15 @@ function code(_id){
     return jgetSelectByRow($('#' + part)).val();
 }
 function setCode(catalog,code){
+    if (code=='no')
+	code = 'no'+part;
+    var component = choices[code];
+    if (!component)
+	return;
     var part = eval("parts['" + catalog + "']");
     var select = jgetSelectByRow($('#' + part));
     var body = jgetBody(select);
-    if (code=='no')
-	code = 'no'+part;
-    changeComponent(body, choices[code], new_model[select.val()], true);
+    changeComponent(body, component, new_model[select.val()], true);
     installCountButtons(body);
 }
 
