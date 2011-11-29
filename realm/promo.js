@@ -47,6 +47,7 @@ function fillPromo(data){
 		  setPrice(data,c);
 		  setStock(data,c);
 		  var tr = $(document.createElement('tr'));
+		  tr.attr('id', c['code']);
 		  table.append(tr);
 		  tr.html(t(c));		  
 	      });
