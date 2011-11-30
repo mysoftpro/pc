@@ -1272,6 +1272,7 @@ class Promo(Resource):
     def finish(self, components, promo, request):
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        components = [c for c in components if c[0]]
         request.write(simplejson.dumps({'components':components, 'promo':promo}))
         request.finish()
 

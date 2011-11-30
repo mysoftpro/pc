@@ -1025,7 +1025,9 @@ class ComponentForModelsPage(object):
 
     def render(self):
 	li = etree.Element('li')
-	li.text = self.component['text'] + u' <strong>'+ unicode(self.price) + u' р</strong>'
+        li.text = self.component['text']
+	if not 'promo' in self.model:
+             li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
 	li.set('id',self.model['_id']+'_'+self.component['_id'])
 	return li
 
@@ -1107,7 +1109,6 @@ def index(template, skin, request):
         proc_video = {}
         for c in components:
             if c.cat_name == proc:
-                #zzzzzzzzzzzzzzzz
                 proc_video['proc_code'] = c.component['_id']
                 proc_video['proc_catalog'] = getCatalogsKey(c.component)
                 if 'brand' in c.component:
