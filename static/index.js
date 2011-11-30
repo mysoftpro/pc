@@ -1,3 +1,8 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
 var lock = false;
 var greetings_swapped = [];//"Привет!" funxtion(){.ajax({... 30 материнских плат! последнне обновление
 
@@ -111,3 +116,26 @@ _.delay(function(){
 
 	       			       });
 	}, 3000);
+//_7363_7399_7451 _7363_7396_7607 Celeron
+var proc_video_template = '<div class="mvendors inproc {{proc_cat}}" title="Процессор"></div><div class="mvendors invideo {{video_cat}}" title="Видеокарта"></div><div class="iproc"><div title="количество ядер" class="cores"></div><div class="pbrand">{{proc_brand}}</div><div title="Кэш процессора" class="cache">0.5Mb</div><div style="clear: both;"></div></div>';
+_($('.modelprice').toArray())
+    .each(function(el){
+	      var price = $(el);
+	      var proc_and_video = procs_videos[price.attr('id')];
+	      var vi = 'noinvideo';
+	      if (proc_and_video.video_catalog && proc_and_video.video_catalog!=='no'){
+		  vi = '_'+proc_and_video.video_catalog.join('_');
+	      }
+		  
+	      var pro = '';
+	      if (proc_and_video.proc_catalog && proc_and_video.proc_catalog!=='no')
+		  pro ='_'+proc_and_video.proc_catalog.join('_');
+	      var bra = '';
+	      if (proc_and_video.brand)
+		  bra= proc_and_video.brand;
+	      price.parent().after(_.template(proc_video_template,{
+						  proc_cat:pro,
+						  video_cat:vi,
+						  proc_brand:bra
+					      }));
+	  });

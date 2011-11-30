@@ -1103,12 +1103,27 @@ def index(template, skin, request):
 	d.addCallback(lambda some: index(template, skin, request))
 	return d
 
+    def buildProcAndVideo(components):
+        proc_video = {}
+        for c in components:
+            if c.cat_name == proc:
+                #zzzzzzzzzzzzzzzz
+                proc_video['proc_code'] = c.component['_id']
+                proc_video['proc_catalog'] = getCatalogsKey(c.component)
+                if 'brand' in c.component:
+                    proc_video['brand'] = c.component['brand']
+            elif c.cat_name == video:
+                proc_video['video_code'] = c.component['_id']
+                proc_video['video_catalog'] = getCatalogsKey(c.component)
+        return proc_video
+
     def render(result):
 	i = 0
 	models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
 	tree = template.root()
 	div = template.middle.xpath('//div[@id="computers_container"]')[0]
 	json_prices = {}
+        json_procs_and_videos = {}
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	for m in models:
 	    model_snippet = tree.find('model')
@@ -1119,11 +1134,13 @@ def index(template, skin, request):
 	    a.text=m['name']
 	    price_span = snippet.find('.//span')
 	    price_span.set('id',m['_id'])
-	    buildPrices(m, json_prices, price_span)
+	    components = buildPrices(m, json_prices, price_span)
+            json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
 	    div.append(snippet)
 	    i+=1
 	    if i==len(imgs): i=0
-	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
+            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
 	last_update = template.middle.xpath('//span[@id="last_update"]')[0]
 	last_update.text = lastUpdateTime()
 
