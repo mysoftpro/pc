@@ -66,6 +66,18 @@ $('#to_cart').click(function(e){
 						  data:to_send,
 						  success:function(){
 						      alert('Получилось!');
+						      var cart_el = $('#cart');
+						      if (cart_el.length>0){
+							  cart_el.text('Корзина('+$.cookie('pc_cart')+')');
+						      }
+						      else{
+							  if (!data['edit'])
+							      $('#main_menu')
+							      .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+										 {
+										     cart:$.cookie('pc_user')
+										 }));
+						      }
 						  }
 					      });
 				   }
