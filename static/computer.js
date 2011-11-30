@@ -1472,7 +1472,6 @@ function to_cart(edit){
 	}
     }
     to_send['model'] = JSON.stringify(model_to_store);
-    console.log(to_send);
     $.ajax({
 	       url:'/save',
 	       data:to_send,

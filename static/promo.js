@@ -34,21 +34,40 @@ $('#to_cart').click(function(e){
 				    })
 			    .first()
 			    .value();
-			var codes = _(components)
-			    .chain()
-			    .keys()
-			    .select(function(key){
-					return components[key]['type']!='dvd';
-				    })
-			    .value()
-			    .join('&c=');
+			// var codes = _(components)
+			//     .chain()
+			//     .keys()
+			//     .select(function(key){
+			// 		return components[key]['type']!='dvd';
+			// 	    })
+			//     .value()
+			//     .join('&c=');
+			var items=  {};
+			_(components)
+			    .chain().keys().each(function(key){
+						     var cat = parts[components[key]['type']];
+						     if (cat)
+							 items[cat] = key;
+					      }).value();
 			$.ajax({
-				   url:'/catalogs_for?c='+codes,
+				   url:'/catalogs_for?c='+mother_code+'&c='+proc_code,
 				   success:function(data){
-				       var to_send = {};
-				       to_send['mother_catalogs'] = data[mother_code];
-				       to_send['proc_catalogs'] = data[proc_code];
-				       console.log(data);
+				       var model = {};
+				       model['mother_catalogs'] = data[mother_code];
+				       model['proc_catalogs'] = data[proc_code];
+				       model['items'] = items;
+				       model['dvd'] = true;
+				       model['building'] = true;
+				       model['installing'] = true;
+				       model['promo'] = true;
+				       var to_send = {model:JSON.stringify(model)};
+				       $.ajax({
+						  url:'/save',
+						  data:to_send,
+						  success:function(){
+						      alert('Получилось!');
+						  }
+					      });
 				   }
 			       });
 		    });
