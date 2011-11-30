@@ -361,9 +361,9 @@ def renderComputer(model, template, skin):
 	components_json.update({_id:_cleaned_doc})
 
 
-    def fillViewlet(_doc):
+    def fillViewlet(_name, _doc):
 	tr = viewlet.find("tr")
-	tr.set('id',name)
+	tr.set('id',_name)
 	body = viewlet.xpath("//td[@class='body']")[0]
 	body.set('id',_doc['_id'])
 	body.text = re.sub('<font.*</font>', '',_doc['text'])
@@ -408,7 +408,7 @@ def renderComputer(model, template, skin):
 	    component_doc.pop('replaced')
 
 	viewlet = deepcopy(original_viewlet)
-	descr = fillViewlet(component_doc)
+	descr = fillViewlet(name, component_doc)
 
 	price = makePrice(component_doc)
 
@@ -1399,6 +1399,8 @@ def renderPromotion(doc, template, skin):
 
     scr = template.middle.find('script')
     scr.text = 'var _id="'+doc['_id']+'";var components='+simplejson.dumps(components)+';'
+    scr.text += 'var parts = ' + simplejson.dumps(parts_aliases) + ';'
+    template.top.xpath('//div[@id="pprice"]')[0].text = unicode(doc['our_price'])
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')

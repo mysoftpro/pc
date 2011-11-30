@@ -8,6 +8,8 @@ function setPrice(data, component){
     var pr =  _(data['components'])
 	.select(function(c){return c[1]['_id']==component.code;});
     component['price'] = pr[0][1]['price'];
+    if (pr[0][1]['catalogs'][0]['id'] == '7369')//windows
+	component['price'] = Math.round(pr[0][1]['price']/31.5*100)/100;
 }
 function setStock(data, component){
     var pr =  _(data['components'])
@@ -33,6 +35,7 @@ function save(){
 				  });
 	      });
     promo_item.components = components;
+    promo_item.our_price = parseInt($('#our').val());
     $.ajax({
     	       url:'store_promo',
     	       data:{promo:JSON.stringify(promo_item)},
@@ -41,8 +44,10 @@ function save(){
     		   promo_item['_rev'] = responseText;
     	       },
     	       error:function(some){
-    		   if (some.status==200)
-    		       promo_item['_rev'] = some.responseText;
+    		   if (some.status==200){
+		       promo_item['_rev'] = some.responseText;
+		       alert('Получилось!');
+		   }    		       		   
     	       }
 
     	   });
@@ -52,6 +57,7 @@ function fillPromo(data){
     var table = $('#mothertable');
     promo_item = data['promo'];
     var t = _.template(component_template);
+    var summ = 0;
     _(promo_item['components'].sort(function(x,y){return x['order']-y['order'];}))
 	.each(function(c){
 		  setPrice(data,c);
@@ -63,8 +69,12 @@ function fillPromo(data){
 		  if (c['bottom_images'])
 		      tr.data('bottom_images',c['bottom_images']);
 		  table.append(tr);
+		  summ += c['price'];
 		  tr.html(t(c));
 	      });
+    table.before(_.template('<div>Всего ${{us}} = {{ru}}руб</div>',{us:summ,ru:summ*31.5}));
+    table.before(_.template('<div>Наша цена <input id="our" name="our" value="{{our}}"/></div>',
+			    {our:promo_item['our_price']}));
     $('#save').click(save);
 }
 
