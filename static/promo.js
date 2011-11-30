@@ -60,12 +60,9 @@ $('#to_cart').click(function(e){
 				       model['building'] = true;
 				       model['installing'] = true;
 				       model['promo'] = true;
-				       var mname = _(document.location.href.split('/'))
-					   .last().split('?')[0];
-				       if (mname=='promotion')
-					   mname = 'ajax';
-				       model['name'] = mname;
-				       model['title'] = mname;
+				       model['name'] = $('h1').text();
+				       model['title'] = $('#promo_title').text();
+				       model['description'] = $('#promo_desc').text();
 				       var to_send = {model:JSON.stringify(model)};
 				       $.ajax({
 						  url:'/save',
