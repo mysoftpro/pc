@@ -749,7 +749,11 @@ class ModelForModelsPage(object):
 	    header = self.model_div.find('h2')
 	    header.set('class', header.get('class')+ ' processing')
 	a = self.model_div.find('.//a')
-	a.set('href','/computer/%s' % self.model['_id'])
+	if not 'promo' in self.model:
+            a.set('href','/computer/%s' % self.model['_id'])
+        else:
+            # zzzzzzzzzzzzzzzzzzzzzzz
+            a.set('href','')
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
 	else:
@@ -762,7 +766,11 @@ class ModelForModelsPage(object):
 	self.components = buildPrices(self.model, self.json_prices, price_span)
 	case_found = [c for c in self.components if c.cat_name == case]
 	if len(case_found) >0:
-	    self.icon.set('href','/computer/'+self.model['_id'])
+	    if not 'promo' in self.model:
+                self.icon.set('href','/computer/'+self.model['_id'])
+            else:
+                # zzzzzzzzzzzzzzzzzzzzzzz
+                self.icon.set('href','')
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
 
