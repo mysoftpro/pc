@@ -2225,3 +2225,26 @@ a.modelicon img{
     /* -webkit-box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
     /* box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); */
 }
+.iproc{
+    position:relative;
+    top:-77px;
+    left:7px;
+    width:200px;
+    overflow:visible;
+}
+.iproc div{
+    float:left;
+    margin-right:2px;
+    font-size:12px;
+}
+.inproc{
+    left: 143px;
+    top: -142px;
+}
+.invideo{
+    left: 145px;
+    top: -119px;
+}
+.noinvideo{
+    background-image:none;
+}
