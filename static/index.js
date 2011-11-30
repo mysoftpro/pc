@@ -117,7 +117,8 @@ _.delay(function(){
 	       			       });
 	}, 3000);
 //_7363_7399_7451 _7363_7396_7607 Celeron
-var proc_video_template = '<div class="mvendors inproc {{proc_cat}}" title="Процессор"></div><div class="mvendors invideo {{video_cat}}" title="Видеокарта"></div><div class="iproc"><div title="количество ядер" class="cores"></div><div class="pbrand">{{proc_brand}}</div><div title="Кэш процессора" class="cache">0.5Mb</div><div style="clear: both;"></div></div>';
+var core_template = '<div class="cores" title="количество ядер"></div>';
+var proc_video_template = '<div class="mvendors inproc {{proc_cat}}" title="Процессор"></div><div class="mvendors invideo {{video_cat}}" title="Видеокарта"></div><div class="iproc">{{cores}}<div class="pbrand">{{proc_brand}}</div><div title="Кэш процессора" class="cache">{{cache}}</div><div style="clear: both;"></div></div>';
 _($('.modelprice').toArray())
     .each(function(el){
 	      var price = $(el);
@@ -126,16 +127,34 @@ _($('.modelprice').toArray())
 	      if (proc_and_video.video_catalog && proc_and_video.video_catalog!=='no'){
 		  vi = '_'+proc_and_video.video_catalog.join('_');
 	      }
-		  
+
 	      var pro = '';
 	      if (proc_and_video.proc_catalog && proc_and_video.proc_catalog!=='no')
 		  pro ='_'+proc_and_video.proc_catalog.join('_');
 	      var bra = '';
 	      if (proc_and_video.brand)
 		  bra= proc_and_video.brand;
+	      var co = '';
+	      if (proc_and_video.cores){
+		  var cores = [];
+		  while (proc_and_video.cores!=0){
+		      cores.push(core_template);
+		      proc_and_video.cores-=1;
+		  }
+		  co =cores.join('');
+	      }
+
+	      var ca = '';
+	      if (proc_and_video.cache){
+		  var ca= proc_and_video.cache;
+	      }
+
+
 	      price.parent().after(_.template(proc_video_template,{
 						  proc_cat:pro,
 						  video_cat:vi,
-						  proc_brand:bra
+						  proc_brand:bra,
+						  cache:ca,
+						  cores:co
 					      }));
 	  });

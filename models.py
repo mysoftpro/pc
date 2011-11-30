@@ -174,7 +174,7 @@ def cleanDoc(doc, price):
     new_doc = {}
     to_clean = ['id', 'text', '_attachments','description','flags','inCart',
 		     'ordered','reserved','stock1', '_rev', 'warranty_type']
-    if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc) and \
+    if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc and 'stock1' in doc) and \
 	    (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
 	to_clean.append('sli')
 	to_clean.append('crossfire')
@@ -1112,6 +1112,10 @@ def index(template, skin, request):
                 proc_video['proc_catalog'] = getCatalogsKey(c.component)
                 if 'brand' in c.component:
                     proc_video['brand'] = c.component['brand']
+                if 'cores' in c.component:
+                    proc_video['cores'] = c.component['cores']
+                if 'cache' in c.component:
+                    proc_video['cache'] = c.component['cache']
             elif c.cat_name == video:
                 proc_video['video_code'] = c.component['_id']
                 proc_video['video_catalog'] = getCatalogsKey(c.component)
