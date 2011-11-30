@@ -27,7 +27,7 @@ from pc.faq import faq, StoreFaq
 from twisted.internet.task import deferLater
 from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
-
+from pc.di import Di
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
     '/howtouse':u'Как пользоваться сайтом',
@@ -642,6 +642,9 @@ class Root(Cookable):
         self.putChild('rss', Rss())
 
         self.putChild('fromBlog', FromBlog())
+
+        self.putChild('di',Di())
+
 
     def getChild(self, name, request):
         self.checkCookie(request)
