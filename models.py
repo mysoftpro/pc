@@ -1400,7 +1400,11 @@ def renderPromotion(doc, template, skin):
     scr = template.middle.find('script')
     scr.text = 'var _id="'+doc['_id']+'";var components='+simplejson.dumps(components)+';'
     scr.text += 'var parts = ' + simplejson.dumps(parts_aliases) + ';'
+    template.top.xpath('//div[@id="promo_title"]')[0].text = doc['title']
+    template.top.xpath('//div[@id="promo_extra"]')[0].text = doc['extra']
+    template.top.xpath('//p[@id="promo_desc"]')[0].text = doc['description']
     template.top.xpath('//div[@id="pprice"]')[0].text = unicode(doc['our_price'])
+
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
