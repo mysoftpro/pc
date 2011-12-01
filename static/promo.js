@@ -1,20 +1,18 @@
 $('#promostuff td').click(function(e){
+
 			      $('td').css('color','#ddd');
 			      var target = $(e.target);
-			      //target.css('color','#aadd00');
 			      var tr = target.parent();
 			      tr.children().css('color','#aadd00');
 			      var c = components[tr.attr('id')];
+
 			      var p = $('#promo_description p');
+			      p.parent().css('opacity','0.0');
 			      p.html(c['description']);
 			      while(p.next().length>0)
 				  p.next().remove();
 			      $('#promo_image img').attr('src','/image/'+_id+'/'+c['top_image']);
-			      // if (c['bottom_images'])
-			      // 	  _(c['bottom_images']).each(function(img){
-			      // 					 p.after('<img src="/image/'+
-			      // 						  _id+'/'+img+'"/>');
-			      // 				     });
+			      p.parent().animate({'opacity':'1.0'},500);
 
 			  });
 $('#to_cart').click(function(e){
