@@ -4,7 +4,7 @@ _.templateSettings = {
 };
 
 var lock = false;
-var greetings_swapped = [];//"Привет!" funxtion(){.ajax({... 30 материнских плат! последнне обновление
+var greetings_swapped = [];
 
 var empty = {
     'background-position':'0 -209px',
@@ -105,13 +105,16 @@ if (!document.location.search.match('skin')){
 	    });
 }
 var banner =$('#greeting_banner');
+var support_html = '<div id="support"><img align="right" src="/static/piza.jpeg"/>Каждый покупатель кроме гарантии получает:<ul><li>поддержку по телефону</li><li> поддержку по интернету</li><li>выезд специалиста</li></ul>Читайте подробнее в разделе <a href="support">поддержка</a></div>';
+
+var promo_html = '<div id="support"><img style="margin-top:-55px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 24900 рублей</div></div>';
+
 _.delay(function(){
 	    banner.find('img').animate({'width':0,'height':0},
 	       			       1000,
 	       			       function(){
 	       				   banner.css('opacity','0');
-					   banner
-					       .html('<div id="support"><img align="right" src="/static/piza.jpeg"/>Каждый покупатель кроме гарантии получает:<ul><li>поддержку по телефону</li><li> поддержку по интернету</li><li>выезд специалиста</li></ul>Читайте подробнее в разделе <a href="support">поддержка</a></div>');
+					   banner.html(promo_html);
 					   banner.animate({'opacity':'1.0'},300);
 
 	       			       });
@@ -158,19 +161,19 @@ _($('.modelprice').toArray())
 						  cores:co
 					      }));
 	  });
-var promo_lock;
-var hlock;
-function showPromo(){
-    var pro = $('#promotion');
-    if (pro.width()!==100)
-	return;
-    pro.animate({width:'1000'},1000);
-}
-function hidePromo(){
-    if (hlock)return;
-    var pro = $('#promotion');
-    if (pro.width()>100)
-	pro.css('width','100px');
-}
-$('#promotion div').first().mouseenter(function(){hlock = true;showPromo();});
-$('#promotion').mouseleave(function(){hlock=false;_.delay(hidePromo, 1000);});
+// var promo_lock;
+// var hlock;
+// function showPromo(){
+//     var pro = $('#promotion');
+//     if (pro.width()!==100)
+// 	return;
+//     pro.animate({width:'1000'},1000);
+// }
+// function hidePromo(){
+//     if (hlock)return;
+//     var pro = $('#promotion');
+//     if (pro.width()>100)
+// 	pro.css('width','100px');
+// }
+// $('#promotion div').first().mouseenter(function(){hlock = true;showPromo();});
+// $('#promotion').mouseleave(function(){hlock=false;_.delay(hidePromo, 1000);});
