@@ -2151,6 +2151,7 @@ a.modelicon img{
 #promostuff{
     float:left;
     width:50%;
+    margin-top:50px;
 }
 #promostuff td{
     cursor:pointer;
@@ -2160,6 +2161,7 @@ a.modelicon img{
     width:480px;
     text-align:justify;
     font-size:18px;
+    margin-top:50px;
 }
 #pbottom{
     color: #AAA;
