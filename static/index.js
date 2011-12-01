@@ -159,6 +159,7 @@ _($('.modelprice').toArray())
 					      }));
 	  });
 var promo_lock;
+var hlock;
 function showPromo(){
     var pro = $('#promotion');
     if (pro.width()>100)
@@ -166,9 +167,10 @@ function showPromo(){
     pro.animate({width:'1000'},1000);
 }
 function hidePromo(){
+    if (hlock)return;
     var pro = $('#promotion');
     if (pro.width()>100)
 	pro.css('width','100px');
 }
-$('#promotion div').first().mouseenter(showPromo);
-$('#promotion').mouseleave(function(){hidePromo();_.delay(hidePromo, 500);});
+$('#promotion div').first().mouseenter(function(){hlock = true;showPromo();});
+$('#promotion').mouseleave(function(){hlock=false;_.delay(hidePromo, 1000);});
