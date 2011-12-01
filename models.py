@@ -753,8 +753,7 @@ class ModelForModelsPage(object):
             a.set('href','/computer/%s' % self.model['_id'])
         else:
             # zzzzzzzzzzzzzzzzzzzzzzz
-            # a.set('href','')
-            pass
+            a.set('href','/promotion/%s' % self.model['parent'])
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
 	else:
@@ -771,7 +770,7 @@ class ModelForModelsPage(object):
                 self.icon.set('href','/computer/'+self.model['_id'])
             else:
                 # zzzzzzzzzzzzzzzzzzzzzzz
-                # self.icon.set('href','')
+                self.icon.set('href','/promotion/'+self.model['parent'])
                 pass
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)

@@ -34,14 +34,7 @@ $('#to_cart').click(function(e){
 				    })
 			    .first()
 			    .value();
-			// var codes = _(components)
-			//     .chain()
-			//     .keys()
-			//     .select(function(key){
-			// 		return components[key]['type']!='dvd';
-			// 	    })
-			//     .value()
-			//     .join('&c=');
+
 			var items=  {};
 			_(components)
 			    .chain().keys().each(function(key){
@@ -63,6 +56,9 @@ $('#to_cart').click(function(e){
 				       model['name'] = $('h1').text();
 				       model['title'] = $('#promo_title').text();
 				       model['description'] = $('#promo_desc').text();
+				       model['parent'] = $('#promo_desc').text();
+				       model['parent'] = _(document.location.href.split('/'))
+					   .last().split('?')[0];
 				       var to_send = {model:JSON.stringify(model)};
 				       $.ajax({
 						  url:'/save',

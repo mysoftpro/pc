@@ -1468,8 +1468,11 @@ function to_cart(edit){
 	    to_send['edit'] = 't';
 	}
 	else{
-	    model_to_store['parent'] = uuid;
-	}
+	    model_to_store['parent'] = uuid;   
+	}	
+    }
+    else{
+	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
     }
     to_send['model'] = JSON.stringify(model_to_store);
     $.ajax({
