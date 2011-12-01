@@ -116,7 +116,14 @@ _.delay(function(){
 	       				   banner.css('opacity','0');
 					   banner.html(promo_html);
 					   banner.animate({'opacity':'1.0'},300);
-
+					   if (document.location.search.match('skin')){
+					       _(banner.find('a').toArray())
+						   .each(function(el){
+							     var _el = $(el);
+							     var at = _el.attr('href');
+							     _el.attr('href', at+ '?skin=home');
+							 });
+					   }
 	       			       });
 	}, 3000);
 //_7363_7399_7451 _7363_7396_7607 Celeron
