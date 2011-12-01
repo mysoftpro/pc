@@ -1,3 +1,8 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
 var skin = document.location.search.match('skin');
 $('#promostuff td').click(function(e){
 			      if (!skin)
@@ -86,4 +91,13 @@ $('#to_cart').click(function(e){
 			       });
 		    });
 $('#promostuff td').first().click();
-//$('body').append('<div id="image_storage"></div>');
+$('body').append('<div id="image_storage" style="display:none;"></div>');
+var storage= $('#image_storage');
+_(components)
+    .chain().values().each(function(c){
+			       storage.append(_.template('<img src="/image/{{cid}}/{{img}}"/>',
+						       {
+							   cid:_id,
+							   img:c['top_image']
+						       }));
+			   });

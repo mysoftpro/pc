@@ -162,7 +162,7 @@ var promo_lock;
 var hlock;
 function showPromo(){
     var pro = $('#promotion');
-    if (pro.width()>100)
+    if (pro.width()==100)
 	return;
     pro.animate({width:'1000'},1000);
 }
