@@ -1417,7 +1417,7 @@ def renderPromotion(doc, template, skin):
 
     skin.top = template.top
     skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
+    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 300px;')
     skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
     return skin.render()
 

@@ -91,7 +91,7 @@ if (!document.location.search.match('skin')){
 		guider.createGuider({
 					attachTo: "#autumn",
 					position:5,
-					width:80,
+					width:60,
 					description:"Светлый дизайн"
 				    });
 		_.delay(function(){
@@ -163,7 +163,7 @@ function showPromo(){
     var pro = $('#promotion');
     if (pro.width()>100)
 	return;
-    pro.animate({width:'1160'},1000);
+    pro.animate({width:'1000'},1000);
 }
 function hidePromo(){
     var pro = $('#promotion');
