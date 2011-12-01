@@ -2194,11 +2194,15 @@ a.modelicon img{
     padding:5px;
     box-shadow: 10px 5px 5px black;
     -moz-box-shadow: 10px 5px 5px black;
-    text-shadow: 0 1px 0px black;
+    width:100px;
+    height:40px;
+    z-index:9999;
 }
 #promo_index_title{
     text-decoration:none;
-    color:#00dafb;
+    color:#B9D3E1;
+    text-shadow: 0px 1px black;
+    font-weight:bold;
 }
 #promo_index_title hover{
     text-decoration:none;
@@ -2211,4 +2215,8 @@ a.modelicon img{
 }
 #promo_index_text{
     font-size:18px;
+    color:#B6C974;
+}
+#promo_title{
+    color:#B6C974;
 }

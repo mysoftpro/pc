@@ -158,7 +158,17 @@ _($('.modelprice').toArray())
 						  cores:co
 					      }));
 	  });
-
-// function showPromo(){
-//     $('#promotion')    
-// }
+var promo_lock;
+function showPromo(){
+    var pro = $('#promotion');
+    if (pro.width()>100)
+	return;
+    pro.animate({width:'1160'},1000);
+}
+function hidePromo(){
+    var pro = $('#promotion');
+    if (pro.width()>100)
+	pro.css('width','100px');
+}
+$('#promotion div').first().mouseenter(showPromo);
+$('#promotion').mouseleave(function(){hidePromo();_.delay(hidePromo, 500);});
