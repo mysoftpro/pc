@@ -2143,10 +2143,13 @@ a.modelicon img{
     margin-left:-5px;
 }
 #pdesc{
-    color:#ddd;
+    color:#444;
     font-size:20px;
-    text-shadow: 0 2px 3px #222;
+    text-shadow: 0 1px 2px #222;
     margin-top:6px;
+}
+#promo_desc{
+    margin:0;
 }
 #promostuff{
     float:left;
@@ -2164,7 +2167,7 @@ a.modelicon img{
     margin-top:50px;
 }
 #pbottom{
-    color: #AAA;
+    color: #333;
     font-size: 20px;
     text-shadow: 0 1px 2px #222;
 }
@@ -2289,7 +2292,7 @@ a.modelicon img{
     color:#B6C974;
 }
 #promo_title{
-    color:#B6C974;
+    color:#B47A00;
 }
 #promo_index_text span{
  color:#B9D3E1;   
