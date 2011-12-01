@@ -1,9 +1,15 @@
+var skin = document.location.search.match('skin');
 $('#promostuff td').click(function(e){
-
-			      $('td').css('color','#ddd');
+			      if (!skin)
+				  $('td').css('color','#ddd');
+			      else
+				  $('td').css('color','#333');
 			      var target = $(e.target);
 			      var tr = target.parent();
-			      tr.children().css('color','#aadd00');
+			      if (!skin)
+				  tr.children().css('color','#aadd00');
+			      else
+				  tr.children().css('color','#B47A00');
 			      var c = components[tr.attr('id')];
 			      var p = $('#promo_description p');
 			      p.parent().css('opacity','0.0');
