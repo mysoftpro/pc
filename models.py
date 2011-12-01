@@ -753,7 +753,8 @@ class ModelForModelsPage(object):
             a.set('href','/computer/%s' % self.model['_id'])
         else:
             # zzzzzzzzzzzzzzzzzzzzzzz
-            a.set('href','')
+            # a.set('href','')
+            pass
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
 	else:
@@ -770,7 +771,8 @@ class ModelForModelsPage(object):
                 self.icon.set('href','/computer/'+self.model['_id'])
             else:
                 # zzzzzzzzzzzzzzzzzzzzzzz
-                self.icon.set('href','')
+                # self.icon.set('href','')
+                pass
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
 
@@ -1411,7 +1413,9 @@ def renderPromotion(doc, template, skin):
     scr.text += 'var parts = ' + simplejson.dumps(parts_aliases) + ';'
     template.top.xpath('//div[@id="promo_title"]')[0].text = doc['title']
     template.top.xpath('//div[@id="promo_extra"]')[0].text = doc['extra']
-    template.top.xpath('//p[@id="promo_desc"]')[0].text = doc['description']
+    descr = template.top.xpath('//p[@id="promo_desc"]')[0]
+    for el in html.fragments_fromstring(doc['description']):
+        descr.append(el)
     template.top.xpath('//div[@id="pprice"]')[0].text = unicode(doc['our_price'])
 
     skin.top = template.top

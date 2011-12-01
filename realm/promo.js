@@ -36,6 +36,9 @@ function save(){
 	      });
     promo_item.components = components;
     promo_item.our_price = parseInt($('#our').val());
+    promo_item.title = $('#title').val();
+    promo_item.description = $('#descr').val();
+    promo_item.extra = $('#extra').val();
     $.ajax({
     	       url:'store_promo',
     	       data:{promo:JSON.stringify(promo_item)},
@@ -75,6 +78,15 @@ function fillPromo(data){
     table.before(_.template('<div>Всего ${{us}} = {{ru}}руб</div>',{us:summ,ru:summ*31.5}));
     table.before(_.template('<div>Наша цена <input id="our" name="our" value="{{our}}"/></div>',
 			    {our:promo_item['our_price']}));
+
+    table.after(_.template('<div>Экстра<textarea id="extra">{{extra}}</textarea></div>'
+    			   ,{extra:promo_item.extra}));
+    table.after(_.template('<div>Содержание<textarea id="descr">{{descr}}</textarea></div>'
+    			   ,{descr:promo_item.description}));
+    table.after('<div style="color:red;">Обязательно взять в span!</div>');
+    table.after(_.template('<div>Название<textarea id="title">{{title}}</textarea></div>'
+			   ,{title:promo_item.title}));
+
     $('#save').click(save);
 }
 
