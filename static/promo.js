@@ -5,7 +5,6 @@ $('#promostuff td').click(function(e){
 			      var tr = target.parent();
 			      tr.children().css('color','#aadd00');
 			      var c = components[tr.attr('id')];
-
 			      var p = $('#promo_description p');
 			      p.parent().css('opacity','0.0');
 			      p.html(c['description']);
@@ -81,3 +80,4 @@ $('#to_cart').click(function(e){
 			       });
 		    });
 $('#promostuff td').first().click();
+//$('body').append('<div id="image_storage"></div>');
