@@ -158,3 +158,7 @@ _($('.modelprice').toArray())
 						  cores:co
 					      }));
 	  });
+
+// function showPromo(){
+//     $('#promotion')    
+// }

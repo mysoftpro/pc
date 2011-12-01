@@ -752,7 +752,6 @@ class ModelForModelsPage(object):
 	if not 'promo' in self.model:
             a.set('href','/computer/%s' % self.model['_id'])
         else:
-            # zzzzzzzzzzzzzzzzzzzzzzz
             a.set('href','/promotion/%s' % self.model['parent'])
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
@@ -768,8 +767,7 @@ class ModelForModelsPage(object):
 	if len(case_found) >0:
 	    if not 'promo' in self.model:
                 self.icon.set('href','/computer/'+self.model['_id'])
-            else:
-                # zzzzzzzzzzzzzzzzzzzzzzz
+            else:             
                 self.icon.set('href','/promotion/'+self.model['parent'])
                 pass
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())

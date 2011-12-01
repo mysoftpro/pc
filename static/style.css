@@ -72,6 +72,7 @@ h2 {
 #greetings{
     float:left;
     height:240px;
+    text-shadow: 0 2px 3px black;
 }
 #greeting_banner{
     /* background:url('hp1.png'); */
@@ -79,6 +80,7 @@ h2 {
     float:right;
     width:558px;
     height:240px;
+    text-shadow: 0 2px 3px black;
 }
 #greeting_banner div{
     height:130px;
@@ -647,6 +649,13 @@ color:#7b9c0a;
 
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    box-shadow: 5px 2px 2px black;
+    -moz-box-shadow: 5px 2px 2px black;
+    //zzzzzzzzzzzzzzz
 }
 
 #features li strong {
@@ -2037,7 +2046,7 @@ a.modelicon img{
     margin-bottom:50px;
 }
 #prheader{
-    text-shadow: 0 5px 10px #506A12;
+    text-shadow: 0 5px 10px black;
     color:#75a001;
     font-size: 45px;
     float:left;
@@ -2063,7 +2072,6 @@ a.modelicon img{
     color:#ddd;
     font-size:20px;
     text-shadow: 0 2px 3px #222;
-    margin-top:6px;
 }
 #promostuff{
     float:left;
@@ -2078,6 +2086,13 @@ a.modelicon img{
     text-align:justify;
     font-size:18px;
 }
+#promo_extra{
+    margin-top:2px;
+}
+#promo_desc{
+    margin:0px;
+}
+
 #pbottom{
     color: #AAA;
     font-size: 20px;
@@ -2129,7 +2144,7 @@ a.modelicon img{
 .filter_list{
     position:absolute;
     top:315px;
-    left:10px;   
+    left:10px;
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
     -webkit-border-top-left-radius: 5px;
@@ -2164,4 +2179,36 @@ a.modelicon img{
 }
 .noinvideo{
     background-image:none;
+}
+#promotion{
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    background-color:#2f2f2f;
+    border-radius: 5px 5px 0px 0px;
+    -moz-border-radius:5px 5px 0px 0px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    padding:5px;
+    box-shadow: 10px 5px 5px black;
+    -moz-box-shadow: 10px 5px 5px black;
+    text-shadow: 0 1px 0px black;
+}
+#promo_index_title{
+    text-decoration:none;
+    color:#00dafb;
+}
+#promo_index_title hover{
+    text-decoration:none;
+}
+#support{
+    margin-top:10px !important;
+}
+#promotion div{
+    float:left;
+}
+#promo_index_text{
+    font-size:18px;
 }
