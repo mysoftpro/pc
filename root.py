@@ -181,6 +181,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('computer?cat=admin'))
         root.append(self.buildElement('computer?cat=game'))
 
+        root.append(self.buildElement('/promotion/ajax'))
 
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
