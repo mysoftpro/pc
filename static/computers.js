@@ -880,7 +880,7 @@ head.ready(function(){
 	       $(window).hashchange(function() {					
 					if (document.location.hash==''){
 					    document.location.href = document.location.href;
-					    console.log(1);
+					    //console.log(1);
 					}
 				    });
 	   });
