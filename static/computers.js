@@ -685,7 +685,7 @@ var init = function(){
     // $.cookie('pc_user')
     var splitted = document.location.href.split('/');
     var uuid = splitted[splitted.length-1].split('?')[0];
-    if (uuid != 'computer'){
+    if (!uuid.match('computer')){
 	$('.computeritem h2 ').css('margin-top','0px');
 	$('.info').remove();
 	$('ul.description')
