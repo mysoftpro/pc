@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pc.secure import xml_source,xml_method, xml_login, xml_password, xml_key
+from pc.secure import xml_source,xml_method, xml_login, xml_password, xml_key,new_password,new_user
 from lxml import etree
 from twisted.python import log
 import sys
@@ -20,6 +20,7 @@ import os
 from datetime import datetime
 from pc.mail import send_email
 from twisted.web.server import NOT_DONE_YET
+from twisted.internet.defer import succeed
 
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
                         'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
@@ -361,3 +362,102 @@ class WitNewMap(Resource):
                 d.addCallback(self.setMap, request)
                 return NOT_DONE_YET
         return "pass"
+
+
+
+# AUTH_FORM	Y
+# Login	Авторизуйтесь
+# TYPE	AUTH
+# USER_LOGIN	aganzha
+# USER_PASSWORD	
+# backurl	/index.php
+
+# class GetFromNew(Resource):
+#     def getImage(self, doc):
+#         agent = Agent(reactor)
+#         headers = {}
+#         defs = []
+#         for img in doc['description']['imgs']:
+#             for k,v in standard_headers.items():
+#                 if k == 'User-Agent':
+#                     headers.update({'User-Agent':[standard_user_agents[randint(0,len(standard_user_agents)-1)]]})
+#                 else:
+#                     headers.update({k:v})
+
+#             url = self.image_url + img
+#             d = defer.Deferred()
+#             image_request = agent.request('GET', str(url),Headers(headers),None)
+#             image_request.addCallback(self.imgReceiverFactory(doc, img, d))
+#             image_request.addErrback(self.pr)
+#             defs.append(d)
+#         li = defer.DeferredList(defs)
+#         li.addCallback(self.addImages, doc)
+#         li.addErrback(self.pr)
+#         return d
+
+
+#     def render_GET(self, session_id):
+        
+#         return NOT_DONE_YET
+
+
+
+
+
+
+# class AuthProducer(object):
+#     implements(IBodyProducer)
+
+#     def __init__(self, login, password):
+#         self.body = "login=%s&password=%s" % (login, password)
+#         self.length = len(self.body)
+
+#     def startProducing(self, consumer):
+#         consumer.write(self.body)
+#         return succeed(None)
+
+#     def pauseProducing(self):
+#         pass
+
+#     def stopProducing(self):
+#         pass
+
+
+
+# def spli(coo):
+#     return coo.split(';')[0].split('=')[0]
+
+# def getSession(response):
+#     cookies = []
+#     raw = response.headers.getAllRawHeaders()
+#     for h in raw:
+#         if h[0] == 'Set-Cookie':
+#             cookies = h[1]
+#             break
+#     required = [c for c in cookies if spli(c) == 'session_id']
+#     res = None
+#     if len(required)>0:
+#         res = required[0]
+#     return res
+
+
+# def loginToNew(reactor):
+#     url = 'http://www.newsystem.ru/personal/auth.php'
+#     login = new_user
+#     password = new_password
+#     agent = Agent(reactor)
+#     headers = {}
+#     for k,v in standard_headers.items():
+#         headers.update({k:v})
+#     producer = AuthProducer(login, password)
+
+#     headers.update({'Content-Type':['application/x-www-form-urlencoded; charset=UTF-8']})
+#     headers.update({'X-Requested-With':['XMLHttpRequest']})
+
+#     request_d = agent.request('POST', url,Headers(headers),producer)
+#     # request_d.addCallback(getSession)
+#     # request_d.addErrback(pr)
+#     # request_d.addCallback(getUserList)
+#     # request_d.addErrback(pr)
+#     return request_d
+

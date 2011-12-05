@@ -42,7 +42,7 @@ for (var i=0;i<rows.length;i++){
 
 
 
-var code_required = '19364';
+var code_required = '19207';
 var storeSingleDesc = function(code){
     function store(){
 	console.log('store single!!!!');
@@ -53,7 +53,7 @@ var storeSingleDesc = function(code){
 			 $jq.ajax({
 				      type: 'POST',
 				      url:'http://localhost/xml',
-				      data:{'op':'descr','code':code, 'desription':data}
+				      data:{'op':'descr','code':code, 'desription':data, 'key':'218b47411d2394b78810f7baaa000328'}
 				    });
 		     }
 		 });

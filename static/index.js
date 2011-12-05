@@ -107,7 +107,7 @@ if (!document.location.search.match('skin')){
 var banner =$('#greeting_banner');
 var support_html = '<div id="support"><img align="right" src="/static/piza.jpeg"/>Каждый покупатель кроме гарантии получает:<ul><li>поддержку по телефону</li><li> поддержку по интернету</li><li>выезд специалиста</li></ul>Читайте подробнее в разделе <a href="support">поддержка</a></div>';
 
-var promo_html = '<div id="support"><img style="margin-top:-40px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 24900 рублей</div><div style="font-size:11px;line-height:14px;margin-top:-40px;">Все работает "из коробки". Установлен антивирус Microsoft Security Essentials. Видеосистема проверена на Modern Warfare 3 и Deus Ex с разрешениями 1920x1024. Гарантия 12 месяцев на все комплектующие. Бесплатная доставка по городу и области.</div></div>';
+var promo_html = '<div id="support"><img style="margin-top:-40px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 24900 рублей</div><div style="font-size:11px;line-height:14px;margin-top:-40px;">Все работает "из коробки". Установлены все обновления, антивирус Microsoft Security Essentials. Видеосистема проверена на Modern Warfare 3, WoW Cataclysm и Deus Ex с разрешениями 1920x1024. Гарантия 12 месяцев на все комплектующие. Бесплатная доставка по городу и области.</div></div>';
 
 _.delay(function(){
 	    banner.find('img').animate({'width':0,'height':0},
