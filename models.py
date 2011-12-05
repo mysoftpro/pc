@@ -1003,8 +1003,12 @@ def findComponent(model, name):
 	replaced = True
     else:
 	if retval['stock1'] == 0:
-	    retval = replaceComponent(code,model)
-	    replaced = True
+            # my own components for prebuild promo
+            if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
+                pass
+            else:
+                retval = replaceComponent(code,model)
+                replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
