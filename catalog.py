@@ -337,10 +337,13 @@ def xmlToJson(catalog_ob, catalog):
 
 class WitNewMap(Resource):
     def setMap(self, maping, request):
-        nc = request.args.get('nc', [None])[0]
-        wc = request.args.get('wc', [None])[0]
-        maping['nc'][nc] = wc
-        maping['wc'][wc] = nc
+        data = request.args.get('data',[{}])[0]
+        jdata = simplejson.loads(data)
+        for i,ob in jdata.items():
+            if 'nc' in ob and 'wc' in ob:
+                maping['nc'][ob['nc']] =  ob['wc']
+                maping['wc'][ob['wc']] =  ob['nc']
+
         couch.saveDoc(maping)
         request.setHeader('Content-Type', 'application/json;charset=utf-8')
         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")

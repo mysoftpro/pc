@@ -18,7 +18,7 @@ function get(i){
     console.log(gmap[i].tr.children().last().find('a').text());
 }
 function set(i, code){
-    var _id = gmap[0].tr.attr('id').split('_')[2];
+    var _id = gmap[i].tr.attr('id').split('_')[2];
     gmap[i]['nc'] = document.location.href+_id+'/';
     gmap[i]['wc'] = code;
     has(i);
@@ -27,14 +27,14 @@ function has(i){
     console.log(gmap[i]);
 }
 function save(){
-    for (var ob in gmap){
-	if (!ob.wc || !ob.nc)
-	    continue;
-	$.ajax({
-		   url:'/map?key=218b47411d2394b78810f7baaa000328&op=set&wc='+ob.wc+'&nc='+ob.nc,
-		   success:function(answer){
-		       console.log(answer);
-		   }
-	       });
-    }
+    $.ajax({
+	       url:'http://localhost/map',
+	       data:{
+		   key:  '218b47411d2394b78810f7baaa000328',
+		   op:'set',
+		   data:JSON.stringify(gmap)
+	       },
+	       success:function(answer){		       
+	       }
+	   });
 }
