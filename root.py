@@ -16,7 +16,7 @@ from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion
-from pc.catalog import XmlGetter
+from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
@@ -602,6 +602,7 @@ class Root(Cookable):
         self.putChild('blog', TemplateRenderrer(self.static, 'faq.html'))
         self.putChild('storefaq', StoreFaq())
         self.putChild('xml',XmlGetter())
+        self.putChild('map',WitNewMap())
         self.putChild('component', Component())
         self.putChild('image', ImageProxy())
         

@@ -19,6 +19,7 @@ from twisted.internet import defer
 import os
 from datetime import datetime
 from pc.mail import send_email
+from twisted.web.server import NOT_DONE_YET
 
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
                         'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
@@ -332,3 +333,28 @@ def xmlToJson(catalog_ob, catalog):
             item.update({'text':el.text})
             catalog_ob['items'].append(item)
     return catalog_ob
+
+
+class WitNewMap(Resource):
+    def setMap(self, maping, request):
+        nc = request.args.get('nc', [None])[0]
+        wc = request.args.get('wc', [None])[0]
+        maping['nc'][nc] = wc
+        maping['wc'][wc] = nc
+        couch.saveDoc(maping)
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        request.write('ok')
+        request.finish()
+
+    def render_GET(self, request):
+        key = request.args.get('key', [None])[0]
+        if key is None or key != xml_key:
+            return "fail"
+        op = request.args.get('op', [None])[0]
+        if op is not None:
+            if op == 'set':
+                d = couch.openDoc('wit_new')
+                d.addCallback(self.setMap, request)
+                return NOT_DONE_YET
+        return "pass"
