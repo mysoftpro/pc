@@ -76,7 +76,6 @@ function init(){
 			   var author = $.cookie('pc_user');
 			   if (to_send['name'])
 			       author = to_send['name'];
-			       >>>>>>> checkModel
 
 			   var before_append = function(_html){
 			       middle.children().first().before(_html);
