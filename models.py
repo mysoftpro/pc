@@ -867,11 +867,12 @@ def fixDeletedCart(err, request, name):
                           '',
                           expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
                           path='/')
-        request.write('ok')
-        request.finish()
+    request.redirect('http://buildpc.ru')
+    return []
+
         
 def redirectDeletedCart(err):
-    pass
+    return []
 
 class NoteBookForCartPage(object):
     def __init__(self,notebook, note, key, icon, container):
