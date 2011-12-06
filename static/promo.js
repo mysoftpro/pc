@@ -67,6 +67,7 @@ $('#to_cart').click(function(e){
 				       model['parent'] = $('#promo_desc').text();
 				       model['parent'] = _(document.location.href.split('/'))
 					   .last().split('?')[0];
+				       model['our_price'] = parseInt($('#pprice').text());
 				       var to_send = {model:JSON.stringify(model)};
 				       $.ajax({
 						  url:'/save',
