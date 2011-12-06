@@ -22,7 +22,7 @@ from twisted.web.error import NoResource
 from twisted.python.failure import Failure
 from lxml import etree, html
 from copy import deepcopy
-from pc.mail import Sender
+from pc.mail import Sender, send_email
 from pc.faq import faq, StoreFaq
 from twisted.internet.task import deferLater
 from pc.game import gamePage
@@ -570,22 +570,17 @@ class Root(Cookable):
         Cookable.__init__(self)
         self.static = CachedStatic(static_dir)
         self.static.indexNames = [index_page]
-
-
         self.putChild('static',self.static)
         self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
         self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
         self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
-
         self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
-
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
         self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
         self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))
         self.putChild('warranty', TemplateRenderrer(self.static, 'warranty.html'))
         self.putChild('support', TemplateRenderrer(self.static, 'support.html'))
-
         self.putChild('motherboard', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('processor', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('video', TemplateRenderrer(self.static, 'part.html'))
@@ -597,22 +592,19 @@ class Root(Cookable):
         self.putChild('keyboard', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('mouse', TemplateRenderrer(self.static, 'part.html'))
         self.putChild('audio', TemplateRenderrer(self.static, 'part.html'))
-
         self.putChild('faq', TemplateRenderrer(self.static, 'faq.html'))
         self.putChild('blog', TemplateRenderrer(self.static, 'faq.html'))
         self.putChild('storefaq', StoreFaq())
         self.putChild('xml',XmlGetter())
         self.putChild('map',WitNewMap())
         self.putChild('component', Component())
-        self.putChild('image', ImageProxy())
-        
+        self.putChild('image', ImageProxy())        
         self.putChild('save', Save())
         self.putChild('savemodel', ModelSave())
         self.putChild('savenote', SaveNote())
         self.putChild('delete',Delete())
         self.putChild('deleteNote',DeleteNote())
         self.putChild('deleteAll',DeleteAll())
-
         self.putChild('sender', Sender())
         self.putChild('select_helps', SelectHelpsProxy())
         self.putChild('admin',Admin())
@@ -620,33 +612,25 @@ class Root(Cookable):
         self.putChild('5406ae5f1ec4.html',File(os.path.join(static_dir,'5406ae5f1ec4.html')))
         self.putChild('sitemap.xml',SiteMap())
         self.putChild('robots.txt',File(os.path.join(static_dir,'robots.txt')))
-
         self.putChild('comet', Comet())
         self.putChild('modeldesc', ModelDesc())
-
         self.putChild('prices_for_market',PriceForMarket())
-
         # self.putChild('game', TemplateRenderrer(self.static, 'game.html'))
         self.putChild('modelstats', ModelStats())
         self.putChild('do_validate_user', DOValidateUser())
         self.putChild('do_notify_payment', DONotifyPayment())
         self.putChild('zip_components', ZipConponents())
-
         self.putChild('catalogs_for',CatalogsFor())
         self.putChild('names_for', NamesFor())
         self.putChild('params_for', ParamsFor())
-
         self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
         self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
-
-        self.putChild('about',TemplateRenderrer(self.static, 'about.html'))
-        
+        self.putChild('about',TemplateRenderrer(self.static, 'about.html'))    
         self.putChild('rss', Rss())
-
         self.putChild('fromBlog', FromBlog())
-
         self.putChild('di',Di())
-
+        self.putChild('checkModel', CheckModel())
+        self.putChild('store_cart_comment',StoreCartComment())
 
     def getChild(self, name, request):
         self.checkCookie(request)
@@ -655,6 +639,51 @@ class Root(Cookable):
             return self.static.getChild(name, request)
         return self
 
+
+
+
+class StoreCartComment(Resource):
+    def finish(self, doc, request):
+        comment = {'email':request.args.get('email',[''])[0],
+                   'author':request.args.get('name',[request.getCookie('pc_user')])[0],
+                   'body':request.args.get('txt',[''])[0],
+                   'date':str(date.today()).split('-')}
+        if 'comments' in doc:
+            doc['comments'].append(comment)
+        else:
+            doc['comments'] = [comment]
+        couch.saveDoc(doc)
+        request.write("ok")
+        request.finish()
+
+    def render_POST(self, request):
+        _id = request.args.get('_id', [None])[0]
+        if _id is None: return "fail"
+        d =couch.openDoc(_id)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+class CheckModel(Resource):
+    def notify(self, res, author):
+        send_email('admin@buildpc.ru',
+		   u'Требуется проверить конфигурацию',
+		   'http://buildpc.ru/cart/'+author+' '+res['id'],
+		   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        
+    def checkModel(self, doc, request):
+        doc['checkModel'] = False
+        d = couch.saveDoc(doc)
+        d.addCallback(self.notify, request.getCookie('pc_user'))
+        request.write("done")
+        request.finish()
+            
+    def render_GET(self, request):
+        uuid = request.args.get('uuid',[None])[0]
+        if uuid is None:
+            return "ok"
+        d = couch.openDoc(uuid)
+        d.addCallback(self.checkModel, request)
+        return NOT_DONE_YET
 
 
 class FromBlog(Resource):

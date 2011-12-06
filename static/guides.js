@@ -301,28 +301,6 @@ function makeMask(action, _closing){
 }
 
 
-
-var myMessages = ['popups_info'];
-function hideAllMessages()
-{
-    var messagesHeights = new Array(); // this array will store height for each
-
-    for (var i=0; i<myMessages.length; i++)
-    {
-	messagesHeights[i] = $('.' + myMessages[i]).outerHeight(); // fill array
-	$('.' + myMessages[i]).css('top', -messagesHeights[i]); //move element outside viewport
-    }
-}
-function showMessage(type)
-{
-    $('.'+ type +'-trigger').click(function(e){
-				       e.preventDefault();
-				       hideAllMessages();
-				       //var winH = $(window).scrollTop();
-				       $('.'+type).animate({top:"0",left:"0"}, 500);
-				   });
-}
-
 var filled_selects_helps = {
 };
 
@@ -345,7 +323,7 @@ var showYa = function (_id, _link){
 };
 
 var init = function(){
-    hideAllMessages();
+    //hideAllMessages();
     $('#tips').click(function(e){
 			 e.preventDefault();
 			 guider.createGuider({
@@ -493,7 +471,7 @@ var init = function(){
 init();
 if ($('#proc_filter').length>0){
     function installFilter(){
-	
+
 	var procs = _(jgetSelectByRow($('#' + parts['proc']))
 		      .find('option')).map(function(el){
 					       return $(el).val();
@@ -505,7 +483,26 @@ if ($('#proc_filter').length>0){
 		       proc_codes = data;
 		       installProcFilters();
 		   }
-	       });    
+	       });
     }
     installFilter();
 }
+function noticeCheckModel(){
+
+    var toppopup = $('#toppopup');
+    if (toppopup.length==0)return;
+    _.delay(function(){
+		toppopup
+		    .show()
+		    .animate({top:"0",left:"0"}, 500,function(){
+				 _.delay(function(){
+					     toppopup
+						 .show()
+						 .animate({top:"-70",left:"0"}, 500,function(){
+							      toppopup.hide();
+							  });
+					 }, 10000);
+			     });
+	    },10000);
+}
+noticeCheckModel();

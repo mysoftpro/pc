@@ -730,8 +730,9 @@ model_categories_titles = {'home':u'Домашние компьютеры',
 			   'game':u'Игровые компьютеры'}
 
 class ModelForModelsPage(object):
-    def __init__(self, request, model, model_snippet, this_is_cart, json_prices, icon, container):
-	self.model_snippet = model_snippet
+    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container):
+	self.tree = tree
+	self.model_snippet = deepcopy(self.tree.find('model'))
 	self.request = request
 	self.model = model
 	self.this_is_cart = this_is_cart
@@ -750,9 +751,23 @@ class ModelForModelsPage(object):
 	    header.set('class', header.get('class')+ ' processing')
 	a = self.model_div.find('.//a')
 	if not 'promo' in self.model:
-            a.set('href','/computer/%s' % self.model['_id'])
-        else:
-            a.set('href','/promotion/%s' % self.model['parent'])
+	    a.set('href','/computer/%s' % self.model['_id'])
+	else:
+	    a.set('href','/promotion/%s' % self.model['parent'])
+
+	if self.this_is_cart:
+	    info = self.model_div.xpath('//div[@class="info"]')[0]
+	    if 'checkModel' in self.model:
+		if not self.model['checkModel']:
+		    info.set('class', info.get('class')+ ' ask_info')
+		    info.set('title',u'Ожидает проверки специалистом')
+		else:
+		    info.set('class', info.get('class')+ ' confirm_info')
+		    info.set('title',u'Проверено!')
+	    else:
+		info.set('class', info.get('class')+ ' empty_info')
+	    # self.model_div.remove(info)
+
 	if 'name' in self.model and not self.this_is_cart:
 	    a.text=self.model['name']
 	else:
@@ -766,13 +781,13 @@ class ModelForModelsPage(object):
 	case_found = [c for c in self.components if c.cat_name == case]
 	if len(case_found) >0:
 	    if not 'promo' in self.model:
-                self.icon.set('href','/computer/'+self.model['_id'])
-            else:             
-                self.icon.set('href','/promotion/'+self.model['parent'])
-                if 'our_price' in self.model:
-                    price_span.text = unicode(self.model['our_price'])+u' р.'
-                else:
-                    price_span.text = u'24900 р.'
+		self.icon.set('href','/computer/'+self.model['_id'])
+	    else:
+		self.icon.set('href','/promotion/'+self.model['parent'])
+		if 'our_price' in self.model:
+		    price_span.text = unicode(self.model['our_price'])+u' р.'
+		else:
+		    price_span.text = u'24900 р.'
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
 
@@ -799,7 +814,24 @@ class ModelForModelsPage(object):
 		if 'name' in self.model:
 		    h3.text = self.model['name'] + '. ' +h3.text
 	    self.description_div.set('class','cart_description')
-	self.container.append(self.description_div)
+	    extra = deepcopy(self.tree.find('cart_extra'))
+	    for el in extra:
+		self.description_div.append(el)
+	    if 'comments' in self.model:		
+		last_index = len(self.model['comments'])-1
+		i=0
+		for comment in self.model['comments']:
+                    comments = deepcopy(self.tree.find('cart_comment'))
+		    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
+                    comment['date'].reverse()
+		    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
+		    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
+		    links = comments.xpath('//div[@class="faqlinks"]')[0]
+                    if i!=last_index:
+                        links.remove(links.find('a'))
+		    i+=1
+                    self.description_div.append(comments.find('div'))
+	self.container.append(self.description_div)        
 
 
     def render(self):
@@ -881,13 +913,17 @@ def computers(template,skin,request):
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	for m in models:
 
-	    view = ModelForModelsPage(request, m, deepcopy(tree.find('model')),
+	    view = ModelForModelsPage(request, m, tree,
 				      this_is_cart,json_prices,
 				      deepcopy(tree.find('model_icon').find('a')),
 				      container)
 	    view.render()
 	    total +=1
-
+        if this_is_cart:
+            # comments here and in ModelForModelsPage description_div
+            cart_form = deepcopy(tree.find('cart_comment_form'))
+            container.append(cart_form.find('div'))
+            
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	if 'notebooks' in result and 'user_doc' in result:
 	    total_notes = []
@@ -1006,12 +1042,12 @@ def findComponent(model, name):
 	replaced = True
     else:
 	if retval['stock1'] == 0:
-            # my own components for prebuild promo
-            if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
-                pass
-            else:
-                retval = replaceComponent(code,model)
-                replaced = True
+	    # my own components for prebuild promo
+	    if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
+		pass
+	    else:
+		retval = replaceComponent(code,model)
+		replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
@@ -1039,9 +1075,9 @@ class ComponentForModelsPage(object):
 
     def render(self):
 	li = etree.Element('li')
-        li.text = self.component['text']
+	li.text = self.component['text']
 	if not 'promo' in self.model:
-             li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
+	     li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
 	li.set('id',self.model['_id']+'_'+self.component['_id'])
 	return li
 
@@ -1120,21 +1156,21 @@ def index(template, skin, request):
 	return d
 
     def buildProcAndVideo(components):
-        proc_video = {}
-        for c in components:
-            if c.cat_name == proc:
-                proc_video['proc_code'] = c.component['_id']
-                proc_video['proc_catalog'] = getCatalogsKey(c.component)
-                if 'brand' in c.component:
-                    proc_video['brand'] = c.component['brand']
-                if 'cores' in c.component:
-                    proc_video['cores'] = c.component['cores']
-                if 'cache' in c.component:
-                    proc_video['cache'] = c.component['cache']
-            elif c.cat_name == video:
-                proc_video['video_code'] = c.component['_id']
-                proc_video['video_catalog'] = getCatalogsKey(c.component)
-        return proc_video
+	proc_video = {}
+	for c in components:
+	    if c.cat_name == proc:
+		proc_video['proc_code'] = c.component['_id']
+		proc_video['proc_catalog'] = getCatalogsKey(c.component)
+		if 'brand' in c.component:
+		    proc_video['brand'] = c.component['brand']
+		if 'cores' in c.component:
+		    proc_video['cores'] = c.component['cores']
+		if 'cache' in c.component:
+		    proc_video['cache'] = c.component['cache']
+	    elif c.cat_name == video:
+		proc_video['video_code'] = c.component['_id']
+		proc_video['video_catalog'] = getCatalogsKey(c.component)
+	return proc_video
 
     def render(result):
 	i = 0
@@ -1142,7 +1178,7 @@ def index(template, skin, request):
 	tree = template.root()
 	div = template.middle.xpath('//div[@id="computers_container"]')[0]
 	json_prices = {}
-        json_procs_and_videos = {}
+	json_procs_and_videos = {}
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	for m in models:
 	    model_snippet = tree.find('model')
@@ -1154,12 +1190,12 @@ def index(template, skin, request):
 	    price_span = snippet.find('.//span')
 	    price_span.set('id',m['_id'])
 	    components = buildPrices(m, json_prices, price_span)
-            json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
+	    json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
 	    div.append(snippet)
 	    i+=1
 	    if i==len(imgs): i=0
 	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
-            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
+	    'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
 	last_update = template.middle.xpath('//span[@id="last_update"]')[0]
 	last_update.text = lastUpdateTime()
 
@@ -1419,7 +1455,7 @@ def renderPromotion(doc, template, skin):
     template.top.xpath('//div[@id="promo_extra"]')[0].text = doc['extra']
     descr = template.top.xpath('//p[@id="promo_desc"]')[0]
     for el in html.fragments_fromstring(doc['description']):
-        descr.append(el)
+	descr.append(el)
     template.top.xpath('//div[@id="pprice"]')[0].text = unicode(doc['our_price'])
 
     skin.top = template.top

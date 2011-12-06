@@ -2,7 +2,7 @@
 <a name="game"></a><a name="home"></a><a name="admin"></a><a name="work"></a>
 </top>
 <middle>
-  <div id="categories">    
+  <div id="categories">
     <a id="all" title="все компьютеры" href="/computer">все</a>
     <a id="home" title="домашние компьютеры" href="?cat=home"></a>
     <a id="work" title="компьютеры для работы" href="?cat=work"></a>
@@ -21,7 +21,7 @@
     '/static/guider.js','/static/dragdealer.js'];
     var _next = ['/static/computers.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
-  </script>    
+  </script>
 </middle>
 
 <model>
@@ -46,16 +46,16 @@
 
 
 <top_models>
-  <div id="models_top">    
+  <div id="models_top">
     <h1>Модели компьютеров</h1>
-    <p class="computers_top">
-      Вы можете сравнить компоненты разных моделей, кликнув на значок <img width="14px" height="14px"
-								    src="/static/info.png"/>
-      <br/>
+    <div class="computers_top">
+      <div style="float:left;">Вы можете сравнить компоненты разных моделей, кликнув на значок</div>
+      <div style="float:left;background-image:url('/static/build_icons.png');background-position:0px -385px;margin-left:5px;width:16px;height:16px;"></div>
+      <div style="clear:both;"></div>
       <span>
 	В каждой модели можно поменять любые компоненты прямо на сайте.
 	 Кликайте на название компьютера.</span>
-    </p>
+    </div>
     <div  id="pricetext" style="padding-left:0px;">
       <em>Цена включает:</em>
       <input checked="checked" type="checkbox" id="idisplay"/>
@@ -119,7 +119,7 @@
   <img src="/static/sample.jpg"></a>
 </model_icon>
 <notebook>
-  <div class="note_in_cart">    
+  <div class="note_in_cart">
     <div class="computeritem">
       <h2 class="section" style="margin-top: 0px; width: 260px;">
 	<strong class="modellink"></strong>
@@ -127,6 +127,36 @@
       </h2>
     </div>
     <div class="cnname"></div>
-    <div style="clear:both"></div>        
+    <div style="clear:both"></div>
   </div>
 </notebook>
+
+
+<cart_extra>
+  <div class="small_square_button small_cart">Проверить</div>
+  <div class="small_square_button small_reset">Удалить</div>
+  <div style="clear:both"></div>
+</cart_extra>
+
+<cart_comment>
+<div class="faqrecord">
+  <div class="faqauthor">builder</div>
+  <div class="faqdate">2011,11,18</div>
+  <div style="clear: both;"></div>
+  <div class="faqbody">
+  </div>
+  <div class="faqlinks"><a name="answer">комментировать</a></div>
+</div>
+</cart_comment>
+<cart_comment_form>
+  <div id="faq_top" style="display:none;opacity:0.0;">
+    <textarea class="computers_top" style="width:730px;">Напишите здесь вопрос, пожелание или просьбу. Что угодно.
+    </textarea>
+    <ul><li><input type="text" value="имя" class="computers_top" name="name"></li>
+      <li><input type="text" value="email" class="computers_top" name="email"></li>
+    </ul><em>Если хотите получить уведомление об ответе, укажите email.
+      Ответ можно посмотреть на этой странице.</em>
+    <span class="sendfaq">Отправить</span>
+    <div style="clear:both;"></div>
+  </div>
+</cart_comment_form>

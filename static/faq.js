@@ -6,7 +6,6 @@ var ta_initial = "Напишите здесь вопрос, пожелание �
 var taa_initial = "Напишите здесь комментарий.";
 var email_initial = "email";
 var name_initial = "имя";
-var answer_initial = "имя";
 
 var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><h3 class="faqtitle"></h3><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div>{{links}}</div>');
 var link_template = '<div class="faqlinks"><a name="answer">комментировать</a></div>';
@@ -17,7 +16,6 @@ function init(){
     var name = $('#faq_top input[name="name"]');
     var clear = function(txt){
 	return function(e){
-
 	    var target = $(e.target);
 	    if (target.val() == txt)
 		target.val('');
@@ -53,10 +51,10 @@ function init(){
 	else
 	    to_send['type']='faq';
 	if (to_send['txt'] == ta_initial || to_send['txt'].length==0
-	    || to_send['txt']==answer_initial)
-	    area.css('border-color','red');
+	    || to_send['txt']==taa_initial)
+	    _area.css('border-color','red');
 	else{
-	    area.css('border-color','#444');
+	    _area.css('border-color','#444');
 	    var emailval = _email.val();
 	    if (emailval!==email_initial)
 		to_send['email'] = emailval;
@@ -78,6 +76,7 @@ function init(){
 			   var author = $.cookie('pc_user');
 			   if (to_send['name'])
 			       author = to_send['name'];
+			       >>>>>>> checkModel
 
 			   var before_append = function(_html){
 			       middle.children().first().before(_html);

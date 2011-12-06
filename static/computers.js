@@ -2,7 +2,13 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
+var faq_template = _.template('<div class="faqrecord"><h3 class="faqtitle"></h3><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div><div class="faqlinks"><a name="answer">комментировать</a></div></div>');
 
+var ta_initial = 'Напишите здесь вопрос, пожелание или просьбу. Что угодно.';
+var taa_initial = 'Наши сотрудники проверят созданную вами конфигурацию и ответят Вам в ближайшее время. Если нужно, Вы можете оставить любой комментарий.';
+var email_initial = "email";
+var name_initial = "имя";
+var link_template = '<div class="faqlinks"><a name="answer">комментировать</a></div>';
 var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 //TODO! d_popular starts with width = 0. even if ajax is come allready
 
@@ -680,18 +686,18 @@ var init = function(){
 
     $('.info').click(function(e){
 			 var target = $(e.target);
+			 if (target.attr('class')!=='info')
+			     return;
 			 makeGuider(target, 11);
 		     });
-    // $.cookie('pc_user')
     var splitted = document.location.href.split('/');
     var uuid = splitted[splitted.length-1].split('?')[0];
     if (!uuid.match('computer')){
-	$('.computeritem h2 ').css('margin-top','0px');
-	$('.info').remove();
 	$('ul.description')
 	    .css('cursor','pointer')
 	    .find('li').click(showComponent);
     }
+    //this means cart!
     if (!prices && uuid === $.cookie('pc_user')){
 	var links = $('a.modellink');
 	function deleteUUID(_id){
@@ -704,10 +710,10 @@ var init = function(){
 				   var cart = $.cookie('pc_cart');
 				   $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
 				   var target = $(e.target);
-				   while (target.attr('class')!='computeritem'){
+				   while (target.attr('class')!='cart_description'){
 				       target = target.parent();
 				   }
-				   target.next().remove();
+				   target.prev().remove();
 				   target.remove();
 			       }
 			   }
@@ -715,17 +721,40 @@ var init = function(){
 	    }
 	    return _deleteUUID;
 	}
+	function checkUUID(_id){
+	    return function(e){
+		$.ajax({
+			   url:'/checkModel',
+			   data:{uuid:_id},
+			   success:function(data){
+			       var model_div = $('#'+_id)
+				   .parent().parent();
+			       model_div.find('.info').attr('class','info ask_info');
+			       var t = $(e.target);
+			       model_div.next().append($('#faq_top'));
+			       var ft = $('#faq_top');
+			       ft.find('textarea').val(taa_initial);
+			       ft.find('input[name="email"]').val(email_initial);
+			       ft.find('input[name="name"]').val(name_initial);
+			       ft.find('.sendfaq')
+				   .attr('id', 'f'+
+					 ft.parent().prev().find('.modelprice').attr('id'));
+			       ft.show().animate({'opacity':'1.0'},300);
+			   }
+		       });
+	    };
+	}
 	for(var i=0;i<links.length;i++){
 	    var span = $(links.get(i)).next();
 	    var _id = span.attr('id');
+	    //TODO! move to template!
 	    if (span.parent().attr('class').match('processing')){
 		span.parent().css('width','600px');
 		span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
 		continue;
 	    }
-	    span.parent().css('width','260px');
-	    span.after('<a class="edit_links" href="">удалить</a>');
-	    span.next().click(deleteUUID(_id));
+	    span.parent().parent().next().find('.small_reset').click(deleteUUID(_id));
+	    span.parent().parent().next().find('.small_cart').click(checkUUID(_id));
 	}
 	$('#models_container')
 	    .append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
@@ -837,7 +866,11 @@ var init = function(){
 
 						     });
 				 });
-    if (document.location.href.match('cart'))return;
+    if (document.location.href.match('cart')) {
+	prepareCart();
+	return;
+    }
+
     function stats(e){
 	var target = $(e.target);
 	var href = target.attr('href');
@@ -851,8 +884,8 @@ var init = function(){
 
     addSlider();
     addLogos();
-
 };
+
 init();
 head.ready(function(){
 	       var _ya_share = $('#ya_share_cart');
@@ -877,10 +910,89 @@ head.ready(function(){
 							   });
 						});
 	       }
-	       $(window).hashchange(function() {					
+	       $(window).hashchange(function() {
 					if (document.location.hash==''){
 					    document.location.href = document.location.href;
-					    //console.log(1);
 					}
 				    });
 	   });
+function prepareCart(){
+    var _area = $('#faq_top textarea');
+    _area.click(function(){_area.val('');});
+    var _email = $('#faq_top input[name="email"]');
+    _email.click(function(){_email.val('');});
+    var _name = $('#faq_top input[name="name"]');
+    _name.click(function(){_name.val('');});
+
+    var faq_links = $('.faqlinks a').toArray();
+
+    function showFaq(li){
+	return function(){	    	    
+	    li.parent().parent().after($('#faq_top'));
+	    var ft = $('#faq_top');
+	    _area.val(ta_initial);
+	    _email.val(email_initial);
+	    _name.val(name_initial);
+	    ft.find('.sendfaq')
+		.attr('id', 'f'+
+		      ft.parent().prev().find('.modelprice').attr('id'));
+	    ft.show().animate({'opacity':'1.0'},300);
+	};
+    }
+    _(faq_links).each(function(link){
+			  var li = $(link);
+			  li.click(showFaq(li));
+		      });
+
+    function sendComment(e){
+	var target = $(e.target);
+	var _id = target.attr('id');
+	_id = _id.substring(1,_id.length);
+	while (target.attr('id')!=='faq_top'){
+	    target = target.parent();
+	}
+	var to_send = {txt:_area.val()};
+	var path = document.location.href.split('?')[0];
+
+	if (to_send['txt'] == ta_initial || to_send['txt'].length==0
+	    || to_send['txt']==taa_initial)
+	    _area.css('border-color','red');
+	else{
+	    _area.css('border-color','#777');
+	    var emailval = _email.val();
+	    if (emailval!==email_initial)
+		to_send['email'] = emailval;
+	    var nameval = _name.val();
+	    if (nameval!==name_initial)
+		to_send['name'] = nameval;
+	    to_send['_id'] = _id;
+	    $.ajax({
+		       url:'/store_cart_comment',
+		       data:to_send,
+		       type:'post',
+		       success:function(data){
+			   var d = new Date();
+			   var _date = d.getDate()+'.';
+			   _date +=+d.getMonth()+1+'.';
+			   _date +=+d.getFullYear()+'';
+
+			   var author = $.cookie('pc_user');
+			   if (to_send['name'])
+			       author = to_send['name'];
+			   var prev = target.prev().clone();
+			   target.prev().find('.faqlinks').remove();
+			   target.before(faq_template({
+							author:author,
+							body:to_send['txt'],
+							date:_date
+						    }));
+			   var li = target.prev().find('a');
+			   li.click(showFaq(li));			   
+			   target.animate({'opacity':'0.0'},300,function(){target.hide();});
+			   
+		       }
+		   });
+	}
+    }
+    $('.sendfaq').click(sendComment);
+}
