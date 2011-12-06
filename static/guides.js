@@ -52,10 +52,11 @@ function setFilterByOption(e){
 	filtered_procs = _(filtered_procs).union(codes);
     }
     _(codes).each(function(code){
-		      var select = jgetSelectByRow($('#' + parts['proc']));
-		      var op = jgetOption(select, code);
+		      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
+		      var op = jgetOption(select, code);//select.find('option[name="'+code+'"]');//
 		      op.prop('disabled',!target.prop('checked'));
 		      select.trigger("liszt:updated");
+		      console.log(1);
 		  });
 
     var filtered_catalogs = _(filtered_procs).chain()
@@ -471,8 +472,9 @@ var init = function(){
 init();
 if ($('#proc_filter').length>0){
     function installFilter(){
-
-	var procs = _(jgetSelectByRow($('#' + parts['proc']))
+	// bug in ie!
+	//jgetSelectByRow($('#' + parts['proc']))
+	var procs = _($('#7399').find('select')
 		      .find('option')).map(function(el){
 					       return $(el).val();
 					   })
