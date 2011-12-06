@@ -11,6 +11,8 @@ $('#promostuff td').click(function(e){
 				  $('td').css('color','#333');
 			      var target = $(e.target);
 			      var tr = target.parent();
+			      if (tr[0].tagName.toLowerCase()=='td')
+				  tr = tr.parent();
 			      if (!skin)
 				  tr.children().css('color','#aadd00');
 			      else
