@@ -769,7 +769,7 @@ class ModelForModelsPage(object):
                 self.icon.set('href','/computer/'+self.model['_id'])
             else:             
                 self.icon.set('href','/promotion/'+self.model['parent'])
-                pass
+                price_span.text = u'24900 р.'
 	    self.icon.find('img').set('src',case_found[0].getIconUrl())
 	    self.model_div.insert(0,self.icon)
 
