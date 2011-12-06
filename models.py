@@ -852,6 +852,27 @@ class ModelForModelsPage(object):
 		    self.model_div.set('style',"height:0;overflow:hidden")
 		    self.description_div.set('style',"height:0;overflow:hidden")
 
+
+def fixDeletedCart(err, request, name):    
+    if request.getCookie('pc_user') == name:
+        request.addCookie('pc_user',
+                          '',
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.addCookie('pc_key',
+                          '',
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.addCookie('pc_cart',
+                          '',
+                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
+        request.write('ok')
+        request.finish()
+        
+def redirectDeletedCart(err):
+    pass
+
 class NoteBookForCartPage(object):
     def __init__(self,notebook, note, key, icon, container):
 	self.icon = icon
@@ -891,8 +912,8 @@ def computers(template,skin,request):
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     # cart is only /cart/12345. for /cart and for /computer - all models are shown
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
-    def render(result):
 
+    def render(result):
 	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
 	#fix cookies here!
 	total = 0
@@ -1014,16 +1035,20 @@ def computers(template,skin,request):
 	    models['user_doc'] = _user
 	    return models
 	def getModelsAndNotes(user_doc):
-	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
 	    if not 'notebooks' in user_doc:
 		return models
 	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-	    # notes.addCallback(lambda res: (user_doc['notebooks'],res))
 	    d = defer.DeferredList((models, notes))
 	    d.addCallback(glueModelsAndNotes, user_doc)
+            d.addErrback(lambda some: models)
 	    return d
 	d.addCallback(getModelsAndNotes)
+        if this_is_cart:
+            d.addErrback(fixDeletedCart, request, name)
 	d.addCallback(render)
+        if this_is_cart:
+            d.addErrback(redirectDeletedCart)
     return d
 
 
