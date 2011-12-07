@@ -346,20 +346,28 @@ def xmlToJson(catalog_ob, catalog):
 
 
 class WitNewMap(Resource):
+    new_places = {
+	'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers'        
+	}
+    def goForNew(self, headers):
+	defs = []
+	for k,v in self.new_places.items():
+	    defs.append(requestNewPage(headers,k,v))
+        li = defer.DeferredList(defs)
+        return li.addCallback(lambda x: headers)
+                       
     def render_GET(self, request):
-	# login_response = loginToNew()
-	# login_response.addCallback(prepareNewRequest)
-	# procs_done = login_response.addCallback(requestProcPage)
-	# procs_done.addCallback(logoutFormNew)
-	f = open('/home/aganzha/new.html')
-	f.seek(0,2)
-	parseNewPage(f,'procs')
+	login_response = loginToNew()
+	login_response.addCallback(prepareNewRequest)
+	all_done = login_response.addCallback(self.goForNew)
+	all_done.addCallback(logoutFromNew)
 	return "ok"
 
 
 
 
-def logoutFormNew(headers):
+def logoutFromNew(headers):
     agent = Agent(reactor)
     agent.request('GET', "http://www.newsystem.ru/personal/auth.php?logout=yes&backurl=/goods-and-services/catalog/108/9438/index.php?IBLOCK_ID=108&SECTION_ID=9438",Headers(headers),None)
     print "_____________loggedOut"
@@ -393,16 +401,6 @@ class NewReceiver(Protocol):
 	self.finished.callback(self.file)
 
 
-# def parseNewPage(fileobj):
-#     fileobj.seek(0)
-#     c = fileobj.read()
-#     f = open('/home/aganzha/new.html', 'w')
-#     f.write(c)
-#     fileobj.close()
-#     f.close()
-#     print ".."
-#     print "done"
-
 def getProcPage(response, further_d):
     for h in response.headers.getAllRawHeaders():
 	if h[0] == 'Content-Encoding':
@@ -410,11 +408,11 @@ def getProcPage(response, further_d):
 	    break
     response.deliverBody(NewReceiver(further_d, enc))
 
-def requestProcPage(headers):
+def requestNewPage(headers, url, external_id):
     agent = Agent(reactor)
-    request_d = agent.request('GET', 'http://www.newsystem.ru/goods-and-services/catalog/108/9438/',Headers(headers),None)
+    request_d = agent.request('GET', url,Headers(headers),None)
     d = defer.Deferred()
-    d.addCallback(parseNewPage, 'procs')
+    d.addCallback(parseNewPage, external_id)
     request_d.addCallback(getProcPage, d)
     return request_d
 
@@ -502,7 +500,7 @@ def parseNewPage(f, external_id, remaining=None, parser=None):
 	    rd = f.read(spoon)
 	    parser.feed(rd)
 	    remaining -= spoon
-	    d = deferLater(reactor, 0, parseNewPage, f, external_id, remaining, parser)
+	    d = deferLater(reactor, 1, parseNewPage, f, external_id, remaining, parser)
 	    return d
 
 
@@ -628,6 +626,8 @@ class NewTarget:
     us_price_pat = re.compile(unicode('\(([0-9\.\,]*)', 'utf-8'), re.UNICODE)
 
     def prepareNewComponents(self, external_id):
+        print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeha"
+        print external_id
 	for c in self.components:
 	    if c['spans'][-1]==u'в наличии':
 		c['new_stock'] = 5
@@ -652,27 +652,37 @@ class NewTarget:
 		c['rur_recommended_price'] = round(float(rur_recommended_price))
 		c['us_recommended_price'] = round(float(us_recommended_price),2)
 		c.pop('spans')
-                c['new_catalogs'] = external_id
-                print simplejson.dumps(c)
+		c['new_catalogs'] = external_id
+		print simplejson.dumps(c)
 	    except:
 		return
-                
+        print "---------------------------------------"
+            
+
 proc_fm1 = "9588"
 proc_am23 = "9713"
 proc_am23_ = "9439"
 proc_1155 = "9440"
 proc_1156 = "9441"
+proc_775 = "9443"
+mother_am23 = "9703"
+mother_am23_ = "9427"
+mother_1156 = "9712"
+mother_fm1="9428"
+mother_1155="9429"
+mother_775 = "9432"
+
 new_catalogs_mapping = {
     proc_fm1:models.proc_fm1,
     proc_am23:models.proc_am23,
     proc_am23_:models.proc_am23,
     proc_1155:models.proc_1155,
     proc_1156:models.proc_1156,
-    "9443":models.proc_775,
-    "9703":models.mother_am23,
-    "9427":models.mother_am23,
-    "9712":models.mother_1156,
-    "9428":models.mother_fm1,
-    "9429":models.mother_1155,
-    "9432":models.mother_775
+    proc_775:models.proc_775,
+    mother_am23:models.mother_am23,
+    mother_am23_:models.mother_am23,
+    mother_1156:models.mother_1156,
+    mother_fm1:models.mother_fm1,
+    mother_1155:models.mother_1155,
+    mother_775:models.mother_775
     }
