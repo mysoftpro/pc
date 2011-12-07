@@ -350,9 +350,9 @@ class WitNewMap(Resource):
 	# login_response.addCallback(prepareNewRequest)
 	# procs_done = login_response.addCallback(requestProcPage)
 	# procs_done.addCallback(logoutFormNew)
-        f = open('/home/aganzha/new.html')
-        f.seek(0,2)
-        parseNewPage(f,'procs')
+	f = open('/home/aganzha/new.html')
+	f.seek(0,2)
+	parseNewPage(f,'procs')
 	return "ok"
 
 
@@ -481,206 +481,146 @@ def pr(res):
 def parseNewPage(f, external_id, remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
-        remaining = f.tell()
-        # TODO! how do i know, that the received fileis more than 1024???
-        parser=etree.HTMLParser(target=NewTarget())#encoding='cp1251'
-        f.seek(0)
-        rd = f.read(spoon)
-        parser.feed(rd)
-        remaining -= spoon
-        d = deferLater(reactor, 0, parseNewPage, f, external_id, remaining, parser)
-        return d
+	remaining = f.tell()
+	# TODO! how do i know, that the received fileis more than 1024???
+	parser=etree.HTMLParser(target=NewTarget())#encoding='cp1251'
+	f.seek(0)
+	rd = f.read(spoon)
+	parser.feed(rd)
+	remaining -= spoon
+	d = deferLater(reactor, 0, parseNewPage, f, external_id, remaining, parser)
+	return d
     else:
-        if remaining < spoon:
-            rd = f.read(remaining)
-            parser.feed(rd)
-            f.close()
-            parser.close()
-            di = parser.target
-            print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
-            print di.components
-            return defer.Deferred()
-        else:
-            rd = f.read(spoon)
-            parser.feed(rd)
-            remaining -= spoon
-            d = deferLater(reactor, 0, parseNewPage, f, external_id, remaining, parser)
-            return d
+	if remaining < spoon:
+	    rd = f.read(remaining)
+	    parser.feed(rd)
+	    f.close()
+	    parser.close()
+	    di = parser.target
+	    print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+	    print di.components
+	    return defer.Deferred()
+	else:
+	    rd = f.read(spoon)
+	    parser.feed(rd)
+	    remaining -= spoon
+	    d = deferLater(reactor, 0, parseNewPage, f, external_id, remaining, parser)
+	    return d
 
 
 
-class NewTarget:    
+class Comparator():
+    def __init__(self, params):
+	self.params = params
+    def cattr(self, at):
+	return at in self.params
+    def eattr(self, at,value, condition=lambda x,y: x==y):
+	return condition(self.params[at],value)
+
+class NewTarget:
     def makeDate(self):
-        t = str(date.today())
-        return t.split('-')
+	t = str(date.today())
+	return t.split('-')
 
-
-    def match(self, look_for, where_to_look):
-        for k in look_for:
-            if k not in where_to_look: return False
-            if look_for[k] != where_to_look[k]: return False
-        return True
 
     def end_of_tag(self, tag_match, params):
-        return tag_match and 'end' in params
+	return tag_match and 'end' in params
 
     def clean(self, txt):
-        while True:
-            if u"  " in txt:
-                txt = txt.replace(u"  ", " ")
-            else:
-                break
-        return txt.replace("\t", "").replace("\n", "")
+	while True:
+	    if u"  " in txt:
+		txt = txt.replace(u"  ", " ")
+	    else:
+		break
+	return txt.replace("\t", "").replace("\n", "")
 
     def __init__(self):
-        self.components = []
+	self.components = []
+	self.walker = self.walk()
+	self.walker.next()
 
     def walk(self):
-        while True:
-            params = yield
-        # got_price = False
-        # got_subj = False
-        # got_text = False
-        # got_fields = False
-        # got_phone = False
-        # passed_titles = 0
-        # while True:
-        #     params = yield
-        #     if not got_price and self.match({'tag':'div', 'class':'price_box rounded'}, params):
-        #         while not got_price:
-        #             params = yield
-        #             if self.match({'tag':'span'}, params):
-        #                 while not got_price:
-        #                     params = yield
-        #                     if 'data' in params:
-        #                         self.price += self.clean(params['data'])
-        #                     else:
-        #                         got_price = True
-        #                         if u'\xd0' in self.price or u'\xd1' in self.price:
-        #                             self.price = unicode(self.price.encode('raw-unicode-escape'), 'utf-8')
-        #             if self.match({'tag':'div'}, params) and 'end' in params: got_price = True
+	while True:
+	    params = yield
+	    comp = Comparator(params)
+	    if comp.cattr('tag') and comp.eattr('tag','tr')\
+		    and comp.cattr('id') and comp.eattr('id','bx_', lambda x,y:x.startswith(y)):
+		component = {'_id':'new_'+params['id'].split('_')[-1]}
+		# print "get tr"
+		finish_component = False
+		while not finish_component:
+		    params = yield
+		    comp = Comparator(params)
+		    if comp.cattr('tag') and comp.eattr('tag','td')\
+			    and comp.cattr('class') and comp.eattr('class','catalog-list-item'):
+			# print "first td"
+			# first td here it is possible extract image
+			while not finish_component:
+			    params = yield
+			    comp = Comparator(params)
+			    if comp.cattr('tag') and comp.eattr('tag','td')\
+				    and comp.cattr('class') and \
+				    comp.eattr('class','catalog-list-item'):
+				# print "second td"
+				# second td
+				# here wil be the 'a' with link to component .it is possible
+				# extract catalogs from it!
+				component['spans'] = []
+				while not finish_component:
+				    params = yield				    
+                                    comp = Comparator(params)
+                                    if comp.cattr('tag') and comp.eattr('tag','a') \
+                                            and comp.cattr('start'):
+                                        component['new_link'] = params['href']
+                                        while True:
+                                            params = yield
+                                            comp = Comparator(params)
+                                            if comp.cattr('data'):
+                                                if 'text' in component:
+                                                    component['text']+=params['data']
+                                                else:
+                                                    component['text']=params['data']
+                                            else:
+                                                break
+                                            
+				    if comp.cattr('tag') and comp.eattr('tag','table') and comp.cattr('end'):
+					# print "finish"
+					# brak here cause get end of tr. but htm is broken, so use table instead!
+					finish_component = True
+					self.components.append(component)
+					# print component
+					break
+				    if comp.cattr('tag') and comp.eattr('tag','span')\
+					    and comp.cattr('start'):
+					# here are spans with the price!
+                                        # print "span!"
+					while not finish_component:
+					    params = yield
+                                            comp = Comparator(params)
+					    if comp.cattr('data'):
+						# print "data!"
+                                                # print params['data'].encode('utf-8')
+                                                component['spans'].append(params['data'])
+					    else:
+						break
 
-        #     if not got_subj and self.match({'tag':'h3','class':'maintitle'},params):
-
-        #         if passed_titles == 0:
-        #             passed_titles +=1
-        #         elif passed_titles == 1:
-        #             while not got_subj:
-        #                 params = yield
-        #                 if 'data' in params:
-        #                     self.subject += self.clean(params['data'])
-        #                 else:
-        #                     if u'\u2014' in self.subject:
-        #                         self.subject = self.subject.split(u'\u2014')[1]
-        #                     # while True:
-        #                     #     if u"  " in self.subject:
-        #                     #         self.subject = self.subject.replace(u"  ", " ")
-        #                     #     else:
-        #                     #         break
-
-        #                     # tretiy3 UNICODE UTF-8 ENCODING LITERAL
-        #                     if u'\xd0' in self.subject or u'\xd1' in self.subject:
-        #                         self.subject = unicode(self.subject.encode('raw-unicode-escape'), 'utf-8')
-
-        #                     passed_titles +=1
-        #                     got_subj = True
-        #         else:
-        #             break
-
-
-        #     if passed_titles == 2 and not got_text and self.match({'tag':'h3','class':'maintitle'},params):
-
-        #         while not got_text:
-        #             params = yield
-        #             if self.match({'tag':'div'},params):
-        #                 while not got_text:
-        #                     params = yield
-        #                     if 'data' in params:
-        #                         self.text += self.clean(params['data'])
-        #                     else:
-        #                         got_text = True
-        #                         passed_titles +=1
-
-        #                         if u'\xd0' in self.text or u'\xd1' in self.text:
-        #                             self.text = unicode(self.text.encode('raw-unicode-escape'), 'utf-8')
-
-        #             if self.match({'tag':'div'}, params) and 'end' in params: got_text = True
-
-        #     if passed_titles == 3 and not got_fields and self.match({'tag':'h3','class':'maintitle'},params):
-
-        #         while not got_fields:
-        #             params = yield
-        #             if self.match({'tag':'div'},params):
-        #                 while not got_fields:
-        #                     params = yield
-        #                     if self.match({'tag':'div'}, params) and 'end' in params:
-        #                         got_fields = True
-        #                         passed_titles +=1
-
-
-        #                         break
-        #                     if self.match({'tag':'p'},params):
-        #                         key = ''
-        #                         value =''
-        #                         while True:
-        #                             params = yield
-        #                             if self.match({'tag':'b'}, params):
-        #                                 # pass_b = False
-        #                                 while True:
-        #                                     params = yield
-
-        #                                     if self.match({'tag':'b'}, params) and 'end' in params: break
-        #                                     if 'data' in params:
-        #                                         key += self.clean(params['data'])
-        #                             if 'data' in params:
-        #                                 value += self.clean(params['data'])
-        #                             if self.match({'tag':'p'}, params) and 'end' in params:
-
-        #                                 if u'\xd0' in key or u'\xd1' in key:
-        #                                     key = unicode(key.encode('raw-unicode-escape'), 'utf-8')
-        #                                 if u'\xd0' in value or u'\xd1' in value:
-        #                                     value = unicode(value.encode('raw-unicode-escape'), 'utf-8')
-        #                                 self.fields.update({key:value})
-        #                                 break
-
-        #     if passed_titles == 4 and not got_phone and self.match({'tag':'h3','class':'maintitle'},params):
-        #         while not got_phone:
-        #             params = yield
-        #             if self.match({'tag':'div'}, params):
-        #                 while not got_phone:
-        #                     params = yield
-        #                     # pass_p = False
-        #                     if self.match({'tag':'div'}, params) and 'end' in params:
-        #                         got_phone = True
-        #                         passed_titles +=1
-        #                         if u'\xd0' in self.phone or u'\xd1' in self.phone:
-        #                             self.phone = unicode(self.phone.encode('raw-unicode-escape'), 'utf-8')
-
-
-        #                     if self.match({'tag':'p'}, params):
-        #                         while True:
-        #                             params = yield
-        #                             if self.match({'tag':'p'}, params) and 'end' in params:
-        #                                 break
-        #                             if 'data' in params:
-        #                                 self.phone += self.clean(params['data'])
 
     def start(self, tag, attrib):
-        params = {'tag':tag}
-        for k,v in attrib.items():
-            params.update({k:v})
-        self.walker.send(params)
+	params = {'tag':tag, 'start':'start'}
+	for k,v in attrib.items():
+	    params.update({k:v})
+	self.walker.send(params)
 
 
     def end(self, tag):
-        params = {'tag':tag, 'end':'end'}
-        self.walker.send(params)
+	params = {'tag':tag, 'end':'end'}
+	self.walker.send(params)
 
     def data(self, data):
-        self.walker.send({'data':data})
+	self.walker.send({'data':data})
 
     def comment(self, text):
-        pass
+	pass
 
     def close(self):
-        return self
+	return self
