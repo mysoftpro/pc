@@ -55,8 +55,7 @@ function setFilterByOption(e){
 		      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
 		      var op = jgetOption(select, code);//select.find('option[name="'+code+'"]');//
 		      op.prop('disabled',!target.prop('checked'));
-		      select.trigger("liszt:updated");
-		      console.log(1);
+		      select.trigger("liszt:updated");		      
 		  });
 
     var filtered_catalogs = _(filtered_procs).chain()
