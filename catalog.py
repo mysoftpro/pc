@@ -348,15 +348,16 @@ def xmlToJson(catalog_ob, catalog):
 class WitNewMap(Resource):
     new_places = {
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
-        'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers'        
+	'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers',
+	'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos'
 	}
     def goForNew(self, headers):
 	defs = []
 	for k,v in self.new_places.items():
 	    defs.append(requestNewPage(headers,k,v))
-        li = defer.DeferredList(defs)
-        return li.addCallback(lambda x: headers)
-                       
+	li = defer.DeferredList(defs)
+	return li.addCallback(lambda x: headers)
+
     def render_GET(self, request):
 	login_response = loginToNew()
 	login_response.addCallback(prepareNewRequest)
@@ -494,8 +495,7 @@ def parseNewPage(f, external_id, remaining=None, parser=None):
 	    parser.feed(rd)
 	    f.close()
 	    parser.close()
-	    parser.target.prepareNewComponents(external_id)
-	    return defer.Deferred()
+	    return parser.target.prepareNewComponents(external_id)
 	else:
 	    rd = f.read(spoon)
 	    parser.feed(rd)
@@ -625,10 +625,24 @@ class NewTarget:
     rur_price_pat = re.compile(unicode("[0-9\.\,]*", 'utf-8'), re.UNICODE)
     us_price_pat = re.compile(unicode('\(([0-9\.\,]*)', 'utf-8'), re.UNICODE)
 
+
+    def storeNewComponent(self, c):
+        def store(err):
+            print "storing"
+            return couch.saveDoc(c)
+        return store
+
+    def updateComponent(self, c):
+        def update(doc):
+            print "apdating"
+            for k,v in c.items():
+                doc[k] = v
+            return couch.saveDoc(doc)
+        return update
+
     def prepareNewComponents(self, external_id):
-        print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeha"
-        print external_id
-	for c in self.components:
+	defs = []
+        for c in self.components:
 	    if c['spans'][-1]==u'в наличии':
 		c['new_stock'] = 5
 	    else:
@@ -646,18 +660,21 @@ class NewTarget:
 		rur_recommended_price = re.match(self.rur_price_pat,c['spans'][2])\
 		    .group().replace('.','').replace(',','.')
 		us_recommended_price = re.match(self.us_price_pat,c['spans'][3])\
-		    .groups()[0].replace('.','').replace(',','.')
+		    .groups()[0].replace('.','').replace(',','.')        
 		c['rur_price'] = round(float(rur_price))
 		c['us_price'] = round(float(us_price),2)
 		c['rur_recommended_price'] = round(float(rur_recommended_price))
 		c['us_recommended_price'] = round(float(us_recommended_price),2)
-		c.pop('spans')
-		c['new_catalogs'] = external_id
-		print simplejson.dumps(c)
-	    except:
-		return
-        print "---------------------------------------"
-            
+                c.pop('spans')
+                c['new_catalogs'] = external_id
+                d = couch.openDoc(c['_id'])
+                d.addCallback(self.updateComponent(c))
+                d.addErrback(self.storeNewComponent(c))
+                defs.append(d)
+            except:
+		pass            
+        return defer.DeferredList(defs)
+
 
 proc_fm1 = "9588"
 proc_am23 = "9713"
