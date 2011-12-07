@@ -541,9 +541,6 @@ function installBodies(){
     init = false;
 }
 
-//??
-var chbeQueue = [];
-
 
 
 function _jgetSelectByRow(row){
@@ -788,10 +785,9 @@ function changeSocket(component, body, direction){
 
 
 var doNotStress = false;
+var doNotAjax = false;
 
 function cheaperBetter(){
-    //??
-    chbeQueue = [];
     function _cheaperBetter(e, delta){
 	e.preventDefault();
 	var direction = 'down';
@@ -820,14 +816,14 @@ function cheaperBetter(){
 	if (!hasNoVideo)return;
 
 	var guard = 20;
-	while(!changeComponent(body, new_component, old_component)){
+	while(!changeComponent(body, new_component, old_component, doNotAjax)){
 	    if (guard==0)return;
 	    guard-=1;
 	    appr_components = getNearestComponent(new_component.price,
 	 					getCatalogs(new_component),
 	 					delta, false);
 	    new_component = appr_components[0];
-	    changeComponent(body, new_component, old_component);
+	    changeComponent(body, new_component, old_component, doNotAjax);
 	}
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
