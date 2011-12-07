@@ -823,7 +823,7 @@ function cheaperBetter(){
 	 					getCatalogs(new_component),
 	 					delta, false);
 	    new_component = appr_components[0];
-	    changeComponent(body, new_component, old_component, doNotAjax);
+	    //changeComponent(body, new_component, old_component, doNotAjax);
 	}
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
