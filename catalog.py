@@ -26,7 +26,8 @@ from zope.interface import implements
 from urllib import quote_plus
 from twisted.internet.task import deferLater
 import re
-
+from datetime import date
+from pc import models
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
 			'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
 			'Mozilla/5.0 (Windows NT 6.0) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.60 Safari/534.24',
@@ -495,7 +496,7 @@ def parseNewPage(f, external_id, remaining=None, parser=None):
 	    parser.feed(rd)
 	    f.close()
 	    parser.close()
-            parser.target.prepareNewComponents()
+	    parser.target.prepareNewComponents(external_id)
 	    return defer.Deferred()
 	else:
 	    rd = f.read(spoon)
@@ -622,17 +623,56 @@ class NewTarget:
     def close(self):
 	return self
 
-    
-    def prepareNewComponents(self):
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
-        for c in self.components:
-            if c['spans'][-1]==u'в наличии':
-                c['new_stock'] = 10
-            else:
-                try:
-                    ma = re.match('[0-9]*',c['spans'][-1])
-                    if ma is not None:                        
-                        c['new_stock'] = int(ma.group())
-                except:                    
-                    c['new_stock'] = 0
-            print c['new_stock']
+    number_pat = re.compile(unicode("[0-9]*", 'utf-8'), re.UNICODE)
+    rur_price_pat = re.compile(unicode("[0-9\.\,]*", 'utf-8'), re.UNICODE)
+    us_price_pat = re.compile(unicode('\(([0-9\.\,]*)', 'utf-8'), re.UNICODE)
+
+    def prepareNewComponents(self, external_id):
+	for c in self.components:
+	    if c['spans'][-1]==u'в наличии':
+		c['new_stock'] = 5
+	    else:
+		try:
+		    ma = re.match(self.number_pat,c['spans'][-1])
+		    if ma is not None:
+			c['new_stock'] = int(ma.group())
+		except:
+		    c['new_stock'] = 0
+	    try:
+		rur_price = re.match(self.rur_price_pat,c['spans'][0])\
+		    .group().replace('.','').replace(',','.')
+		us_price = re.match(self.us_price_pat,c['spans'][1])\
+		    .groups()[0].replace('.','').replace(',','.')
+		rur_recommended_price = re.match(self.rur_price_pat,c['spans'][2])\
+		    .group().replace('.','').replace(',','.')
+		us_recommended_price = re.match(self.us_price_pat,c['spans'][3])\
+		    .groups()[0].replace('.','').replace(',','.')
+		c['rur_price'] = round(float(rur_price))
+		c['us_price'] = round(float(us_price),2)
+		c['rur_recommended_price'] = round(float(rur_recommended_price))
+		c['us_recommended_price'] = round(float(us_recommended_price),2)
+		c.pop('spans')
+                c['new_catalogs'] = external_id
+                print simplejson.dumps(c)
+	    except:
+		return
+                
+proc_fm1 = "9588"
+proc_am23 = "9713"
+proc_am23_ = "9439"
+proc_1155 = "9440"
+proc_1156 = "9441"
+new_catalogs_mapping = {
+    proc_fm1:models.proc_fm1,
+    proc_am23:models.proc_am23,
+    proc_am23_:models.proc_am23,
+    proc_1155:models.proc_1155,
+    proc_1156:models.proc_1156,
+    "9443":models.proc_775,
+    "9703":models.mother_am23,
+    "9427":models.mother_am23,
+    "9712":models.mother_1156,
+    "9428":models.mother_fm1,
+    "9429":models.mother_1155,
+    "9432":models.mother_775
+    }
