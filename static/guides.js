@@ -492,7 +492,7 @@ if ($('#proc_filter').length>0){
 function noticeCheckModel(){
 
     var toppopup = $('#toppopup');
-    if (toppopup.length==0)return;
+    if (toppopup.length==0 || $.cookie('pc_chkmodel_shown'))return;
     _.delay(function(){
 		toppopup
 		    .show()
@@ -502,6 +502,7 @@ function noticeCheckModel(){
 						 .show()
 						 .animate({top:"-70",left:"0"}, 500,function(){
 							      toppopup.hide();
+							      $.cookie('pc_chkmodel_shown', 1);
 							  });
 					 }, 10000);
 			     });
