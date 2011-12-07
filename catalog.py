@@ -21,6 +21,9 @@ from datetime import datetime
 from pc.mail import send_email
 from twisted.web.server import NOT_DONE_YET
 from twisted.internet.defer import succeed
+from twisted.web.iweb import IBodyProducer
+from zope.interface import implements
+from urllib import quote_plus
 
 standard_user_agents = ['Mozilla/5.0 (Windows NT 5.1) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.57 Safari/534.24',
                         'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
@@ -337,31 +340,35 @@ def xmlToJson(catalog_ob, catalog):
 
 
 class WitNewMap(Resource):
-    def setMap(self, maping, request):
-        data = request.args.get('data',[{}])[0]
-        jdata = simplejson.loads(data)
-        for i,ob in jdata.items():
-            if 'nc' in ob and 'wc' in ob:
-                maping['nc'][ob['nc']] =  ob['wc']
-                maping['wc'][ob['wc']] =  ob['nc']
-
-        couch.saveDoc(maping)
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-        request.write('ok')
-        request.finish()
-
     def render_GET(self, request):
-        key = request.args.get('key', [None])[0]
-        if key is None or key != xml_key:
-            return "fail"
-        op = request.args.get('op', [None])[0]
-        if op is not None:
-            if op == 'set':
-                d = couch.openDoc('wit_new')
-                d.addCallback(self.setMap, request)
-                return NOT_DONE_YET
-        return "pass"
+        login_response = loginToNew()
+        login_response.addCallback(getSession)
+        return "ok"
+    # def setMap(self, maping, request):
+    #     data = request.args.get('data',[{}])[0]
+    #     jdata = simplejson.loads(data)
+    #     for i,ob in jdata.items():
+    #         if 'nc' in ob and 'wc' in ob:
+    #             maping['nc'][ob['nc']] =  ob['wc']
+    #             maping['wc'][ob['wc']] =  ob['nc']
+
+    #     couch.saveDoc(maping)
+    #     request.setHeader('Content-Type', 'application/json;charset=utf-8')
+    #     request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+    #     request.write('ok')
+    #     request.finish()
+
+    # def render_GET(self, request):
+    #     key = request.args.get('key', [None])[0]
+    #     if key is None or key != xml_key:
+    #         return "fail"
+    #     op = request.args.get('op', [None])[0]
+    #     if op is not None:
+    #         if op == 'set':
+    #             d = couch.openDoc('wit_new')
+    #             d.addCallback(self.setMap, request)
+    #             return NOT_DONE_YET
+    #     return "pass"
 
 
 
@@ -403,61 +410,61 @@ class WitNewMap(Resource):
 
 
 
+class AuthProducer(object):
+    implements(IBodyProducer)
+
+    def __init__(self, login, password):
+        self.body = u"backurl=/index.php&AUTH_FORM=Y&TYPE=AUTH&USER_LOGIN=%s&USER_PASSWORD=%s&Login=Авторизуйтесь" % (login, password)
+        # self.body = quote_plus(self.body.encode('utf-8'))
+        self.body = self.body.encode('utf-8')
+        self.length = len(self.body)
+
+    def startProducing(self, consumer):
+        consumer.write(self.body)
+        return succeed(None)
+
+    def pauseProducing(self):
+        pass
+
+    def stopProducing(self):
+        pass
 
 
-# class AuthProducer(object):
-#     implements(IBodyProducer)
 
-#     def __init__(self, login, password):
-#         self.body = "login=%s&password=%s" % (login, password)
-#         self.length = len(self.body)
+def spli(coo):
+    return coo.split(';')[0].split('=')[0]
 
-#     def startProducing(self, consumer):
-#         consumer.write(self.body)
-#         return succeed(None)
-
-#     def pauseProducing(self):
-#         pass
-
-#     def stopProducing(self):
-#         pass
-
-
-
-# def spli(coo):
-#     return coo.split(';')[0].split('=')[0]
-
-# def getSession(response):
-#     cookies = []
-#     raw = response.headers.getAllRawHeaders()
-#     for h in raw:
-#         if h[0] == 'Set-Cookie':
-#             cookies = h[1]
-#             break
-#     required = [c for c in cookies if spli(c) == 'session_id']
-#     res = None
-#     if len(required)>0:
-#         res = required[0]
-#     return res
+def getSession(response):
+    cookies = []
+    raw = response.headers.getAllRawHeaders()
+    for h in raw:
+        if h[0] == 'Set-Cookie':
+            cookies = h[1]
+            break
+    print "yyyyyyyyyyyyyyyyyyyyaaaaaaaaaaaaaaaaaaaaaaaa"
+    print cookies
+    required = [c for c in cookies if spli(c) == 'session_id']
+    res = None
+    if len(required)>0:
+        res = required[0]
+    return res
 
 
-# def loginToNew(reactor):
-#     url = 'http://www.newsystem.ru/personal/auth.php'
-#     login = new_user
-#     password = new_password
-#     agent = Agent(reactor)
-#     headers = {}
-#     for k,v in standard_headers.items():
-#         headers.update({k:v})
-#     producer = AuthProducer(login, password)
+def loginToNew():
+    url = 'http://www.newsystem.ru/personal/auth.php'
+    login = new_user
+    password = new_password
+    agent = Agent(reactor)
+    headers = {}
+    for k,v in standard_headers.items():
+        headers.update({k:v})
+    producer = AuthProducer(login, password)
+    headers.update({'Content-Type':['application/x-www-form-urlencoded; charset=UTF-8']})
+    headers.update({'X-Requested-With':['XMLHttpRequest']})
+    request_d = agent.request('POST', url,Headers(headers),producer)
+    return request_d
 
-#     headers.update({'Content-Type':['application/x-www-form-urlencoded; charset=UTF-8']})
-#     headers.update({'X-Requested-With':['XMLHttpRequest']})
 
-#     request_d = agent.request('POST', url,Headers(headers),producer)
-#     # request_d.addCallback(getSession)
-#     # request_d.addErrback(pr)
-#     # request_d.addCallback(getUserList)
-#     # request_d.addErrback(pr)
-#     return request_d
-
+def pr(res):
+    print "pr"
+    print res
