@@ -477,7 +477,6 @@ def pr(res):
     print "pr"
     print res
 
-
 def parseNewPage(f, external_id, remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
@@ -496,9 +495,7 @@ def parseNewPage(f, external_id, remaining=None, parser=None):
 	    parser.feed(rd)
 	    f.close()
 	    parser.close()
-	    di = parser.target
-	    print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
-	    print di.components
+            parser.target.prepareNewComponents()
 	    return defer.Deferred()
 	else:
 	    rd = f.read(spoon)
@@ -567,22 +564,22 @@ class NewTarget:
 				# extract catalogs from it!
 				component['spans'] = []
 				while not finish_component:
-				    params = yield				    
-                                    comp = Comparator(params)
-                                    if comp.cattr('tag') and comp.eattr('tag','a') \
-                                            and comp.cattr('start'):
-                                        component['new_link'] = params['href']
-                                        while True:
-                                            params = yield
-                                            comp = Comparator(params)
-                                            if comp.cattr('data'):
-                                                if 'text' in component:
-                                                    component['text']+=params['data']
-                                                else:
-                                                    component['text']=params['data']
-                                            else:
-                                                break
-                                            
+				    params = yield
+				    comp = Comparator(params)
+				    if comp.cattr('tag') and comp.eattr('tag','a') \
+					    and comp.cattr('start'):
+					component['new_link'] = params['href']
+					while True:
+					    params = yield
+					    comp = Comparator(params)
+					    if comp.cattr('data'):
+						if 'text' in component:
+						    component['text']+=params['data']
+						else:
+						    component['text']=params['data']
+					    else:
+						break
+
 				    if comp.cattr('tag') and comp.eattr('tag','table') and comp.cattr('end'):
 					# print "finish"
 					# brak here cause get end of tr. but htm is broken, so use table instead!
@@ -593,14 +590,14 @@ class NewTarget:
 				    if comp.cattr('tag') and comp.eattr('tag','span')\
 					    and comp.cattr('start'):
 					# here are spans with the price!
-                                        # print "span!"
+					# print "span!"
 					while not finish_component:
 					    params = yield
-                                            comp = Comparator(params)
+					    comp = Comparator(params)
 					    if comp.cattr('data'):
 						# print "data!"
-                                                # print params['data'].encode('utf-8')
-                                                component['spans'].append(params['data'])
+						# print params['data'].encode('utf-8')
+						component['spans'].append(params['data'])
 					    else:
 						break
 
@@ -624,3 +621,18 @@ class NewTarget:
 
     def close(self):
 	return self
+
+    
+    def prepareNewComponents(self):
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+        for c in self.components:
+            if c['spans'][-1]==u'в наличии':
+                c['new_stock'] = 10
+            else:
+                try:
+                    ma = re.match('[0-9]*',c['spans'][-1])
+                    if ma is not None:                        
+                        c['new_stock'] = int(ma.group())
+                except:                    
+                    c['new_stock'] = 0
+            print c['new_stock']
