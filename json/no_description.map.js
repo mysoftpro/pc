@@ -1,5 +1,6 @@
 function(doc){
     var cats = [];
+    if (!doc['catalogs'])return;
     for (var i=0;i<doc['catalogs'].length;i++){
 	cats.push(doc['catalogs'][i]['id']);
     }

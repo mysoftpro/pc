@@ -1,4 +1,5 @@
 function(doc){
+    if (!doc['catalogs'])return;
     var catalog_item = doc.catalogs && doc.price && doc.price>0;
     var in_stock = (doc.stock1 && doc.stock1>0) || (doc.mystock && doc.mystock>0);
     if (catalog_item && in_stock){

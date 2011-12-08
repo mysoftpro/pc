@@ -124,8 +124,8 @@ class XmlGetter(Resource):
 		    couch.deleteDoc(row['id'], row['value'])
 		    deleted_count +=1
 	# destroy cache here!
-	from pc import root
-	root.clear_cache()
+	from pc import admin
+	admin.clear_cache()
 	send_email('admin@buildpc.ru',
 		   u'Обновление wit-tech',
 		   u'Всего позиций:' + unicode(all_count) + u', удалено позиций:' + unicode(deleted_count),
@@ -358,6 +358,9 @@ class WitNewMap(Resource):
 	return li.addCallback(lambda x: headers)
 
     def render_GET(self, request):
+        key = request.args.get('key', [None])[0]
+	if key is None or key != xml_key:
+	    return "fail"
 	login_response = loginToNew()
 	login_response.addCallback(prepareNewRequest)
 	all_done = login_response.addCallback(self.goForNew)
@@ -370,7 +373,6 @@ class WitNewMap(Resource):
 def logoutFromNew(headers):
     agent = Agent(reactor)
     agent.request('GET', "http://www.newsystem.ru/personal/auth.php?logout=yes&backurl=/goods-and-services/catalog/108/9438/index.php?IBLOCK_ID=108&SECTION_ID=9438",Headers(headers),None)
-    print "_____________loggedOut"
 
 
 class NewReceiver(Protocol):
@@ -627,13 +629,11 @@ class NewTarget:
 
     def storeNewComponent(self, c):
         def store(err):
-            print "storing"
             return couch.saveDoc(c)
         return store
 
     def updateComponent(self, c):
         def update(doc):
-            print "apdating"
             for k,v in c.items():
                 doc[k] = v
             return couch.saveDoc(doc)
@@ -672,7 +672,12 @@ class NewTarget:
                 defs.append(d)
             except:
 		pass            
-        return defer.DeferredList(defs)
+        li = defer.DeferredList(defs)
+        li.addCallback(lambda x: send_email('admin@buildpc.ru',
+                                            u'Обновление new system '+external_id,
+                                            u'Всего позиций:' + unicode(len(defs)),
+                                            sender=u'Компьютерный магазин <inbox@buildpc.ru>'))
+        return li
 
 
 proc_fm1 = "9588"

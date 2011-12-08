@@ -144,7 +144,7 @@ class StoreFaq(Resource):
 
 
     def storeBlog(self, doc, request):        
-        from pc.root import portal,auth_wrapper
+        from pc.admin import portal,auth_wrapper
         # get it from /usr/lib/python2.6/dist-packages/twisted/web/_auth/wrapper.py  L 120
         authheader = request.getHeader('authorization')
         factory, respString = auth_wrapper._selectParseHeader(authheader)

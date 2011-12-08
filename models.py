@@ -697,8 +697,23 @@ def fillChoices():
 	flatChoices(new_res)
 	return globals()['gChoices']
     #TODO - this callback to the higher level
-    return defer.DeferredList(defs).addCallback(makeDict)
+    return defer.DeferredList(defs).addCallback(makeDict).addCallback(fillNew)
 
+def fillNew(global_choices):
+    def fill(res):
+	for row in res['rows']:
+	    wit_doc = globals()['gChoices_flatten'][row['key']]
+	    if wit_doc['price']>row['value'][0]:
+		wit_doc['price'] = row['value'][0]
+	    wit_doc['stock1'] = row['value'][1]
+	send_email('admin@buildpc.ru',
+		   u'Обновление цен и кол-ва Виттеха via Новая Система',
+		   u'Всего позиций: ' + unicode(len(res['rows'])),
+		   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+    d = couch.openView(designID, 'new_map', keys = globals()['gChoices_flatten'].keys())
+    d.addCallback(fill)
+    d.addCallback(lambda some: global_choices)
+    return d
 
 
 def computer(template, skin, request):
@@ -817,21 +832,21 @@ class ModelForModelsPage(object):
 	    extra = deepcopy(self.tree.find('cart_extra'))
 	    for el in extra:
 		self.description_div.append(el)
-	    if 'comments' in self.model:		
+	    if 'comments' in self.model:
 		last_index = len(self.model['comments'])-1
 		i=0
 		for comment in self.model['comments']:
-                    comments = deepcopy(self.tree.find('cart_comment'))
+		    comments = deepcopy(self.tree.find('cart_comment'))
 		    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-                    comment['date'].reverse()
+		    comment['date'].reverse()
 		    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
 		    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
 		    links = comments.xpath('//div[@class="faqlinks"]')[0]
-                    if i!=last_index:
-                        links.remove(links.find('a'))
+		    if i!=last_index:
+			links.remove(links.find('a'))
 		    i+=1
-                    self.description_div.append(comments.find('div'))
-	self.container.append(self.description_div)        
+		    self.description_div.append(comments.find('div'))
+	self.container.append(self.description_div)
 
 
     def render(self):
@@ -853,24 +868,24 @@ class ModelForModelsPage(object):
 		    self.description_div.set('style',"height:0;overflow:hidden")
 
 
-def fixDeletedCart(err, request, name):    
+def fixDeletedCart(err, request, name):
     if request.getCookie('pc_user') == name:
-        request.addCookie('pc_user',
-                          '',
-                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
-        request.addCookie('pc_key',
-                          '',
-                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
-        request.addCookie('pc_cart',
-                          '',
-                          expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
+	request.addCookie('pc_user',
+			  '',
+			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			  path='/')
+	request.addCookie('pc_key',
+			  '',
+			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			  path='/')
+	request.addCookie('pc_cart',
+			  '',
+			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			  path='/')
     request.redirect('http://buildpc.ru')
     return []
 
-        
+
 def redirectDeletedCart(err):
     return []
 
@@ -941,11 +956,11 @@ def computers(template,skin,request):
 				      container)
 	    view.render()
 	    total +=1
-        if this_is_cart:
-            # comments here and in ModelForModelsPage description_div
-            cart_form = deepcopy(tree.find('cart_comment_form'))
-            container.append(cart_form.find('div'))
-            
+	if this_is_cart:
+	    # comments here and in ModelForModelsPage description_div
+	    cart_form = deepcopy(tree.find('cart_comment_form'))
+	    container.append(cart_form.find('div'))
+
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
 	if 'notebooks' in result and 'user_doc' in result:
 	    total_notes = []
@@ -1036,20 +1051,20 @@ def computers(template,skin,request):
 	    models['user_doc'] = _user
 	    return models
 	def getModelsAndNotes(user_doc):
-            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)
 	    if not 'notebooks' in user_doc:
 		return models
 	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
 	    d = defer.DeferredList((models, notes))
 	    d.addCallback(glueModelsAndNotes, user_doc)
-            d.addErrback(lambda some: models)
+	    d.addErrback(lambda some: models)
 	    return d
 	d.addCallback(getModelsAndNotes)
-        if this_is_cart:
-            d.addErrback(fixDeletedCart, request, name)
+	if this_is_cart:
+	    d.addErrback(fixDeletedCart, request, name)
 	d.addCallback(render)
-        if this_is_cart:
-            d.addErrback(redirectDeletedCart)
+	if this_is_cart:
+	    d.addErrback(redirectDeletedCart)
     return d
 
 
