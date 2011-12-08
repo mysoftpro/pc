@@ -752,77 +752,91 @@ class NewDescriptionTarget(NewTarget):
     def __init__(self):
 	self.name = u''
 	self.image = u''
+	self.tds = []
+	self.description = ''
+	self.collect = False
 	self.walker = self.walk()
 	self.walker.next()
 
 
     def prepareDescription(self, external_id):
 	print "doooooooooooooone"
-	print external_id
+	print self.name.encode('utf-8')
+	print self.image.encode('utf-8')
+	print self.description.encode('utf-8')
+	print self.tds
+	print "done"
     def walk(self):
-
 	while True:
 	    params = yield
 	    comp = Comparator(params)
-	    if comp.tag('h1'):
-		while True:
-		    params = yield
-		    if 'data' in params:
-			self.name+=params['data']
-		    else:
-			print "naaaaaaaaaaaaaaaaaaaaaaaaamw"
-			print self.name.encode('utf-8')
-			break
-	    if comp.tag('div') and comp._id('picture'):
+	    if comp.tag('div') and comp.klass('catalog-element'):
 		while True:
 		    params = yield
 		    comp = Comparator(params)
-		    if comp.tag('img'):
-			self.image = params['src']
-			print "iiiiiiiiiiiiiiiiiiiiiimage"
-			print self.image
-			break
-
-	    if comp.tag('table') and comp.klass('data-table'):
-		tds = []
-		while True:		    
-		    params = yield
-		    comp = Comparator(params)
-		    if comp.tag('tr') and 'start' in params:
-		    	while True:
+		    if 'data' in params and self.collect:
+                        if u'Назад в раздел' in params['data']:
+                            self.collect = False
+                        else:
+                            self.description += params['data']
+		    if comp.tag('h1'):
+			while True:
+			    params = yield
+			    if 'data' in params:
+				self.name+=params['data']
+			    else:
+				break
+		    if comp.tag('div') and comp._id('picture'):
+			while True:
 			    params = yield
 			    comp = Comparator(params)
-		            if comp.tag('td') and 'start' in params:
+			    if comp.tag('img'):
+				self.image = params['src']
+				# print "iiiiiiiiiiiiiiiiiiiiiimage"
+				# print self.image
+				break
+
+		    if comp.tag('table') and comp.klass('data-table'):
+			tds = []
+			while True:
+			    params = yield
+			    comp = Comparator(params)
+			    if comp.tag('tr') and 'start' in params:
 				while True:
 				    params = yield
 				    comp = Comparator(params)
-				    if 'data' in params:
-					if len(tds)==0:
-					    tds.append([params['data']])
-					else:
-					    if len(tds[-1])==2:
-						tds.append([params['data']])
-					    else:
-						tds[-1].append(params['data'])
-				    elif comp.tag('b') and 'start' in params:
-					    while True:
-						params = yield
-						if 'data' in params:
-						    if len(tds)==0:
+				    if comp.tag('td') and 'start' in params:
+					while True:
+					    params = yield
+					    comp = Comparator(params)
+					    if 'data' in params:
+						if len(tds)==0:
+						    tds.append([params['data']])
+						else:
+						    if len(tds[-1])==2:
 							tds.append([params['data']])
 						    else:
-							if len(tds[-1])==2:
-							    tds.append([params['data']])
+							tds[-1].append(params['data'])
+					    elif comp.tag('b') and 'start' in params:
+						    while True:
+							params = yield
+							if 'data' in params:
+							    if len(tds)==0:
+								tds.append([params['data']])
+							    else:
+								if len(tds[-1])==2:
+								    tds.append([params['data']])
+								else:
+								    tds[-1].append(params['data'])
 							else:
-							    tds[-1].append(params['data'])
-						else:
-						    break
-				    else:                                        
-					break		
-                            else:
-                                self.tds = tds
-                                break
-                    elif comp.tag('table') and 'end' in params:
-                        print "exit table"
-                        print self.tds
-                        break
+							    break
+					    else:
+						break
+				    else:
+					self.tds = tds
+					break
+			    elif comp.tag('table') and 'end' in params:
+                                self.collect = True
+                                # print "exit table"
+				# print self.tds
+				break
