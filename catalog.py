@@ -763,7 +763,7 @@ class NewDescriptionTarget(NewTarget):
 	print "doooooooooooooone"
 	print self.name.encode('utf-8')
 	print self.image.encode('utf-8')
-	print self.description.encode('utf-8')
+	print self.description.replace('\\n','').replace('\\t','').encode('utf-8')
 	print self.tds
 	print "done"
     def walk(self):
