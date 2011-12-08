@@ -88,6 +88,9 @@ class AdminGate(Resource):
         self.putChild('new_for_mapping', NewForMapping())
         self.putChild('store_wit_new_map',StoreWitNewMap())
         self.putChild('delete_wit_new_map',DeleteWitNewMap())
+
+        self.putChild('new_description',GetNewDescription())
+
     def render_GET(self, request):
         return self.static.getChild('index.html', request).render(request)
 
@@ -885,3 +888,16 @@ class DeleteWitNewMap(Resource):
         li.addCallback(self.finish, request)
         return NOT_DONE_YET
         
+
+class GetNewDescription(Resource):
+
+    def render_GET(self, request):
+        from pc.catalog import parseNewDescription
+        f = open('/home/aganzha/new.html')
+        f.seek(0,2)
+        parseNewDescription(f, 'test')
+        return "ok"
+    
+        
+
+    

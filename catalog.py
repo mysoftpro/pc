@@ -342,8 +342,6 @@ def xmlToJson(catalog_ob, catalog):
 
 
 
-
-
 class WitNewMap(Resource):
     new_places = {
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
@@ -358,7 +356,7 @@ class WitNewMap(Resource):
 	return li.addCallback(lambda x: headers)
 
     def render_GET(self, request):
-        key = request.args.get('key', [None])[0]
+	key = request.args.get('key', [None])[0]
 	if key is None or key != xml_key:
 	    return "fail"
 	login_response = loginToNew()
@@ -514,6 +512,20 @@ class Comparator():
     def eattr(self, at,value, condition=lambda x,y: x==y):
 	return condition(self.params[at],value)
 
+    #TODO! refactor parseNewPage!!!!!!!!!!!!!!!!! it is fucke UGLY
+    def tag(self, name):
+	return 'tag' in self.params and self.params['tag'] == name
+
+    def klass(self, name):
+	return 'class' in self.params and self.params['class'] == name
+
+    def _id(self, name):
+	return 'id' in self.params and self.params['id'] == name
+
+    def data(self):
+	return 'data' in self.params
+
+
 class NewTarget:
     def makeDate(self):
 	t = str(date.today())
@@ -628,20 +640,20 @@ class NewTarget:
 
 
     def storeNewComponent(self, c):
-        def store(err):
-            return couch.saveDoc(c)
-        return store
+	def store(err):
+	    return couch.saveDoc(c)
+	return store
 
     def updateComponent(self, c):
-        def update(doc):
-            for k,v in c.items():
-                doc[k] = v
-            return couch.saveDoc(doc)
-        return update
+	def update(doc):
+	    for k,v in c.items():
+		doc[k] = v
+	    return couch.saveDoc(doc)
+	return update
 
     def prepareNewComponents(self, external_id):
 	defs = []
-        for c in self.components:
+	for c in self.components:
 	    if c['spans'][-1]==u'в наличии':
 		c['new_stock'] = 5
 	    else:
@@ -659,25 +671,25 @@ class NewTarget:
 		rur_recommended_price = re.match(self.rur_price_pat,c['spans'][2])\
 		    .group().replace('.','').replace(',','.')
 		us_recommended_price = re.match(self.us_price_pat,c['spans'][3])\
-		    .groups()[0].replace('.','').replace(',','.')        
+		    .groups()[0].replace('.','').replace(',','.')
 		c['rur_price'] = round(float(rur_price))
 		c['us_price'] = round(float(us_price),2)
 		c['rur_recommended_price'] = round(float(rur_recommended_price))
 		c['us_recommended_price'] = round(float(us_recommended_price),2)
-                c.pop('spans')
-                c['new_catalogs'] = external_id
-                d = couch.openDoc(c['_id'])
-                d.addCallback(self.updateComponent(c))
-                d.addErrback(self.storeNewComponent(c))
-                defs.append(d)
-            except:
-		pass            
-        li = defer.DeferredList(defs)
-        li.addCallback(lambda x: send_email('admin@buildpc.ru',
-                                            u'Обновление new system '+external_id,
-                                            u'Всего позиций:' + unicode(len(defs)),
-                                            sender=u'Компьютерный магазин <inbox@buildpc.ru>'))
-        return li
+		c.pop('spans')
+		c['new_catalogs'] = external_id
+		d = couch.openDoc(c['_id'])
+		d.addCallback(self.updateComponent(c))
+		d.addErrback(self.storeNewComponent(c))
+		defs.append(d)
+	    except:
+		pass
+	li = defer.DeferredList(defs)
+	li.addCallback(lambda x: send_email('admin@buildpc.ru',
+					    u'Обновление new system '+external_id,
+					    u'Всего позиций:' + unicode(len(defs)),
+					    sender=u'Компьютерный магазин <inbox@buildpc.ru>'))
+	return li
 
 
 proc_fm1 = "9588"
@@ -707,3 +719,110 @@ new_catalogs_mapping = {
     mother_1155:models.mother_1155,
     mother_775:models.mother_775
     }
+
+def parseNewDescription(f, external_id, remaining=None, parser=None):
+    spoon = 1024*10
+    if remaining is None:
+	remaining = f.tell()
+	# TODO! how do i know, that the received fileis more than 1024???
+	parser=etree.HTMLParser(target=NewDescriptionTarget())#encoding='cp1251'
+	f.seek(0)
+	rd = f.read(spoon)
+	parser.feed(rd)
+	remaining -= spoon
+	d = deferLater(reactor, 0, parseNewDescription, f, external_id, remaining, parser)
+	return d
+    else:
+	if remaining < spoon:
+	    rd = f.read(remaining)
+	    parser.feed(rd)
+	    f.close()
+	    parser.close()
+	    return parser.target.prepareDescription(external_id)
+	else:
+	    rd = f.read(spoon)
+	    parser.feed(rd)
+	    remaining -= spoon
+	    d = deferLater(reactor, 1, parseNewDescription, f, external_id, remaining, parser)
+	    return d
+
+
+class NewDescriptionTarget(NewTarget):
+
+    def __init__(self):
+	self.name = u''
+	self.image = u''
+	self.walker = self.walk()
+	self.walker.next()
+
+
+    def prepareDescription(self, external_id):
+	print "doooooooooooooone"
+	print external_id
+    def walk(self):
+
+	while True:
+	    params = yield
+	    comp = Comparator(params)
+	    if comp.tag('h1'):
+		while True:
+		    params = yield
+		    if 'data' in params:
+			self.name+=params['data']
+		    else:
+			print "naaaaaaaaaaaaaaaaaaaaaaaaamw"
+			print self.name.encode('utf-8')
+			break
+	    if comp.tag('div') and comp._id('picture'):
+		while True:
+		    params = yield
+		    comp = Comparator(params)
+		    if comp.tag('img'):
+			self.image = params['src']
+			print "iiiiiiiiiiiiiiiiiiiiiimage"
+			print self.image
+			break
+
+	    if comp.tag('table') and comp.klass('data-table'):
+		tds = []
+		while True:		    
+		    params = yield
+		    comp = Comparator(params)
+		    if comp.tag('tr') and 'start' in params:
+		    	while True:
+			    params = yield
+			    comp = Comparator(params)
+		            if comp.tag('td') and 'start' in params:
+				while True:
+				    params = yield
+				    comp = Comparator(params)
+				    if 'data' in params:
+					if len(tds)==0:
+					    tds.append([params['data']])
+					else:
+					    if len(tds[-1])==2:
+						tds.append([params['data']])
+					    else:
+						tds[-1].append(params['data'])
+				    elif comp.tag('b') and 'start' in params:
+					    while True:
+						params = yield
+						if 'data' in params:
+						    if len(tds)==0:
+							tds.append([params['data']])
+						    else:
+							if len(tds[-1])==2:
+							    tds.append([params['data']])
+							else:
+							    tds[-1].append(params['data'])
+						else:
+						    break
+				    else:                                        
+					break		
+                            else:
+                                self.tds = tds
+                                break
+                    elif comp.tag('table') and 'end' in params:
+                        print "exit table"
+                        print self.tds
+                        break
