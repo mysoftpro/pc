@@ -918,11 +918,21 @@ head.ready(function(){
 	   });
 function prepareCart(){
     var _area = $('#faq_top textarea');
-    _area.click(function(){_area.val('');});
+    _area.click(function(){
+		    if (_area.val() == ta_initial || _area.val() == taa_initial){
+			_area.val('');
+		    };
+		});
     var _email = $('#faq_top input[name="email"]');
-    _email.click(function(){_email.val('');});
+    _email.click(function(){
+		     if (_email.val() == email_initial)
+			 _email.val('');
+		 });
     var _name = $('#faq_top input[name="name"]');
-    _name.click(function(){_name.val('');});
+    _name.click(function(){
+		    if (_name.val() == name_initial)
+			_name.val('');
+		});
 
     var faq_links = $('.faqlinks a').toArray();
 
