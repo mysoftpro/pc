@@ -124,19 +124,19 @@ function ask(e){
 	   });
 }
 var forceCookie = function(){
-    if (!$.cookie('pc_cookie_forced')){	
-	var data = {pc_user:$.cookie('pc_user')};	
-	var cart = $.cookie('pc_cart');
-	if (cart){
-	    data['pc_cart'] = cart;
-	}
-	var key = $.cookie('pc_key');
-	if (key){
-	    data['pc_key'] = key;
-	}
-	$.ajax({url:'/force_cookie_set',data:data});
-	$.cookie('pc_cookie_forced',true);
-    }
+    // if (!$.cookie('pc_cookie_forced')){	
+    // 	var data = {pc_user:$.cookie('pc_user')};	
+    // 	var cart = $.cookie('pc_cart');
+    // 	if (cart){
+    // 	    data['pc_cart'] = cart;
+    // 	}
+    // 	var key = $.cookie('pc_key');
+    // 	if (key){
+    // 	    data['pc_key'] = key;
+    // 	}
+    // 	$.ajax({url:'/force_cookie_set',data:data});
+    // 	$.cookie('pc_cookie_forced',true);
+    // }
 }
 var init = function(){
 
