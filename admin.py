@@ -931,14 +931,21 @@ class GetDescFromNew(Resource):
 
 
 class StoreNewDesc(Resource):
-    def finish(self, doc, desc, name, img):
+    def finish(self, doc, desc, name, img, warranty, articul, catalogs):
         doc['description'] = {}
         doc['description'].update({'comments':desc})
         doc['description'].update({'name':name})
         #TODO get and store image!
         if len(img)>0:
             doc['description'].update({'imgs':[img]})
-            
+        else:
+            doc['description'].update({'imgs':[]})
+        if len(warranty)>0:
+            doc['warranty_type'] = warranty
+        if len(articul)>0:
+            doc['articul'] = articul
+        if len(catalogs)>0:
+            doc['catalogs'] = simplejson.loads(catalogs)
         couch.saveDoc(doc)
 
     def render_POST(self, request):
@@ -946,6 +953,9 @@ class StoreNewDesc(Resource):
         desc = request.args.get('desc')[0]
         img = request.args.get('img')[0]
         name = request.args.get('name')[0]
+        warranty = request.args.get('warranty')[0]
+        articul = request.args.get('articul')[0]
+        catalogs = request.args.get('catalogs')[0]
         d = couch.openDoc(_id)
-        d.addCallback(self.finish, desc, name, img)
+        d.addCallback(self.finish, desc, name, img, warranty, articul, catalogs)
         return "ok"

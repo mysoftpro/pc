@@ -3,20 +3,23 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{id}}"><td>{{name}}</td><td>{{description}}</td><td><input type="submit" value="get"/></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value="{{catalogs}}"/></td><td><input type="submit" value="get"/></td>');
 
 
 function storeNewDesc(doc){
-    return function(e){	
+    return function(e){
 	var row = $('#'+doc['_id']);
 	var desc = row.find('textarea').val();
 	var img = row.find('input[name="img"]').val();
 	var name = row.find('input[name="name"]').val();
+	var articul = row.find('input[name="articul"]').val();
+	var warranty = row.find('input[name="warranty"]').val();
+	var catalogs = row.find('input[name="catalogs"]').val();
 	$.ajax({
 		   url:'store_new_desc',
-		   data:{'id':doc['_id'], 'desc':desc,'img':img, 'name':name},
+		   data:{'id':doc['_id'], 'desc':desc,'img':img, 'name':name, 'articul':articul,'warranty':warranty, 'catalogs':catalogs},
 		   success:function(data){
-		       row.remove();		       
+		       row.remove();
 		   },
 		   type:'post'
 	       });
@@ -28,27 +31,52 @@ function fill(data){
     _(data['rows']).each(function(row){
 			     var doc = row['doc'];
 			     var desc = '';
-			     if (doc['description'])
-				 desc = doc['description'];
+			     var img = '';
+			     var name='';
+			     var catalogs = '';
+			     var warranty = '';
+			     var articul = '';
+			     if (doc['description']){
+				 desc = doc['description']['comments'];
+				 name = doc['description']['name'];
+				 if (doc['description']['imgs'])
+				     img = doc['description']['imgs'][0];
+
+			     }
+			     if (doc['warranty_type']){
+				 warranty=doc['warranty_type'];
+			     }
+			     if (doc['articul']){
+				 articul=doc['articul'];
+			     }
+			     if (doc['catalogs']){
+				 catalogs=doc['catalogs'];
+			     }
 			     table.append(desc_template({
-							    id:doc['_id'],
+							    _id:doc['_id'],
 							    description:desc,
-							    name:doc['text']
+							    text:doc['_id']+' '+doc['text'],
+							    img:img,
+							    name:name,
+							    warranty:warranty,
+							    articul:articul,
+							    catalogs:catalogs
 							}));
 			     $('#'+doc['_id'])
-				 .find('input')
+				 .find('input[type="submit"]')
 				 .click(function(e){
 					   $.ajax({
 						      url:'get_desc_from_new',
 						      data:{'link':doc['new_link']},
 							    success:function(data){
 								var t = $(e.target);
-								t.parent()
-								    .prev()
-								    .html('<textarea>'+data['descr']+'</textarea><input name="name" value="'+data['name']+'"/><input name="img" value="'+data['img']+'"/>');
+								var prev = t.parent().prev();
+								var cats = prev.find('input[name="catalogs"]').clone();								
+								prev.html('<textarea>'+data['descr']+'</textarea><input name="name" value="'+data['name']+'"/><input name="img" value="'+data['img']+'"/><input name="warranty" value="'+ data['warranty']+'"/><input name="articul" value="'+data['articul']+'"/>');
+								prev.append(cats);
 								t.attr('value', 'save');
 								t.unbind('click').click(storeNewDesc(doc));
-								
+
 							    }
 						  });
 					});

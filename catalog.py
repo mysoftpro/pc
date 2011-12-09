@@ -763,10 +763,22 @@ class NewDescriptionTarget(NewTarget):
 
     def prepareDescription(self, external_id):
 	print "doooooooooooooone"	
-        return simplejson.dumps({'descr':self.description+\
-                                     u''.join([u':'.join(pair) for pair in self.tds]),
+        warranty = ''
+        articul = ''
+        pairs = ''
+        for pair in self.tds:
+            if u'Гарантия' in pair[0]:
+                warranty = pair[1]
+            elif u'Артикул' in pair[0]:
+                articul = pair[1]
+            else:
+                pairs+= u':'.join(pair)
+            [u':'.join(pair) for pair in self.tds]
+        return simplejson.dumps({'descr':self.description+pairs,
                                  'name':self.name,
-                                 'img':self.image})
+                                 'img':self.image,
+                                 'warranty':warranty,
+                                 'articul':articul})
                                  
                                  
     def walk(self):
