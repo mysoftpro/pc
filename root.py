@@ -632,7 +632,7 @@ class Root(Cookable):
 	self.putChild('di',Di())
 	self.putChild('checkModel', CheckModel())
 	self.putChild('store_cart_comment',StoreCartComment())
-	self.putChild('force_cookie_set',ForceCookieSet())
+
 
     def getChild(self, name, request):
 	self.checkCookie(request)
@@ -1192,26 +1192,3 @@ class SelectHelpsProxy(Resource):
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	return self.proxy.getChild(last, request)
-
-class ForceCookieSet(Resource):
-    def render_GET(self, request):
-	#TODO! model_shown also. may be other cookies!
-	pc_user = request.args.get('pc_user',[None])[0]
-	pc_cart = request.args.get('pc_cart',[None])[0]
-	pc_key = request.args.get('pc_key',[None])[0]
-        if pc_user is not None:
-            request.addCookie('pc_user',
-			      pc_user,
-			      expires=datetime.now().\
-                                  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
-        if pc_cart is not None:
-            request.addCookie('pc_cart',
-			      pc_cart,
-			      expires=datetime.now().\
-                                  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
-        if pc_key is not None:
-            request.addCookie('pc_key',
-			      pc_key,
-			      expires=datetime.now().\
-                                  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
-        return "ok"
