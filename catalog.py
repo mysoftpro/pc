@@ -772,8 +772,8 @@ class NewDescriptionTarget(NewTarget):
             elif u'Артикул' in pair[0]:
                 articul = pair[1]
             else:
-                pairs+= u':'.join(pair)
-            [u':'.join(pair) for pair in self.tds]
+                pairs+= u' '.join(pair)
+            [u' '.join(pair) for pair in self.tds]
         return simplejson.dumps({'descr':self.description+pairs,
                                  'name':self.name,
                                  'img':self.image,

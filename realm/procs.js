@@ -40,7 +40,6 @@ function addInput(doc,name){
 function fillMothers(data){
     var table = $('#mothertable');
     for (var i=0;i<data.length;i++){
-	console.log(data[i]);
         var rows = data[i][1]['rows'].sort(function(el1,el2){
                                                return el1.doc.price-el2.doc.price;
 					   });

@@ -946,6 +946,8 @@ class StoreNewDesc(Resource):
             doc['articul'] = articul
         if len(catalogs)>0:
             doc['catalogs'] = simplejson.loads(catalogs)
+            doc['price'] = doc['us_price']
+            doc['stock1'] = doc['new_stock']
         couch.saveDoc(doc)
 
     def render_POST(self, request):
