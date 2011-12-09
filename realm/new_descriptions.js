@@ -27,7 +27,7 @@ function storeNewDesc(doc){
 }
 
 function fill(data){
-    var table=$('table');
+    var table=$('#main_table');
     _(data['rows']).each(function(row){
 			     var doc = row['doc'];
 			     var desc = '';

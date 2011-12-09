@@ -26,12 +26,12 @@ perifery = "7365"
 proc = "7399"
 mother = "7388"
 
-mother_1155 = [components, mother,"17961"]
-mother_1156 = [components,mother,"12854"]
-mother_1366 =[components,mother,"18029"]
-mother_775 = [components,mother,"7449"]
-mother_am23 = [components,mother,"7699"]
-mother_fm1 = [components,mother,"19238"]
+mother_1155 = [components, mother,"17961"]#
+mother_1156 = [components,mother,"12854"]#
+mother_1366 =[components,mother,"18029"]#
+mother_775 = [components,mother,"7449"]#
+mother_am23 = [components,mother,"7699"]#
+mother_fm1 = [components,mother,"19238"]#
 
 video = "7396"
 
