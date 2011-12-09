@@ -882,6 +882,11 @@ def fixDeletedCart(err, request, name):
 			  '',
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			  path='/')
+        request.addCookie('pc_cookie_forced',
+			      "true",
+			      expires=datetime.now().replace(year=2000).\
+			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
     request.redirect('http://buildpc.ru')
     return []
 
@@ -1004,6 +1009,11 @@ def computers(template,skin,request):
 			  expires=datetime.now().\
 				  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			  path='/')
+                request.addCookie('pc_cookie_forced',
+                                  "true",
+                                  expires=datetime.now().replace(year=2000).\
+                                      strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                                  path='/')
 
 	_prices = 'undefined'
 

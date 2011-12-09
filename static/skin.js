@@ -123,8 +123,27 @@ function ask(e){
 	       }
 	   });
 }
+var forceCookie = function(){
+    if (document.location.host.match('localhost')) return;
+    if (!$.cookie('pc_cookie_forced')){
+	var url = 'http://www.buildpc.ru';
+	if (document.location.host.match('www'))
+	    url = 'http://buildpc.ru';
+	var data = {pc_user:$.cookie('pc_user')};	
+	var cart = $.cookie('pc_cart');
+	if (cart){
+	    data['pc_cart'] = cart;
+	}
+	var key = $.cookie('pc_key');
+	if (key){
+	    data['pc_key'] = key;
+	}
+	$.ajax({url:url+'/force_cookie_set',data:data});
+    }
+}
 var init = function(){
 
+    forceCookie();
     if ($.browser.opera){
 	$('html').css('height','auto');
     }
