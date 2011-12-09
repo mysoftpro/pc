@@ -75,12 +75,12 @@ sound_internal = [components,sound,"8012"]
 network = "7405"
 lan = [network,"14710"]
 
-proc_1155 = [components, proc, "18027"]
-proc_1156 = [components,proc,"18028"]
-proc_1366 = [components,proc,"9422"]
-proc_775 = [components,proc,"7451"]
-proc_am23 = [components,proc,"7700"]
-proc_fm1 =  [components,proc,"19257"]
+proc_1155 = [components, proc, "18027"]#
+proc_1156 = [components,proc,"18028"]#
+proc_1366 = [components,proc,"9422"]#
+proc_775 = [components,proc,"7451"]#
+proc_am23 = [components,proc,"7700"]#
+proc_fm1 =  [components,proc,"19257"]#
 
 audio = "7389"
 audio_20 = [perifery,audio, "7447"]
