@@ -745,7 +745,7 @@ def parseNewDescription(f, external_id, remaining=None, parser=None):
 	    rd = f.read(spoon)
 	    parser.feed(rd)
 	    remaining -= spoon
-	    d = deferLater(reactor, 1, parseNewDescription, f, external_id, remaining, parser)
+	    d = deferLater(reactor, 0, parseNewDescription, f, external_id, remaining, parser)
 	    return d
 
 

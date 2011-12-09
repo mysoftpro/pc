@@ -92,6 +92,7 @@ class AdminGate(Resource):
 	# self.putChild('new_description',NewDescription())
 	self.putChild('get_new_descriptions',GetNewDescriptions())
         self.putChild('get_desc_from_new',GetDescFromNew())
+        self.putChild('store_new_desc',StoreNewDesc())
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render(request)
@@ -927,3 +928,24 @@ class GetDescFromNew(Resource):
         d = getNewDescription(link)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
+
+
+class StoreNewDesc(Resource):
+    def finish(self, doc, desc, name, img):
+        doc['description'] = {}
+        doc['description'].update({'comments':desc})
+        doc['description'].update({'name':name})
+        #TODO get and store image!
+        if len(img)>0:
+            doc['description'].update({'imgs':[img]})
+            
+        couch.saveDoc(doc)
+
+    def render_POST(self, request):
+        _id = request.args.get('id')[0]
+        desc = request.args.get('desc')[0]
+        img = request.args.get('img')[0]
+        name = request.args.get('name')[0]
+        d = couch.openDoc(_id)
+        d.addCallback(self.finish, desc, name, img)
+        return "ok"
