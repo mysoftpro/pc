@@ -763,8 +763,10 @@ class NewDescriptionTarget(NewTarget):
 	print "doooooooooooooone"
 	print self.name.encode('utf-8')
 	print self.image.encode('utf-8')
-	print self.description.replace('\\n','').replace('\\t','').encode('utf-8')
-	print self.tds
+	print self.description.replace('\\n','').replace('\\t','').replace('  ','').encode('utf-8')
+	for pair in self.tds:
+            if u'Артикул' in pair[0]:continue
+            print u':'.join(pair).encode('utf-8')
 	print "done"
     def walk(self):
 	while True:
