@@ -401,7 +401,7 @@ class NewReceiver(Protocol):
 	self.finished.callback(self.file)
 
 
-def getProcPage(response, further_d):
+def downloadPage(response, further_d):
     for h in response.headers.getAllRawHeaders():
 	if h[0] == 'Content-Encoding':
 	    enc = h[1][0]
@@ -413,7 +413,7 @@ def requestNewPage(headers, url, external_id):
     request_d = agent.request('GET', url,Headers(headers),None)
     d = defer.Deferred()
     d.addCallback(parseNewPage, external_id)
-    request_d.addCallback(getProcPage, d)
+    request_d.addCallback(downloadPage, d)
     return request_d
 
 class AuthProducer(object):
@@ -720,6 +720,8 @@ new_catalogs_mapping = {
     mother_775:models.mother_775
     }
 
+
+
 def parseNewDescription(f, external_id, remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
@@ -760,14 +762,13 @@ class NewDescriptionTarget(NewTarget):
 
 
     def prepareDescription(self, external_id):
-	print "doooooooooooooone"
-	print self.name.encode('utf-8')
-	print self.image.encode('utf-8')
-	print self.description.replace('\\n','').replace('\\t','').replace('  ','').encode('utf-8')
-	for pair in self.tds:
-            if u'Артикул' in pair[0]:continue
-            print u':'.join(pair).encode('utf-8')
-	print "done"
+	print "doooooooooooooone"	
+        return simplejson.dumps({'descr':self.description+\
+                                     u''.join([u':'.join(pair) for pair in self.tds]),
+                                 'name':self.name,
+                                 'img':self.image})
+                                 
+                                 
     def walk(self):
 	while True:
 	    params = yield
@@ -842,3 +843,24 @@ class NewDescriptionTarget(NewTarget):
                                 # print "exit table"
 				# print self.tds
 				break
+
+
+def goForNewDescription(headers, url, d):
+    agent = Agent(reactor)
+    request_d = agent.request('GET', url,Headers(headers),None)
+    request_d.addCallback(downloadPage, d)
+    return request_d
+
+
+def getNewDescription(link):
+
+    login_response = loginToNew()
+    login_response.addCallback(prepareNewRequest)
+    
+    d = defer.Deferred()
+    d.addCallback(parseNewDescription, 'description')
+    
+    login_response.addCallback(goForNewDescription, 'http://www.newsystem.ru'+link, d)
+    login_response.addCallback(logoutFromNew)
+    
+    return d
