@@ -1247,5 +1247,6 @@ class ForceCookieSet(Resource):
         request.addCookie('pc_cookie_forced',
 			      "true",
 			      expires=datetime.now().\
-			      replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
+			      replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+                          path='/')
         return "ok"
