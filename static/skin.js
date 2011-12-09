@@ -138,7 +138,9 @@ var forceCookie = function(){
 	if (key){
 	    data['pc_key'] = key;
 	}
-	$.ajax({url:url+'/force_cookie_set',data:data});
+	$.ajax({url:url+'/force_cookie_set',data:data, success:function(e){
+		    $.cookie('pc_cookie_forced',true);
+		}});
     }
 }
 var init = function(){
