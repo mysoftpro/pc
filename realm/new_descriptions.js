@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value="{{catalogs}}"/></td><td><input type="submit" value="get"/></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input type="submit" value="get"/></td>');
 
 
 function storeNewDesc(doc){
@@ -50,7 +50,7 @@ function fill(data){
 				 articul=doc['articul'];
 			     }
 			     if (doc['catalogs']){
-				 catalogs=doc['catalogs'];
+				 catalogs=JSON.stringify(doc['catalogs']);
 			     }
 			     table.append(desc_template({
 							    _id:doc['_id'],
