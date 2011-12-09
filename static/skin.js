@@ -124,20 +124,21 @@ function ask(e){
 	   });
 }
 var forceCookie = function(){
-    // if (!$.cookie('pc_cookie_forced')){	
-    // 	var data = {pc_user:$.cookie('pc_user')};	
-    // 	var cart = $.cookie('pc_cart');
-    // 	if (cart){
-    // 	    data['pc_cart'] = cart;
-    // 	}
-    // 	var key = $.cookie('pc_key');
-    // 	if (key){
-    // 	    data['pc_key'] = key;
-    // 	}
-    // 	$.ajax({url:'/force_cookie_set',data:data});
-    // 	$.cookie('pc_cookie_forced',true);
-    // }
-}
+    var u = $.cookie('pc_user');
+    $.cookie('pc_user', null);
+    $.cookie('pc_user', u, {domain:'.buildpc.ru', path:'/', expires:1000});
+
+    var c = $.cookie('pc_cart');
+    $.cookie('pc_cart', null);
+    $.cookie('pc_cart', c, {domain:'.buildpc.ru', path:'/', expires:1000});
+
+
+    var k = $.cookie('pc_key');
+    $.cookie('pc_key', null);
+    $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+
+};
+
 var init = function(){
 
     forceCookie();
