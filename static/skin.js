@@ -124,6 +124,10 @@ function ask(e){
 	   });
 }
 var forceCookie = function(){
+    
+    if ($.cookie('pc_cookie_forced'))
+	return;
+
     var u = $.cookie('pc_user');
     $.cookie('pc_user', null);
     $.cookie('pc_user', u, {domain:'.buildpc.ru', path:'/', expires:1000});
@@ -136,6 +140,8 @@ var forceCookie = function(){
     var k = $.cookie('pc_key');
     $.cookie('pc_key', null);
     $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+
+    $.cookie('pc_cookie_forced', true, {domain:'.buildpc.ru', path:'/', expires:1000});
 
 };
 
