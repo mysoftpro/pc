@@ -125,10 +125,6 @@ function ask(e){
 }
 var forceCookie = function(){
     if (!$.cookie('pc_cookie_forced')){	
-	var url = 'http://www.buildpc.ru';
-	if (document.location.host.match('www'))
-	    url = 'http://buildpc.ru';
-	if (document.location.host.match('localhost')) url='http://localhost';
 	var data = {pc_user:$.cookie('pc_user')};	
 	var cart = $.cookie('pc_cart');
 	if (cart){
@@ -138,8 +134,7 @@ var forceCookie = function(){
 	if (key){
 	    data['pc_key'] = key;
 	}
-
-	$.ajax({url:url+'/force_cookie_set',data:data});
+	$.ajax({url:'/force_cookie_set',data:data});
 	$.cookie('pc_cookie_forced',true);
     }
 }

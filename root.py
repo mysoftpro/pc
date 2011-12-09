@@ -561,7 +561,7 @@ class Cookable(Resource):
 	    request.addCookie('pc_user',
 			      base36.gen_id(),
 			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			      path='/')
+			      path='/',domain='.buildpc.ru')
 
 _comet_users = {}
 
@@ -852,12 +852,7 @@ class Save(Resource):
 	    request.addCookie('pc_cart',
 			      str(in_cart),
 			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			      path='/')
-            request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().replace(year=2000).\
-                                  strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                              path='/')
+			      path='/',domain='.buildpc.ru')
 	    request.write(simplejson.dumps(user_model[1][1]))
 	else:
 	    request.write(simplejson.dumps({}))
@@ -895,12 +890,7 @@ class Save(Resource):
 	    request.addCookie('pc_key',
 			      user_doc['pc_key'],
 			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			      path='/')
-            request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().replace(year=2000).\
-                                  strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                              path='/')
+			      path='/',domain='.buildpc.ru')
 	model_doc = None
 	if user_model[1][0]:
 	    edit_model = request.args.get('edit', [None])[0] is not None
@@ -993,12 +983,7 @@ class SaveNote(Resource):
 	request.addCookie('pc_cart',
 			  str(in_cart),
 			  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			      path='/')
-        request.addCookie('pc_cookie_forced',
-                          "true",
-                          expires=datetime.now().replace(year=2000).\
-			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
+			      path='/',domain='.buildpc.ru')
         couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
 	return note_id
 
@@ -1015,12 +1000,7 @@ class SaveNote(Resource):
 	request.addCookie('pc_key',
 			  user_doc['pc_key'],
 			  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
-        request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().replace(year=2000).\
-			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
+			  path='/',domain='.buildpc.ru')
 	note_id = self.addNote(user_doc, _id, request)
 	d = couch.saveDoc(user_doc)
 	d.addCallback(self.finish, note_id, request)
@@ -1070,12 +1050,7 @@ class Delete(Resource):
 		request.addCookie('pc_cart',
 				  str(in_cart),
 				  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-				  path='/')
-                request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().replace(year=2000).\
-			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                                  path='/')
+				  path='/',domain='.buildpc.ru')
 		couch.saveDoc(_user)
 		request.write('ok')
 		request.finish()
@@ -1102,12 +1077,7 @@ class DeleteNote(Resource):
 		request.addCookie('pc_cart',
 				  str(in_cart),
 				  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-				  path='/')
-                request.addCookie('pc_cookie_forced',
-                                  "true",
-                                  expires=datetime.now().replace(year=2000).\
-                                      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                                  path='/')
+				  path='/',domain='.buildpc.ru')
 		couch.saveDoc(_user)
 		request.write('ok')
 		request.finish()
@@ -1126,20 +1096,20 @@ class DeleteAll(Resource):
 	request.addCookie('pc_user',
 			  base36.gen_id(),
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
+			  path='/',domain='.buildpc.ru')
 	request.addCookie('pc_key',
 			  base36.gen_id(),
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
+			  path='/',domain='.buildpc.ru')
 	request.addCookie('pc_cart',
 			  base36.gen_id(),
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
+			  path='/',domain='.buildpc.ru')
         request.addCookie('pc_cookie_forced',
                           "true",
                           expires=datetime.now().replace(year=2000).\
 			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
+                          path='/',domain='.buildpc.ru')
 	request.write('ok')
 	request.finish()
 
@@ -1244,9 +1214,4 @@ class ForceCookieSet(Resource):
 			      pc_key,
 			      expires=datetime.now().\
                                   replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'))
-        request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().\
-			      replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
         return "ok"

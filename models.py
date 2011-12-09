@@ -873,20 +873,15 @@ def fixDeletedCart(err, request, name):
 	request.addCookie('pc_user',
 			  '',
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
+			  path='/',domain='.buildpc.ru')
 	request.addCookie('pc_key',
 			  '',
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
+			  path='/',domain='.buildpc.ru')
 	request.addCookie('pc_cart',
 			  '',
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
-        request.addCookie('pc_cookie_forced',
-			      "true",
-			      expires=datetime.now().replace(year=2000).\
-			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/')
+			  path='/',domain='.buildpc.ru')
     request.redirect('http://buildpc.ru')
     return []
 
@@ -1008,12 +1003,7 @@ def computers(template,skin,request):
 			  str(total+len(result['user_doc']['notebooks'])),
 			  expires=datetime.now().\
 				  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/')
-                request.addCookie('pc_cookie_forced',
-                                  "true",
-                                  expires=datetime.now().replace(year=2000).\
-                                      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                                  path='/')
+			  path='/',domain='.buildpc.ru')
 
 	_prices = 'undefined'
 
