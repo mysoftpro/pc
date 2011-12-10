@@ -71,8 +71,8 @@ function fill(data){
 							    success:function(data){
 								var t = $(e.target);
 								var prev = t.parent().prev();
-								var cats = prev.find('input[name="catalogs"]').clone();
-								prev.html('<textarea>'+data['descr']+'</textarea><input name="name" value="'+data['name']+'"/><input name="img" value="'+data['img']+'"/><input name="warranty" value="'+ data['warranty']+'"/><input name="articul" value="'+data['articul']+'"/>');
+								var cats = prev.find('input[name="catalogs"]').clone();								
+								prev.html('<textarea>'+data['descr']+'</textarea><input name="name" value="'+data['name'].replace(/"/g,"'")+'"/><input name="img" value="'+data['img']+'"/><input name="warranty" value="'+ data['warranty']+'"/><input name="articul" value="'+data['articul']+'"/>');
 								prev.append(cats);
 							    }
 						  });
