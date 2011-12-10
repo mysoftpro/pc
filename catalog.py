@@ -230,9 +230,9 @@ class XmlGetter(Resource):
 	else:
 	    self.getImage(doc)
 
-    def imgReceiverFactory(self, doc, img, d):
+    def imgReceiverFactory(self, d):#doc, img, ??
 	def factory(response):
-	    response.deliverBody(ImageReceiver(doc, img+'.jpg', d))
+	    response.deliverBody(ImageReceiver(d))# doc, img+'.jpg', ??
 	return factory
 
 
@@ -251,13 +251,13 @@ class XmlGetter(Resource):
 	    url = self.image_url + img
 	    d = defer.Deferred()
 	    image_request = agent.request('GET', str(url),Headers(headers),None)
-	    image_request.addCallback(self.imgReceiverFactory(doc, img, d))
+	    image_request.addCallback(self.imgReceiverFactory(d))# doc, img, 
 	    image_request.addErrback(self.pr)
 	    defs.append(d)
 	li = defer.DeferredList(defs)
 	li.addCallback(self.addImages, doc)
 	li.addErrback(self.pr)
-	return d
+	return li
 
     def addImages(self, images, doc):
 	attachments = {}
@@ -269,20 +269,18 @@ class XmlGetter(Resource):
 	d.addErrback(self.pr)
 
 class ImageReceiver(Protocol):
-    def __init__(self, doc, name, finish):
-	self.doc = doc
-	self.name = name
+    def __init__(self, finish):#doc, name, ??
+        # ????
+	# self.doc = doc
+	# self.name = name
 	self.file = StringIO()
 	self.finish = finish
 
     def dataReceived(self, bytes):
 	self.file.write(bytes)
 
-
     def connectionLost(self, reason):
 	self.file.seek(0,2)
-	# d = couch.addAttachments(self.doc, {self.name:self.file.getvalue()})
-	# d.addCallback(lambda x: self.finish.callback(x)
 	self.finish.callback({self.name:self.file.getvalue()})
 	self.file.close()
 
@@ -882,11 +880,10 @@ def getNewDescription(link):
 
 
 
-def imgReceiverFactory(self, doc, img, d):
+def newImgReceiverFactory(self, d):# doc, img, ??
     def factory(response):
-        response.deliverBody(ImageReceiver(doc, img+'.jpg', d))
+        response.deliverBody(ImageReceiver(d))# doc, img+'.jpg', ??
     return factory
-
 
 
 def getNewImage(url, _id):
@@ -902,19 +899,17 @@ def getNewImage(url, _id):
     
     d = defer.Deferred()
     image_request = agent.request('GET', str(url),Headers(headers),None)
-    image_request.addCallback(self.imgReceiverFactory(doc, img, d))
-    image_request.addErrback(self.pr)
-    defs.append(d)
-    li = defer.DeferredList(defs)
-    li.addCallback(self.addImages, doc)
-    li.addErrback(self.pr)
+    image_request.addCallback(newImgReceiverFactory(d))
+    image_request.addErrback(pr)
+    d.addCallback(addNewImage, _id)
+    d.addErrback(self.pr)
     return d
 
-    # def addImages(self, images, doc):
-    #     attachments = {}
-    #     for i in images:
-    #         if i[0]:
-    #     	attachments.update(i[1])
-    #     d = couch.addAttachments(doc, attachments)
-    #     d.addCallback(lambda _doc:couch.saveDoc(_doc))
-    #     d.addErrback(self.pr)
+def addNewImage(self, images, _id):
+    attachments = {}
+    for i in images:
+        if i[0]:
+    	attachments.update(i[1])
+    d = couch.addAttachments(doc, attachments)
+    d.addCallback(lambda _doc:couch.saveDoc(_doc))
+    d.addErrback(self.pr)
