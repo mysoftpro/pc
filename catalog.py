@@ -680,6 +680,7 @@ class NewTarget:
 		c['us_recommended_price'] = round(float(us_recommended_price),2)
 		c.pop('spans')
 		c['new_catalogs'] = external_id
+                d = couch.openDoc(c['_id'])
 		d.addCallback(self.updateComponent(c))
 		d.addErrback(self.storeNewComponent(c))
 		defs.append(d)
