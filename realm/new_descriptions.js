@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input type="submit" value="get"/></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/></td>');
 
 
 function storeNewDesc(doc){
@@ -63,7 +63,7 @@ function fill(data){
 							    catalogs:catalogs
 							}));
 			     $('#'+doc['_id'])
-				 .find('input[type="submit"]')
+				 .find('input[name="get"]')
 				 .click(function(e){
 					   $.ajax({
 						      url:'get_desc_from_new',
@@ -71,15 +71,15 @@ function fill(data){
 							    success:function(data){
 								var t = $(e.target);
 								var prev = t.parent().prev();
-								var cats = prev.find('input[name="catalogs"]').clone();								
+								var cats = prev.find('input[name="catalogs"]').clone();
 								prev.html('<textarea>'+data['descr']+'</textarea><input name="name" value="'+data['name']+'"/><input name="img" value="'+data['img']+'"/><input name="warranty" value="'+ data['warranty']+'"/><input name="articul" value="'+data['articul']+'"/>');
 								prev.append(cats);
-								t.attr('value', 'save');
-								t.unbind('click').click(storeNewDesc(doc));
-
 							    }
 						  });
 					});
+			     $('#'+doc['_id'])
+				 .find('input[name="save"]')
+				 .click(storeNewDesc(doc));
 			 });
 }
 function fillDescriptions(){
