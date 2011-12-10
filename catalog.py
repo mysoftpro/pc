@@ -876,3 +876,45 @@ def getNewDescription(link):
     login_response.addCallback(logoutFromNew)
     
     return d
+
+
+
+
+
+
+def imgReceiverFactory(self, doc, img, d):
+    def factory(response):
+        response.deliverBody(ImageReceiver(doc, img+'.jpg', d))
+    return factory
+
+
+
+def getNewImage(url, _id):
+    agent = Agent(reactor)
+    headers = {}
+    defs = []
+
+    for k,v in standard_headers.items():
+        if k == 'User-Agent':
+            headers.update({'User-Agent':[standard_user_agents[randint(0,len(standard_user_agents)-1)]]})
+        else:
+            headers.update({k:v})
+    
+    d = defer.Deferred()
+    image_request = agent.request('GET', str(url),Headers(headers),None)
+    image_request.addCallback(self.imgReceiverFactory(doc, img, d))
+    image_request.addErrback(self.pr)
+    defs.append(d)
+    li = defer.DeferredList(defs)
+    li.addCallback(self.addImages, doc)
+    li.addErrback(self.pr)
+    return d
+
+    # def addImages(self, images, doc):
+    #     attachments = {}
+    #     for i in images:
+    #         if i[0]:
+    #     	attachments.update(i[1])
+    #     d = couch.addAttachments(doc, attachments)
+    #     d.addCallback(lambda _doc:couch.saveDoc(_doc))
+    #     d.addErrback(self.pr)

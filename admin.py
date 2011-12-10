@@ -16,7 +16,7 @@ from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion
-from pc.catalog import XmlGetter, WitNewMap
+from pc.catalog import XmlGetter, WitNewMap, getNewImage, getNewDescription
 from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
@@ -923,23 +923,26 @@ class GetDescFromNew(Resource):
         request.finish()
 
     def render_GET(self, request):
-        link = request.args.get('link')[0]
-        from pc.catalog import getNewDescription
+        link = request.args.get('link')[0]        
         d = getNewDescription(link)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
 
 class StoreNewDesc(Resource):
+    def getImage(self, res, img):
+        url = ''
+        if 'upload' in img:
+            url = 'http://newsystem.ru/upload'+img.split('upload')[-1]
+        else:
+            url = 'http://newsystem.ru'+img
+        getNewImage(url, res['id'])
+
     def finish(self, doc, desc, name, img, warranty, articul, catalogs):
         doc['description'] = {}
         doc['description'].update({'comments':desc})
         doc['description'].update({'name':name})
         #TODO get and store image!
-        if len(img)>0:
-            doc['description'].update({'imgs':[img]})
-        else:
-            doc['description'].update({'imgs':[]})
         if len(warranty)>0:
             doc['warranty_type'] = warranty
         if len(articul)>0:
@@ -948,8 +951,17 @@ class StoreNewDesc(Resource):
             doc['catalogs'] = simplejson.loads(catalogs)
             doc['price'] = doc['us_price']
             doc['stock1'] = doc['new_stock']
-        couch.saveDoc(doc)
 
+        if len(img)>0:
+            doc['description'].update({'imgs':[img]})
+        else:
+            doc['description'].update({'imgs':[]})
+
+        d = couch.saveDoc(doc)
+        if len(img)>0:
+            d.addCallback(self.getImage, img)
+        return d
+            
     def render_POST(self, request):
         _id = request.args.get('id')[0]
         desc = request.args.get('desc')[0]
