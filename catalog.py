@@ -344,8 +344,14 @@ class WitNewMap(Resource):
     new_places = {
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers',
-	'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos'
-	}
+	'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos',
+	'http://www.newsystem.ru/goods-and-services/catalog/108/9689/':'exclusive_cases',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9420/':'game_cases',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9422/':'simple_cases',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9463/':'sata_disks',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
+        'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft'
+        }
     def goForNew(self, headers):
 	defs = []
 	for k,v in self.new_places.items():
