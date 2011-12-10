@@ -936,6 +936,7 @@ def computers(template,skin,request):
 	total = 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
+            models.reverse()
 	else:
 	    def sort(m1,m2):
 		if u''.join(m1['date'])>u''.join(m2['date']):
