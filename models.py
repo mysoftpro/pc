@@ -5,7 +5,7 @@ from twisted.internet import defer
 import simplejson
 import re
 from copy import deepcopy
-from urllib import unquote_plus
+from urllib import unquote_plus, quote_plus
 from datetime import datetime,timedelta
 from pc.mail import send_email
 from random import randint
@@ -1102,6 +1102,10 @@ def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
     if 'description' in component and'imgs' in component['description']:
 	retval = ''.join(("/image/",component['_id'],"/",
 			  indexExtractor(component['description']['imgs']),'.jpg'))
+    if '/preview' in retval:
+        splitted = retval.split('/preview')        
+        retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+    
     return retval
 
 
