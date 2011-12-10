@@ -646,7 +646,11 @@ class NewTarget:
 	def update(doc):
 	    for k,v in c.items():
 		doc[k] = v
-	    return couch.saveDoc(doc)
+            if 'price' in doc:
+                doc['price'] = c['us_price']
+            if 'stock1' in doc:
+                doc['stock1'] = c['new_stock']
+            return couch.saveDoc(doc)
 	return update
 
     def prepareNewComponents(self, external_id):
@@ -676,7 +680,6 @@ class NewTarget:
 		c['us_recommended_price'] = round(float(us_recommended_price),2)
 		c.pop('spans')
 		c['new_catalogs'] = external_id
-		d = couch.openDoc(c['_id'])
 		d.addCallback(self.updateComponent(c))
 		d.addErrback(self.storeNewComponent(c))
 		defs.append(d)

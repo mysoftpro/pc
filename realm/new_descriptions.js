@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/><a class="hide" href="">x</a></td>');
 
 
 function storeNewDesc(doc){
@@ -81,6 +81,10 @@ function fill(data){
 				 .find('input[name="save"]')
 				 .click(storeNewDesc(doc));
 			 });
+    $('.hide').click(function(e){
+			 e.preventDefault();
+			 $(e.target).parent().parent().hide();
+		     });
 }
 function fillDescriptions(){
     $.ajax({
