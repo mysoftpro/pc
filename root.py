@@ -1160,11 +1160,11 @@ class ImageProxy(Resource):
 	image = last.endswith('.jpg')
 	image = image or last.endswith('.jpeg')
 	image = image or last.endswith('.png')
-	image = image or last.endswith('.gif')
-
+	image = image or last.endswith('.gif')        
+            
 	if not image:
 	    return NoResource()
-
+        
 	return self.proxy.getChild(path, request)
 
 class Rss(Resource):

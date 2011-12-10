@@ -437,7 +437,7 @@ function treatDescriptionText(text){
 }
 
 
-var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
+var img_template = '<img src="/image/{{id}}/{{name}}{{ext}}" align="right"/>';
 
 function changeDescription(index, _id, show, data){
     try{
@@ -450,7 +450,14 @@ function changeDescription(index, _id, show, data){
 	    if (data){
 		if (data['imgs']){
 		    for (var i=0,l=data['imgs'].length;i<l;i++){
-			_text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
+			var ext = '.jpg';
+			var path = data['imgs'][i];
+			//new images
+			if (path.match('jpeg')){
+			    ext = '';
+			    path = encodeURIComponent(path);
+			}
+			_text +=_.template(img_template,{'id':_id,'name':path, 'ext':ext});
 		    }
 		}
 		_text += data['name'] + data['comments'];
@@ -1464,8 +1471,8 @@ function to_cart(edit){
 	    to_send['edit'] = 't';
 	}
 	else{
-	    model_to_store['parent'] = uuid;   
-	}	
+	    model_to_store['parent'] = uuid;
+	}
     }
     else{
 	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
@@ -1620,7 +1627,7 @@ function init(){
 	    was_replaced = was_replaced_t({save:"Нажмите 'Сохранить' чтобы зафиксировать изменения"});
 	else
 	    was_replaced = was_replaced_t({save:""});
-	
+
 	function clearGuider(gu,td){
 	    return function(e){
 		gu.remove();
@@ -1663,7 +1670,7 @@ function init(){
 			   return false;
 		       });
 	}
-    }    
+    }
     if (!uuid){
 	$('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 	$('#addplease').animate({'opacity':'1.0'},1000);
