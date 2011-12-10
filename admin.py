@@ -930,13 +930,6 @@ class GetDescFromNew(Resource):
 
 
 class StoreNewDesc(Resource):
-    def getImage(self, res, img):
-        url = ''
-        if 'upload' in img:
-            url = 'http://newsystem.ru/upload'+img.split('upload')[-1]
-        else:
-            url = 'http://newsystem.ru'+img
-        getNewImage(url, res['id'])
 
     def finish(self, doc, desc, name, img, warranty, articul, catalogs):
         doc['description'] = {}
@@ -959,7 +952,7 @@ class StoreNewDesc(Resource):
 
         d = couch.saveDoc(doc)
         if len(img)>0:
-            d.addCallback(self.getImage, img)
+            d.addCallback(getNewImage, img)
         return d
             
     def render_POST(self, request):

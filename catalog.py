@@ -230,9 +230,9 @@ class XmlGetter(Resource):
 	else:
 	    self.getImage(doc)
 
-    def imgReceiverFactory(self, d):#doc, img, ??
+    def imgReceiverFactory(self, d, img):#doc,  ??
 	def factory(response):
-	    response.deliverBody(ImageReceiver(d))# doc, img+'.jpg', ??
+	    response.deliverBody(ImageReceiver(img+'.jpg', d))# doc, ??
 	return factory
 
 
@@ -251,7 +251,7 @@ class XmlGetter(Resource):
 	    url = self.image_url + img
 	    d = defer.Deferred()
 	    image_request = agent.request('GET', str(url),Headers(headers),None)
-	    image_request.addCallback(self.imgReceiverFactory(d))# doc, img, 
+	    image_request.addCallback(self.imgReceiverFactory(d, img))# doc, img, 
 	    image_request.addErrback(self.pr)
 	    defs.append(d)
 	li = defer.DeferredList(defs)
@@ -269,10 +269,10 @@ class XmlGetter(Resource):
 	d.addErrback(self.pr)
 
 class ImageReceiver(Protocol):
-    def __init__(self, finish):#doc, name, ??
+    def __init__(self, name, finish):#doc ??
         # ????
 	# self.doc = doc
-	# self.name = name
+	self.name = name
 	self.file = StringIO()
 	self.finish = finish
 
@@ -880,16 +880,21 @@ def getNewDescription(link):
 
 
 
-def newImgReceiverFactory(self, d):# doc, img, ??
-    def factory(response):
-        response.deliverBody(ImageReceiver(d))# doc, img+'.jpg', ??
-    return factory
+# def newImgReceiverFactory(self, img, d):
+#     def factory(response):
+#         response.deliverBody(ImageReceiver(img,d))
+#     return factory
 
 
-def getNewImage(url, _id):
+def getNewImage(res, img):
+    url = ''
+    if 'upload' in img:
+        url = 'http://newsystem.ru/upload'+img.split('upload')[-1]
+    else:
+        url = 'http://newsystem.ru'+img
+
     agent = Agent(reactor)
     headers = {}
-    defs = []
 
     for k,v in standard_headers.items():
         if k == 'User-Agent':
@@ -899,17 +904,16 @@ def getNewImage(url, _id):
     
     d = defer.Deferred()
     image_request = agent.request('GET', str(url),Headers(headers),None)
-    image_request.addCallback(newImgReceiverFactory(d))
+    image_request.addCallback(lambda response: response.deliverBody(ImageReceiver(img,d)))
     image_request.addErrback(pr)
-    d.addCallback(addNewImage, _id)
-    d.addErrback(self.pr)
+    d.addCallback(addNewImage, res['id'])
+    d.addErrback(pr)
     return d
 
-def addNewImage(self, images, _id):
-    attachments = {}
-    for i in images:
-        if i[0]:
-    	attachments.update(i[1])
-    d = couch.addAttachments(doc, attachments)
-    d.addCallback(lambda _doc:couch.saveDoc(_doc))
-    d.addErrback(self.pr)
+def addNewImage(self, image, _id):
+    def add(doc):
+        d = couch.addAttachments(doc, image)#image is a dictionary
+        d.addCallback(lambda _doc:couch.saveDoc(_doc))
+        d.addErrback(pr)
+    d = couch.openDoc(_id)
+    d.addCallback(add)    
