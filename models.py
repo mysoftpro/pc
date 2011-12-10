@@ -539,6 +539,7 @@ def equipCases(result):
     chipest_power = sorted([row['doc'] for row in power['rows']],lambda x,y:int(x['price']-y['price']))[0]
     for r in exclusive_rows:
 	r['doc']['price'] += chipest_power['price']
+        r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
     result.pop(power_index)
     return result
 
