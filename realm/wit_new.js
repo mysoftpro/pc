@@ -28,7 +28,7 @@ function fillWit(data){
 }
 function fillNew(data){
     var tr = $('#unique_new').find('tr').first().next();
-    _(data['rows']).each(function(row){
+    _(data['rows']).each(function(row){			     
 			     if (row['doc']['map_to_wi']){
 				 var _id = row['doc']['_id'];
 				 news_for_wit[_id] = row['doc'];

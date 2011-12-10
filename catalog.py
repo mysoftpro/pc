@@ -910,7 +910,7 @@ def getNewImage(res, img):
     d.addErrback(pr)
     return d
 
-def addNewImage(self, image, _id):
+def addNewImage(image, _id):
     def add(doc):
         d = couch.addAttachments(doc, image)#image is a dictionary
         d.addCallback(lambda _doc:couch.saveDoc(_doc))

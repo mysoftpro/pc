@@ -892,15 +892,6 @@ class DeleteWitNewMap(Resource):
 	return NOT_DONE_YET
 
 
-# class NewDescription(Resource):
-
-#     def render_GET(self, request):
-# 	from pc.catalog import parseNewDescription
-# 	f = open('/home/aganzha/new.html')
-# 	f.seek(0,2)
-# 	parseNewDescription(f, 'test')
-# 	return "ok"
-
 class GetNewDescriptions(Resource):
 
     def finish(self, res, request):
@@ -910,7 +901,7 @@ class GetNewDescriptions(Resource):
         request.finish()
 
     def render_GET(self, request):
-        d = couch.openView(designID, 'new_components', include_docs=True)
+        d = couch.openView(designID, 'new_unique_components', include_docs=True)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
