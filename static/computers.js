@@ -49,15 +49,17 @@ function getMainCodes(hidden_ul){
     var chi =hidden_ul.children();
     var mother = chi.first();
     var proc = mother.next();
-    var proc_code = proc.attr('id').split('_')[1];
+    
+    var proc_code = proc.attr('id').replace('new_','new|').split('_')[1].replace('new|','new_');
     var video = proc.next();
-    var video_code = video.attr('id').split('_')[1];
+    var video_code = video.attr('id').replace('new_','new|').split('_')[1].replace('new|','new_');;
     if (video_code.match('no'))
 	video_code = 'no';
-    var splitted = mother.attr('id').split('_');
+    var splitted = mother.attr('id').replace('new_','new|').split('_');
     var m = splitted[0];
-    var mother_code = splitted[1];
-    return {'model':m,'mother':mother_code,'video':video_code,'proc':proc_code};
+    var mother_code = splitted[1].replace('new|','new_');;
+    var ret = {'model':m,'mother':mother_code,'video':video_code,'proc':proc_code};
+    return ret;
 }
 
 function addSlider(){
@@ -171,7 +173,7 @@ function moveModel(model_id, new_pos){
     var mproc = $('#m'+model_id).find('.mproc');
     var mvideo = $('#m'+model_id).find('.mvideo');
     if (!new_video_code.match('no')){
-	//proc is not required. it is always the same
+	//proc is not required. it is always the same	
 	var url = '/catalogs_for?c='+new_proc_code+'&c='+new_video_code;
 	$.ajax({url:url,success:function(data){
 		    var proc_class = '_'+data[new_proc_code].join('_');
