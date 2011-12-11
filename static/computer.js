@@ -830,7 +830,12 @@ function cheaperBetter(){
 	 					getCatalogs(new_component),
 	 					delta, false);
 	    new_component = appr_components[0];
-	    //changeComponent(body, new_component, old_component, doNotAjax);
+	    //hack. may be there are no cheaper or better component
+	    //but we call this function forced (from the filters by example)
+	    //just do something. does not matter it will cheaper or better
+	    //it is more important than call change component with undefined
+            if (!new_component)
+		new_component = appr_components[1];
 	}
     }
     $('.cheaper').click(function(e){_cheaperBetter(e,-1);});
