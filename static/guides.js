@@ -501,7 +501,7 @@ function noticeCheckModel(){
 						 .show()
 						 .animate({top:"-70",left:"0"}, 500,function(){
 							      toppopup.hide();
-							      $.cookie('pc_chkmodel_shown', 1);
+							      $.cookie('pc_chkmodel_shown', 1, {domain:'.buildpc.ru', path:'/', expires:1000});
 							  });
 					 }, 10000);
 			     });
