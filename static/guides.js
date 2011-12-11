@@ -109,7 +109,6 @@ function setFilterByOption(e){
     if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
 	jgetProcBody().parent().find('.better').click();
 	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
-	    console.log(222222222222);
 	    jgetProcBody().parent().find('.cheaper').click();	    
 	}
     }
