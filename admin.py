@@ -847,6 +847,9 @@ class StoreWitNewMap(Resource):
 
     def storeNe(self, doc, wi):
 	doc['map_to_wi'] = wi
+        # destroy catalogs. it will need catalogs again!
+        if 'catalogs' in doc:
+            doc.pop('catalogs')
 	return couch.saveDoc(doc)
 
     def render_GET(self, request):
