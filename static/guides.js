@@ -106,17 +106,18 @@ function setFilterByOption(e){
 
     // TODO refactor that #2
     var currentProc = code('proc');
-    if (_(filtered_procs).select(function(c){return c== currentProc;})>0){
+    if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
 	jgetProcBody().parent().find('.better').click();
-	if (_(filtered_procs).select(function(c){return c== currentProc;})>0){
-	    jgetProcBody().parent().find('.cheaper').click();
+	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
+	    console.log(222222222222);
+	    jgetProcBody().parent().find('.cheaper').click();	    
 	}
     }
     // TODO refactor that #2
     var currentMother = code('mother');
-    if (_(filtered_procs).select(function(c){return c== currentProc;})>0){
+    if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
 	jgetMotherBody().parent().find('.better').click();
-	if (_(filtered_procs).select(function(c){return c== currentProc;})>0){
+	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
 	    jgetMotherBody().parent().find('.cheaper').click();
 	}
     }
