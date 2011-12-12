@@ -709,10 +709,10 @@ def fillNew(global_choices):
 	    if wit_doc['price']>row['value'][0]:
 		wit_doc['price'] = row['value'][0]
 	    wit_doc['stock1'] = row['value'][1]
-	send_email('admin@buildpc.ru',
-		   u'Обновление цен и кол-ва Виттеха via Новая Система',
-		   u'Всего позиций: ' + unicode(len(res['rows'])),
-		   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+	# send_email('admin@buildpc.ru',
+	# 	   u'Обновление цен и кол-ва Виттеха via Новая Система',
+	# 	   u'Всего позиций: ' + unicode(len(res['rows'])),
+	# 	   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     d = couch.openView(designID, 'new_map', keys = globals()['gChoices_flatten'].keys())
     d.addCallback(fill)
     d.addCallback(lambda some: global_choices)

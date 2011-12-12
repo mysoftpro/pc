@@ -677,10 +677,10 @@ class StoreCartComment(Resource):
 
 class CheckModel(Resource):
     def notify(self, res, author):
-	send_email('admin@buildpc.ru',
+	send_email('inbox@buildpc.ru',
 		   u'Требуется проверить конфигурацию',
 		   'http://buildpc.ru/cart/'+author+' '+res['id'],
-		   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+		   sender=u'Компьютерный магазин <admin@buildpc.ru>')
 
     def checkModel(self, doc, request):
 	doc['checkModel'] = False
