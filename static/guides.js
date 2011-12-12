@@ -2,6 +2,7 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
+var descr_img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 function showDescription(_id){
     function _show(data){
 	if (!data['comments'])
@@ -11,10 +12,11 @@ function showDescription(_id){
 		     var text = '';
 		     if (data['imgs']){
 			 for (var i=0,l=data['imgs'].length;i<l;i++){
-			     text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
+			     text +=_.template(descr_img_template,{'id':_id,'name':data['imgs'][i]});
 			 }
 		     }
-		     text += data['name'] + data['comments'];
+		     text += '<div>' +data['name'] + ' - '+ data['price'] + ' руб.</div><div>' +
+			 data['comments']+'</div>';
 
 		     $('#details').html(text);
 		     _.delay(function(){

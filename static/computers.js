@@ -9,7 +9,7 @@ var taa_initial = 'Наши сотрудники проверят созданн
 var email_initial = "email";
 var name_initial = "имя";
 var link_template = '<div class="faqlinks"><a name="answer">комментировать</a></div>';
-var img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
+
 //TODO! d_popular starts with width = 0. even if ajax is come allready
 
 var panel_template = '<div class="d_panel"><div class="small_square_button small_cart">В корзину</div><div class="small_square_button small_reset">Конфигурация</div><div style="clear:both;"></div></div>';

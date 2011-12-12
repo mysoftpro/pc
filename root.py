@@ -822,10 +822,12 @@ class Component(Resource):
     isLeaf = True
     allowedMethods = ('GET',)
     def writeComponent(self, doc, request):
+        descr = {'name':'','comments':'','img':[],'imgs':[]}
 	if 'description' in doc:
-	    request.write(simplejson.dumps(doc['description']))
-	else:
-	    request.write(simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]}))
+            descr = doc['description']
+        price = makePrice(doc)
+        descr['price'] = price
+	request.write(simplejson.dumps(descr))	
 	request.finish()
 
     def render_GET(self, request):

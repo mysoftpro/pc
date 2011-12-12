@@ -1649,7 +1649,7 @@ function init(){
 	    td.css('border','1px solid red');
 	    guider.createGuider({
 				    attachTo: td,
-				    description: was_replaced_t({'save':save, 'id':_id}),
+				    description: was_replaced_t({'save':save, 'id':model[_id]['old_code']}),
 				    position: 1,
 				    width: 500,
 				    id:_id
