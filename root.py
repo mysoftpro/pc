@@ -397,29 +397,34 @@ class Skin(Template):
 
     def prepare(self, request):
 	selected_skin = request.args.get('skin',[None])[0] or\
-            request.getCookie('pc_skin')        
+	    request.getCookie('pc_skin')
 	# if selected_skin is None: return
 	if selected_skin in self.skins:
 	    self.selected_skin = selected_skin
 	    self.tree.getroot().find('head').find('link')\
 		.set('href',self.skins[selected_skin])
-            request.addCookie('pc_skin',
+	    request.addCookie('pc_skin',
 			      selected_skin,
 			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			      path='/',domain='.buildpc.ru')
+        else:
+            request.addCookie('pc_skin',
+			      '',
+			      expires=datetime.now().replace(year=2010).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			      path='/',domain='.buildpc.ru')
 
     except_links = ['/rss']
 
     def render(self):
-	if self.selected_skin is not None:
-	    for link in self.tree.getroot().find('body').xpath('//a'):
-		old = link.get('href')
-		if old in self.except_links: continue
-		if old is not None:
-		    if '?' in old:
-			link.set('href',old+'&skin='+self.selected_skin)
-		    else:
-			link.set('href',old+'?skin='+self.selected_skin)
+	# if self.selected_skin is not None:
+	#     for link in self.tree.getroot().find('body').xpath('//a'):
+	# 	old = link.get('href')
+	# 	if old in self.except_links: continue
+	# 	if old is not None:
+	# 	    if '?' in old:
+	# 		link.set('href',old+'&skin='+self.selected_skin)
+	# 	    else:
+	# 		link.set('href',old+'?skin='+self.selected_skin)
 	return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
@@ -827,12 +832,12 @@ class Component(Resource):
     isLeaf = True
     allowedMethods = ('GET',)
     def writeComponent(self, doc, request):
-        descr = {'name':'','comments':'','img':[],'imgs':[]}
+	descr = {'name':'','comments':'','img':[],'imgs':[]}
 	if 'description' in doc:
-            descr = doc['description']
-        price = makePrice(doc)
-        descr['price'] = price
-	request.write(simplejson.dumps(descr))	
+	    descr = doc['description']
+	price = makePrice(doc)
+	descr['price'] = price
+	request.write(simplejson.dumps(descr))
 	request.finish()
 
     def render_GET(self, request):
@@ -991,7 +996,7 @@ class SaveNote(Resource):
 			  str(in_cart),
 			  expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			      path='/',domain='.buildpc.ru')
-        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
+	couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
 	return note_id
 
 
@@ -1112,11 +1117,11 @@ class DeleteAll(Resource):
 			  base36.gen_id(),
 			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
 			  path='/',domain='.buildpc.ru')
-        request.addCookie('pc_cookie_forced',
-                          "true",
-                          expires=datetime.now().replace(year=2000).\
+	request.addCookie('pc_cookie_forced',
+			  "true",
+			  expires=datetime.now().replace(year=2000).\
 			      strftime('%a, %d %b %Y %H:%M:%S UTC'),
-                          path='/',domain='.buildpc.ru')
+			  path='/',domain='.buildpc.ru')
 	request.write('ok')
 	request.finish()
 
@@ -1167,11 +1172,11 @@ class ImageProxy(Resource):
 	image = last.endswith('.jpg')
 	image = image or last.endswith('.jpeg')
 	image = image or last.endswith('.png')
-	image = image or last.endswith('.gif')        
-            
+	image = image or last.endswith('.gif')
+
 	if not image:
 	    return NoResource()
-        
+
 	return self.proxy.getChild(path, request)
 
 class Rss(Resource):
