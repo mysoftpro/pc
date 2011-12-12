@@ -396,12 +396,17 @@ class Skin(Template):
     skins = {'home':'/static/home.css'}
 
     def prepare(self, request):
-	selected_skin = request.args.get('skin',[None])[0]
+	selected_skin = request.args.get('skin',[None])[0] or\
+            request.getCookie('pc_skin')        
 	# if selected_skin is None: return
 	if selected_skin in self.skins:
 	    self.selected_skin = selected_skin
 	    self.tree.getroot().find('head').find('link')\
 		.set('href',self.skins[selected_skin])
+            request.addCookie('pc_skin',
+			      selected_skin,
+			      expires=datetime.now().replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
+			      path='/',domain='.buildpc.ru')
 
     except_links = ['/rss']
 
