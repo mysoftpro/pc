@@ -866,10 +866,11 @@ class ModelForModelsPage(object):
             
             self.description_div.set('class','cart_description')
 
-            #zzzzzzz
-            if self.user is not None and self.model['author'] == self.user['_id'] and\
-                    self.request.getCookie('pc_key') == self.user['pc_key']:
-
+            this_user_is_author = self.user is not None and\
+                self.model['author'] == self.user['_id'] and\
+                self.request.getCookie('pc_key') == self.user['pc_key']
+            #zzzzzzz            
+            if this_user_is_author:
                 extra = deepcopy(self.tree.find('cart_extra'))
                 for el in extra:
                     self.description_div.append(el)
@@ -877,8 +878,10 @@ class ModelForModelsPage(object):
 	    if 'comments' in self.model:
 		last_index = len(self.model['comments'])-1
 		i=0
-		for comment in self.model['comments']:
+		for comment in self.model['comments']:                    
 		    comments = deepcopy(self.tree.find('cart_comment'))
+                    if not this_user_is_author and i==0:
+                        comments.find('div').set('style', 'margin-top:40px')
 		    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
 		    comment['date'].reverse()
 		    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
