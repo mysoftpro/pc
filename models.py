@@ -755,7 +755,8 @@ model_categories_titles = {'home':u'Домашние компьютеры',
 			   'game':u'Игровые компьютеры'}
 
 class ModelForModelsPage(object):
-    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container):
+    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
+        self.user = user
 	self.tree = tree
 	self.model_snippet = deepcopy(self.tree.find('model'))
 	self.request = request
@@ -864,9 +865,15 @@ class ModelForModelsPage(object):
             h3.append(a)
             
             self.description_div.set('class','cart_description')
-	    extra = deepcopy(self.tree.find('cart_extra'))
-	    for el in extra:
-		self.description_div.append(el)
+
+            #zzzzzzz
+            if self.user is not None and self.model['author'] == self.user['_id'] and\
+                    self.request.getCookie('pc_key') == self.user['pc_key']:
+
+                extra = deepcopy(self.tree.find('cart_extra'))
+                for el in extra:
+                    self.description_div.append(el)
+
 	    if 'comments' in self.model:
 		last_index = len(self.model['comments'])-1
 		i=0
@@ -984,12 +991,12 @@ def computers(template,skin,request):
 
 	json_prices = {}
 	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
+        user_doc = result['user_doc'] if 'user_doc' in result  else None        
 	for m in models:
-
 	    view = ModelForModelsPage(request, m, tree,
 				      this_is_cart,json_prices,
 				      deepcopy(tree.find('model_icon').find('a')),
-				      container)
+				      container, user_doc)
 	    view.render()
 	    total +=1
 	if this_is_cart:
@@ -1078,16 +1085,19 @@ def computers(template,skin,request):
     # RENDER cart here!!!!
     else:
 	d = couch.openDoc(name)
+
+        def addUser(models, user_doc):
+            models['user_doc'] = user_doc
+            return models
+            
 	def glueModelsAndNotes(li, _user):
 	    models = li[0][1]
-	    notebooks = li[1][1]
-	    # notebook_keys = li[1][1][0]
-	    models['notebooks'] = notebooks
-	    # models['notebook_keys'] = notebook_keys
-	    models['user_doc'] = _user
+	    notebooks = li[1][1]	
+	    models['notebooks'] = notebooks	    
 	    return models
 	def getModelsAndNotes(user_doc):
-	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)            
+            models.addCallback(addUser, user_doc)
 	    if not 'notebooks' in user_doc:
 		return models
 	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
