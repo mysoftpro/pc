@@ -585,7 +585,7 @@ function renameUserModel(){
 	.each(function(_el){
 		  var el = $(_el);
 		  var pa = el.parent();
-		  el.click(function(e){
+		  var save = function(e){
 			       e.preventDefault();
 			       var texts = [];
 			       var to_delete = [];
@@ -626,16 +626,20 @@ function renameUserModel(){
 							 },
 							 success:function(){
 							     if (title.length>0){
-								 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', {klass:title.attr('class'), val:ti}));
+								 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', 
+										       {klass:title.attr('class'), val:ti}));
 								 title.remove();
 							     }
-							     pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', {klass:name.attr('class'), val:na}));
+							     pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', 
+										   {klass:name.attr('class'), val:na}));
 							     name.remove();
-
+							     el.text('переименовать');
+							     el.unbind('click').click(save);
 							 }
 						     });
 					  });
-			   });
+			   };
+		  el.click(save);
 	      });
 
 }
