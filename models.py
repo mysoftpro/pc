@@ -833,11 +833,13 @@ class ModelForModelsPage(object):
 		self.description_div.append(el)
 	    ul.set('style','display:none')
 	else:
+
             if 'name' in self.model:                
                 span = etree.Element('span')
                 span.set('class', 'customName')
                 span.text = self.model['name']
                 h3.append(span)
+
             if 'title' in self.model:
                 span = etree.Element('span')
                 span.set('class', 'customTitle')

@@ -598,8 +598,8 @@ function renameUserModel(){
 						 sp.remove();
 					 });
 
-			       _(texts)
-				   .each(function(ob){					     
+			       _(texts.reverse())
+				   .each(function(ob){
 					     pa.prepend(_.template('<input class="{{klass}}" value="{{value}}"/>',
 								   {
 								       value:ob['text'],
@@ -620,10 +620,18 @@ function renameUserModel(){
 							 data:{
 							     name:na,
 							     title:ti,
-							     uuid:uuid
+							     uuid:pa.parent()
+								 .prev()
+								 .find('.modelprice').attr('id')
 							 },
 							 success:function(){
-							     
+							     if (title.length>0){
+								 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', {klass:title.attr('class'), val:ti}));
+								 title.remove();
+							     }
+							     pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', {klass:name.attr('class'), val:na}));
+							     name.remove();
+
 							 }
 						     });
 					  });
