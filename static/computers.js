@@ -665,7 +665,7 @@ var init = function(){
 	    .find('li').click(function(e){showComponent(e);});
     }
     //this means cart!
-    if (!prices && (uuid === $.cookie('pc_user') || $.cookie('pc_user')==='24f6d848')){
+    if (!prices && (uuid === $.cookie('pc_user'))){
 	var links = $('a.modellink');
 	function deleteUUID(_id){
 	    function _deleteUUID(e){
