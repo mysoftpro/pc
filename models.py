@@ -831,6 +831,9 @@ class ModelForModelsPage(object):
 		h3.text = self.model['title']
 		if 'name' in self.model:
 		    h3.text = self.model['name'] + '. ' +h3.text
+            _date = self.model['date']
+            _date.reverse()
+            h3.text += ' '+('.').join(_date)
 	    self.description_div.set('class','cart_description')
 	    extra = deepcopy(self.tree.find('cart_extra'))
 	    for el in extra:
