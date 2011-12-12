@@ -118,11 +118,12 @@ class XmlGetter(Resource):
 		continue
 	    all_count +=1
 	    if row['id'] not in codes:
-		if 'mystock' in row['value'] and row['value']['mystock']>0:
-		    pass
-		else:
-		    couch.deleteDoc(row['id'], row['value'])
-		    deleted_count +=1
+		# if 'mystock' in row['value'] and row['value']['mystock']>0:
+		#     pass
+		# else:
+		#     couch.deleteDoc(row['id'], row['value'])
+                # DO NOT DELETE ANYTHING!!!
+                deleted_count +=1
 	# destroy cache here!
 	from pc import admin
 	admin.clear_cache()
