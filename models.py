@@ -833,15 +833,35 @@ class ModelForModelsPage(object):
 		self.description_div.append(el)
 	    ul.set('style','display:none')
 	else:
-	    h3.text = u'Пользовательская конфигурация'
-	    if 'title' in self.model:
-		h3.text = self.model['title']
-		if 'name' in self.model:
-		    h3.text = self.model['name'] + '. ' +h3.text
+            if 'name' in self.model:                
+                span = etree.Element('span')
+                span.set('class', 'customName')
+                span.text = self.model['name']
+                h3.append(span)
+            if 'title' in self.model:
+                span = etree.Element('span')
+                span.set('class', 'customTitle')
+                span.text = self.model['title']
+                h3.append(span)
+
+            if not 'name' in self.model and not 'title' in self.model:
+                span = etree.Element('span')
+                span.set('class', 'customName')
+                span.text = u'Пользовательская конфигурация'
+                h3.append(span)
+            
             _date = self.model['date']
             _date.reverse()
-            h3.text += ' '+('.').join(_date)
-	    self.description_div.set('class','cart_description')
+            span = etree.Element('span')
+            span.text = ('.').join(_date)
+            h3.append(span)
+	    
+            a = etree.Element('a')
+            a.text = u'переименовать'
+            a.set('href', '')
+            h3.append(a)
+            
+            self.description_div.set('class','cart_description')
 	    extra = deepcopy(self.tree.find('cart_extra'))
 	    for el in extra:
 		self.description_div.append(el)

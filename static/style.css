@@ -2276,3 +2276,11 @@ a.modelicon img{
 #modelname span{
     margin-left:10px;
 }
+.cart_description h3 span {
+    margin-left:10px;
+}
+.cart_description h3 a {
+    margin-left:10px;
+    color:white;
+    font-size:10px;
+}

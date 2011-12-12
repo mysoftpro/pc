@@ -95,7 +95,7 @@ function setFilterByOption(e){
 		      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
 		      var op = jgetOption(select, code);//select.find('option[name="'+code+'"]');//
 		      op.prop('disabled',!target.prop('checked'));
-		      select.trigger("liszt:updated");		      
+		      select.trigger("liszt:updated");
 		  });
 
     var filtered_catalogs = _(filtered_procs).chain()
@@ -149,7 +149,7 @@ function setFilterByOption(e){
     if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
 	jgetProcBody().parent().find('.better').click();
 	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
-	    jgetProcBody().parent().find('.cheaper').click();	    
+	    jgetProcBody().parent().find('.cheaper').click();
 	}
     }
     // TODO refactor that #2
@@ -574,9 +574,61 @@ function getUserNameAndTitle(){
 							  $('#modelname').append('<span>'+_name+
 										 '</span>');
 							  closePopup();
-							  
+
 						      },
 						      error:closePopup
 						  });
 				       });
 }
+function renameUserModel(){
+    _($('h3 a').toArray())
+	.each(function(_el){
+		  var el = $(_el);
+		  var pa = el.parent();
+		  el.click(function(e){
+			       e.preventDefault();
+			       var texts = [];
+			       var to_delete = [];
+
+			       var spans = pa.find('span').toArray();
+			       spans.pop();//pop date
+			       _(spans).each(function(span){
+						 var sp = $(span);
+						 texts.push({klass:sp.attr('class'), text:sp.text()});
+						 sp.remove();
+					 });
+
+			       _(texts)
+				   .each(function(ob){					     
+					     pa.prepend(_.template('<input class="{{klass}}" value="{{value}}"/>',
+								   {
+								       value:ob['text'],
+								       klass:ob['klass']
+								   }));
+					 });
+			       el.text('сохранить');
+			       el.unbind('click')
+				   .click(function(e){
+					      e.preventDefault();
+					      var name = pa.find('.customName');
+					      var title = pa.find('.customTitle');
+					      var na = '',ti = '';
+					      if (name.length>0)na = name.val();
+					      if (title.length>0)ti = title.val();
+					      $.ajax({
+							 url:'/store_model_name',
+							 data:{
+							     name:na,
+							     title:ti,
+							     uuid:uuid
+							 },
+							 success:function(){
+							     
+							 }
+						     });
+					  });
+			   });
+	      });
+
+}
+renameUserModel();
