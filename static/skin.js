@@ -178,6 +178,7 @@ var init = function(){
     var splitted = document.location.search.split('?')[1];
     if (splitted==undefined){
 	$('#autumn').attr('href','?'+'skin=home');
+	$('#astro').attr('href','?'+'skin=astro');
 	return;
     }
     var pairs = splitted.split('&');
@@ -188,7 +189,7 @@ var init = function(){
 	pairs_filtered.push(pairs[i]);
     }
     var joined = pairs_filtered.join('&');
-    astro.attr('href','?'+joined);
+    astro.attr('href','?'+joined+'&skin=astro');
     autumn.attr('href','?'+joined+'&skin=home');
 };
 init();
