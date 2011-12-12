@@ -29,7 +29,8 @@ function getPartName(_id){
 
 function blink($target, bcolor){
     var color = '#7B9C0A';
-    if (document.location.href.match('home')){
+    var skin = $.cookie('pc_skin');
+    if (skin && skin.match('home')){
 	color = '#ffba62';
 	bcolor = '#ddd';
     }
