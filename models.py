@@ -173,7 +173,9 @@ def makePrice(doc):
 def cleanDoc(doc, price):
     new_doc = {}
     to_clean = ['id', 'text', '_attachments','description','flags','inCart',
-		     'ordered','reserved','stock1', '_rev', 'warranty_type']
+		     'ordered','reserved','stock1', '_rev', 'warranty_type',
+		'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
+                'new_stock', 'new_link', 'new_catalogs']
     if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc and 'stock1' in doc) and \
 	    (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
 	to_clean.append('sli')
@@ -413,9 +415,12 @@ def renderComputer(model, template, skin):
 	price = makePrice(component_doc)
 
 	total += price
-
+        # print component_doc
 	cleaned_doc = cleanDoc(component_doc, price)
 	cleaned_doc['count'] = count
+        # print cleaned_doc
+        # print ""
+        # print ""
 	model_json.update({cleaned_doc['_id']:cleaned_doc})
 	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
 
@@ -539,7 +544,7 @@ def equipCases(result):
     chipest_power = sorted([row['doc'] for row in power['rows']],lambda x,y:int(x['price']-y['price']))[0]
     for r in exclusive_rows:
 	r['doc']['price'] += chipest_power['price']
-        r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
+	r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
     result.pop(power_index)
     return result
 
@@ -936,7 +941,7 @@ def computers(template,skin,request):
 	total = 0
 	if not this_is_cart:
 	    models = sorted(models,lambda x,y: x['order']-y['order'])
-            models.reverse()
+	    models.reverse()
 	else:
 	    def sort(m1,m2):
 		if u''.join(m1['date'])>u''.join(m2['date']):
@@ -1094,6 +1099,8 @@ def findComponent(model, name):
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
+    if replaced:
+        ret['old_code'] = code
     return ret
 
 
@@ -1104,9 +1111,9 @@ def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
 	retval = ''.join(("/image/",component['_id'],"/",
 			  indexExtractor(component['description']['imgs']),'.jpg'))
     if '/preview' in retval:
-        splitted = retval.split('/preview')        
-        retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
-    
+	splitted = retval.split('/preview')
+	retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+
     return retval
 
 
