@@ -2310,3 +2310,11 @@ a.modelicon img{
 .showOldComponent{
     margin-left:10px;
 }
+#operators a {
+    padding-left:16px;
+    background-repeat:no-repeat;
+    margin-left:5px;
+    cursor:pointer;
+    background-image:url('/static/build_icons.png');
+    background-repeat:no-repeat;
+}

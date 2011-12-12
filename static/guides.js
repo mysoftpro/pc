@@ -532,8 +532,6 @@ function noticeCheckModel(){
 
     var toppopup = $('#toppopup');
     if (toppopup.length==0 || $.cookie('pc_chkmodel_shown'))return;
-    if (uuid)
-	return;
     _.delay(function(){
 		toppopup
 		    .show()

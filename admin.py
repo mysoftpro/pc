@@ -740,11 +740,13 @@ class ClearAttachments(Resource):
 
 
 def clear_cache():
-    globals()['_cached_statics'] = {}
-    _dir = globals()['static_dir']
-    for f in os.listdir(_dir):
+    # globals()['_cached_statics'] = {}
+    # _dir = globals()['static_dir']
+    from pc import root
+    root._cached_statics = {}
+    for f in os.listdir(root.static_dir):
 	try:
-	    os.utime(os.path.join(_dir,f), None)
+	    os.utime(os.path.join(root.static_dir,f), None)
 	except:
 	    pass
     from pc import models
