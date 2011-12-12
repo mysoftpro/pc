@@ -1,8 +1,46 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+function showDescription(_id){
+    function _show(data){
+	if (!data['comments'])
+	    return;
+	var mock = function(){};
+	makeMask(function(){
+		     var text = '';
+		     if (data['imgs']){
+			 for (var i=0,l=data['imgs'].length;i<l;i++){
+			     text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
+			 }
+		     }
+		     text += data['name'] + data['comments'];
+
+		     $('#details').html(text);
+		     _.delay(function(){
+				 $('#mask').css('height',
+						$(document)
+						.height());
+			     }, 700);
+		     $('#mask').css('height',
+				    $(document).height());
+		 },
+		 function(){})();
+    }
+    return _show;
+}
+function showComponent(e){
+    e.preventDefault();
+    var _id = e.target.id.replace('new_', 'new|').split('_')[1].replace('new|','new_');
+    $.ajax({
+	       url:'/component?id='+_id,
+	       success:showDescription(_id)
+	   });
+}
+
 var proc_filter_template = _.template('<div class="filter_list {{klass}}"><table>{{rows}}</table></div>');
 var proc_filter_template_row = _.template('<tr><td><input type="checkbox" checked="checked" name="{{code}}"/></td><td>{{Brand}}</td></tr>');
-
 var proc_codes;
-
 function getBackgroundPos(el){
     var bpos = el.css('background-position');
     if (!bpos)

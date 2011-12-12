@@ -411,33 +411,7 @@ function renderCategories(idses, hash){
 }
 
 
-function showDescription(_id){
-    function _show(data){
-	if (!data['comments'])
-	    return;
-	var mock = function(){};
-	makeMask(function(){
-		     var text = '';
-		     if (data['imgs']){
-			 for (var i=0,l=data['imgs'].length;i<l;i++){
-			     text +=_.template(img_template,{'id':_id,'name':data['imgs'][i]});
-			 }
-		     }
-		     text += data['name'] + data['comments'];
 
-		     $('#details').html(text);
-		     _.delay(function(){
-				 $('#mask').css('height',
-						$(document)
-						.height());
-			     }, 700);
-		     $('#mask').css('height',
-				    $(document).height());
-		 },
-		 function(){})();
-    }
-    return _show;
-}
 function changePrices(e){
 
     var target = $(e.target);
@@ -514,15 +488,6 @@ function changePrices(e){
 			  link.attr('href',href);
 		      });
     }
-}
-
-function showComponent(e){
-    e.preventDefault();
-    var _id = e.target.id.split('_')[1];
-    $.ajax({
-	       url:'/component?id='+_id,
-	       success:showDescription(_id)
-	   });
 }
 
 
@@ -697,7 +662,7 @@ var init = function(){
     if (!uuid.match('computer')){
 	$('ul.description')
 	    .css('cursor','pointer')
-	    .find('li').click(showComponent);
+	    .find('li').click(function(e){showComponent(e);});
     }
     //this means cart!
     if (!prices && (uuid === $.cookie('pc_user') || $.cookie('pc_user')==='24f6d848')){
@@ -771,7 +736,7 @@ var init = function(){
 					 });
 			      });
     }
-    $('.cnname').click(showComponent);
+    $('.cnname').click(function(e){showComponent(e);});
 
     function deleteNote(noteDiv){
 	function _deleteNote(e){

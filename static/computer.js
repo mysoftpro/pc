@@ -1514,7 +1514,7 @@ function to_cartSuccess(data){
 		       }));
 	$('#computerlink').click(function(e){e.target.select();});
 	//this is for user come from cart
-	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});
+	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});	
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
 	    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
@@ -1626,12 +1626,14 @@ function init(){
     $('#dvdprice').text(dvdprice+' р');
 
     if (author){
-	var was_replaced_t = _.template("Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. {{save}}");
-	var was_replaced = '';
+	var was_replaced_t = _.template("Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. {{save}} <a href='' class='show_old' id='show_{{id}}'>Посмотреть старый компонент</a>");
+	//var was_replaced = '';
+	var save = '';
 	if ($.cookie('pc_user')==author)
-	    was_replaced = was_replaced_t({save:"Нажмите 'Сохранить' чтобы зафиксировать изменения"});
-	else
-	    was_replaced = was_replaced_t({save:""});
+	    save = "Нажмите большую кнопку 'Сохранить' вверху, чтобы зафиксировать изменения.";
+	    //was_replaced = was_replaced_t({save:"Нажмите 'Сохранить' чтобы зафиксировать изменения."});
+	//else
+	    //was_replaced = was_replaced_t({save:""});
 
 	function clearGuider(gu,td){
 	    return function(e){
@@ -1647,7 +1649,7 @@ function init(){
 	    td.css('border','1px solid red');
 	    guider.createGuider({
 				    attachTo: td,
-				    description: was_replaced,
+				    description: was_replaced_t({'save':save, 'id':_id}),
 				    position: 1,
 				    width: 500,
 				    id:_id
@@ -1657,6 +1659,9 @@ function init(){
 	    guider_content.before('<div class="closeg"></div>');
 	    guider_el.find('.closeg').click(clearGuider(guider_el,td));
 	}
+	$('.show_old').click(function(e){
+				 showComponent(e);
+			     });
 	if (!processing){
 	    $('#greset')
 		.css({'background-position':'0 -45px','color':'black'})

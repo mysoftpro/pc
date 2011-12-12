@@ -418,9 +418,6 @@ def renderComputer(model, template, skin):
         # print component_doc
 	cleaned_doc = cleanDoc(component_doc, price)
 	cleaned_doc['count'] = count
-        # print cleaned_doc
-        # print ""
-        # print ""
 	model_json.update({cleaned_doc['_id']:cleaned_doc})
 	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
 
