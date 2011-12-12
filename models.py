@@ -1162,7 +1162,7 @@ class ComponentForModelsPage(object):
 	if not 'promo' in self.model:
 	     li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
 	li.set('id',self.model['_id']+'_'+self.component['_id'])
-        if self.this_is_cart and 'old_code' in self.component:
+        if self.this_is_cart and 'old_code' in self.component and not 'promo' in self.model:
             li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])            
 	return li
 
