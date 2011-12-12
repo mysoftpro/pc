@@ -972,4 +972,19 @@ function prepareCart(){
 	}
     }
     $('.sendfaq').click(sendComment);
+    _($('.showOldComponent').toArray())
+	.each(function(el){
+		  var guider_id = 'replaced_'+el.id;
+		  guider.createGuider({
+					  attachTo: el,
+					  description: 'Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента.Зайдите в конфигурайию компьютера, чтобы сохранить изменения',
+					  position: 1,
+					  width: 500,
+					  id:guider_id
+				      }).show();
+		  var guider_el = guider._guiderById(guider_id).elem;
+		  var guider_content =guider_el.find('.guider_content').find('p');
+		  guider_content.before('<div class="closeg"></div>');
+		  guider_el.find('.closeg').click(function(){guider_el.remove();});
+	      });
 }

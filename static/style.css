@@ -2235,3 +2235,8 @@ a.modelicon img{
     margin-bottom:90px;
     margin-top:-20px;
 }
+.showOldComponent{
+    margin-left:10px;
+    color:white;
+    background-color:#730606;
+}

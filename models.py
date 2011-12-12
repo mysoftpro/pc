@@ -795,7 +795,7 @@ class ModelForModelsPage(object):
 	    a.append(strong)
 	price_span = self.model_div.find('.//span')
 	price_span.set('id',self.model['_id'])
-	self.components = buildPrices(self.model, self.json_prices, price_span)
+	self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 	case_found = [c for c in self.components if c.cat_name == case]
 	if len(case_found) >0:
 	    if not 'promo' in self.model:
@@ -1115,12 +1115,12 @@ def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
 
 
 class ComponentForModelsPage(object):
-    def __init__(self,model,component, cat_name, price):
+    def __init__(self,model,component, cat_name, price, this_is_cart = False):
 	self.component= component
 	self.price = price
 	self.cat_name = cat_name
 	self.model = model
-
+        self.this_is_cart = this_is_cart
     def getIconUrl(self):
 	return getComponentIcon(self.component)
 
@@ -1130,6 +1130,8 @@ class ComponentForModelsPage(object):
 	if not 'promo' in self.model:
 	     li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
 	li.set('id',self.model['_id']+'_'+self.component['_id'])
+        if self.this_is_cart and 'old_code' in self.component:
+            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])            
 	return li
 
 
@@ -1137,7 +1139,7 @@ class ComponentForModelsPage(object):
 
 # TODO! refactor it without side effects
 # TODO! rename it. it is absoluttely about no prices!
-def buildPrices(model, json_prices, price_span):
+def buildPrices(model, json_prices, price_span, this_is_cart=False):
     aliasses_reverted = {}
     total = 0
     __components = []
@@ -1164,7 +1166,7 @@ def buildPrices(model, json_prices, price_span):
 	updatePrice(model['_id'],cat_name,audio,price)
 	updatePrice(model['_id'],cat_name,mouse,price)
 	updatePrice(model['_id'],cat_name,kbrd,price)
-	__components.append(ComponentForModelsPage(model,component_doc, cat_name, price))
+	__components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
     if model['installing']:
 	total += INSTALLING_PRICE
     if model['building']:
