@@ -680,6 +680,14 @@ var init = function(){
 				   while (target.attr('class')!='cart_description'){
 				       target = target.parent();
 				   }
+				   var guiders_anchors = target.find('a.showOldComponent').toArray();
+				   _(guiders_anchors)
+				       .each(function(el){
+				   		 console.log('replaced_'+el.id);
+						 guider.
+				   		     _guiderById('replaced_'+el.id).elem.remove();
+						 
+				   	     });
 				   target.prev().remove();
 				   target.remove();
 			       }

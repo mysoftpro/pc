@@ -332,10 +332,6 @@ function makeMask(action, _closing){
 						  $('#mask').click();
 					      }
 					  });
-	//}
-	// catch (e){
-	//     console.log(e);
-	// }
     }
     return _makeMask;
 }
@@ -566,16 +562,21 @@ function getUserNameAndTitle(){
 	.animate({top:"0",left:"0"}, 500);
     toppopup.find('.small_reset').click(closePopup);
     toppopup.find('.small_help').click(function(e){
+					   var _name = $('#userNameInput').val();
 					   $.ajax({
-						      url:'/\store_model_name',
+						      url:'/store_model_name',
 						      data:{
-							  name:$('#userNameInput').val(),
+							  name:_name,
 							  title:$('#userTitleInput').val(),
 							  uuid:uuid
 						      },
-						      success:closePopup,
+						      success:function(){
+							  $('#modelname').append('<span>'+_name+
+										 '</span>');
+							  closePopup();
+							  
+						      },
 						      error:closePopup
 						  });
 				       });
 }
-//getUserNameAndTitle();
