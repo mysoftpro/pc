@@ -642,7 +642,7 @@ class Root(Cookable):
 	self.putChild('di',Di())
 	self.putChild('checkModel', CheckModel())
 	self.putChild('store_cart_comment',StoreCartComment())
-
+        self.putChild('store_model_name', StoreModelName())
 
     def getChild(self, name, request):
 	self.checkCookie(request)
@@ -653,7 +653,34 @@ class Root(Cookable):
 
 
 
-
+class StoreModelName(Resource):
+    def store(self, doc_user, name, title, key):
+        if not doc_user[0][0] or not doc_user[1][0]: return
+        doc = doc_user[0][1]
+        user = doc_user[1][1]
+        if doc['author'] == user['_id'] and key == user['pc_key']:
+            need_save = False
+            if len(name)>0:
+                doc['name'] = name
+                need_save = True
+            if len(title)>0:
+                doc['title'] = title
+                need_save = True
+            if need_save:
+                couch.saveDoc(doc)
+        
+    def render_GET(self, request):
+        uuid = request.args.get('uuid', [None])[0]
+        name = request.args.get('name', [''])[0]
+        title = request.args.get('title', [''])[0]
+        user = request.getCookie('pc_user')
+        key = request.getCookie('pc_key')
+        if uuid is not None and (len(name)>0 or len(title)>0):            
+            d = couch.openDoc(uuid)
+            d1 = couch.openDoc(user)
+            defer.DeferredList([d,d1]).addCallback(self.store, name,title, key)
+        return "ok"
+            
 class StoreCartComment(Resource):
     def finish(self, doc, request):
 	comment = {'email':request.args.get('email',[''])[0],

@@ -1500,9 +1500,11 @@ function to_cartSuccess(data){
     else{
 	uuid = data['id'];
 	var len = data['id'].length;
-	var first = data['id'].substring(0,len-3);
-	var last = data['id'].substring(len-3,len);
-	$('#modelname').html(first+'<strong>'+last+'</strong>').css('color','#999');
+	if (!data['edit']){
+	    var first = data['id'].substring(0,len-3);
+	    var last = data['id'].substring(len-3,len);
+	    $('#modelname').html(first+'<strong>'+last+'</strong>').css('color','#999');	    
+	}
 	if (!added_cached){
 	    added_cached = decodeURI($('#added').html());
 	    $('#added').html('');
@@ -1513,19 +1515,23 @@ function to_cartSuccess(data){
 		       {
 			   computer:data['id']
 		       }));
-	$('#computerlink').click(function(e){e.target.select();});
+	$('#computerlink').click(function(e){e.target.select();});	
 	//this is for user come from cart
 	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});	
+	if (!data['edit'])
+	    getUserNameAndTitle();
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
 	    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
 	}
-	else{
-	    if (!data['edit'])
-		$('#main_menu').append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
-						  {
-						      cart:$.cookie('pc_user')
-						  }));
+	else{	    
+	    if (!data['edit']){		
+		$('#main_menu')
+		    .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+				       {
+					   cart:$.cookie('pc_user')
+				       }));
+	    }
 	}
 	var input = $('#email');
 	input.click(function(e){if (input.val()=='введите email')input.val('');});
@@ -1545,7 +1551,7 @@ function to_cartSuccess(data){
 					   });
 				});
 	if ($('#greset').text() == 'Сохранить')
-	    alert('Получилось!');
+	    alert('Получилось!');	
     }
 }
 

@@ -290,10 +290,12 @@ def renderComputer(model, template, skin):
     parent = ''
     h2 =template.top.find('div').find('h2')
     # only original models have length
+    _name = model['_id']
     if 'ours' in model:
 	_name= model['name']
     else:
-	_name = model['_id']
+	if 'name' in model:
+            _name += model['name']
 	_uuid = model.pop('_id')
 	author = model.pop('author')
 	if 'parent' in model:

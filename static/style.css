@@ -520,7 +520,6 @@ h3 {
     background-color:#730606;
     color:white;
     margin-top:5px;
-    max-width:200px;
     padding:5px;
     text-align:center;
     vertical-align:center;
@@ -564,7 +563,6 @@ label {
 label:hover{
     color: #7b9c0a;
 }
-
 
 .component_tab {
     width:140px;
@@ -1691,9 +1689,8 @@ a.modelicon img{
 .small_cart{
     background-position:0px -36px;
 }
-.small_reset{
-    background-position:0px 1px;
-
+.small_help{
+    background-position:0px -74px;
 }
 #phone a {
     color:white;
@@ -2247,4 +2244,29 @@ a.modelicon img{
     cursor:pointer;
     background-image:url('/static/build_icons.png');
     background-repeat:no-repeat;
+}
+
+#toppopup #closem{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+#toppopup label:hover{
+    color: black;
+}
+#toppopup .small_square_button {
+    margin-top:-10px;
+}
+
+#getUserName div{
+    float:left;
+    margin-right:10px;
+}
+#store_user_name{
+    
+}
+.small_reset{
+    background-position:0px 0px;
+}
+.small_help{
+    background-position:0px -75px;
 }
