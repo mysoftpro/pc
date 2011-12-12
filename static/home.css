@@ -1083,8 +1083,7 @@ strong.red{
     margin-top: -10px;
 }
 
-
-.popup
+#toppopup
 {
     -webkit-background-size: 40px 40px;
     -moz-background-size: 40px 40px;
@@ -1120,36 +1119,29 @@ strong.red{
     padding-bottom:0px;
     position: fixed;
     left:0;
+    top:-70px;
+    height:60px;
     _position: absolute;
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
     -webkit-animation: animate-bg 5s linear infinite;
     -moz-animation: animate-bg 5s linear infinite;
-}
-
-.popups_info
-{
-    background-color: #4ea5cd;
-    border-color: #3b8eb5;
     display:none;
-    /* background-color: #de4343; */
-    /* border-color: #c43d3d; */
-
-    /* background-color: #eaaf51; */
-    /* border-color: #d99a36; */
-
-    /* background-color: #61b832; */
-    /* border-color: #55a12c;     */
+    background-color: #789d17;
+    border-color: #3b8eb5;
+    z-index:9999;
 }
 
-.popup h3
+#toppopup h3
 {
     margin: 0 0 5px 0;
+    color:white;
 }
 
-.popup p
+#toppopup p
 {
     margin: 0;
     font-size:16px;
+    color:white;
 }
 
 @-webkit-keyframes animate-bg
@@ -2317,4 +2309,43 @@ a.modelicon img{
     cursor:pointer;
     background-image:url('/static/build_icons.png');
     background-repeat:no-repeat;
+}
+
+#toppopup #closem{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+#toppopup label:hover{
+    color: black;
+}
+#toppopup .small_square_button {
+    margin-top:-10px;
+}
+
+#getUserName div{
+    float:left;
+    margin-right:10px;
+}
+#store_user_name{
+    
+}
+.small_reset{
+    background-position:0px 0px;
+}
+.small_help{
+    background-position:0px -75px;
+}
+#modelname strong{
+    color:#999;
+}
+#modelname span{
+    margin-left:10px;
+}
+.cart_description h3 span {
+    margin-left:10px;
+}
+.cart_description h3 a {
+    margin-left:10px;
+    color:grey;
+    font-size:10px;
 }
