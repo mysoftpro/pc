@@ -284,24 +284,29 @@ def replaceComponent(code,model):
 no_component_added = False
 
 def renderComputer(model, template, skin):
-    _name = ''
+    
     _uuid = ''
     author = ''
     parent = ''
     h2 =template.top.find('div').find('h2')
     # only original models have length
-    _name = model['_id']
+    
     if 'ours' in model:
-	_name= model['name']
+        h2.text = model['name']
     else:
+        h2.text = model['_id'][0:-3]
+        strong = etree.Element('strong')
+        strong.text = model['_id'][-3:]
+        h2.append(strong)
 	if 'name' in model:
-            _name += model['name']
+            span = etree.Element('span')
+            span.text = model['name']
+            h2.append(span)
 	_uuid = model.pop('_id')
 	author = model.pop('author')
 	if 'parent' in model:
 	    parent = model.pop('parent')
 
-    h2.text = _name
 
     if 'description' in model:
 	# try:
@@ -480,7 +485,7 @@ def renderComputer(model, template, skin):
 						    ';var parts=',simplejson.dumps(parts_aliases)
 						    ))
     title = skin.root().xpath('//title')[0]
-    title.text = u' Изменение конфигурации компьютера '+_name
+    title.text = u' Изменение конфигурации компьютера '+h2.text
     skin.top = template.top
     skin.middle = template.middle
     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')

@@ -1503,7 +1503,7 @@ function to_cartSuccess(data){
 	if (!data['edit']){
 	    var first = data['id'].substring(0,len-3);
 	    var last = data['id'].substring(len-3,len);
-	    $('#modelname').html(first+'<strong>'+last+'</strong>').css('color','#999');	    
+	    $('#modelname').html(first+'<strong>'+last+'</strong>');
 	}
 	if (!added_cached){
 	    added_cached = decodeURI($('#added').html());

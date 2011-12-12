@@ -2270,3 +2270,9 @@ a.modelicon img{
 .small_help{
     background-position:0px -75px;
 }
+#modelname strong{
+    color:#999;
+}
+#modelname span{
+    margin-left:10px;
+}
