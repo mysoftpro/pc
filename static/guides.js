@@ -571,6 +571,7 @@ renameUserModel();
 
 function showPromo(){
     var toppopup = $('#toppopup');
+
     if (!(document.location.href.split('?')[0].split('/').pop() ==='computer')
 	|| $.cookie('pc_promo_shown'))return;
     toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <span style="font-size:12px;"> Спецпредложения в пункте меню "Еще"</span></p>');
