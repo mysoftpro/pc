@@ -411,12 +411,11 @@ function updateDescription(new_id, body_id, does_not_show){
 
 var descriptions_cached = {};
 
-function _jgetTitles(){
-    var title =$('#component_title');
-    return [title, title.next()];
+function _jgetTitle(){
+    return $('#component_title');
 }
 
-var jgetTitles = _.memoize(_jgetTitles, function(){return 0;});
+var jgetTitle = _.memoize(_jgetTitle, function(){return 0;});
 
 
 function _jgetDescriptions(){
@@ -433,61 +432,72 @@ var jgetDescrByIndex = _.memoize(_jgetDescrByIndex, function(index){return index
 
 
 
-function treatDescriptionText(text){
-    return text;
-}
-
 
 var img_template = '<img src="/image/{{id}}/{{name}}{{ext}}" align="right"/>';
 
 function changeDescription(index, _id, show, data){
-    try{
-	var descrptions = jgetDescriptions();
-	var descr = jgetDescrByIndex(index);
-	if (show)
-	    descrptions.children().hide();
-	if (!descriptions_cached[_id] && descriptions_cached[_id] != ''){
-	    var _text = '';
-	    if (data){
-		if (data['imgs']){
-		    for (var i=0,l=data['imgs'].length;i<l;i++){
-			var ext = '.jpg';
-			var path = data['imgs'][i];
-			//new images
-			if (path.match('jpeg')){
-			    ext = '';
-			    path = encodeURIComponent(path);
-			}
-			_text +=_.template(img_template,{'id':_id,'name':path, 'ext':ext});
-		    }
-		}
-		_text += data['name'] + data['comments'];
-	    }
-	    else
-		_text = descr.find('.manu').text();
-	    if (_text == '')
-		_text = 'к сожалению описание не предоставлено поставщиком';
-	    descriptions_cached[_id] = treatDescriptionText(_text);
-	}
-	if (!show)
-	    return;
-	descr.find('.manu').html(descriptions_cached[_id]);
-	descrptions.jScrollPaneRemove();
-	descr.css('opacity', '0.0');
-	descr.show();
-	descr.animate({'opacity':'1.0'}, 300);
-	descrptions.jScrollPane();
-
-	var new_name = getPartName(_id);
-	var titles = jgetTitles();
-	titles[0].text(new_name);
-
-    } catch (x) {
-	console.log(x);
+    var hidden_container = $('#hidden_description_container');
+    if (hidden_container.length==0){
+	$('body').append('<div style="display:none" id="hidden_description_container"></div>');
+	hidden_container = $('#hidden_description_container');
     }
+    var descrptions = jgetDescriptions();
+    var descr = jgetDescrByIndex(index);
+    if (show)
+	descrptions.children().hide();
+    if (!descriptions_cached[_id]){
+	var _text = '';
+	var _name = getPartName(_id);
+	if (data){
+	    if (data['imgs']){
+		for (var i=0,l=data['imgs'].length;i<l;i++){
+		    var ext = '.jpg';
+		    var path = data['imgs'][i];
+		    //new images
+		    if (path.match('jpeg')){
+			ext = '';
+			path = encodeURIComponent(path);
+		    }
+		    _text +=_.template(img_template,{'id':_id,'name':path, 'ext':ext});
+		}
+	    }
+	    _text += data['comments'];
+	    if (data['name']){
+		hidden_container.html(data['name']);
+		_name = hidden_container.text().replace('NEW!', '').replace(/\<font.*\>/g, '');
+	    }
+	}
+	else{
+	    console.log('noooooooooooo data');
+	    _text = descr.find('.manu').text();
+	    _name = $('#component_title').text();
+	}
+	if (_text == '')
+	    _text = 'к сожалению описание не предоставлено поставщиком';
+	descriptions_cached[_id] = {_text:_text, _name:_name};
+    }
+    if (!show)
+	return;
+
+    descr.find('.manu').html(descriptions_cached[_id]._text);
+    jgetTitle().text(descriptions_cached[_id]._name);
+
+    descrptions.jScrollPaneRemove();
+    descr.css('opacity', '0.0');
+    descr.show();
+    descr.animate({'opacity':'1.0'}, 300);
+    descrptions.jScrollPane();
+
+    // var new_name = getPartName(_id);
+    // if (data && data['name']){
+    // 	hidden_container.html(data['name']);
+    // 	new_name = hidden_container.text().replace('NEW!', '').replace(/\<font.*\>/g, '');
+    // }
+    // var titles = jgetTitles();
+    // titles[0].text(new_name);
 }
 
-var current_row;
+//var current_row;
 
 function installBodies(){
     var init = true;
@@ -504,7 +514,7 @@ function installBodies(){
 			 _body.html(_body.html());
 			 var select_block = jgetSelectBlock(_body);
 			 if (_body.attr('id') == _id){
-			     current_row = _body.parent().attr('id');
+			     //current_row = _body.parent().attr('id');
 			     _body.hide();
 			     select_block.show();
 			     if (doNotStress){
@@ -835,7 +845,7 @@ function cheaperBetter(){
 	    //but we call this function forced (from the filters by example)
 	    //just do something. does not matter it will cheaper or better
 	    //it is more important than call change component with undefined
-            if (!new_component)
+	    if (!new_component)
 		new_component = appr_components[1];
 	}
     }
@@ -1515,17 +1525,17 @@ function to_cartSuccess(data){
 		       {
 			   computer:data['id']
 		       }));
-	$('#computerlink').click(function(e){e.target.select();});	
+	$('#computerlink').click(function(e){e.target.select();});
 	//this is for user come from cart
-	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});	
+	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});
 	if (!data['edit'])
 	    getUserNameAndTitle();
 	var cart_el = $('#cart');
 	if (cart_el.length>0){
 	    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
 	}
-	else{	    
-	    if (!data['edit']){		
+	else{
+	    if (!data['edit']){
 		$('#main_menu')
 		    .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
 				       {
@@ -1551,7 +1561,7 @@ function to_cartSuccess(data){
 					   });
 				});
 	if ($('#greset').text() == 'Сохранить')
-	    alert('Получилось!');	
+	    alert('Получилось!');
     }
 }
 
