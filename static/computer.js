@@ -493,17 +493,24 @@ function changeDescription(index, _id, show, data){
     var op = function(some){
 	var other = current_title.next();
 	var to_remove = [];
+	var guard = 50;
 	while (other.length>0){
 	    if (other.data('cid') == current_title.data('cid'))
 		to_remove.push(other);
 	    other = other.next();
+	    guard -=1;
+	    if (guard==0)break; 
 	}
 	_(to_remove).each(function(el){el.remove();});
 
 	if (current_title.position().left>=200){
 	    var first = current_title.parent().children().first();
-	    while (parseInt(first.css('margin-left'))!=0)
+	    guard = 50;
+	    while (parseInt(first.css('margin-left'))!=0){
 		first = first.next();
+		guard -=1;
+		if (guard==0)break;
+	    }		
 	    var ma = parseInt(first.css('margin-left'));
 	    first.css('margin-left', ma-248);
 	}
@@ -515,17 +522,24 @@ function changeDescription(index, _id, show, data){
 	op = function(some){
 	    var other = current_title.next();
 	    var to_remove = [];
+	    var guard = 50;
 	    while (other.length>0){
 		if (other.data('cid') == current_title.data('cid'))
 		    to_remove.push(other);
 		other = other.next();
+		guard -=1;
+		if (guard==0)break;
 	    }
 	    _(to_remove).each(function(el){el.remove();});
 
 	    if (current_title.position().left>=700){
 		var first = current_title.parent().children().first();
-		while (parseInt(first.css('margin-left'))!=0)
+		guard = 50;
+		while (parseInt(first.css('margin-left'))!=0){
 		    first = first.next();
+		    guard -=1;
+		    if (guard==0)break;
+		}		    
 		var ma = parseInt(first.css('margin-left'));
 		first.css('margin-left', ma-248);
 	    }
@@ -569,7 +583,7 @@ function changeDescription(index, _id, show, data){
 	descrptions.jScrollPane();
     }
     var first_time = current_title.text() == 'init';
-    if (!first_time){
+    if (!first_time && !($.browser.msie && parseInt($.browser.version)<9)){	
 	op(_.template('<div class="component_tab inactive">{{name}}</div>',
 			      {name:current_title.text()}));
 	current_title.click(function(e){

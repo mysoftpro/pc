@@ -564,18 +564,6 @@ label:hover{
     color: #7b9c0a;
 }
 
-.component_tab.active{
-    float:left;
-    color:black;
-    font-size: 12px;
-    height:24px;
-    margin-top:20px;
-    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
-    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
-}
-
 
 .section{
 text-align:left;
@@ -2282,6 +2270,20 @@ a.modelicon img{
     margin-right:2px;
     overflow:hidden;
 }
+
+.component_tab.active{
+    float:left;
+    color:black;
+    font-size: 12px;
+    height:24px;
+    margin-top:20px;
+    padding-top:8px;
+    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
+    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
+}
+
 .component_tab.inactive{
     float:left;
     color:white;

@@ -578,45 +578,6 @@ label:hover{
 }
 
 
-.component_tab {
-    width:140px;
-    background-color: #AAAAAA;
-    color: black;
-    border-radius: 5px 5px 0px 0px;
-    -moz-border-radius:5px 5px 0px 0px;
-
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -webkit-border-bottom-left-radius: 0px;
-    -webkit-border-bottom-right-radius: 0px;
-
-    padding: 5px 5px;
-    text-align:center;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:14px;
-    margin-right:2px;
-}
-
-.component_tab.active{
-    float:left;
-    color:black;
-    font-size: 12px;
-    height:24px;
-    margin-top:20px;
-    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
-    -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
-    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
-}
-.component_tab.inactive{
-    float:left;
-    font-size: 10px;
-    border: 1px solid #999999;
-    height:18px;
-    margin-top:28px;
-}
-
 .section{
     text-align:left;
     background-image:url('/static/under_model.png');
@@ -2348,4 +2309,77 @@ a.modelicon img{
     margin-left:10px;
     color:grey;
     font-size:10px;
+}
+
+#toppopup a{
+    color:#730606;
+}
+#toppopup a hover{
+    color:white;
+}
+.component_tab {
+    width:240px;
+    background-color: #AAAAAA;
+    color: black;
+    border-radius: 5px 5px 0px 0px;
+    -moz-border-radius:5px 5px 0px 0px;
+
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+
+    padding: 5px 5px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+    margin-right:2px;
+    overflow:hidden;
+}
+
+.component_tab.active{
+    float:left;
+    color:black;
+    font-size: 12px;
+    height:24px;
+    margin-top:20px;
+    padding-top:8px;
+    box-shadow: 1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow:1px 1px 0pt, -1px -1px 0 #FFFFFF;
+    -moz-box-shadow: 1px 1px 0pt, 0 -1px 0 #FFFFFF;
+    -webkit-box-shadow:1px 1px 0pt, 0px -1px 0 #FFFFFF;
+}
+
+.component_tab.inactive{
+    float:left;
+    color:white;
+    font-size: 10px;
+    border: 1px solid #999999;
+    height:18px;
+    margin-top:24px;
+    background-color:#333;
+    width:232px;
+}
+.component_tab.selected{
+    float:left;
+    color:white;
+    font-size: 10px;
+    border: 1px solid #999999;
+    height:24px;
+    margin-top:19px;
+    background-color:#333;
+    width:232px;
+}
+#component_tabs{
+    width: 1000px;
+    height:56px;
+    overflow:hidden;
+}
+#indescription_panel{
+    margin-bottom:10px;
+    color:white;
+}
+#indescription_panel span{
+    margin-right:10px;
 }
