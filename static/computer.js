@@ -488,7 +488,18 @@ function changeDescription(index, _id, show, data){
 	pa.append(ti);
 	current_title = ti;
     }
+
+    //TODO! ops a very similar! refactor em
     var op = function(some){
+	var other = current_title.next();
+	var to_remove = [];
+	while (other.length>0){
+	    if (other.data('cid') == current_title.data('cid'))
+		to_remove.push(other);
+	    other = other.next();
+	}
+	_(to_remove).each(function(el){el.remove();});
+
 	if (current_title.position().left>=200){
 	    var first = current_title.parent().children().first();
 	    while (parseInt(first.css('margin-left'))!=0)
@@ -500,7 +511,17 @@ function changeDescription(index, _id, show, data){
     };
     var ot = function(some){return current_title.next();};
     if (new_component && current_component.price-new_component.price>=0){
+	//TODO! ops a very similar! refactor em
 	op = function(some){
+	    var other = current_title.next();
+	    var to_remove = [];
+	    while (other.length>0){
+		if (other.data('cid') == current_title.data('cid'))
+		    to_remove.push(other);
+		other = other.next();
+	    }
+	    _(to_remove).each(function(el){el.remove();});
+
 	    if (current_title.position().left>=700){
 		var first = current_title.parent().children().first();
 		while (parseInt(first.css('margin-left'))!=0)
@@ -517,15 +538,30 @@ function changeDescription(index, _id, show, data){
 	    descrptions.children().hide();
 	descr.find('.manu').html(descriptions_cached[cid]._text)
 	    .prepend(_.template('<div id="indescription_panel"><span>Цена:{{price}}</span><a href="">Установить этот компонент</a></div>', {price:component.price}))
-	    .find('#indescription_panel a').click(function(e){
-						      e.preventDefault();
-						      var in_model = filterByCatalogs(model, component.catalogs)[0];
-						      var body = jgetBodyById(in_model._id);
-						      var select = jgetSelect(body);
-						      changeComponent(body, component,
-								      new_model[select.val()], true);
-						      installCountButtons(body);
-						  });
+	    .find('#indescription_panel a')
+	    .click(function(e){
+		       e.preventDefault();
+		       var in_model = filterByCatalogs(model, component.catalogs)[0];
+		       var body = jgetBodyById(in_model._id);
+		       var select = jgetSelect(body);
+		       changeComponent(body, component,
+				       new_model[select.val()], true);
+		       installCountButtons(body);
+		       var active;
+		       _($('#component_tabs')
+			 .children()).each(function(_el){
+					       var el = $(_el);
+					       if (el.data('cid')==component._id){
+						   el.attr('class','component_tab active');
+						   active = el;
+					       }
+					       else{
+						   el.attr('class','component_tab inactive');
+						   el.removeAttr('id');
+					       }
+					   });
+		       active.attr('id', 'component_title');
+		   });
 	descrptions.jScrollPaneRemove();
 	descr.css('opacity', '0.0');
 	descr.show();
