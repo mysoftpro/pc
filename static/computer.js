@@ -488,11 +488,29 @@ function changeDescription(index, _id, show, data){
 	pa.append(ti);
 	current_title = ti;
     }
-    var op = function(some){return current_title.after(some);};
+    var op = function(some){
+	if (current_title.position().left>=200){
+	    var first = current_title.parent().children().first();
+	    while (parseInt(first.css('margin-left'))!=0)
+		first = first.next();
+	    var ma = parseInt(first.css('margin-left'));
+	    first.css('margin-left', ma-248);
+	}
+	return current_title.after(some);
+    };
     var ot = function(some){return current_title.next();};
     if (new_component && old_component.price-new_component.price>=0){
-	op = function(some){return current_title.before(some);};
-	ot = function(some){return current_title.prev();};
+	op = function(some){	    
+	    if (current_title.position().left>=700){
+		var first = current_title.parent().children().first();
+		while (parseInt(first.css('margin-left'))!=0)
+		    first = first.next();
+		var ma = parseInt(first.css('margin-left'));
+		first.css('margin-left', ma-248);
+	    }		
+	    return current_title.before(some);
+	};
+	ot = function(some){return current_title.prev();};	
     }
     function change(cid){
 	if (show)
