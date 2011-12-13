@@ -488,7 +488,12 @@ function changeDescription(index, _id, show, data){
 	pa.append(ti);
 	current_title = ti;
     }
-
+    var op = function(some){return current_title.after(some);};
+    var ot = function(some){return current_title.next();};
+    if (new_component && old_component.price-new_component.price>=0){
+	op = function(some){return current_title.before(some);};
+	ot = function(some){return current_title.prev();};
+    }
     function change(cid){
 	if (show)
 	    descrptions.children().hide();
@@ -501,13 +506,15 @@ function changeDescription(index, _id, show, data){
     }
     var first_time = current_title.text() == 'init';
     if (!first_time){
-	current_title.after(_.template('<div class="component_tab inactive">{{name}}</div>', {name:current_title.text()}));
+	op(_.template('<div class="component_tab inactive">{{name}}</div>',
+			      {name:current_title.text()}));
 	current_title.click(function(e){
-		       change($(e.target).data('cid'));
-		   });
-	current_title
-	    .next()
-	    .data('cid',current_title.data('cid'))
+				var target =$(e.target);
+				target.parent().find('.selected')
+				    .attr('class', 'component_tab inactive');
+				change(target.data('cid'));
+			    });
+	ot().data('cid',current_title.data('cid'))
 	    .click(function(e){
 		       var target = $(e.target);
 		       target.parent().find('.selected')
