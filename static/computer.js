@@ -477,10 +477,10 @@ function changeDescription(index, _id, show, data){
 	return;
 
     var current_title = $('#component_title');
-    var old_component = choices[_id];
+    var current_component = choices[_id];
     var new_component = choices[current_title.data('cid')];
 
-    if (new_component && filterByCatalogs([new_component],old_component.catalogs)==0){
+    if (new_component && filterByCatalogs([new_component],current_component.catalogs)==0){
 	var ti = current_title.clone();
 	ti.text('init');
 	var pa = current_title.parent();
@@ -499,23 +499,33 @@ function changeDescription(index, _id, show, data){
 	return current_title.after(some);
     };
     var ot = function(some){return current_title.next();};
-    if (new_component && old_component.price-new_component.price>=0){
-	op = function(some){	    
+    if (new_component && current_component.price-new_component.price>=0){
+	op = function(some){
 	    if (current_title.position().left>=700){
 		var first = current_title.parent().children().first();
 		while (parseInt(first.css('margin-left'))!=0)
 		    first = first.next();
 		var ma = parseInt(first.css('margin-left'));
 		first.css('margin-left', ma-248);
-	    }		
+	    }
 	    return current_title.before(some);
 	};
-	ot = function(some){return current_title.prev();};	
+	ot = function(some){return current_title.prev();};
     }
-    function change(cid){
+    function change(cid, component){
 	if (show)
 	    descrptions.children().hide();
-	descr.find('.manu').html(descriptions_cached[cid]._text);
+	descr.find('.manu').html(descriptions_cached[cid]._text)
+	    .prepend(_.template('<div id="indescription_panel"><span>Цена:{{price}}</span><a href="">Установить этот компонент</a></div>', {price:component.price}))
+	    .find('#indescription_panel a').click(function(e){
+						      e.preventDefault();
+						      var in_model = filterByCatalogs(model, component.catalogs)[0];
+						      var body = jgetBodyById(in_model._id);
+						      var select = jgetSelect(body);
+						      changeComponent(body, component,
+								      new_model[select.val()], true);
+						      installCountButtons(body);
+						  });
 	descrptions.jScrollPaneRemove();
 	descr.css('opacity', '0.0');
 	descr.show();
@@ -539,12 +549,12 @@ function changeDescription(index, _id, show, data){
 			   .attr('class', 'component_tab inactive');
 		       if (target.attr('class').match('inactive'))
 			   target.attr('class', 'component_tab selected');
-		       change(target.data('cid'));
+		       change(target.data('cid'), new_component);
 		   });
     }
     current_title.text(descriptions_cached[_id]._name);
     current_title.data('cid', _id);
-    change(_id);
+    change(_id, current_component);
 }
 
 //var current_row;
@@ -1752,8 +1762,6 @@ function init(){
 	$('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
 	$('#addplease').animate({'opacity':'1.0'},1000);
     }
-
-
     if (document.location.search.match('data')){
 	var le = document.location.search.length;
 	var pairs = document.location.search.substring(1,le).split('&');

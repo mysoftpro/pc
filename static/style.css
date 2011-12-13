@@ -2307,3 +2307,10 @@ a.modelicon img{
     height:56px;
     overflow:hidden;
 }
+#indescription_panel{
+    margin-bottom:10px;
+    color:white;
+}
+#indescription_panel span{
+    margin-right:10px;
+}
