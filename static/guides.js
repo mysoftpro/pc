@@ -530,7 +530,6 @@ function noticeCheckModel(){
 	|| toppopup.length==0
 	|| uuid
 	|| $.cookie('pc_chkmodel_shown')) return;
-    if (!document.location.href.match('/computer/') || toppopup.length==0) return;
     toppopup.html('<p>Чтобы проверить выбранную вами конфигурацию, сохраните ее в корзине.<br/>В корзине есть кнопка "Проверить". Мы сможем оценить ее и оставить Вам свой комментарий.</p>');
     _.delay(function(){
 		toppopup
@@ -647,3 +646,27 @@ function renameUserModel(){
 
 }
 renameUserModel();
+
+// function showPromo(){    
+//     var toppopup = $('#toppopup');    
+//     var spli = document.location.href.split('/');
+//     if (!spli.pop()==='computer'
+// 	|| toppopup.length==0)return;
+//     //|| $.cookie('pc_promo_shown')) return;
+//     toppopup.html('<p>Чтобы проверить выбранную вами конфигурацию, сохраните ее в корзине.<br/>В корзине есть кнопка "Проверить". Мы сможем оценить ее и оставить Вам свой комментарий.</p>');
+//     _.delay(function(){
+// 		toppopup
+// 		    .show()
+// 		    .animate({top:"0",left:"0"}, 500,function(){
+// 				 _.delay(function(){
+// 					     toppopup
+// 						 .show()
+// 						 .animate({top:"-70",left:"0"}, 500,function(){
+// 							      toppopup.hide();
+// 							      //$.cookie('pc_promo_shown', 1, {domain:'.buildpc.ru', path:'/', expires:1000});
+// 							  });
+// 					 }, 10000);
+// 			     });
+// 	    },10000);
+// }
+// showPromo();

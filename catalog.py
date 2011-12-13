@@ -771,7 +771,6 @@ class NewDescriptionTarget(NewTarget):
 
 
     def prepareDescription(self, external_id):
-	print "doooooooooooooone"	
         warranty = ''
         articul = ''
         pairs = ''
