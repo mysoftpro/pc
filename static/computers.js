@@ -49,7 +49,7 @@ function getMainCodes(hidden_ul){
     var chi =hidden_ul.children();
     var mother = chi.first();
     var proc = mother.next();
-    
+
     var proc_code = proc.attr('id').replace('new_','new|').split('_')[1].replace('new|','new_');
     var video = proc.next();
     var video_code = video.attr('id').replace('new_','new|').split('_')[1].replace('new|','new_');;
@@ -173,7 +173,7 @@ function moveModel(model_id, new_pos){
     var mproc = $('#m'+model_id).find('.mproc');
     var mvideo = $('#m'+model_id).find('.mvideo');
     if (!new_video_code.match('no')){
-	//proc is not required. it is always the same	
+	//proc is not required. it is always the same
 	var url = '/catalogs_for?c='+new_proc_code+'&c='+new_video_code;
 	$.ajax({url:url,success:function(data){
 		    var proc_class = '_'+data[new_proc_code].join('_');
@@ -683,10 +683,9 @@ var init = function(){
 				   var guiders_anchors = target.find('a.showOldComponent').toArray();
 				   _(guiders_anchors)
 				       .each(function(el){
-				   		 console.log('replaced_'+el.id);
 						 guider.
 				   		     _guiderById('replaced_'+el.id).elem.remove();
-						 
+
 				   	     });
 				   target.prev().remove();
 				   target.remove();
@@ -912,7 +911,7 @@ function prepareCart(){
     var faq_links = $('.faqlinks a').toArray();
 
     function showFaq(li){
-	return function(){	    	    
+	return function(){
 	    li.parent().parent().after($('#faq_top'));
 	    var ft = $('#faq_top');
 	    _area.val(ta_initial);
@@ -972,9 +971,9 @@ function prepareCart(){
 							date:_date
 						    }));
 			   var li = target.prev().find('a');
-			   li.click(showFaq(li));			   
+			   li.click(showFaq(li));
 			   target.animate({'opacity':'0.0'},300,function(){target.hide();});
-			   
+
 		       }
 		   });
 	}
