@@ -540,7 +540,8 @@ function changeDescription(index, _id, show, data){
 				var target =$(e.target);
 				target.parent().find('.selected')
 				    .attr('class', 'component_tab inactive');
-				change(target.data('cid'));
+				var _id = target.data('cid');
+				change(_id, choices[_id]);
 			    });
 	ot().data('cid',current_title.data('cid'))
 	    .click(function(e){
@@ -549,7 +550,8 @@ function changeDescription(index, _id, show, data){
 			   .attr('class', 'component_tab inactive');
 		       if (target.attr('class').match('inactive'))
 			   target.attr('class', 'component_tab selected');
-		       change(target.data('cid'), new_component);
+		       var _id = target.data('cid');
+		       change(_id, choices[_id]);
 		   });
     }
     current_title.text(descriptions_cached[_id]._name);
