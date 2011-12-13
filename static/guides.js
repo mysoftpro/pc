@@ -370,14 +370,6 @@ var init = function(){
 						 width: 160
 					     }).show();
 
-			 // guider.createGuider({
-			 //                      attachTo: ".body",
-			 //                      description: "Название выбранного компонента",
-			 //                      id: "body",
-			 //                      position: 7,
-			 //                      width: 100
-			 //                  }).show();
-
 			 guider.createGuider({
 						 attachTo: "#7388 .cheaper",
 						 description: "Можно менять компоненты, не открывая список.",
@@ -403,14 +395,6 @@ var init = function(){
 						 width: 140
 					     }).show();
 
-
-			 /*guider.createGuider({
-			  attachTo: "#vendors",
-			  description: "Эти кнопки позволяют исключить одного из производителей процессоров и видеокарт. После исключения, кнопки 'луше' и 'дешевле' будут перебирать только коипоненты оставшегося производителя.",
-			  id: "GCheaperGBetter",
-			  position: 3,
-			  width: 140
-			  }).show();*/
 
 			 guider.createGuider({
 						 attachTo: "#component_title",
@@ -441,68 +425,6 @@ var init = function(){
 					     guider.hideAll();
 					 });
 		     });
-
-    // function fillSelectHelps(action){
-    // 	if (fillSelectHelps[current_row])
-    // 	    return action();
-    // 	$.ajax({
-    // 		   url:'/select_helps/how_'+current_row,
-    // 		   dataType: 'json',
-    // 		   success:function(data){
-    // 		       var row_index;
-    // 		       var trs = $('.component_viewlet');
-    // 		       for (var i=0;i<trs.length;i++){
-    // 			   if (trs.get(i).id==current_row){
-    // 			       var our = $($('.our').get(i));
-    // 			       our.html(data.html);
-    // 			       fillSelectHelps[current_row] = true;
-    // 			       if(our.parent().css('margin-left')=='0px'){
-    // 				   our.hide();
-    // 			       }
-    // 			       break;
-    // 			   }
-    // 		       }
-    // 		       action();
-    // 		   },
-    // 		   error:function(){
-    // 		       fillSelectHelps[current_row] = true;
-    // 		       action();
-    // 		   }
-    // 	       });
-    // }
-
-    // function swapTabs(e){
-    // 	var active = $('.active');
-    // 	var target = $(e.target);
-    // 	var klass = target.attr('class');
-    // 	target.attr('class', active.attr('class'));
-    // 	active.attr('class', klass);
-    // 	target.unbind('click');
-    // 	active.click(swapTabs);
-    // 	var container = $('#descriptions');
-    // 	container.data('jScrollPanePosition', 0);
-    // 	container.css('top','0');
-    // 	if (target.attr('id') == 'ourcomments'){
-    // 	    function animate(){
-    // 		var desc = $('.description');
-    // 		desc.find('.our').show();
-    // 		$('#descriptions').jScrollPaneRemove();
-    // 		$('#descriptions').jScrollPane();
-    // 		desc.animate({'margin-left':'-=912'}, 400);
-    // 	    }
-    // 	    fillSelectHelps(animate);
-    // 	}
-    // 	else{
-    // 	    var desc = $('.description');
-    // 	    desc.find('.our').hide();
-    // 	    $('#descriptions').jScrollPaneRemove();
-    // 	    $('#descriptions').jScrollPane();
-    // 	    desc.animate({'margin-left':'+=912'}, 400);
-    // 	}
-    // }
-    //$('.inactive').click(swapTabs);
-    // $('.body').click(function(){fillSelectHelps(function(){});});
-    // $('.our').hide();
 };
 init();
 if ($('#proc_filter').length>0){

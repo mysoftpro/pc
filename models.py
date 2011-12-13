@@ -385,15 +385,15 @@ def renderComputer(model, template, skin):
 	manu.set('class','manu')
 	manu.text = ''
 
-	our = etree.Element('div')
-	our.set('class','our')
-	our.text = u'нет рекоммендаций'
+	# our = etree.Element('div')
+	# our.set('class','our')
+	# our.text = u'нет рекоммендаций'
 
 	clear = etree.Element('div')
 	clear.set('style','clear:both;')
 	clear.text = ''
 	descr.append(manu);
-	descr.append(our)
+	# descr.append(our)
 	descr.append(clear)
 	return descr
 

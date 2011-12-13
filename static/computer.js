@@ -443,8 +443,6 @@ function changeDescription(index, _id, show, data){
     }
     var descrptions = jgetDescriptions();
     var descr = jgetDescrByIndex(index);
-    if (show)
-	descrptions.children().hide();
     if (!descriptions_cached[_id]){
 	var _text = '';
 	var _name = getPartName(_id);
@@ -468,7 +466,6 @@ function changeDescription(index, _id, show, data){
 	    }
 	}
 	else{
-	    console.log('noooooooooooo data');
 	    _text = descr.find('.manu').text();
 	    _name = $('#component_title').text();
 	}
@@ -479,22 +476,50 @@ function changeDescription(index, _id, show, data){
     if (!show)
 	return;
 
-    descr.find('.manu').html(descriptions_cached[_id]._text);
-    jgetTitle().text(descriptions_cached[_id]._name);
+    var current_title = $('#component_title');
+    var old_component = choices[_id];
+    var new_component = choices[current_title.data('cid')];
 
-    descrptions.jScrollPaneRemove();
-    descr.css('opacity', '0.0');
-    descr.show();
-    descr.animate({'opacity':'1.0'}, 300);
-    descrptions.jScrollPane();
+    if (new_component && filterByCatalogs([new_component],old_component.catalogs)==0){
+	var ti = current_title.clone();
+	ti.text('init');
+	var pa = current_title.parent();
+	pa.html('');
+	pa.append(ti);
+	current_title = ti;
+    }
 
-    // var new_name = getPartName(_id);
-    // if (data && data['name']){
-    // 	hidden_container.html(data['name']);
-    // 	new_name = hidden_container.text().replace('NEW!', '').replace(/\<font.*\>/g, '');
-    // }
-    // var titles = jgetTitles();
-    // titles[0].text(new_name);
+    function change(cid){
+	if (show)
+	    descrptions.children().hide();
+	descr.find('.manu').html(descriptions_cached[cid]._text);
+	descrptions.jScrollPaneRemove();
+	descr.css('opacity', '0.0');
+	descr.show();
+	descr.animate({'opacity':'1.0'}, 300);
+	descrptions.jScrollPane();
+    }
+    var first_time = current_title.text() == 'init';
+    if (!first_time){
+	current_title.after(_.template('<div class="component_tab inactive">{{name}}</div>', {name:current_title.text()}));
+	current_title.click(function(e){
+		       change($(e.target).data('cid'));
+		   });
+	current_title
+	    .next()
+	    .data('cid',current_title.data('cid'))
+	    .click(function(e){
+		       var target = $(e.target);
+		       target.parent().find('.selected')
+			   .attr('class', 'component_tab inactive');
+		       if (target.attr('class').match('inactive'))
+			   target.attr('class', 'component_tab selected');
+		       change(target.data('cid'));
+		   });
+    }
+    current_title.text(descriptions_cached[_id]._name);
+    current_title.data('cid', _id);
+    change(_id);
 }
 
 //var current_row;
