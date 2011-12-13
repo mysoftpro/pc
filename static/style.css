@@ -2284,3 +2284,9 @@ a.modelicon img{
     color:white;
     font-size:10px;
 }
+#toppopup a{
+    color:#730606;
+}
+#toppopup a hover{
+    color:white;
+}

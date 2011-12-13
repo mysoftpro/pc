@@ -524,9 +524,9 @@ if ($('#proc_filter').length>0){
     }
     installFilter();
 }
-function noticeCheckModel(){    
-    var toppopup = $('#toppopup');    
-    if (!document.location.href.match('/computer/') 
+function noticeCheckModel(){
+    var toppopup = $('#toppopup');
+    if (!document.location.href.match('/computer/')
 	|| toppopup.length==0
 	|| uuid
 	|| $.cookie('pc_chkmodel_shown')) return;
@@ -628,11 +628,11 @@ function renameUserModel(){
 							 },
 							 success:function(){
 							     if (title.length>0){
-								 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', 
+								 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
 										       {klass:title.attr('class'), val:ti}));
 								 title.remove();
 							     }
-							     pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>', 
+							     pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
 										   {klass:name.attr('class'), val:na}));
 							     name.remove();
 							     el.text('переименовать');
@@ -647,26 +647,24 @@ function renameUserModel(){
 }
 renameUserModel();
 
-// function showPromo(){    
-//     var toppopup = $('#toppopup');    
-//     var spli = document.location.href.split('/');
-//     if (!spli.pop()==='computer'
-// 	|| toppopup.length==0)return;
-//     //|| $.cookie('pc_promo_shown')) return;
-//     toppopup.html('<p>Чтобы проверить выбранную вами конфигурацию, сохраните ее в корзине.<br/>В корзине есть кнопка "Проверить". Мы сможем оценить ее и оставить Вам свой комментарий.</p>');
-//     _.delay(function(){
-// 		toppopup
-// 		    .show()
-// 		    .animate({top:"0",left:"0"}, 500,function(){
-// 				 _.delay(function(){
-// 					     toppopup
-// 						 .show()
-// 						 .animate({top:"-70",left:"0"}, 500,function(){
-// 							      toppopup.hide();
-// 							      //$.cookie('pc_promo_shown', 1, {domain:'.buildpc.ru', path:'/', expires:1000});
-// 							  });
-// 					 }, 10000);
-// 			     });
-// 	    },10000);
-// }
-// showPromo();
+function showPromo(){
+    var toppopup = $('#toppopup');
+    if (!(document.location.href.split('?')[0].split('/').pop() ==='computer')
+	|| $.cookie('pc_promo_shown'))return;
+    toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <span style="font-size:12px;"> Спецпредложения в пункте меню "Еще"</span></p>');
+    _.delay(function(){
+		toppopup
+		    .show()
+		    .animate({top:"0",left:"0"}, 500,function(){
+				 _.delay(function(){
+					     toppopup
+						 .show()
+						 .animate({top:"-70",left:"0"}, 500,function(){
+							      toppopup.hide();
+							      $.cookie('pc_promo_shown', 1, {domain:'.buildpc.ru', path:'/', expires:1000});
+							  });
+					 }, 10000);
+			     });
+	    },7000);
+}
+showPromo();
