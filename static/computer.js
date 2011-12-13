@@ -30,7 +30,7 @@ function getPartName(_id){
 function blink($target, bcolor){
     var color = '#7B9C0A';
     var skin = $.cookie('pc_skin');
-    if (skin && skin.match('home')){
+    if (skin && skin.match('home') || document.location.search.match('skin=home')){
 	color = '#ffba62';
 	bcolor = '#ddd';
     }

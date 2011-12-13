@@ -3,7 +3,8 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var skin = $.cookie('pc_skin') && $.cookie('pc_skin').match('home');
+var skin = ($.cookie('pc_skin') && $.cookie('pc_skin').match('home')) ||
+    document.location.search.match('skin=home');
 $('#promostuff td').click(function(e){
 			      if (!skin)
 				  $('td').css('color','#ddd');
