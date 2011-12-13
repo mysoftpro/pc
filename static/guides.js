@@ -524,10 +524,13 @@ if ($('#proc_filter').length>0){
     }
     installFilter();
 }
-function noticeCheckModel(){
-
-    var toppopup = $('#toppopup');
-    if (toppopup.length==0 || $.cookie('pc_chkmodel_shown'))return;
+function noticeCheckModel(){    
+    var toppopup = $('#toppopup');    
+    if (!document.location.href.match('/computer/') 
+	|| toppopup.length==0
+	|| uuid
+	|| $.cookie('pc_chkmodel_shown')) return;
+    if (!document.location.href.match('/computer/') || toppopup.length==0) return;
     toppopup.html('<p>Чтобы проверить выбранную вами конфигурацию, сохраните ее в корзине.<br/>В корзине есть кнопка "Проверить". Мы сможем оценить ее и оставить Вам свой комментарий.</p>');
     _.delay(function(){
 		toppopup
@@ -544,12 +547,12 @@ function noticeCheckModel(){
 			     });
 	    },10000);
 }
-//noticeCheckModel();
+noticeCheckModel();
 
 
 function getUserNameAndTitle(){
     var toppopup = $('#toppopup');
-    if (toppopup.length==0)return;
+    if (!document.location.href.match('/computer/') || toppopup.length==0) return;
     toppopup.html('<h3>Можно выбрать название для собранной модели</h3><div id="getUserName"><div><label for="userNameInput">Название:</label><input id="userNameInput\" value=""/></div><div><label for="userTitleInput">Пару слов:</label><input id="userTitleInput"  value=""/></div><div id="storeUserName"></div><div class="small_square_button small_help">Сохранить</div><div class="small_square_button small_reset">Не нужно</div><div style="clear:both;"></div></div>');
     function closePopup(){
 	    toppopup
