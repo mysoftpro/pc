@@ -346,12 +346,13 @@ def renderComputer(model, template, skin):
 
     def noComponent(name, component_doc, rows):
 	#hack!
-
-
-	try:
-	    component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
-	except:
-	    pass
+        if 'catalogs' in component_doc:
+            pass
+        else:
+            try:
+                component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+            except:
+                pass
 	if globals()['no_component_added']:return
 	if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
 	no_doc = noComponentFactory(component_doc, name)
@@ -425,6 +426,7 @@ def renderComputer(model, template, skin):
         # print component_doc
 	cleaned_doc = cleanDoc(component_doc, price)
 	cleaned_doc['count'] = count
+
 	model_json.update({cleaned_doc['_id']:cleaned_doc})
 	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
 
@@ -462,6 +464,7 @@ def renderComputer(model, template, skin):
     processing = False
     if 'processing' in model and model['processing']:
 	processing = True
+
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
 						    ';var processing=',simplejson.dumps(processing),
 						    ';var uuid=',simplejson.dumps(_uuid),
