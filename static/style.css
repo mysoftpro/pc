@@ -2338,3 +2338,17 @@ a.modelicon img{
 #proclock{
     top:296px;    
 }
+.pciex{
+    position:absolute;
+    left:1182px;
+    display:none;
+}
+.motherpciex{
+    top:266px;
+}
+.videopciex{
+    top:327px;
+}
+#mothercross{
+    padding-left:20px;
+}

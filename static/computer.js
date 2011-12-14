@@ -87,11 +87,13 @@ function getRamFromText(text){
     retval = 16;
     return retval;
 }
+var gwi = $(window).width();
+
 function showRank(pins){
     var minpin = pins.sort(function(x,y){return x-y;})[0];
     var wi = (Math.log(minpin)/2*112-52)*1.8;
     var rank = $('#rank');
-    if (rank.length==0){
+    if (rank.length==0 && gwi>1150){
 	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Хорошо</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft 2</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare 3</div><div class="rank"></div></li></ul></div>'));
 	rank = $('#rank');
     }
@@ -1410,7 +1412,8 @@ function changeComponent(body, new_component, old_component, nosocket){
 	else{
 	    if (!shadowCheBe(1, body, new_component))
 		shadowCheBe(-1, body, new_component);
-	}
+	}	
+	showVideoOrCross(body, new_component);
     };
     // TODO! whats then nosocket!?
     var changed = true;
@@ -1725,6 +1728,10 @@ function init(){
 	replaced.push(code);
 	delete model[code]['replaced'];
     }
+    $('.pciex').css('left', $('#7388').find('.reset').position().left+110);    
+    _(model).chain().values().each(function(el){
+					   showVideoOrCross(jgetBodyById(el._id),el);
+				       });
 
     new_model = _.clone(model);
     checkOptions();
@@ -1826,7 +1833,8 @@ function init(){
 	for (var co in data){
 	    setCode(co,data[co]);
 	}
-    }
+    }    
+    
 }
 init();
 
@@ -1845,6 +1853,28 @@ function setCode(catalog,code){
     var body = jgetBody(select);
     changeComponent(body, component, new_model[select.val()], true);
     installCountButtons(body);
+}
+function showVideoOrCross(body, new_component){
+    if (isMother(body)){
+	if (new_component['sli'])
+	    $('#mothersli').show();
+	else
+	    $('#mothersli').hide();
+	if (new_component['crossfire'])
+	    $('#mothercross').show();
+	else
+	    $('#mothercross').hide();
+    }
+    if (isVideo(body)){
+	if (new_component['sli'])
+	    $('#videosli').show();
+	else
+	    $('#videosli').hide();
+	if (new_component['crossfire'])
+	    $('#videocross').show();
+	else
+	    $('#videocross').hide();
+    }
 }
 
 // _.delay(function(){
