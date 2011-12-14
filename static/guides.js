@@ -667,8 +667,10 @@ function lockUnlock(){
 	    var other_codes = _(components_to_filter).map(function(el){return el._id;});
 	    var other_select = jgetSelectByRow(other_row);
 	    _(other_select.find('option').toArray())
-		.each(function(_op){
+		.each(function(_op){			  
 			  var op = $(_op);
+			  //may be allready disabled by filter
+			  if (op.prop('disabled'))return;
 			  if (_(other_codes).select(function(c){return c==op.val();}).length==0){
 			      op.prop('disabled', true);
 			      lockob.other_opts_disabled.push(op);
