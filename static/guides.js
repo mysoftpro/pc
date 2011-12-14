@@ -615,7 +615,9 @@ function lockUnlock(){
 	while(lockob.filtered.length>0){
 	    lockob.filtered.pop();
 	}
+	var totop = 0;
 	_(select.find('option')).each(function(_op){
+					  totop+=1;
 					  var op = $(_op);
 					  //disable only options not disabled previously!
 					  if (op.val()!==val && !op.prop('disabled')){
@@ -623,8 +625,9 @@ function lockUnlock(){
 					      op.prop('disabled', true);
 					  }
 					  //filter all disabled options
-					  if (op.prop('disabled'))
+					  if (op.val()!==val){
 					      lockob.filtered.push(op.val());
+					  }					  
 				      });
 	//lockob.filtered.length !== lockob.opts_disabled.length
 	//if some filter was in action. it will need to restore filter!
@@ -667,7 +670,7 @@ function lockUnlock(){
 	    var other_codes = _(components_to_filter).map(function(el){return el._id;});
 	    var other_select = jgetSelectByRow(other_row);
 	    _(other_select.find('option').toArray())
-		.each(function(_op){			  
+		.each(function(_op){
 			  var op = $(_op);
 			  //may be allready disabled by filter
 			  if (op.prop('disabled'))return;
@@ -713,8 +716,8 @@ function lockUnlock(){
 	    if (lockob.active_filter)
 	   	lockob.active_filter.show();
 	    _(lockob.other_opts_disabled).each(function(op){
-					$(op).prop('disabled', false);	   
-					       });	    
+					$(op).prop('disabled', false);
+					       });
 	    lockob.other_opts_disabled = [];
 	    jgetSelectByRow($(other_ob['id'])).trigger("liszt:updated");
 	    var put_back = [];
@@ -723,7 +726,7 @@ function lockUnlock(){
 	    }
 	    put_back = _(put_back).difference(lockob.other_filtered);
 	    while (put_back.length>0){
-		other_ob.push(put_back.pop());
+		other_ob.filtered.push(put_back.pop());
 	    }
 	    //TODO! use contains instead of select everywhere!
 	}
