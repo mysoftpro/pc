@@ -390,6 +390,13 @@ var init = function(){
     $('#tips').click(function(e){
 			 e.preventDefault();
 			 guider.createGuider({
+						 attachTo: "#proc_filter",
+						 description: "Можно ограничить выбор процессора производителем. Или определенными брендами",
+						 id: "mother",
+						 position: 11,
+						 width: 160
+					     }).show();
+			 guider.createGuider({
 						 attachTo: "#7388",
 						 description: "Список доступных компонентов. Описание компонента смотрите ниже на странице.",
 						 id: "mother",
@@ -429,15 +436,7 @@ var init = function(){
 						 id: "descritpion",
 						 position: 11,
 						 width: 300
-					     }).show();
-
-			 guider.createGuider({
-						 attachTo: "#ourcomments",
-						 description: "На этой вкладке наши комментарии по выбору компонента.",
-						 id: "ourcomments",
-						 position: 3,
-						 width: 160
-					     }).show();
+					     }).show();			 
 
 			 guider.createGuider({
 						 attachTo: "#large_price",
