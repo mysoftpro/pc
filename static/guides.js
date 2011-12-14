@@ -633,7 +633,7 @@ function lockUnlock(){
 	//store previously filtered objects
 	lockob.previous_filtered = [];
 	_(lockob.filtered).each(function(code){lockob.previous_filtered.push(code);});
-	//destroy all filtered to fill em again
+	//destroy all filtered to fill em again	
 	while(lockob.filtered.length>0){
 	    lockob.filtered.pop();
 	}
@@ -699,7 +699,7 @@ function lockUnlock(){
 			  if (_(other_codes).select(function(c){return c==op.val();}).length==0){
 			      op.prop('disabled', true);
 			      lockob.other_opts_disabled.push(op);
-			      lockob.other_filtered.push(op);
+			      lockob.other_filtered.push(op.val());
 			      other_ob.filtered.push(op.val());
 			  }
 		      });
@@ -745,7 +745,7 @@ function lockUnlock(){
 	    var put_back = [];
 	    while(other_ob.filtered.length>0){
 		put_back.push(other_ob.filtered.pop());
-	    }
+	    }	    
 	    put_back = _(put_back).difference(lockob.other_filtered);
 	    while (put_back.length>0){
 		other_ob.filtered.push(put_back.pop());
