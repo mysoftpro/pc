@@ -2244,6 +2244,7 @@ a.modelicon img{
     color:white;
     font-size:10px;
 }
+
 #toppopup a{
     color:#730606;
 }
@@ -2315,4 +2316,25 @@ a.modelicon img{
 }
 #indescription_panel span{
     margin-right:10px;
+}
+.lockable{
+    position:absolute;
+    width:18px;
+    height:18px;
+    background-image:url('build_icons.png');    
+    left:154px;
+    cursor:pointer;
+}
+.lock{
+    background-position:0px -418px;
+}
+.unlock{
+    background-position:0px -402px;
+}
+
+#motherlock{
+    top:262px;    
+}
+#proclock{
+    top:296px;    
 }

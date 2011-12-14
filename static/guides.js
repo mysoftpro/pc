@@ -93,7 +93,7 @@ function setFilterByOption(e){
     }
     _(codes).each(function(code){
 		      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
-		      var op = jgetOption(select, code);//select.find('option[name="'+code+'"]');//
+		      var op = jgetOption(select, code);
 		      op.prop('disabled',!target.prop('checked'));
 		      select.trigger("liszt:updated");
 		  });
@@ -591,3 +591,75 @@ function showPromo(){
 	    },7000);
 }
 showPromo();
+
+// var filtered_procs = [];
+// var filtered_mothers = [];
+
+function lockUnlock(){
+    var rows = {
+	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[]},
+	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[]}
+    };
+    function cleanSelect(lock){
+	var lockob = rows[lock.attr('id')];
+	var row = $(lockob.id);
+	var select = jgetSelectByRow(row);
+	var val = select.val();
+	//store previously filtered objects
+	lockob.previous_filtered = [];
+	_(lockob.filtered).each(function(code){lockob.previous_filtered.push(code);});
+	//destroy all filtered to fill em again
+	while(lockob.filtered.length>0){
+	    lockob.filtered.pop();
+	}
+	_(select.find('option')).each(function(_op){
+					  var op = $(_op);
+					  //disable only options not disabled previously!
+					  if (op.val()!==val && !op.prop('disabled')){
+					      lockob.opts_disabled.push(op);
+					      op.prop('disabled', true);
+					  }
+					  //filter all disabled options
+					  if (op.prop('disabled'))
+					      lockob.filtered.push(op.val());
+				      });
+	//lockob.filtered.length !== lockob.opts_disabled.length
+	//if some filter was in action. it will need to restore filter!
+	$('#proc_filter').hide();
+	_($('.filter_list').toArray()).each(function(_el){
+						var el = $(_el);
+						if (el.css('display').match('block'))
+						    lockob.active_filter = el;
+						el.hide();
+					    });
+	select.trigger("liszt:updated");
+    }
+    function restoreSelect(lock){
+	var lockob = rows[lock.attr('id')];
+	//restore disabled options
+	_(lockob.opts_disabled).each(function(op){
+					 op.prop('disabled', false);
+				     });
+	//restore previously filtered
+	lockob.filtered = lockob.previous_filtered;
+	//show filters
+	$('#proc_filter').hide();
+	if (lockob.active_filter)
+	    lockob.active_filter.show();
+    }
+
+    function lock(e){
+	var ta = $(e.target);
+	var kl = ta.attr('class');
+	if (kl.match('unlock')){
+	    ta.attr('class', 'lockable lock');
+	    cleanSelect(ta);
+	}
+	else{
+	    ta.attr('class', 'lockable unlock');
+	    restoreSelect(ta);
+	}
+    }
+    $('.lockable').click(lock);
+}
+lockUnlock();
