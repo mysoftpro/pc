@@ -2,6 +2,15 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
+function setGlobalArray(garr, arr){
+    while (garr.length>0){
+	garr.pop();
+    }
+    while (arr.length>0){
+	garr.push(arr.pop());
+    }
+}
+
 var descr_img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
 function showDescription(_id){
     function _show(data){
@@ -87,9 +96,11 @@ function setFilterByOption(e){
     }
 
     var codes = target.attr('name').split(',');
-    filtered_procs = _(filtered_procs).difference(codes);
+    setGlobalArray(filtered_procs, _(filtered_procs).difference(codes));
+    //filtered_procs = _(filtered_procs).difference(codes);
     if (!target.prop('checked')){
-	filtered_procs = _(filtered_procs).union(codes);
+	setGlobalArray(filtered_procs, _(filtered_procs).union(codes));
+	//filtered_procs = _(filtered_procs).union(codes);
     }
     _(codes).each(function(code){
 		      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
@@ -132,20 +143,27 @@ function setFilterByOption(e){
 		})
 	.map(function(el){return el[1];});
 
-    filtered_mothers=mother_cats_to_filter
-	.map(function(cat){
-		 return filterByCatalogs(_(choices).values(),cat, true);
-	     })
-	.flatten()
-	.map(function(com){return com['_id'];});
+    setGlobalArray(filtered_mothers,mother_cats_to_filter
+    		   .map(function(cat){
+    			    return filterByCatalogs(_(choices).values(),cat, true);
+    			})
+    		   .flatten()
+    		   .map(function(com){return com['_id'];})
+    		  .value());
+
+    // filtered_mothers=mother_cats_to_filter
+    // 	.map(function(cat){
+    // 		 return filterByCatalogs(_(choices).values(),cat, true);
+    // 	     })
+    // 	.flatten()
+    // 	.map(function(com){return com['_id'];});
+
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
     mother_select.find('option').prop('disabled',false);
-    filtered_mothers.each(function(code){
-			      jgetOption(mother_select, code).prop('disabled',true);
-			  });
+    _(filtered_mothers).each(function(code){
+				 jgetOption(mother_select, code).prop('disabled',true);
+			     });
     mother_select.trigger("liszt:updated");
-
-
     // TODO refactor that #2
     var currentProc = code('proc');
     if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
@@ -154,14 +172,21 @@ function setFilterByOption(e){
 	    jgetProcBody().parent().find('.cheaper').click();
 	}
     }
-    // TODO refactor that #2
     var currentMother = code('mother');
-    if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
+    if (_(filtered_mothers).select(function(c){return c== currentMother;}).length>0){
 	jgetMotherBody().parent().find('.better').click();
-	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
-	    jgetMotherBody().parent().find('.cheaper').click();
-	}
+    	if (_(filtered_mothers).select(function(c){return c== currentMother;}).length>0){
+    	    jgetMotherBody().parent().find('.cheaper').click();
+    	}
     }
+    // TODO refactor that #2
+    // var currentMother = code('mother');
+    // if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
+    // 	jgetMotherBody().parent().find('.better').click();
+    // 	if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
+    // 	    jgetMotherBody().parent().find('.cheaper').click();
+    // 	}
+    // }
 }
 
 function installProcFilters(){
@@ -594,9 +619,6 @@ function showPromo(){
 }
 showPromo();
 
-// var filtered_procs = [];
-// var filtered_mothers = [];
-
 function lockUnlock(){
     if (!document.location.href.match('/computer/')) return;
     var rows = {
@@ -627,7 +649,7 @@ function lockUnlock(){
 					  //filter all disabled options
 					  if (op.val()!==val){
 					      lockob.filtered.push(op.val());
-					  }					  
+					  }
 				      });
 	//lockob.filtered.length !== lockob.opts_disabled.length
 	//if some filter was in action. it will need to restore filter!
