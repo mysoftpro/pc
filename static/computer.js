@@ -561,7 +561,7 @@ function changeDescription(index, _id, show, data){
 		       var body = jgetBodyById(in_model._id);
 		       var select = jgetSelect(body);
 		       changeComponent(body, component,
-				       new_model[select.val()], true);
+				       new_model[select.val()]);
 		       installCountButtons(body);
 		       var active;
 		       _($('#component_tabs')
@@ -1419,7 +1419,7 @@ function changeComponent(body, new_component, old_component, nosocket){
     var changed = true;
     if (!nosocket){
 	if ((isProc(body) || isMother(body))
-	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){
+	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){	    
 	    confirmPopup(function(){
 			     changed = changeSocket(new_component, body,delta);
 			     if (changed)change();
