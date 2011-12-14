@@ -501,7 +501,7 @@ function changeDescription(index, _id, show, data){
 		to_remove.push(other);
 	    other = other.next();
 	    guard -=1;
-	    if (guard==0)break; 
+	    if (guard==0)break;
 	}
 	_(to_remove).each(function(el){el.remove();});
 
@@ -512,7 +512,7 @@ function changeDescription(index, _id, show, data){
 		first = first.next();
 		guard -=1;
 		if (guard==0)break;
-	    }		
+	    }
 	    var ma = parseInt(first.css('margin-left'));
 	    first.css('margin-left', ma-248);
 	}
@@ -541,7 +541,7 @@ function changeDescription(index, _id, show, data){
 		    first = first.next();
 		    guard -=1;
 		    if (guard==0)break;
-		}		    
+		}
 		var ma = parseInt(first.css('margin-left'));
 		first.css('margin-left', ma-248);
 	    }
@@ -569,6 +569,9 @@ function changeDescription(index, _id, show, data){
 					       var el = $(_el);
 					       if (el.data('cid')==component._id){
 						   el.attr('class','component_tab active');
+						   if (active){
+						       active.remove();
+						   }
 						   active = el;
 					       }
 					       else{
@@ -585,7 +588,7 @@ function changeDescription(index, _id, show, data){
 	descrptions.jScrollPane();
     }
     var first_time = current_title.text() == 'init';
-    if (!first_time && !($.browser.msie && parseInt($.browser.version)<9)){	
+    if (!first_time && !($.browser.msie && parseInt($.browser.version)<9)){
 	op(_.template('<div class="component_tab inactive">{{name}}</div>',
 			      {name:current_title.text()}));
 	current_title.click(function(e){
@@ -936,7 +939,7 @@ function cheaperBetter(){
 						  choices[old_component._id].catalogs,
 						  delta, false);
 	if (!appr_components[0])
-	    return;	
+	    return;
 	var new_component = appr_components[0];
 
 	var hasNoVideo = true;
@@ -1412,14 +1415,14 @@ function changeComponent(body, new_component, old_component, nosocket){
 	else{
 	    if (!shadowCheBe(1, body, new_component))
 		shadowCheBe(-1, body, new_component);
-	}	
+	}
 	showVideoOrCross(body, new_component);
     };
     // TODO! whats then nosocket!?
     var changed = true;
     if (!nosocket){
 	if ((isProc(body) || isMother(body))
-	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){	    
+	    && !isEqualCatalogs(new_cats, getCatalogs(old_component))){
 	    confirmPopup(function(){
 			     changed = changeSocket(new_component, body,delta);
 			     if (changed)change();
@@ -1728,7 +1731,7 @@ function init(){
 	replaced.push(code);
 	delete model[code]['replaced'];
     }
-    $('.pciex').css('left', $('#7388').find('.reset').position().left+110);    
+    $('.pciex').css('left', $('#7388').find('.reset').position().left+110);
     _(model).chain().values().each(function(el){
 					   showVideoOrCross(jgetBodyById(el._id),el);
 				       });
@@ -1833,8 +1836,8 @@ function init(){
 	for (var co in data){
 	    setCode(co,data[co]);
 	}
-    }    
-    
+    }
+
 }
 init();
 
