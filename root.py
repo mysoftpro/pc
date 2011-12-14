@@ -692,6 +692,11 @@ class StoreCartComment(Resource):
 	else:
 	    doc['comments'] = [comment]
 	couch.saveDoc(doc)
+        # zzz
+        send_email('inbox@buildpc.ru',
+		   u'Комментарий в корзине',
+		   'http://buildpc.ru/cart/'+doc['author']+' '+doc['_id'],
+		   sender=u'Компьютерный магазин <admin@buildpc.ru>')
 	request.write("ok")
 	request.finish()
 
