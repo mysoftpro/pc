@@ -598,8 +598,8 @@ showPromo();
 function lockUnlock(){
     if (!document.location.href.match('/computer/')) return;
     var rows = {
-	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[]},
-	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[]}
+	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}},
+	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}}
     };
     function cleanSelect(lock){
 	var lockob = rows[lock.attr('id')];
@@ -634,19 +634,42 @@ function lockUnlock(){
 						el.hide();
 					    });
 	select.trigger("liszt:updated");
+	var ch = row.find('.cheaper');
+	lockob.cheaper_styles.opacity =ch.css('opacity');
+	lockob.cheaper_styles.cursor = ch.css('cursor');
+	ch.css({cursor:'default', opacity:'0.5'});
+	var be = row.find('.better');
+	lockob.better_styles.opacity=be.css('opacity');
+	lockob.better_styles.cursor=be.css('cursor');
+	be.css({cursor:'default', opacity:'0.5'});
     }
-    function restoreSelect(lock){
+    function restoreSelect(lock){	
 	var lockob = rows[lock.attr('id')];
 	//restore disabled options
 	_(lockob.opts_disabled).each(function(op){
 					 op.prop('disabled', false);
 				     });
-	//restore previously filtered
-	lockob.filtered = lockob.previous_filtered;
-	//show filters
-	$('#proc_filter').hide();
-	if (lockob.active_filter)
-	    lockob.active_filter.show();
+	lockob.opts_disabled = [];
+	//restore previously filtered	
+	while(lockob.filtered.length>0)
+	    lockob.filtered.pop();
+	_(lockob.previous_filtered).each(function(code){
+					     lockob.filtered.push(previous_filtered);	     
+					 });
+	if(_(rows).chain()
+	   .select(function(ob){return ob.opts_disabled.length>0;}).values().value().length==0){
+	       //show filters only if all locks released	       
+	       $('#proc_filter').show();
+	       if (lockob.active_filter)
+		   lockob.active_filter.show();   
+	   }	
+	var row = $(lockob.id);
+	var select = jgetSelectByRow(row);
+	select.trigger("liszt:updated");
+	var ch = row.find('.cheaper');
+	ch.css(lockob.cheaper_styles);
+	var be = row.find('.better');	
+	be.css(lockob.better_styles);
     }
 
     function lock(e){
@@ -661,6 +684,6 @@ function lockUnlock(){
 	    restoreSelect(ta);
 	}
     }
-    $('.lockable').click(lock);
+    $('.lockable').click(lock).css('left',$('#7388').position().left-35);
 }
-//lockUnlock();
+lockUnlock();

@@ -934,7 +934,7 @@ function cheaperBetter(){
 						  choices[old_component._id].catalogs,
 						  delta, false);
 	if (!appr_components[0])
-	    return;
+	    return;	
 	var new_component = appr_components[0];
 
 	var hasNoVideo = true;
