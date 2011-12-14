@@ -860,8 +860,6 @@ function getNearestComponent(price, catalogs, delta, same_socket){
 	.select(function(co){return _(filtered_mothers)
 			     .select(function(ex){return ex==co['_id'];})==0;})
 	.value();
-    console.log(2);
-    console.log(catalogs);    
     var diff = 1000000;
     var component;
     var spare_diff = 1000000;
@@ -932,20 +930,9 @@ function cheaperBetter(){
 	var body = jgetBody(select);
 	var old_component = new_model[select.val()];
 	body.click();
-	console.log(1);
-	console.log(old_component.catalogs);
-	// console.log(getCatalogs(old_component));
-	// console.log(choices[old_component._id].catalogs);
-	//						  getCatalogs(old_component),
-	//console.log(choices[old_component._id].catalogs);
 	var appr_components = getNearestComponent(old_component.price,
 						  choices[old_component._id].catalogs,
 						  delta, false);
-	//console.log(appr_components[0].catalogs);
-	// console.log(appr_components[0]);
-	// console.log(old_component);
-	// console.log(getCatalogs(appr_components[0]));
-	// console.log(getCatalogs(old_component));
 	if (!appr_components[0])
 	    return;
 	var new_component = appr_components[0];
