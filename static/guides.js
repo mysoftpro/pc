@@ -101,6 +101,8 @@ function setFilterByOption(e){
     var filtered_catalogs = _(filtered_procs).chain()
 	.map(function(code){return choices[code].catalogs;})
 	.uniq(false,function(a){return a.toString();}).value();
+    //TODO! may be not need rest components???
+    //see lock at bottom (near other_select)
     var rest_components = _(filtered_catalogs).chain().map(function(cat){
 							       var comps =
 								   filterByCatalogs(_(choices).values(),
@@ -598,8 +600,8 @@ showPromo();
 function lockUnlock(){
     if (!document.location.href.match('/computer/')) return;
     var rows = {
-	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}},
-	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}}
+	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}, other_opts_disabled:[], other_filtered:[]},
+	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[], cheaper_styles:{}, better_styles:{}, other_opts_disabled:[], other_filtered:[]}
     };
     function cleanSelect(lock){
 	var lockob = rows[lock.attr('id')];
@@ -642,34 +644,81 @@ function lockUnlock(){
 	lockob.better_styles.opacity=be.css('opacity');
 	lockob.better_styles.cursor=be.css('cursor');
 	be.css({cursor:'default', opacity:'0.5'});
+
+	//clean other select!
+	var other_ob;
+	_(rows).chain().values().each(function(ob){
+					  if(ob!==lockob)
+					      other_ob = ob;
+	});
+	//means other object is not locked
+	if (other_ob.opts_disabled.length==0){
+	    var other_row = $(other_ob['id']);
+	    var this_catalogs = new_model[val].catalogs;
+	    var this_catalogs_str = this_catalogs.toString();
+	    var map_to_filter = _(proc_to_mother_mapping).select(function(cats){
+						 return cats[0].toString()==this_catalogs_str
+						 || cats[1].toString()==this_catalogs.toString();
+					     });
+	    var cats_to_filter = map_to_filter[0][0];
+	    if (this_catalogs_str == cats_to_filter.toString())
+		cats_to_filter = map_to_filter[0][1];
+	    var components_to_filter = filterByCatalogs(_(choices).values(),cats_to_filter, true);
+	    var other_codes = _(components_to_filter).map(function(el){return el._id;});
+	    var other_select = jgetSelectByRow(other_row);
+	    _(other_select.find('option').toArray())
+		.each(function(_op){
+			  var op = $(_op);
+			  if (_(other_codes).select(function(c){return c==op.val();}).length==0){
+			      op.prop('disabled', true);
+			      lockob.other_opts_disabled.push(op);
+			      lockob.other_filtered.push(op);
+			      other_ob.filtered.push(op.val());
+			  }
+
+		      });
+	    other_select.trigger("liszt:updated");
+	}
     }
-    function restoreSelect(lock){	
+    function restoreSelect(lock){
 	var lockob = rows[lock.attr('id')];
 	//restore disabled options
 	_(lockob.opts_disabled).each(function(op){
 					 op.prop('disabled', false);
 				     });
 	lockob.opts_disabled = [];
-	//restore previously filtered	
+	//restore previously filtered
 	while(lockob.filtered.length>0)
 	    lockob.filtered.pop();
 	_(lockob.previous_filtered).each(function(code){
-					     lockob.filtered.push(previous_filtered);	     
+					     lockob.filtered.push(code);
 					 });
-	if(_(rows).chain()
-	   .select(function(ob){return ob.opts_disabled.length>0;}).values().value().length==0){
-	       //show filters only if all locks released	       
-	       $('#proc_filter').show();
-	       if (lockob.active_filter)
-		   lockob.active_filter.show();   
-	   }	
+
 	var row = $(lockob.id);
 	var select = jgetSelectByRow(row);
 	select.trigger("liszt:updated");
 	var ch = row.find('.cheaper');
 	ch.css(lockob.cheaper_styles);
-	var be = row.find('.better');	
+	var be = row.find('.better');
 	be.css(lockob.better_styles);
+
+	var other_ob;
+	_(rows).chain().values().each(function(ob){
+					  if(ob!==lockob)
+					      other_ob = ob;
+	});
+	//check other object
+	if (other_ob.opts_disabled.length==0){
+	    //show filter
+	    $('#proc_filter').show();
+	    if (lockob.active_filter)
+	   	lockob.active_filter.show();
+	    _(lockob.other_opts_disabled).each(function(op){
+					$(op).prop('disabled', false);	   
+					       });	    
+	    lockob.other_opts_disabled = [];
+	    jgetSelectByRow($(other_ob['id'])).trigger("liszt:updated");
+	}
     }
 
     function lock(e){
