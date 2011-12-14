@@ -596,6 +596,7 @@ showPromo();
 // var filtered_mothers = [];
 
 function lockUnlock(){
+    if (!document.location.href.match('/computer/')) return;
     var rows = {
 	motherlock:{id:'#7388', filtered:filtered_mothers, previous_filtered:[], active_filter:null, opts_disabled:[]},
 	proclock:{id:'#7399',filtered:filtered_procs, previous_filtered:[], active_filter:null, opts_disabled:[]}
@@ -662,4 +663,4 @@ function lockUnlock(){
     }
     $('.lockable').click(lock);
 }
-lockUnlock();
+//lockUnlock();
