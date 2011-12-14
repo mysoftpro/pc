@@ -677,7 +677,6 @@ function lockUnlock(){
 			      lockob.other_filtered.push(op);
 			      other_ob.filtered.push(op.val());
 			  }
-
 		      });
 	    other_select.trigger("liszt:updated");
 	}
@@ -695,7 +694,6 @@ function lockUnlock(){
 	_(lockob.previous_filtered).each(function(code){
 					     lockob.filtered.push(code);
 					 });
-
 	var row = $(lockob.id);
 	var select = jgetSelectByRow(row);
 	select.trigger("liszt:updated");
@@ -703,7 +701,6 @@ function lockUnlock(){
 	ch.css(lockob.cheaper_styles);
 	var be = row.find('.better');
 	be.css(lockob.better_styles);
-
 	var other_ob;
 	_(rows).chain().values().each(function(ob){
 					  if(ob!==lockob)
@@ -720,6 +717,15 @@ function lockUnlock(){
 					       });	    
 	    lockob.other_opts_disabled = [];
 	    jgetSelectByRow($(other_ob['id'])).trigger("liszt:updated");
+	    var put_back = [];
+	    while(other_ob.filtered.length>0){
+		put_back.push(other_ob.filtered.pop());
+	    }
+	    put_back = _(put_back).difference(lockob.other_filtered);
+	    while (put_back.length>0){
+		other_ob.push(put_back.pop());
+	    }
+	    //TODO! use contains instead of select everywhere!
 	}
     }
 
