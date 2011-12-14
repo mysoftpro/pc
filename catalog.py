@@ -651,13 +651,17 @@ class NewTarget:
 
     def updateComponent(self, c):
 	def update(doc):
+            need_save = False
 	    for k,v in c.items():
-		doc[k] = v
+		if doc[k] != v:
+                    doc[k] = v
+                    need_save = True
             if 'price' in doc:
                 doc['price'] = c['us_price']
             if 'stock1' in doc:
                 doc['stock1'] = c['new_stock']
-            return couch.saveDoc(doc)
+            if need_save:
+                return couch.saveDoc(doc)
 	return update
 
     def prepareNewComponents(self, external_id):
