@@ -659,13 +659,12 @@ class Root(Cookable):
 
 
 class PdfBill(Resource):
-    def renderBill(self, doc, request):
-        # encoder = b64enc.Encoder(data, d)
-        # _file = b64enc.__file__
-        # if _file.endswith('pyc'):
-        #     _file = _file[:-1]
-        #     path = sys.executable
-        # reactor.spawnProcess(encoder, path, [path, '-u', _file])
+    def renderBill(self, li, doc, request):
+        doc['full_items'] = []
+        for l in li:
+            if l[0]:
+                print l[1]
+                doc['full_items'].append(l[1])
         d = defer.Deferred()
         from pc import pdf
         writer = pdf.PdfWriter(simplejson.dumps(doc), d)
@@ -680,13 +679,21 @@ class PdfBill(Resource):
             request.write(data)
             request.finish()
         d.addCallback(done)
-                      
+
+    def collectComponents(self, doc, request):
+        defs = []
+        for cat,code in doc['items'].items():
+            d = couch.openDoc(code)
+            defs.append(d)
+        li = defer.DeferredList(defs)
+        li.addCallback(self.renderBill, doc, request)
+
     def render_GET(self, request):
         _id = request.args.get('id', [None])[0]
         if _id is None:
             return "ok"
         d = couch.openDoc(_id)
-        d.addCallback(self.renderBill, request)
+        d.addCallback(self.collectComponents, request)
         return NOT_DONE_YET
 
 class StoreModelName(Resource):
