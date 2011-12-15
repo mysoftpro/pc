@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from twisted.internet import protocol
 from cStringIO import StringIO
 import sys
@@ -24,20 +25,39 @@ class PdfWriter(protocol.ProcessProtocol):
         pass
 
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
 from reportlab.platypus import Paragraph, SimpleDocTemplate
+# we know some glyphs are missing, suppress warnings
+import reportlab.rl_config
+reportlab.rl_config.warnOnMissingFontGlyphs = 0
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 def main():
+    pdfmetrics.registerFont(TTFont('Ubuntu', 'Ubuntu-R.ttf'))
+    pdfmetrics.registerFont(TTFont('UbuntuBd', 'Ubuntu-B.ttf'))
+    pdfmetrics.registerFont(TTFont('UbuntuIt', 'Ubuntu-I.ttf'))
+    pdfmetrics.registerFont(TTFont('UbuntuBI', 'Ubuntu-BI.ttf'))
+
+
+    # canvas.setFont('Ubuntu', 32)
+    # canvas.drawString(10, 150, "Some text encoded in UTF-8")
+    # canvas.drawString(10, 100, "In the Ubuntu TT Font!")
+
 
     styles = getSampleStyleSheet()
+    styles['Normal'].fontName='Ubuntu'
+    styles['Heading1'].fontName='UbuntuBd'
     styleN = styles['Normal']
     styleH = styles['Heading1']
     story = []
     # add some flowables
-    story.append(Paragraph("This is a Heading",styleH))
-    story.append(Paragraph("This is a paragraph in <i>Normal</i> style.",
-                           styleN))
-    doc = SimpleDocTemplate(sys.stdout,pagesize = letter)
+    cyr = u"This is a paragraph in <i>ХаХав</i> style.".encode('utf-8')
+    p1 = Paragraph("This is a Heading",styleH)
+    p2 = Paragraph(cyr,styleN)    
+    story.append(p1)
+    story.append(p2)
+    doc = SimpleDocTemplate(sys.stdout,pagesize = A4)
     doc.build(story)
 
     # sys.stdout.write('Hellow!')
