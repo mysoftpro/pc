@@ -28,6 +28,8 @@ from twisted.internet.task import deferLater
 from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
+import sys
+
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
     '/howtouse':u'Как пользоваться сайтом',
@@ -644,6 +646,7 @@ class Root(Cookable):
 	self.putChild('checkModel', CheckModel())
 	self.putChild('store_cart_comment',StoreCartComment())
         self.putChild('store_model_name', StoreModelName())
+        self.putChild('pdf_bill', PdfBill())
 
     def getChild(self, name, request):
 	self.checkCookie(request)
@@ -653,6 +656,38 @@ class Root(Cookable):
 	return self
 
 
+
+
+class PdfBill(Resource):
+    def renderBill(self, doc, request):
+        # encoder = b64enc.Encoder(data, d)
+        # _file = b64enc.__file__
+        # if _file.endswith('pyc'):
+        #     _file = _file[:-1]
+        #     path = sys.executable
+        # reactor.spawnProcess(encoder, path, [path, '-u', _file])
+        d = defer.Deferred()
+        from pc import pdf
+        writer = pdf.PdfWriter(simplejson.dumps(doc), d)
+        _file = pdf.__file__
+        if _file.endswith('pyc'):
+            _file = _file[:-1]
+        path = sys.executable
+        reactor.spawnProcess(writer, path, [path, '-u', _file])
+        def done(data):
+            request.setHeader('Content-Type', 'application/pdf')
+            request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+            request.write(data)
+            request.finish()
+        d.addCallback(done)
+                      
+    def render_GET(self, request):
+        _id = request.args.get('id', [None])[0]
+        if _id is None:
+            return "ok"
+        d = couch.openDoc(_id)
+        d.addCallback(self.renderBill, request)
+        return NOT_DONE_YET
 
 class StoreModelName(Resource):
     def store(self, doc_user, name, title, key):
