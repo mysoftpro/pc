@@ -523,18 +523,19 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-	if _name is not None and "js" in _name and "min." not in _name:
-	    _content = jsmin(_content)
-	buff = StringIO()
-	f = gzip.GzipFile(_name,'wb',9, buff)
-	f.write(_content)
-	f.close()
-	buff.seek(0)
-	gzipped = buff.read()
-	buff.close()
-	if _name is not None:
-	    _cached_statics[_name] = (_time, gzipped)
-	return gzipped
+        return _content
+	# if _name is not None and "js" in _name and "min." not in _name:
+	#     _content = jsmin(_content)
+	# buff = StringIO()
+	# f = gzip.GzipFile(_name,'wb',9, buff)
+	# f.write(_content)
+	# f.close()
+	# buff.seek(0)
+	# gzipped = buff.read()
+	# buff.close()
+	# if _name is not None:
+	#     _cached_statics[_name] = (_time, gzipped)
+	# return gzipped
 
 
     def renderTemplate(self, fileForReading, last_modified, request):
