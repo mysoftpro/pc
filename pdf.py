@@ -2,6 +2,7 @@
 from twisted.internet import protocol
 from cStringIO import StringIO
 import sys
+import simplejson
 
 class PdfWriter(protocol.ProcessProtocol):
     def __init__(self, data, d):
@@ -40,11 +41,6 @@ def main():
     pdfmetrics.registerFont(TTFont('UbuntuBI', 'Ubuntu-BI.ttf'))
 
 
-    # canvas.setFont('Ubuntu', 32)
-    # canvas.drawString(10, 150, "Some text encoded in UTF-8")
-    # canvas.drawString(10, 100, "In the Ubuntu TT Font!")
-
-
     styles = getSampleStyleSheet()
     styles['Normal'].fontName='Ubuntu'
     styles['Heading1'].fontName='UbuntuBd'
@@ -55,9 +51,15 @@ def main():
     cyr = u"This is a paragraph in <i>ХаХав</i> style.".encode('utf-8')
     p1 = Paragraph("This is a Heading",styleH)
     p2 = Paragraph(cyr,styleN)    
+    json = simplejson.loads(unicode(sys.stdin.read(), 'utf-8'))    
+    p3 = Paragraph(json['name'].encode('utf-8'),styleN)
     story.append(p1)
     story.append(p2)
-    doc = SimpleDocTemplate(sys.stdout,pagesize = A4)
+    story.append(p3)
+    
+    doc = SimpleDocTemplate(sys.stdout,pagesize=A4, 
+                            author=u'Компьютерный магазин Билд'.encode('utf-8'),
+                            title=u'Счет на оплату заказа 234567 от 23.12.2011'.encode('utf-8'),)
     doc.build(story)
 
     # sys.stdout.write('Hellow!')
