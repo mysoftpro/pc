@@ -3,6 +3,7 @@ from twisted.internet import protocol
 from cStringIO import StringIO
 import sys
 import simplejson
+from datetime import date
 
 class PdfWriter(protocol.ProcessProtocol):
     def __init__(self, data, d):
@@ -35,10 +36,17 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import os
 from pc import root
+from reportlab.lib import colors
 
 def main():
 
     json = simplejson.loads(unicode(sys.stdin.read(), 'utf-8'))
+
+
+    _today = date.today()
+    today = '.'.join([str(_today.day),str(_today.month),str(_today.year)])
+    bill_text = (u'Счет на оплату заказа 234567-'+json['_rev'].split('-')[0]+\
+                     u' от '+today).encode('utf-8')
 
     pdfmetrics.registerFont(TTFont('Ubuntu', 'Ubuntu-R.ttf'))
     pdfmetrics.registerFont(TTFont('UbuntuBd', 'Ubuntu-B.ttf'))
@@ -48,9 +56,9 @@ def main():
 
     styles = getSampleStyleSheet()
     styles['Normal'].fontName='Ubuntu'
-    styles['Heading1'].fontName='UbuntuBd'
+    styles['Heading3'].fontName='UbuntuBd'
     styleN = styles['Normal']
-    styleH = styles['Heading1']
+    styleH = styles['Heading3']
 
     story = []
 
@@ -64,13 +72,41 @@ def main():
     story.append(title)
     story.append(link)
 
-    p1 = Paragraph((u'<para spaceBefore="50" leftIndent="120">Счет на оплату заказа '+json['_id'])\
-                       .encode('utf-8')+'</para>',styleH)
-    story.append(p1)
 
 
     tableStyle = TableStyle([('FONTNAME', (0,0), (-1,-1), 'Ubuntu'),
-                             ('FONTSIZE', (0,0), (-1,-1), 6)])
+                             ('FONTSIZE', (0,0), (-1,-1), 6),
+                             ('GRID', (0,0), (1,0), 1,colors.black),
+                             ('SPAN',(2,0),(2,2)),
+                             ('SPAN',(3,0),(3,2)),
+
+                             ('SPAN',(2,3),(2,4)),
+                             ('SPAN',(3,3),(3,4)),
+                             ('GRID', (2,0), (2,5), 1,colors.black),
+                             ('GRID', (3,0), (3,5), 1,colors.black),
+                             ])
+
+
+    bill_data = [[u'ИНН 390606738176',u'КПП _',u'Сч.No',u'40802810620970000084'],
+                 [u'Получатель',u'',u'',u''],
+                 [u' Индивидуальный предприниматель Ганжа Алексей Юрьевич',u'',u'',u''],
+                 [u'Банк получателя',u'',u'БИК',u'042748634'],
+                 [u'ОТДЕЛЕНИЕ N8626 СБЕРБАНКА РОССИИ г.',u'',u'',u''],
+                 [u'КАЛИНИНГРАД МОСКОВСКИЙ ПР.,24',u'',u'Сч.No',u'30101810100000000634']]
+    bill_data_encoded = []
+    for row in bill_data:
+        e_row = []        
+        for cell in row:
+            e_row.append(cell.encode('utf-8'))
+        bill_data_encoded.append(e_row)            
+        
+    story.append(Table(bill_data_encoded, style=tableStyle))
+
+
+    p1 = Paragraph('<para spaceBefore="50" leftIndent="120">'+bill_text+'</para>',
+                   styleH)
+    story.append(p1)
+
 
     data = []
     col = 1
@@ -89,7 +125,7 @@ def main():
                      ])
         summ += item['price']*pcs
         col+=1
-    
+
     # TODO! proper dvd
     if 'dvd' in json and json['dvd']:
         data.append([str(col),
@@ -123,19 +159,19 @@ def main():
                  u'Кол-во'.encode('utf-8'),
                  u'Цена р.'.encode('utf-8'),
                  u'Сумма р.'.encode('utf-8')])
-    story.append(Table(data, style=tableStyle))
-    tot = Paragraph((u'<para spaceBefore="10" leftIndent="380">Итого: '+str(summ)+\
-                     u' рублей').encode('utf-8'),styleN)    
+    story.append(Table(data, style=TableStyle([('FONTNAME', (0,0), (-1,-1), 'Ubuntu'),
+                             ('FONTSIZE', (0,0), (-1,-1), 6),
+                             ('GRID', (0,0), (-1,-1), 1,colors.black),])))
+    tot = Paragraph((u'<para spaceBefore="10" leftIndent="350">Итого: '+str(summ)+\
+                     u' рублей').encode('utf-8'),styleN)
     story.append(tot)
-    nds = Paragraph((u'<para leftIndent="380">НДС не предусмотрен</para>').encode('utf-8'),styleN)
+    nds = Paragraph((u'<para leftIndent="350">НДС не предусмотрен</para>').encode('utf-8'),styleN)
     story.append(nds)
 
     doc = SimpleDocTemplate(sys.stdout,pagesize=A4,leftMargin=20,topMargin=20,
                             author=u'Компьютерный магазин Билд'.encode('utf-8'),
-                            title=u'Счет на оплату заказа 234567 от 23.12.2011'.encode('utf-8'),)
+                            title=bill_text)
     doc.build(story)
-
-    # sys.stdout.write('Hellow!')
     sys.exit(0)
 
 if __name__ == "__main__":
