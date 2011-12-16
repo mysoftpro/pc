@@ -69,20 +69,8 @@ def main():
     story.append(p1)
 
 
-
-
-    # ('ALIGN',(1,1),(-2,-2),'RIGHT'),
-    # ('TEXTCOLOR',(1,1),(-2,-2),colors.red),
-    # ('VALIGN',(0,0),(0,-1),'TOP'),
-    # ('TEXTCOLOR',(0,0),(0,-1),colors.blue),
-    # ('ALIGN',(0,-1),(-1,-1),'CENTER'),
-    # ('VALIGN',(0,-1),(-1,-1),'MIDDLE'),
-    # ('TEXTCOLOR',(0,-1),(-1,-1),colors.green),
-    # ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
-    # ('BOX', (0,0), (-1,-1), 0.25, colors.black),
     tableStyle = TableStyle([('FONTNAME', (0,0), (-1,-1), 'Ubuntu'),
                              ('FONTSIZE', (0,0), (-1,-1), 6)])
-
 
     data = []
     col = 1
@@ -103,7 +91,7 @@ def main():
         col+=1
     
     # TODO! proper dvd
-    if 'dvd' in json:
+    if 'dvd' in json and json['dvd']:
         data.append([str(col),
                      u'Дисковод Samsung SH-222AB/BEBE 22x SATA BLACK'.encode('utf-8'),
                      '1',
@@ -112,7 +100,7 @@ def main():
                      ])
         summ += json['const_prices'][0]
         col+=1
-    if 'building' in json:
+    if 'building' in json and json['building']:
         data.append([str(col),
                      u'Услуги сборки'.encode('utf-8'),
                      '1',
@@ -121,7 +109,7 @@ def main():
                      ])
         summ += json['const_prices'][1]
         col+=1
-    if 'installing' in json:
+    if 'installing' in json and json['installing']:
         data.append([str(col),
                      u'Услуги установки программного обеспечения'.encode('utf-8'),
                      '1',
