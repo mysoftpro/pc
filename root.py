@@ -659,14 +659,45 @@ class Root(Cookable):
 
 
 class PdfBill(Resource):
-    def renderBill(self, li, doc, request):
+    # def renderBill(self, li, doc, request):
+    #     doc['full_items'] = []
+    #     for l in li:
+    #         if l[0]:
+    #             l[1]['our_price'] = makePrice(l[1])
+    #             doc['full_items'].append(l[1])
+    #     doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
+    #     d = defer.Deferred()
+    #     from pc import pdf
+    #     writer = pdf.PdfWriter(simplejson.dumps(doc), d)
+    #     _file = pdf.__file__
+    #     if _file.endswith('pyc'):
+    #         _file = _file[:-1]
+    #     path = sys.executable
+    #     reactor.spawnProcess(writer, path, [path, '-u', _file])
+    #     def done(data):
+    #         request.setHeader('Content-Type', 'application/pdf')
+    #         request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+    #         request.write(data)
+    #         request.finish()
+    #     d.addCallback(done)
+
+    # def collectComponents(self, doc, request):
+    #     defs = []
+    #     for cat,code in doc['items'].items():
+    #         d = couch.openDoc(code)
+    #         defs.append(d)
+    #     li = defer.DeferredList(defs)
+    #     li.addCallback(self.renderBill, doc, request)
+
+    def renderBill(self, doc, request):
+        from pc import models, pdf
         doc['full_items'] = []
-        for l in li:
-            if l[0]:
-                l[1]['our_price'] = makePrice(l[1])
-                doc['full_items'].append(l[1])
+        for k,v in doc['items'].items():
+            component = models.gChoices_flatten[v]
+            component['price'] = makePrice(component)
+            doc['full_items'].append(component)
+        doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
         d = defer.Deferred()
-        from pc import pdf
         writer = pdf.PdfWriter(simplejson.dumps(doc), d)
         _file = pdf.__file__
         if _file.endswith('pyc'):
@@ -680,20 +711,13 @@ class PdfBill(Resource):
             request.finish()
         d.addCallback(done)
 
-    def collectComponents(self, doc, request):
-        defs = []
-        for cat,code in doc['items'].items():
-            d = couch.openDoc(code)
-            defs.append(d)
-        li = defer.DeferredList(defs)
-        li.addCallback(self.renderBill, doc, request)
 
     def render_GET(self, request):
         _id = request.args.get('id', [None])[0]
         if _id is None:
             return "ok"
         d = couch.openDoc(_id)
-        d.addCallback(self.collectComponents, request)
+        d.addCallback(self.renderBill, request)
         return NOT_DONE_YET
 
 class StoreModelName(Resource):
