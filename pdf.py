@@ -28,7 +28,8 @@ class PdfWriter(protocol.ProcessProtocol):
 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image, Spacer
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image, Spacer, Frame
+
 # we know some glyphs are missing, suppress warnings
 import reportlab.rl_config
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
@@ -37,6 +38,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 import os
 from pc import root, sum_to_word
 from reportlab.lib import colors
+from reportlab.pdfgen.canvas import Canvas
 
 def main():
     json = simplejson.loads(unicode(sys.stdin.read(), 'utf-8'))
@@ -176,27 +178,34 @@ def main():
     nds = Paragraph((u'<para leftIndent="350">НДС не предусмотрен</para>').encode('utf-8'),styleN)
     story.append(nds)
 
-    story.append(Spacer(10,50))
+    story.append(Spacer(10,10))
     su = u'Всего наименований %s, на сумму %s руб.' % (str(col-1), str(summ))
     story.append(Paragraph(su.encode('utf-8'), styleN))
     story.append(Paragraph(sum_to_word.RusCurrency().Str(summ, 'RUR').encode('utf-8'), styleN))
-    story.append(Spacer(10,50))
-    story.append(Paragraph(u'Руководитель    ___________________________________ (Ганжа А.Ю.)'.encode('utf-8'),
-                           styleN))
-    story.append(Paragraph(u'Главный бухгалтер ____________________________ (не предусмотрен)'.encode('utf-8'),
-                           styleN))
-    
-
-    path = os.path.join(_path, 'sign.jpg')
-    im = Image(path)
-    im.hAlign = 'LEFT'
-    story.append(im)
+    story.append(Spacer(10,100))
+    own = u'Руководитель <img src="'+\
+        os.path.join(_path, 'sign.jpg')+u'"/>                                (Ганжа А.Ю.)'
+    story.append(Paragraph(own.encode('utf-8'),styleN))
+    buh = u'Главный бухгалтер                                            (не предусмотрен)<img src="'+\
+        os.path.join(_path, 'stamp.jpg')+u'"/>'
+    story.append(Paragraph(buh.encode('utf-8'),styleN))    
 
 
-    path = os.path.join(_path, 'stamp.jpg')
-    im = Image(path)
-    im.hAlign = 'RIGHT'
-    story.append(im)
+    # path = os.path.join(_path, 'sign.jpg')
+    # im = Image(path)
+    # im.hAlign = 'LEFT'
+    # story.append(im)
+
+
+    # path = os.path.join(_path, 'stamp.jpg')
+    # im = Image(path)
+    # im.hAlign = 'RIGHT'
+    # story.append(im)
+
+    # c = Canvas(sys.stdout)
+    # f = Frame(0, 0, 210, 297, showBoundary=1)
+    # f.addFromList(story,c)
+    # c.save()
 
     doc = SimpleDocTemplate(sys.stdout,pagesize=A4,leftMargin=30,topMargin=30,
                             author=u'Компьютерный магазин Билд'.encode('utf-8'),
