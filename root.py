@@ -703,6 +703,10 @@ class PdfBill(Resource):
         from pc import models
         doc['full_items'] = []
         for k,v in doc['items'].items():
+            if type(v) is list:
+                v = v[0]
+            if v is None: continue
+            if v.startswith('no'):continue
             component = deepcopy(models.gChoices_flatten[v])
             component['price'] = makePrice(component)
             doc['full_items'].append(component)

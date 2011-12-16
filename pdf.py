@@ -35,11 +35,10 @@ reportlab.rl_config.warnOnMissingFontGlyphs = 0
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import os
-from pc import root
+from pc import root, sum_to_word
 from reportlab.lib import colors
 
 def main():
-
     json = simplejson.loads(unicode(sys.stdin.read(), 'utf-8'))
 
 
@@ -61,8 +60,8 @@ def main():
     styleH = styles['Heading3']
 
     story = []
-
-    path = os.path.join('/'.join(root.__file__.split('/')[:-1]), 'pdf_logo.png')
+    _path = '/'.join(root.__file__.split('/')[:-1])
+    path = os.path.join(_path, 'pdf_logo.png')
     im = Image(path)
     im.hAlign = 'LEFT'
     story.append(im)
@@ -80,7 +79,7 @@ def main():
                              ('SPAN',(2,0),(2,2)),
                              ('SPAN',(3,0),(3,2)),
 
-                             
+
                              ('SPAN',(2,4),(2,5)),
                              ('SPAN',(3,4),(3,5)),
                              ('GRID', (2,0), (2,5), 1,colors.black),
@@ -101,11 +100,11 @@ def main():
                  [u'КАЛИНИНГРАД МОСКОВСКИЙ ПР.,24',u'',u'',u'']]
     bill_data_encoded = []
     for row in bill_data:
-        e_row = []        
+        e_row = []
         for cell in row:
             e_row.append(cell.encode('utf-8'))
-        bill_data_encoded.append(e_row)            
-        
+        bill_data_encoded.append(e_row)
+
     story.append(Table(bill_data_encoded, style=tableStyle))
 
 
@@ -117,11 +116,14 @@ def main():
     data = []
     col = 1
     summ = 0
+
     for cat,code in json['items'].items():
         pcs = 1
         if type(code) is list:
             pcs = len(code)
             code = code[0]
+        if code is None: continue
+        if code.startswith('no'): continue
         item = [i for i in json['full_items'] if i['_id']==code][0]
         data.append([str(col),
                      item['text'].encode('utf-8'),
@@ -166,7 +168,7 @@ def main():
                  u'Цена р.'.encode('utf-8'),
                  u'Сумма р.'.encode('utf-8')])
     story.append(Table(data, style=TableStyle([('FONTNAME', (0,0), (-1,-1), 'Ubuntu'),
-                             ('FONTSIZE', (0,0), (-1,-1), 6),
+                             ('FONTSIZE', (0,0), (-1,-1), 7),
                              ('GRID', (0,0), (-1,-1), 1,colors.black),])))
     tot = Paragraph((u'<para spaceBefore="10" leftIndent="350">Итого: '+str(summ)+\
                      u' рублей').encode('utf-8'),styleN)
@@ -174,7 +176,29 @@ def main():
     nds = Paragraph((u'<para leftIndent="350">НДС не предусмотрен</para>').encode('utf-8'),styleN)
     story.append(nds)
 
-    doc = SimpleDocTemplate(sys.stdout,pagesize=A4,leftMargin=20,topMargin=20,
+    story.append(Spacer(10,50))
+    su = u'Всего наименований %s, на сумму %s руб.' % (str(col-1), str(summ))
+    story.append(Paragraph(su.encode('utf-8'), styleN))
+    story.append(Paragraph(sum_to_word.RusCurrency().Str(summ, 'RUR').encode('utf-8'), styleN))
+    story.append(Spacer(10,50))
+    story.append(Paragraph(u'Руководитель    ___________________________________ (Ганжа А.Ю.)'.encode('utf-8'),
+                           styleN))
+    story.append(Paragraph(u'Главный бухгалтер ____________________________ (не предусмотрен)'.encode('utf-8'),
+                           styleN))
+    
+
+    path = os.path.join(_path, 'sign.jpg')
+    im = Image(path)
+    im.hAlign = 'LEFT'
+    story.append(im)
+
+
+    path = os.path.join(_path, 'stamp.jpg')
+    im = Image(path)
+    im.hAlign = 'RIGHT'
+    story.append(im)
+
+    doc = SimpleDocTemplate(sys.stdout,pagesize=A4,leftMargin=30,topMargin=30,
                             author=u'Компьютерный магазин Билд'.encode('utf-8'),
                             title=bill_text)
     doc.build(story)
