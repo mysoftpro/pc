@@ -183,10 +183,9 @@ def main():
     story.append(Paragraph(su.encode('utf-8'), styleN))
     story.append(Paragraph(sum_to_word.RusCurrency().Str(summ, 'RUR').encode('utf-8'), styleN))
     story.append(Spacer(10,100))
-    own = u'Руководитель <img src="'+\
-        os.path.join(_path, 'sign.jpg')+u'"/>                                (Ганжа А.Ю.)'
+    own = u'Руководитель <font color="white">________________________________</font>(Ганжа А.Ю.)'
     story.append(Paragraph(own.encode('utf-8'),styleN))
-    buh = u'Главный бухгалтер                                            (не предусмотрен)<img src="'+\
+    buh = u'Главный бухгалтер <img src="'+os.path.join(_path, 'sign.jpg')+u'"/><font color="white">____________</font>(не предусмотрен)<img src="'+\
         os.path.join(_path, 'stamp.jpg')+u'"/>'
     story.append(Paragraph(buh.encode('utf-8'),styleN))    
 
