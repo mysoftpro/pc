@@ -663,7 +663,7 @@ class PdfBill(Resource):
         doc['full_items'] = []
         for l in li:
             if l[0]:
-                print l[1]
+                l[1]['our_price'] = makePrice(l[1])
                 doc['full_items'].append(l[1])
         d = defer.Deferred()
         from pc import pdf
