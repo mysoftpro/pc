@@ -28,7 +28,7 @@ class PdfWriter(protocol.ProcessProtocol):
 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image, Spacer
 # we know some glyphs are missing, suppress warnings
 import reportlab.rl_config
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
@@ -71,11 +71,11 @@ def main():
                          +json['author']+'">http://buildpc.ru/cart/'+json['author']+'</a></font>'.encode('utf-8'), styleN)
     story.append(title)
     story.append(link)
-
+    story.append(Spacer(50,50))
 
 
     tableStyle = TableStyle([('FONTNAME', (0,0), (-1,-1), 'Ubuntu'),
-                             ('FONTSIZE', (0,0), (-1,-1), 6),
+                             ('FONTSIZE', (0,0), (-1,-1), 10),
                              ('GRID', (0,0), (1,0), 1,colors.black),
                              ('SPAN',(2,0),(2,2)),
                              ('SPAN',(3,0),(3,2)),
