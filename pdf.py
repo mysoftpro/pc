@@ -185,26 +185,10 @@ def main():
     story.append(Spacer(10,100))
     own = u'Руководитель <font color="white">________________________________</font>(Ганжа А.Ю.)'
     story.append(Paragraph(own.encode('utf-8'),styleN))
-    buh = u'Главный бухгалтер <img src="'+os.path.join(_path, 'sign.jpg')+u'"/><font color="white">____________</font>(не предусмотрен)<img src="'+\
+    buh = u'Главный бухгалтер <img valign="-60" src="'+os.path.join(_path, 'sign.jpg')+u'"/><font color="white">____________</font>(не предусмотрен)<img valign="-50" src="'+\
         os.path.join(_path, 'stamp.jpg')+u'"/>'
     story.append(Paragraph(buh.encode('utf-8'),styleN))    
 
-
-    # path = os.path.join(_path, 'sign.jpg')
-    # im = Image(path)
-    # im.hAlign = 'LEFT'
-    # story.append(im)
-
-
-    # path = os.path.join(_path, 'stamp.jpg')
-    # im = Image(path)
-    # im.hAlign = 'RIGHT'
-    # story.append(im)
-
-    # c = Canvas(sys.stdout)
-    # f = Frame(0, 0, 210, 297, showBoundary=1)
-    # f.addFromList(story,c)
-    # c.save()
 
     doc = SimpleDocTemplate(sys.stdout,pagesize=A4,leftMargin=30,topMargin=30,
                             author=u'Компьютерный магазин Билд'.encode('utf-8'),
