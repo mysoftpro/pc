@@ -979,12 +979,17 @@ function prepareCart(){
 	}
     }
     $('.sendfaq').click(sendComment);
+    var replaced_once = [];
     _($('.showOldComponent').toArray())
 	.each(function(el){
 		  var guider_id = 'replaced_'+el.id;
+		  var jel = $(el);
+		  var once_id = jel.parent().attr('id').split('_')[0];
+		  if (_(replaced_once).contains(once_id))return;
+		  replaced_once.push(once_id);
 		  guider.createGuider({
-					  attachTo: el,
-					  description: 'Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. Зайдите в конфигурацию компьютера, чтобы сохранить изменения',
+					  attachTo: jel,
+					  description: 'Некоторые компоненты были заменены, потому что на складе больше нет выбранных вами компонентов. Зайдите в конфигурацию компьютера, чтобы сохранить изменения',
 					  position: 1,
 					  width: 500,
 					  id:guider_id
