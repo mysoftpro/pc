@@ -999,4 +999,20 @@ function prepareCart(){
 		  guider_content.before('<div class="closeg"></div>');
 		  guider_el.find('.closeg').click(function(){guider_el.remove();});
 	      });
+    _($('.computeritem').toArray()).each(function(el){
+					     var jel = $(el);
+					     var price = jel.find('.modelprice');
+					     var price_pos = price.position().top;
+					     var li = jel.next().find('li').last();
+					     var li_pos = li.position().top;
+					     var guard = 50;
+					     while(li_pos>price_pos-10){
+						 guard-=1;
+						 if(guard==0)break;
+						 var ma = parseInt(jel.css('margin-top').replace('px',''));
+						 jel.css('margin-top',ma+5);
+						 li_pos = li.position().top;
+						 price_pos = price.position().top;
+					     }
+			    });
 }
