@@ -647,7 +647,7 @@ class Root(Cookable):
         self.putChild('checkModel', CheckModel())
         self.putChild('store_cart_comment',StoreCartComment())
         self.putChild('store_model_name', StoreModelName())
-        self.putChild('pdf_bill', PdfBill())
+        self.putChild('bill.pdf', PdfBill())
 
     def getChild(self, name, request):
         self.checkCookie(request)

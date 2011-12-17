@@ -187,7 +187,7 @@ def main():
         nds = Paragraph((u'<para leftIndent="350">НДС не предусмотрен</para>').encode('utf-8'),styleN)
         story.append(nds)
 
-        story.append(Spacer(10,10))
+        # story.append(Spacer(10,10))
         su = u'Всего наименований %s, на сумму %s руб.' % (str(col-1), str(summ))
         story.append(Paragraph(su.encode('utf-8'), styleN))
         story.append(Paragraph(sum_to_word.RusCurrency().Str(summ, 'RUR').encode('utf-8'), styleN))
