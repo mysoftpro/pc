@@ -837,7 +837,6 @@ class ModelForModelsPage(object):
 		self.description_div.append(el)
 	    ul.set('style','display:none')
 	else:
-
             if 'name' in self.model:                
                 span = etree.Element('span')
                 span.set('class', 'customName')
@@ -876,6 +875,8 @@ class ModelForModelsPage(object):
             if this_user_is_author:
                 extra = deepcopy(self.tree.find('cart_extra'))
                 for el in extra:
+                    if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+                        el.set('href', '/pdf_bill?id='+self.model['_id'])
                     self.description_div.append(el)
 
 	    if 'comments' in self.model:

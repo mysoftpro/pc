@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion
+    NamesFor, ParamsFor, promotion, findComponent
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -700,14 +700,18 @@ class PdfBill(Resource):
         if not 'items' in doc:
             # may be notebook or component
             return self.renderNote(doc, request)
-        from pc import models
         doc['full_items'] = []
+        from pc import models
         for k,v in doc['items'].items():
             if type(v) is list:
                 v = v[0]
             if v is None: continue
             if v.startswith('no'):continue
-            component = deepcopy(models.gChoices_flatten[v])
+            component = deepcopy(models.findComponent(doc,k))
+            # if v in models.gChoices_flatten:
+            #     component = deepcopy(models.gChoices_flatten[v])
+            # else:
+            #     continue
             component['price'] = makePrice(component)
             doc['full_items'].append(component)
         doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]

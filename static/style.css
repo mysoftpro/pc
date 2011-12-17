@@ -1640,7 +1640,7 @@ a.modelicon img{
     background: url("/static/square_buttons_small.png") no-repeat scroll 0 1px transparent;
     cursor: pointer;
     font-size: 14px;
-    height: 30px;
+    height: 29px;
     text-align: center;
     width: 127px;
     padding-top:10px;
@@ -2352,3 +2352,15 @@ a.modelicon img{
 #mothercross{
     padding-left:20px;
 }
+.pdf_link{
+    display:block;
+    float:right;
+    height:32px;
+    background-image:url('bui_thumbs.png');
+    background-position:0px 3px;
+    background-repeat:no-repeat;
+    padding-left:36px;
+    padding-top:8px;
+    margin-right:10px;
+}
+
