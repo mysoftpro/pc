@@ -988,8 +988,8 @@ def computers(template,skin,request):
 	else:
 	    def sort(m1,m2):
 		if u''.join(m1['date'])>u''.join(m2['date']):
-		    return 1
-		return -1
+		    return -1
+		return 1
 	    models = sorted(models,sort)
 	    template.middle.remove(template.middle.find('div'))
 
