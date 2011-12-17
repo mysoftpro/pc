@@ -627,6 +627,7 @@ class Root(Cookable):
         self.putChild('5406ae5f1ec4.html',File(os.path.join(static_dir,'5406ae5f1ec4.html')))
         self.putChild('sitemap.xml',SiteMap())
         self.putChild('robots.txt',File(os.path.join(static_dir,'robots.txt')))
+        self.putChild('receiver.html',File(os.path.join(static_dir,'_receiver.html')))
         self.putChild('comet', Comet())
         self.putChild('modeldesc', ModelDesc())
         self.putChild('prices_for_market',PriceForMarket())
