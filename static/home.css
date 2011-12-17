@@ -235,15 +235,14 @@ p {
   display: block;
 }
 
-
-#operators{
-    display:block;
-    float:right;
-    width:90px;
-    padding-top:10px;
-    height:28px;
+#operators a {
+    padding-left:16px;
+    background-repeat:no-repeat;
+    margin-left:5px;
+    cursor:pointer;
+    background-image:url('/static/build_icons.png');
+    background-repeat:no-repeat;
 }
-
 #beeline{
 
 }
@@ -273,13 +272,7 @@ p {
     background-image:url('/static/build_icons_home.png');
     background-repeat:no-repeat;
 }
-#city{
-    padding-top:10px;
-    display:block;
-    float:right;
-    height:28px;
-    width:200px;
-}
+
 #writeme{
     padding-top:10px;
     display:block;
@@ -290,21 +283,6 @@ p {
     color:#B9D3E1;
 }
 #faqli a{opacity:0.0;}/* color:#B9D3E1;*/
-#phone {
-    background-image:url("/static/phone_home.jpg");
-    background-repeat:repeat-x;
-    font-size:28px;
-    display:block;
-    float:right;
-    padding-top:10px;
-    padding-bottom:7px;
-    width:290px;
-    padding-right:5px;
-    text-align:center;
-    margin-left:45px;
-    color:white;
-}
-
 
 ul#main_menu {
     display:block;
@@ -2263,14 +2241,6 @@ a.modelicon img{
 .showOldComponent{
     margin-left:10px;
 }
-#operators a {
-    padding-left:16px;
-    background-repeat:no-repeat;
-    margin-left:5px;
-    cursor:pointer;
-    background-image:url('/static/build_icons.png');
-    background-repeat:no-repeat;
-}
 
 #toppopup #closem{
     margin-top:0px;
@@ -2429,4 +2399,39 @@ a.modelicon img{
     padding-left:36px;
     padding-top:8px;
     margin-right:10px;
+}
+
+#twitter{
+    background-position:0px -458px;
+}
+#facebook{
+    background-position:0px -439px;
+}
+#phone {
+    background-image:url("/static/phone.jpg");
+    background-repeat:repeat-x;
+    font-size:28px;
+    display:block;
+    float:right;
+    padding-top:10px;
+    padding-bottom:7px;
+    width:290px;
+    padding-right:5px;
+    text-align:center;
+    margin-left:10px;
+    color:white;
+}
+#operators{
+    display:block;
+    float:right;
+    width:180px;
+    padding-top:10px;
+    height:28px;
+}
+#city{
+    padding-top:10px;
+    display:block;
+    float:right;
+    height:28px;
+    width:150px;
 }

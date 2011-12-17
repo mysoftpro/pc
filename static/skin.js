@@ -40,6 +40,8 @@ function CartAndContacts(){
     $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
     $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Люди и компы</a>'));
     $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850">Люди и компы</a>'));
+    $('#twitter').click(swapPhone('<a target="_blank" href="http://twitter.com/buildpc_ru">Люди и компы</a>'));
+    $('#facebook').click(swapPhone('<a target="_blank" href="http://www.facebook.com/pages/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D0%91%D0%B8%D0%BB%D0%B4/212619472150153?sk=wall">Люди и компы</a>'));
 }
 
 
