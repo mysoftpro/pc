@@ -501,7 +501,7 @@ function noticeCheckModel(){
 			     });
 	    },10000);
 }
-//noticeCheckModel();
+noticeCheckModel();
 
 
 function getUserNameAndTitle(){
