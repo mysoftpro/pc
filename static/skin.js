@@ -206,16 +206,16 @@ var init = function(){
     if (av){
 	var av = $.cookie('pc_avatar');
 	var eva = eval('('+av+')');
-	try{
+	//try{
 	    if (eva['first_name'] && eva['last_name'])
 		makeAvatar(eva);
 	    else
 		$.cookie('pc_avatar', null);
-	} catch (x) {
-	    $.cookie('pc_avatar', null);
-	    console.log(av);
-	    console.log(x);
-	}
+	// } catch (x) {
+	//     $.cookie('pc_avatar', null);
+	//     console.log(av);
+	//     console.log(x);
+	// }
     }
     forceCookie();
     if ($.browser.opera){
