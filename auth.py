@@ -12,7 +12,11 @@ from pc import base36
 from datetime import datetime
 from pc.common import addCookies
 import hashlib
-from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key
+from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key, goog_client_id, goog_secret
+from twisted.internet.defer import succeed
+from twisted.web.iweb import IBodyProducer
+from zope.interface import implements
+from urllib import unquote_plus, quote_plus
 
 class LineReceiver(Protocol):
     def __init__(self, finished, encoding):
@@ -40,10 +44,37 @@ class LineReceiver(Protocol):
 	self.finished.callback(self.file)
 
 
+class PostProducer(object):
+    implements(IBodyProducer)
+
+    def __init__(self, body):
+	self.body = str(body)	
+	self.length = len(self.body)
+
+    def startProducing(self, consumer):
+	consumer.write(self.body)
+	return succeed(None)
+
+    def pauseProducing(self):
+	pass
+
+    def stopProducing(self):
+	pass
+
+
+
+
 class OAuth(Resource):
     def __init__(self):
 	Resource.__init__(self)
-	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook}
+	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook,
+                      'goog':self.goog}
+
+
+    def parseGoog(self, f, user_doc, request):
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print f.read()
+        f.close()
 
     def parseVkontakt(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())        
@@ -79,7 +110,6 @@ class OAuth(Resource):
 	# it need to call some view with the 'vk'+user_ob[uuid]
 	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
 	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
-
 
 
     def addNewSockUser(self, received_soc_user_ob, user_doc):
@@ -187,17 +217,50 @@ class OAuth(Resource):
 	request.finish()
 
 
+    def getGoogAccessToken(self, f, user_doc, request):        
+        """
+        {
+2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "access_token" : "ya29.AHES6ZRdKBc9POlrSDgxXcACypFz5QwPGOgS61jA_PbvzeY",
+2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "token_type" : "Bearer",
+2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "expires_in" : 3600,
+2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "id_token" : "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXVkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiY2lkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaWQiOiIxMDQxMDkyNTg0OTI4NDQ2OTk3ODAiLCJ0b2tlbl9oYXNoIjoibUxuT1UzVkdZTzdfR3ZDelNaOEVRUSIsImlhdCI6MTMyNDQwMTU0MCwiZXhwIjoxMzI0NDA1NDQwfQ.FxO2QUq3toj8VdqywbuQGtmfxdPu5jjyUlG6nI9t2QT4pRGRVgkh9CxhlI73gZSbwNYt6fgO2RWmHnzaJkxB4AQ93wyp7RjmeaxPF2A97-fvj0Z95melwdQSvJDJW8-MphfURAwQ8iDzeCnQCBK4pEQAT0PYa6IcroSHVZ_Sp3A"
+2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client] }
+"""
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print f.read()
+        f.close()
+
+
+    def goog(self, user_doc, access_token, code, request):
+	# soc_user_id = request.args.get('user_id')[0]        
+	agent = Agent(reactor)        
+        body = 'code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s' % (code, goog_client_id, goog_secret, quote_plus('http://buildpc.ru?pr=goog'))
+        print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+        print body
+	request_d = agent.request('POST', 
+                                  'https://accounts.google.com/o/oauth2/token',
+                                  Headers11({'Content-Type':['application/x-www-form-urlencoded']}),PostProducer(body))
+	d = defer.Deferred()        
+	d.addCallback(self.getGoogAccessToken, user_doc, request)
+	request_d.addCallback(self.getOauthAnswer, d)
+	return request_d
+
+
+
+
     def getVkontaktAccessToken(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())
+        token = answer['access_token']
 	f.close()
-	url = 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' %\
-	    (answer['user_id'],answer['access_token'])
+	url = 'GET https://www.googleapis.com/oauth2/v1/userinfo?access_token=%s' % token
 	agent = Agent(reactor)
 	request_d = agent.request('GET', str(url),Headers11({}),None)
 	d = defer.Deferred()
-	d.addCallback(self.parseVkontakt, user_doc, request)
+        d.addCallback(self.parseVkontakt, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
+
+
 
     def vkontakt(self, user_doc, access_token, code, request):
 	# soc_user_id = request.args.get('user_id')[0]
@@ -248,7 +311,6 @@ class OAuth(Resource):
 	code = request.args.get('code', [None])[0]
 	if pr is None or (access_token is None and code is None) or pr not in self.auths:
 	    return "fail"
-
 	pc_user = request.getCookie('pc_user')
 	d = couch.openDoc(pc_user)
 	d.addCallback(self.auths[pr], access_token, code, request)
