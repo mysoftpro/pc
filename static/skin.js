@@ -202,10 +202,10 @@ var forceCookie = function(){
 
 var init = function(){
     bindAuth();
-    makeAuth();
-    var av = $.cookie('pc_avatar');
+    makeAuth();    
     if (av){
 	try{
+	    var av = $.cookie('pc_avatar');
 	    var eva = eval('('+av+')');
 	    if (eva['first_name'] && eva['last_name'])
 		makeAvatar();
@@ -215,7 +215,6 @@ var init = function(){
 	    $.cookie('pc_avatar', null);
 	    console.log(av);
 	}
-
     }
     forceCookie();
     if ($.browser.opera){
