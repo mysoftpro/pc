@@ -1039,12 +1039,15 @@ def computers(template,skin,request):
 		# update user_doc
 		couch.saveDoc(result['user_doc'])
 
+        # TODO! this_is_cart means have user doc
+        # why one more variable?
         # refresh in_cart coookie, because it is possible now
         # to add to the same cart from other browsers
-        in_cart = len(user_doc['models'])
-        if 'notebooks' in user_doc:
-            in_cart += len(user_doc['notebooks'])
-        addCookies(request, {'pc_cart':in_cart})
+        if this_is_cart:
+            in_cart = len(user_doc['models'])
+            if 'notebooks' in user_doc:
+                in_cart += len(user_doc['notebooks'])
+            addCookies(request, {'pc_cart':in_cart})
 
 	_prices = 'undefined'
 
