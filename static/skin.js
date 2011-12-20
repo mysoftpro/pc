@@ -204,9 +204,9 @@ var init = function(){
     bindAuth();
     makeAuth();    
     if (av){
+	var av = $.cookie('pc_avatar');
+	var eva = eval('('+av+')');
 	try{
-	    var av = $.cookie('pc_avatar');
-	    var eva = eval('('+av+')');
 	    if (eva['first_name'] && eva['last_name'])
 		makeAvatar();
 	    else
