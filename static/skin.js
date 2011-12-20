@@ -214,6 +214,7 @@ var init = function(){
 	} catch (x) {
 	    $.cookie('pc_avatar', null);
 	    console.log(av);
+	    console.log(x);
 	}
     }
     forceCookie();
