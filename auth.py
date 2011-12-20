@@ -87,27 +87,27 @@ class OAuth(Resource):
 	    # there are no user in db
 	    user_doc.pop('new')
 	    user_doc['soc_users'] = [received_soc_user_ob]
-	    print "save new user_doc!"
-	    print user_doc
+	    # print "save new user_doc!"
+	    # print user_doc
 	    couch.saveDoc(user_doc)
 	else:
 	    if 'soc_users' in user_doc:
 		# user was authorized before by soc network
 		if received_soc_user_ob['uid'] in [ob['uid'] for ob in user_doc['soc_users']]:
-		    print "pass"
+		    # print "pass"
 		    pass
 		else:
 		    # just append new soc network to existing user
 		    user_doc['soc_users'].append(received_soc_user_ob)
-		    print "save OLD user_doc 1!"
-		    print user_doc
+		    # print "save OLD user_doc 1!"
+		    # print user_doc
 		    couch.saveDoc(user_doc)
 	    else:
 		# just add soc user to previously stored user
 		user_doc['soc_users'] = [received_soc_user_ob]
 		couch.saveDoc(user_doc)
-		print "save OLD user_doc 2!"
-		print user_doc
+		# print "save OLD user_doc 2!"
+		# print user_doc
 
 
     def updateModelsAuthor(self, res, user_doc):
@@ -151,14 +151,14 @@ class OAuth(Resource):
 	    soc_user_doc = sorted(clean_rows, lambda x,y: int(x['_id'], 16)-int(y['_id'],16))[0]
 	    if soc_user_doc['_id'] == user_doc['_id']:
 		# its the same doc. all ok.
-		print "cookies are the same for this user and authorized user!"
+		# print "cookies are the same for this user and authorized user!"
 		pass
 	    else:
 		# i have 2 different docs here.
 		if 'new' in user_doc:
 		    # no merge required, because user_doc is not stored yet
 		    self.installPreviousUser(soc_user_doc, request)
-		    print "no merge required, because user_doc is not stored yet"
+		    # print "no merge required, because user_doc is not stored yet"
 		else:
 		    # merge soc user and previously stored user
 		    for k,v in user_doc.items():
@@ -178,9 +178,9 @@ class OAuth(Resource):
 		    else:
 			soc_user_doc['merged_docs'] = [user_doc['_id']]
 		    couch.saveDoc(soc_user_doc)
-		    print "SAVE MERGED doc"
-		    print soc_user_doc
-		    print user_doc
+		    # print "SAVE MERGED doc"
+		    # print soc_user_doc
+		    # print user_doc
 		    self.installPreviousUser(soc_user_doc, request)
 	self.prepRequest(request)
 	request.write(simplejson.dumps(received_soc_user_ob))

@@ -279,7 +279,7 @@ function bindAuth(){
 					       document.location.href=url;
 					   });
 			    },
-			    function(){}));
+			    function(){$('#details').html('');}));
 }
 
 function bindLogout(){
