@@ -208,7 +208,7 @@ var init = function(){
 	var eva = eval('('+av+')');
 	try{
 	    if (eva['first_name'] && eva['last_name'])
-		makeAvatar();
+		makeAvatar(eva);
 	    else
 		$.cookie('pc_avatar', null);
 	} catch (x) {
