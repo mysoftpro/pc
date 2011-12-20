@@ -203,19 +203,18 @@ var forceCookie = function(){
 var init = function(){
     bindAuth();
     makeAuth();    
-    if (av){
-	var av = $.cookie('pc_avatar');
-	var eva = eval('('+av+')');
-	//try{
+    var av = $.cookie('pc_avatar');
+    if (av){	
+	try{
+	    var eva = eval('('+av+')');	
 	    if (eva['first_name'] && eva['last_name'])
 		makeAvatar(eva);
-	    else
-		$.cookie('pc_avatar', null);
-	// } catch (x) {
-	//     $.cookie('pc_avatar', null);
-	//     console.log(av);
-	//     console.log(x);
-	// }
+	else
+	    $.cookie('pc_avatar', null);    
+	} catch (x) {
+	    console.log(x);
+	}
+	
     }
     forceCookie();
     if ($.browser.opera){
