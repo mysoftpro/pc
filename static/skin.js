@@ -273,9 +273,10 @@ function bindAuth(){
 					       var _id = $(e.target).attr('id');
 					       var provider = providers[_id];
 					       var url = provider['url']+
-						       document.location.href.replace('localhost',
-										      'buildpc.ru')+
-							   '?pr='+provider['id'];
+						   document.location.href.replace('localhost',
+										  'buildpc.ru')
+						   .split('?')[0]+
+						   '?pr='+provider['id'];
 					       document.location.href=url;
 					   });
 			    },
@@ -308,7 +309,7 @@ function makeAvatar(data){
 	    $.cookie('pc_avatar', JSON.stringify(data), {path:'/'});
 	    return;
 	}
-	    
+
     }
     var av = $('#avatar');
     av.fadeOut(200, function(){
