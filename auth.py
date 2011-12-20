@@ -47,6 +47,8 @@ class OAuth(Resource):
 
     def parseVkontakt(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())
+        print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+        print answer
 	f.close()
 	soc_user_ob = answer['response'][0]
 	soc_user_ob['uid'] = 'vk'+str(soc_user_ob['uid'])
