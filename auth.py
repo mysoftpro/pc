@@ -12,7 +12,7 @@ from pc import base36
 from datetime import datetime
 from pc.common import addCookies
 import hashlib
-from pc.secure import mail_app_id,mail_secret_key
+from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key
 
 class LineReceiver(Protocol):
     def __init__(self, finished, encoding):
@@ -46,7 +46,7 @@ class OAuth(Resource):
 	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook}
 
     def parseVkontakt(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())
+	answer = simplejson.loads(f.read())        
 	f.close()
 	soc_user_ob = answer['response'][0]
 	soc_user_ob['uid'] = 'vk'+str(soc_user_ob['uid'])
@@ -57,7 +57,7 @@ class OAuth(Resource):
 
 
     def parseMail(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())        
+	answer = simplejson.loads(f.read())
 	f.close()
 	soc_user_ob = {'uid':answer[0]['uid'], 'first_name':answer[0]['first_name'],'last_name':answer[0]['last_name']}
 	soc_user_ob['uid'] = 'ma'+str(soc_user_ob['uid'])
@@ -71,9 +71,9 @@ class OAuth(Resource):
     def parseFacebook(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())
 	f.close()
-	soc_user_ob = {'uid':answer['id'], 
-                       'first_name':answer['first_name'], 
-                       'last_name':answer['last_name']}
+	soc_user_ob = {'uid':answer['id'],
+		       'first_name':answer['first_name'],
+		       'last_name':answer['last_name']}
 	soc_user_ob['uid'] = 'fb'+str(soc_user_ob['uid'])
 	# ok. now i have user_ob from soc network and user_doc
 	# it need to call some view with the 'vk'+user_ob[uuid]
@@ -111,24 +111,24 @@ class OAuth(Resource):
 
 
     def updateModelsAuthor(self, res, user_doc):
-        for r in res['rows']:
-            if r['doc']['author'] != user_doc['_id']:
-                r['doc']['author'] = user_doc['_id']
-                couch.saveDoc(r['doc'])
-            
-            
+	for r in res['rows']:
+	    if r['doc']['author'] != user_doc['_id']:
+		r['doc']['author'] = user_doc['_id']
+		couch.saveDoc(r['doc'])
+
+
 
 
     def installPreviousUser(self, soc_user_doc, request):
 	in_cart = len(soc_user_doc['models'])
 	if 'notebooks' in soc_user_doc:
 	    in_cart+=len(soc_user_doc['notebooks'].keys())
-            addCookies(request, {'pc_user':soc_user_doc['_id'],
-                                 'pc_key':soc_user_doc['pc_key'],
-                                 'pc_cart':str(in_cart)})
+	    addCookies(request, {'pc_user':soc_user_doc['_id'],
+				 'pc_key':soc_user_doc['pc_key'],
+				 'pc_cart':str(in_cart)})
 
 	d = couch.listDoc(keys=soc_user_doc['models'], include_docs=True)
-        d.addCallback(self.updateModelsAuthor, soc_user_doc)
+	d.addCallback(self.updateModelsAuthor, soc_user_doc)
 
     def mergeUsers(self, stored_soc_user_doc_res, received_soc_user_ob, user_doc, request):
 	"""
@@ -187,28 +187,40 @@ class OAuth(Resource):
 	request.finish()
 
 
-    def vkontakt(self, user_doc, access_token, request):
-	soc_user_id = request.args.get('user_id')[0]
+    def getVkontaktAccessToken(self, f, user_doc, request):
+	answer = simplejson.loads(f.read())
+	f.close()
+	url = 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' %\
+	    (answer['user_id'],answer['access_token'])
 	agent = Agent(reactor)
-	request_d = agent.request('GET', 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' % (soc_user_id, access_token),Headers11({}),None)
+	request_d = agent.request('GET', str(url),Headers11({}),None)
 	d = defer.Deferred()
 	d.addCallback(self.parseVkontakt, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
-    def mail(self, user_doc, access_token, request):
+    def vkontakt(self, user_doc, access_token, code, request):
+	# soc_user_id = request.args.get('user_id')[0]
+	agent = Agent(reactor)
+	request_d = agent.request('GET', 'https://api.vkontakte.ru/oauth/access_token?client_id=%s&client_secret=%s&code=%s' % (vk_app_id, vk_secret_key, code),Headers11({}),None)
+	d = defer.Deferred()
+	d.addCallback(self.getVkontaktAccessToken, user_doc, request)
+	request_d.addCallback(self.getOauthAnswer, d)
+	return request_d
+
+    def mail(self, user_doc, access_token, code, request):
 	agent = Agent(reactor)
 	ha = hashlib.md5()
-        ha.update('app_id=%smethod=users.getInfosecure=1session_key=%s' % (mail_app_id,access_token))
-        ha.update(mail_secret_key)
-        sig = ha.hexdigest()
-        request_d = agent.request('GET', 'http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=%s&session_key=%s&secure=1&sig=%s' % (mail_app_id, access_token, sig),Headers11({}),None)
+	ha.update('app_id=%smethod=users.getInfosecure=1session_key=%s' % (mail_app_id,access_token))
+	ha.update(mail_secret_key)
+	sig = ha.hexdigest()
+	request_d = agent.request('GET', 'http://www.appsmail.ru/platform/api?method=users.getInfo&app_id=%s&session_key=%s&secure=1&sig=%s' % (mail_app_id, access_token, sig),Headers11({}),None)
 	d = defer.Deferred()
 	d.addCallback(self.parseMail, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
-    def facebook(self, user_doc, access_token, request):
+    def facebook(self, user_doc, access_token, code, request):
 	agent = Agent(reactor)
 	request_d = agent.request('GET', 'https://graph.facebook.com/me?access_token=%s' % access_token,Headers11({}),None)
 	d = defer.Deferred()
@@ -233,12 +245,13 @@ class OAuth(Resource):
     def render_GET(self, request):
 	pr = request.args.get('pr', [None])[0]
 	access_token = request.args.get('access_token', [None])[0]
-	if pr is None or access_token is None or pr not in self.auths:
+	code = request.args.get('code', [None])[0]
+	if pr is None or (access_token is None and code is None) or pr not in self.auths:
 	    return "fail"
 
 	pc_user = request.getCookie('pc_user')
 	d = couch.openDoc(pc_user)
-	d.addCallback(self.auths[pr], access_token, request)
+	d.addCallback(self.auths[pr], access_token, code, request)
 	def new_user(fail):
 	    return self.auths[pr]( {'_id':pc_user,'models':[],'pc_key':base36.gen_id(), 'new':True},
 			    access_token, request)

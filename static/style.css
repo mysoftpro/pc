@@ -2373,8 +2373,7 @@ a.modelicon img{
     height:28px;
     width:100px;
 }
-#avatar{
-    display:none;
+#avatar{   
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
     -moz-border-left-colors: none;

@@ -2438,8 +2438,7 @@ a.modelicon img{
     height:28px;
     width:100px;
 }
-#avatar{
-    display:none;
+#avatar{    
     border:1px solid #AAA;
     background-color: #ededed;
     background-repeat: no-repeat;    

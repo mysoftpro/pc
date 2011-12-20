@@ -259,7 +259,7 @@ init();
 function bindAuth(){
     var providers = {
 	ofacebook:{url:'https://www.facebook.com/dialog/oauth?client_id=215061488574524&response_type=token&redirect_uri=', id:'facebook'},
-	ovkontakte:{url:'http://api.vkontakte.ru/oauth/authorize?client_id=2721994&response_type=token&redirect_uri=', id:'vkontakt'},
+	ovkontakte:{url:'http://api.vkontakte.ru/oauth/authorize?client_id=2721994&response_type=code&redirect_uri=', id:'vkontakt'},
 	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'}
     };
 
@@ -332,14 +332,16 @@ function makeAvatar(data){
 
 function makeAuth(){
     var pr=document.location.search.match(/pr=[^&]*/);
+    var code=document.location.search.match(/code=[^&]*/);
     var tok = document.location.hash.match(/access_token=[^&]*/g);
-    var user_id = document.location.hash.match(/user_id=[^&]+/g);
-    if (!user_id)
-	user_id=[''];
-    if (!pr || !tok)return;
+    if (!pr || (!tok && !code))return;
+    if (!tok)
+	tok = ['mock=true'];
+    if (!code)
+	code = ['mock=true'];
     $.ajax({
-	       url:'/oauth?'+pr[0]+'&'+tok[0]+'&'+user_id[0],
-	       success:makeAvatar
-	   });
+    	       url:'/oauth?'+pr[0]+'&'+tok[0]+'&'+code[0],
+    	       success:makeAvatar
+    	   });
 }
-//makeAvatar({'first_name':'Константин',last_name:'Анатоьевичбург'});
+//makeavatar({'first_name':'Константин',last_name:'Анатоьевичбург'});
