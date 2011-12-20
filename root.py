@@ -38,7 +38,8 @@ simple_titles = {
     '/howtobuy':u'Как покупать',
     '/warranty':u'Гарантии',
     '/support':u'Поддержка',
-    '/about':u'Про магазин'
+    '/about':u'Про магазин',
+    '/whyauth':u'Зачем нужна авторизация'
 }
 
 def simplePage(template, skin, request):
@@ -111,7 +112,8 @@ static_hooks = {
     'game.html':gamePage,
     'payment_success.html':simplePage,
     'payment_fail.html':simplePage,
-    'about.html':simplePage
+    'about.html':simplePage,
+    'whyauth.html':simplePage
     }
 
 
@@ -170,6 +172,7 @@ class SiteMap(Resource):
 	root.append(self.buildElement('blog'))
 	root.append(self.buildElement('faq'))
 	root.append(self.buildElement('about'))
+        root.append(self.buildElement('whyauth'))
 	root.append(self.buildElement('howtochoose'))
 	root.append(self.buildElement('howtobuy'))
 	root.append(self.buildElement('howtouse'))
@@ -634,6 +637,7 @@ class Root(Cookable):
 	self.putChild('do_payment_success',TemplateRenderrer(self.static, 'payment_success.html'))
 	self.putChild('do_payment_fail',TemplateRenderrer(self.static, 'payment_fail.html'))
 	self.putChild('about',TemplateRenderrer(self.static, 'about.html'))
+        self.putChild('whyauth',TemplateRenderrer(self.static, 'whyauth.html'))
 	self.putChild('rss', Rss())
 	self.putChild('fromBlog', FromBlog())
 	self.putChild('di',Di())

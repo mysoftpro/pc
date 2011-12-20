@@ -263,7 +263,7 @@ function bindAuth(){
 	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'}
     };
 
-    var auth_html = '<div id="oauth"><h3>Авторизация</h3><p>Для авторизации на нашем сайте можно использовать ваш акаунт в следующих сервисах:</p><div class="_oauth" id="ofacebook">войти через Фейсбук</div><div id="ovkontakte" class="_oauth">войти через Вконтакт</div><div id="omailru" class="_oauth">Войти через МайлРу<div style="clear:both;"></div></div></div>';
+    var auth_html = '<div id="oauth"><h3>Авторизация</h3><p>Для авторизации на нашем сайте можно использовать ваш акаунт в следующих сервисах:</p><div class="_oauth" id="ofacebook">войти через Фейсбук</div><div id="ovkontakte" class="_oauth">войти через Вконтакт</div><div id="omailru" class="_oauth">Войти через МайлРу</div><div style="clear:both;"></div><div><a style="color:black;" href="/whyauth">Зачем нужна авторизация?</a></div></div>';
     $('#avatar')
 	.unbind('click')
 	.click(makeAuthMask(function(){
@@ -344,4 +344,3 @@ function makeAuth(){
     	       success:makeAvatar
     	   });
 }
-//makeavatar({'first_name':'Константин',last_name:'Анатоьевичбург'});
