@@ -205,11 +205,17 @@ var init = function(){
     makeAuth();
     var av = $.cookie('pc_avatar');
     if (av){
-	var eva = eval('('+av+')');
-	if (eva['first_name'] && eva['last_name'])
-	    makeAvatar();
-	else
+	try{
+	    var eva = eval('('+av+')');
+	    if (eva['first_name'] && eva['last_name'])
+		makeAvatar();
+	    else
+		$.cookie('pc_avatar', null);
+	} catch (x) {
 	    $.cookie('pc_avatar', null);
+	    console.log(av);
+	}
+
     }
     forceCookie();
     if ($.browser.opera){
@@ -264,7 +270,7 @@ function bindAuth(){
     var providers = {
 	ofacebook:{url:'https://www.facebook.com/dialog/oauth?client_id=215061488574524&response_type=token&redirect_uri=', id:'facebook'},
 	ovkontakte:{url:'http://api.vkontakte.ru/oauth/authorize?client_id=2721994&response_type=code&redirect_uri=', id:'vkontakt'},
-	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'}	
+	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'}
     };
 
     // goog:{url:'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=503983129880.apps.googleusercontent.com&redirect_uri=http://buildpc.ru?pr=goog&scope=https://www.googleapis.com/auth/userinfo.profile', 'id':'goog'}
@@ -281,7 +287,7 @@ function bindAuth(){
 					       var provider = providers[_id];
 					       var url;
 					       if (provider['id'] == 'goog'){
-						   url = provider['url'];	   
+						   url = provider['url'];
 					       }
 					       else{
 						   url = provider['url']+
@@ -290,7 +296,7 @@ function bindAuth(){
 						       .split('?')[0]+
 						       '?pr='+provider['id'];
 					       }
-					       
+
 					       document.location.href=url;
 					   });
 			    },
