@@ -386,10 +386,8 @@ class NewReceiver(Protocol):
 	if "gzip" == encoding:
 	    self.gzip = True
 
-
     def dataReceived(self, bytes):
 	self.file.write(bytes)
-
 
     def ungzip(self):
 	self.file.seek(0)

@@ -55,14 +55,6 @@ h2 {
     text-shadow: 0px 2px 3px #506a12;
 }
 
-#links{
-    float:right;
-    z-index:9999;
-    text-align:right;
-    margin-bottom:5px;
-    max-width:680px;
-}
-
 #face {
     height:325px;
 }
@@ -2136,7 +2128,7 @@ a.modelicon img{
     color:#B6C974;
 }
 #promo_index_text span{
- color:#B9D3E1;   
+ color:#B9D3E1;
  text-decoration:none;
 }
 #pcomment{
@@ -2194,7 +2186,7 @@ a.modelicon img{
     margin-right:10px;
 }
 #store_user_name{
-    
+
 }
 .small_reset{
     background-position:0px 0px;
@@ -2293,7 +2285,7 @@ a.modelicon img{
     position:absolute;
     width:18px;
     height:18px;
-    background-image:url('build_icons.png');    
+    background-image:url('build_icons.png');
     left:110px;
     cursor:pointer;
 }
@@ -2305,10 +2297,10 @@ a.modelicon img{
 }
 
 #motherlock{
-    top:262px;    
+    top:262px;
 }
 #proclock{
-    top:296px;    
+    top:296px;
 }
 .pciex{
     position:absolute;
@@ -2341,6 +2333,86 @@ a.modelicon img{
 #facebook{
     background-position:0px -439px;
 }
+
+#operators{
+    display:block;
+    float:right;
+    width:180px;
+    padding-top:10px;
+    height:28px;
+}
+#oauth{
+    margin-left:10px;
+}
+._oauth{
+    background-image: url("bui_thumbs.png");
+    background-repeat: no-repeat;
+    color: white;
+    float: left;
+    font-weight: bold;
+    height: 32px;
+    margin-right: 18px;
+    margin-top: 10px;
+    padding-left: 35px;
+    padding-top: 7px;
+    cursor:pointer;
+}
+#omailru{
+    background-position:0px -106px;
+}
+#ovkontakte{
+    background-position:0px -70px;
+}
+#ofacebook{
+    background-position:0px -34px;
+}
+#city{
+    padding-top:10px;
+    display:block;
+    float:right;
+    height:28px;
+    width:100px;
+}
+#avatar{
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #333333;
+    background-repeat: no-repeat;
+    border-color: -moz-use-text-color #777777 #777777;
+    border-radius: 0 0 4px 4px;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+    padding: 8px 4px 4px;
+}
+#avatar div{
+    float:left;
+}
+#avatar_in{
+    background-image: url("build_icons.png");
+    background-position: 0 -496px;
+    height: 16px;
+    margin-right: 5px;
+    margin-top: 3px;
+    width: 16px;
+}
+#avatar_text{
+    max-width:122px;
+    text-align:left;
+}
+
+#links{
+    float:right;
+    z-index:9999;
+    text-align:right;
+    margin-bottom:5px;
+    max-width:700px;
+}
 #phone {
     background-image:url("/static/phone.jpg");
     background-repeat:repeat-x;
@@ -2349,22 +2421,8 @@ a.modelicon img{
     float:right;
     padding-top:10px;
     padding-bottom:7px;
-    width:290px;
+    width:250px;
     padding-right:5px;
     text-align:center;
     margin-left:10px;
-}
-#operators{
-    display:block;
-    float:right;
-    width:180px;
-    padding-top:10px;
-    height:28px;
-}
-#city{
-    padding-top:10px;
-    display:block;
-    float:right;
-    height:28px;
-    width:150px;
 }

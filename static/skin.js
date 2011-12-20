@@ -3,6 +3,54 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
+masked = false;
+function makeAuthMask(action, _closing){
+    function _makeMask(e){
+	//try{
+	if (e)
+	    e.preventDefault();
+	var maskHeight = $(document).height();
+	var maskWidth = $(window).width();
+	$('#mask').css({'width':maskWidth,'height':maskHeight})
+	    .fadeIn(400)
+	    .fadeTo("slow",0.9);
+	var winH = $(window).scrollTop();
+	var winW = $(window).width();
+
+	var details = $('#details');
+
+	var _left = winW/2-details.width()/2;
+	var _top;
+	if (winH == 0)
+	    _top = 80;
+	else
+	    _top = winH+80;
+	details.css('top', _top);
+	details.css('left', _left);
+
+	action();
+	details.prepend('<div id="closem"></div><div style="clear:both;"></div>');
+	$('#closem').click(function(e){$('#mask').click();});
+	function closing(){
+	}
+	details.fadeIn(600, closing);
+	masked = true;
+	$('#mask').click(function () {
+			     $(this).hide();
+			     details.hide();
+			     masked = false;
+			     _closing();
+			 });
+
+	$(document.documentElement).keyup(function (event) {
+					      if (event.keyCode == '27') {
+						  $('#mask').click();
+					      }
+					  });
+    }
+    return _makeMask;
+}
+
 function CartAndContacts(){
     var cart = $.cookie('pc_cart');
     var faq = $('#faqli a');
@@ -32,16 +80,19 @@ function CartAndContacts(){
 		}, 800);
 
     function swapPhone(text){
-	return function(e){$('#phone').html(text);};
+	return function(e){
+	    e.preventDefault();
+	    $('#phone').html(text);};
     }
+
     $('#beeline').click(swapPhone('8 (909) 792-22-39'));
     $('#mts').click(swapPhone('8 (911) 462-42-52'));
     $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
     $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
-    $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Люди и компы</a>'));
-    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850">Люди и компы</a>'));
-    $('#twitter').click(swapPhone('<a target="_blank" href="http://twitter.com/buildpc_ru">Люди и компы</a>'));
-    $('#facebook').click(swapPhone('<a target="_blank" href="http://www.facebook.com/pages/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D0%91%D0%B8%D0%BB%D0%B4/212619472150153?sk=wall">Люди и компы</a>'));
+    $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Мы Вконтакте</a>'));
+    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850" style="font-size:20px;">Мы в одноклассинках</a>', {'font-size': '14px !important'}));
+    $('#twitter').click(swapPhone('<a target="_blank" href="http://twitter.com/buildpc_ru">Мы в Твитере</a>'));
+    $('#facebook').click(swapPhone('<a target="_blank" href="http://www.facebook.com/pages/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D0%91%D0%B8%D0%BB%D0%B4/212619472150153?sk=wall">Мы в Фейсбук</a>'));
 }
 
 
@@ -56,6 +107,7 @@ var expands = {'howtochose':{'urls':[
 			      },
 	       'more':{'urls':[
 			   {url:'/promotion/ajax',title:'Спец предложение'},
+			   // {url:'/notebook',title:'Ноутбуки Asus'},
 			   {url:'/warranty',title:'Гарантии'},
 			   {url:'/support',title:'Поддержка'},
 			   {url:'/blog',title:'Блог'},
@@ -126,7 +178,7 @@ function ask(e){
 	   });
 }
 var forceCookie = function(){
-    
+
     if ($.cookie('pc_cookie_forced'))
 	return;
 
@@ -147,8 +199,14 @@ var forceCookie = function(){
 
 };
 
-var init = function(){
 
+var init = function(){
+    bindAuth();
+    makeAuth();
+    var av = $.cookie('pc_avatar');
+    if (av){
+	makeAvatar(eval('('+av+')'));
+    }
     forceCookie();
     if ($.browser.opera){
 	$('html').css('height','auto');
@@ -194,5 +252,93 @@ var init = function(){
     var joined = pairs_filtered.join('&');
     astro.attr('href','?'+joined+'&skin=astro');
     autumn.attr('href','?'+joined+'&skin=home');
+
 };
 init();
+
+function bindAuth(){
+    var providers = {
+	ofacebook:{url:'https://www.facebook.com/dialog/oauth?client_id=215061488574524&response_type=token&redirect_uri=', id:'facebook'},
+	ovkontakte:{url:'http://api.vkontakte.ru/oauth/authorize?client_id=2721994&response_type=token&redirect_uri=', id:'vkontakt'},
+	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'}
+    };
+
+    var auth_html = '<div id="oauth"><h3>Авторизация</h3><p>Для авторизации на нашем сайте можно использовать ваш акаунт в следующих сервисах:</p><div class="_oauth" id="ofacebook">войти через Фейсбук</div><div id="ovkontakte" class="_oauth">войти через Вконтакт</div><div id="omailru" class="_oauth">Войти через МайлРу<div style="clear:both;"></div></div></div>';
+    $('#avatar')
+	.unbind('click')
+	.click(makeAuthMask(function(){
+				$('#details').html(auth_html);
+				$('._oauth')
+				    .click(function(e){
+					       var _id = $(e.target).attr('id');
+					       var provider = providers[_id];
+					       var url = provider['url']+
+						       document.location.href.replace('localhost',
+										      'buildpc.ru')+
+							   '?pr='+provider['id'];
+					       document.location.href=url;
+					   });
+			    },
+			    function(){}));
+}
+
+function bindLogout(){
+    $('#avatar')
+	.unbind('click')
+	.click(function(){
+		   var av = $('#avatar');
+		   //av.fadeOut(400);
+		   $('#avatar_in')
+		       .css({'background-position':'0px -496px'});
+		   $('#avatar_text').css({'font-size':'12px'}).text('авторизация');
+		   av.css('poadding-top', '8px');
+		   bindAuth();
+		   $.cookie('pc_avatar', null);
+		   //av.fadeIn(400);
+	       });
+}
+
+function makeAvatar(data){
+    var in_cart = document.location.href.split('?')[0].match(/cart\/[0-9a-f]*$/g);
+    if (in_cart){
+	var user_id = in_cart[0].split('/')[1];
+	if (user_id!=$.cookie('pc_user')){
+	    document.location.href = '/cart/'+$.cookie('pc_user');
+	    $.cookie('pc_avatar', null);
+	    $.cookie('pc_avatar', JSON.stringify(data), {path:'/'});
+	    return;
+	}
+	    
+    }
+    var av = $('#avatar');
+    av.fadeOut(200, function(){
+		       $('#avatar_in')
+		       .css({'background-position':'0px -478px'})
+		       .next().css({'font-size':'12px'}).html(data['first_name']+' '+data['last_name'])
+		       .parent();
+		   var pos = $('#faqli').position().top;
+		   av.fadeIn(200, function(){
+				 if (pos<=44)
+				     av.css('padding-top','11px');
+				 else
+				     av.css('padding-top','0px');
+			     });
+		   $.cookie('pc_avatar', null);
+		   $.cookie('pc_avatar', JSON.stringify(data), {path:'/'});
+		   bindLogout();
+	       });
+};
+
+function makeAuth(){
+    var pr=document.location.search.match(/pr=[^&]*/);
+    var tok = document.location.hash.match(/access_token=[^&]*/g);
+    var user_id = document.location.hash.match(/user_id=[^&]+/g);
+    if (!user_id)
+	user_id=[''];
+    if (!pr || !tok)return;
+    $.ajax({
+	       url:'/oauth?'+pr[0]+'&'+tok[0]+'&'+user_id[0],
+	       success:makeAvatar
+	   });
+}
+//makeAvatar({'first_name':'Константин',last_name:'Анатоьевичбург'});

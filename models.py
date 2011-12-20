@@ -11,6 +11,7 @@ from pc.mail import send_email
 from random import randint
 import re
 from twisted.web.resource import Resource
+from pc.common import addCookies
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -306,7 +307,6 @@ def renderComputer(model, template, skin):
 	author = model.pop('author')
 	if 'parent' in model:
 	    parent = model.pop('parent')
-
 
     if 'description' in model:
 	# try:
@@ -871,7 +871,7 @@ class ModelForModelsPage(object):
             this_user_is_author = self.user is not None and\
                 self.model['author'] == self.user['_id'] and\
                 self.request.getCookie('pc_key') == self.user['pc_key']
-            #zzzzzzz            
+
             if this_user_is_author:
                 extra = deepcopy(self.tree.find('cart_extra'))
                 for el in extra:
@@ -919,18 +919,7 @@ class ModelForModelsPage(object):
 
 def fixDeletedCart(err, request, name):
     if request.getCookie('pc_user') == name:
-	request.addCookie('pc_user',
-			  '',
-			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/',domain='.buildpc.ru')
-	request.addCookie('pc_key',
-			  '',
-			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/',domain='.buildpc.ru')
-	request.addCookie('pc_cart',
-			  '',
-			  expires=datetime.now().replace(year=2000).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/',domain='.buildpc.ru')
+        addCookies(request, {'pc_user':'','pc_key':'','pc_cart':''})
     request.redirect('http://buildpc.ru')
     return []
 
@@ -1049,11 +1038,13 @@ def computers(template,skin,request):
 		    result['user_doc']['notebooks'].pop(k)
 		# update user_doc
 		couch.saveDoc(result['user_doc'])
-		request.addCookie('pc_cart',
-			  str(total+len(result['user_doc']['notebooks'])),
-			  expires=datetime.now().\
-				  replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),
-			  path='/',domain='.buildpc.ru')
+
+        # refresh in_cart coookie, because it is possible now
+        # to add to the same cart from other browsers
+        in_cart = len(user_doc['models'])
+        if 'notebooks' in user_doc:
+            in_cart += len(user_doc['notebooks'])
+        addCookies(request, {'pc_cart':in_cart})
 
 	_prices = 'undefined'
 
