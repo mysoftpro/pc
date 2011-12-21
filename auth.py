@@ -68,53 +68,30 @@ class OAuth(Resource):
     def __init__(self):
 	Resource.__init__(self)
 	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook,
-		      'goog':self.goog}
+		      'goog':self.goog, 'yandex':self.yandex}
 
 
-    def parseGoog(self, f, user_doc, request):
-        answer = simplejson.loads(f.read())
-        soc_user_ob = {}
-	soc_user_ob['uid'] = 'go'+answer['id']
-        soc_user_ob['first_name'] = answer['given_name']
-        soc_user_ob['last_name'] = answer['family_name']
-	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
-	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
-	f.close()
-
-    def parseVkontakt(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())
-	f.close()
-	soc_user_ob = answer['response'][0]
-	soc_user_ob['uid'] = 'vk'+str(soc_user_ob['uid'])
-	# ok. now i have user_ob from soc network and user_doc
-	# it need to call some view with the 'vk'+user_ob[uuid]
-	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
-	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+    # TODO! decorate this method @json_response
+    def prepRequest(self, request):
+	request.setHeader('Content-Type', 'application/json')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 
 
-    def parseMail(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())
-	f.close()
-	soc_user_ob = {'uid':answer[0]['uid'], 'first_name':answer[0]['first_name'],'last_name':answer[0]['last_name']}
-	soc_user_ob['uid'] = 'ma'+str(soc_user_ob['uid'])
-	# ok. now i have user_ob from soc network and user_doc
-	# it need to call some view with the 'vk'+user_ob[uuid]
-	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
-	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
-
-
-
-    def parseFacebook(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())
-	f.close()
-	soc_user_ob = {'uid':answer['id'],
-		       'first_name':answer['first_name'],
-		       'last_name':answer['last_name']}
-	soc_user_ob['uid'] = 'fb'+str(soc_user_ob['uid'])
-	# ok. now i have user_ob from soc network and user_doc
-	# it need to call some view with the 'vk'+user_ob[uuid]
-	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
-	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+    def render_GET(self, request):
+	pr = request.args.get('pr', [None])[0]
+	access_token = request.args.get('access_token', [None])[0]
+	code = request.args.get('code', [None])[0]
+        
+	if pr is None or (access_token is None and code is None) or pr not in self.auths:
+	    return "fail"
+	pc_user = request.getCookie('pc_user')
+	d = couch.openDoc(pc_user)
+	d.addCallback(self.auths[pr], access_token, code, request)
+	def new_user(fail):
+	    return self.auths[pr]( {'_id':pc_user,'models':[],'pc_key':base36.gen_id(), 'new':True},
+			    access_token, code, request)
+	d.addErrback(new_user)
+	return NOT_DONE_YET
 
 
     def addNewSockUser(self, received_soc_user_ob, user_doc):
@@ -222,6 +199,27 @@ class OAuth(Resource):
 	request.finish()
 
 
+
+    def getOauthAnswer(self, response, further_d):
+	enc = ''
+	for h in response.headers.getAllRawHeaders():
+	    if h[0] == 'Content-Encoding':
+		enc = h[1][0]
+		break
+	response.deliverBody(LineReceiver(further_d, enc))
+
+
+    def parseGoog(self, f, user_doc, request):
+        answer = simplejson.loads(f.read())
+        soc_user_ob = {}
+	soc_user_ob['uid'] = 'go'+answer['id']
+        soc_user_ob['first_name'] = answer['given_name']
+        soc_user_ob['last_name'] = answer['family_name']
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+	f.close()
+
+
     def getGoogAccessToken(self, f, user_doc, request):
 	""""""
 	answer = simplejson.loads(f.read())
@@ -250,6 +248,17 @@ class OAuth(Resource):
 
 
 
+    def parseVkontakt(self, f, user_doc, request):
+	answer = simplejson.loads(f.read())
+	f.close()
+	soc_user_ob = answer['response'][0]
+	soc_user_ob['uid'] = 'vk'+str(soc_user_ob['uid'])
+	# ok. now i have user_ob from soc network and user_doc
+	# it need to call some view with the 'vk'+user_ob[uuid]
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+
+
     def getVkontaktAccessToken(self, f, user_doc, request):
         src = f.read()
 	answer = simplejson.loads(src)
@@ -272,6 +281,19 @@ class OAuth(Resource):
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
+
+
+    def parseMail(self, f, user_doc, request):
+	answer = simplejson.loads(f.read())
+	f.close()
+	soc_user_ob = {'uid':answer[0]['uid'], 'first_name':answer[0]['first_name'],'last_name':answer[0]['last_name']}
+	soc_user_ob['uid'] = 'ma'+str(soc_user_ob['uid'])
+	# ok. now i have user_ob from soc network and user_doc
+	# it need to call some view with the 'vk'+user_ob[uuid]
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+
+
     def mail(self, user_doc, access_token, code, request):
 	agent = Agent(reactor)
 	ha = hashlib.md5()
@@ -284,6 +306,21 @@ class OAuth(Resource):
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
+
+
+    def parseFacebook(self, f, user_doc, request):
+	answer = simplejson.loads(f.read())
+	f.close()
+	soc_user_ob = {'uid':answer['id'],
+		       'first_name':answer['first_name'],
+		       'last_name':answer['last_name']}
+	soc_user_ob['uid'] = 'fb'+str(soc_user_ob['uid'])
+	# ok. now i have user_ob from soc network and user_doc
+	# it need to call some view with the 'vk'+user_ob[uuid]
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+
+
     def facebook(self, user_doc, access_token, code, request):
 	agent = Agent(reactor)
 	request_d = agent.request('GET', 'https://graph.facebook.com/me?access_token=%s' % access_token,Headers11({}),None)
@@ -292,34 +329,12 @@ class OAuth(Resource):
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
-    def getOauthAnswer(self, response, further_d):
-	enc = ''
-	for h in response.headers.getAllRawHeaders():
-	    if h[0] == 'Content-Encoding':
-		enc = h[1][0]
-		break
-	response.deliverBody(LineReceiver(further_d, enc))
 
-    # TODO! decorate this method @json_response
-    def prepRequest(self, request):
-	request.setHeader('Content-Type', 'application/json')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-
-
-    def render_GET(self, request):
-	pr = request.args.get('pr', [None])[0]
-	access_token = request.args.get('access_token', [None])[0]
-	code = request.args.get('code', [None])[0]
-	if pr is None or (access_token is None and code is None) or pr not in self.auths:
-	    return "fail"
-	pc_user = request.getCookie('pc_user')
-	d = couch.openDoc(pc_user)
-	d.addCallback(self.auths[pr], access_token, code, request)
-	def new_user(fail):
-	    return self.auths[pr]( {'_id':pc_user,'models':[],'pc_key':base36.gen_id(), 'new':True},
-			    access_token, request)
-	d.addErrback(new_user)
-	return NOT_DONE_YET
+    def yandex(self, user_doc, access_token, code, request):
+        soc_user_ob = globals()['PASSED_USERS'].pop(request.getCookie('pc_user'))
+        d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+        return d
 
 
 
@@ -384,3 +399,78 @@ if __name__ == '__main__':
     user_doc = {'_id':'pc_user','models':['1','2'],'pc_key':base36.gen_id(), 'payments':payments}
     stored_soc_user_doc_res = {'rows':[{'doc':{'_id':'some_id','models':['3','4'],'pc_key':base36.gen_id(), 'payments':payments1}}]}
     res.mergeUsers(stored_soc_user_doc_res, received_soc_user, user_doc, TestRequest())
+
+
+
+
+import tempfile
+from openid.consumer.consumer import Consumer, SUCCESS, DiscoveryFailure
+from openid.store.filestore import FileOpenIDStore
+from openid.extensions import ax
+
+STORAGE = FileOpenIDStore(tempfile.gettempdir())
+
+ROOT = 'http://localhost'
+RETURN_TO = ROOT+'/openid'
+AXINFO = {
+    'email': 'http://axschema.org/contact/email',
+    'nickname': 'http://axschema.org/namePerson/friendly',
+    'namePerson':'http://axschema.org/namePerson'
+    }
+REDIRECTED_USERS = {}
+PASSED_USERS = {}
+
+class OpenId(Resource):
+
+    def render_GET(self, request):
+        janrain_nonce = request.args.get('janrain_nonce', [None])[0]
+        if janrain_nonce is not None:
+            cookie = request.getCookie('pc_user')
+            if not cookie in globals()['REDIRECTED_USERS']:
+                request.redirect('http://buildpc.ru')
+                return ""
+            consumer = Consumer({}, STORAGE)
+            args = dict((k,unicode(v[0], 'utf-8')) for k,v in request.args.items())
+
+            info = consumer.complete(args, RETURN_TO)
+            # Если аутентификация не удалась или отменена            
+            # Получение данных пользователя при успешной аутентификации
+            if info.status != SUCCESS:
+                request.redirect('http://buildpc.ru')
+                return ""
+            
+            ax_info = ax.FetchResponse.fromSuccessResponse(info) or ax.FetchResponse()
+            user_data = {
+                'uid': info.identity_url,
+                'first_name': ax_info.getSingle(AXINFO['namePerson']),
+                'last_name': '',                
+            }
+            globals()['PASSED_USERS'].update({cookie:user_data})
+            request.redirect(globals()['REDIRECTED_USERS'].pop(cookie).split('?')[0]\
+                                 +'?pr=yandex&code='+cookie)
+            return ""
+            
+        # Далее — выборка существующего или регистрация нового пользователя
+        else:
+            backUrl = request.args.get('backurl', [None])[0]
+            globals()['REDIRECTED_USERS'].update({request.getCookie('pc_user'):backUrl})
+            # provider = request.get('provider', [None])[0]            
+            # url = openid_request.redirectURL(ROOT, ROOT)
+            
+            # Короткие названия для ключей необходимых данных о пользователе.
+            # Список доступных данных см. в разделе Дополнительные данные о пользователе
+            
+            consumer = Consumer({}, STORAGE)
+            openid_request = consumer.begin('http://www.yandex.ru/')
+
+            # Запрос дополнительной информации о пользователе
+            # Поля, указанные с ключом required, на сайте Яндекса отображаются как обязательные
+            # (незаданные значения подсвечиваются красным цветом)
+            ax_request = ax.FetchRequest()
+            # ax_request.add(ax.AttrInfo(AXINFO['email'], required=True))
+            # ax_request.add(ax.AttrInfo(AXINFO['nickname']))
+            ax_request.add(ax.AttrInfo(AXINFO['namePerson'], required=True))
+            openid_request.addExtension(ax_request)
+            url = openid_request.redirectURL(ROOT, RETURN_TO)
+            request.redirect(url)
+            return ""            

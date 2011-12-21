@@ -270,10 +270,11 @@ function bindAuth(){
 	ofacebook:{url:'https://www.facebook.com/dialog/oauth?client_id=215061488574524&response_type=token&redirect_uri=', id:'facebook'},
 	ovkontakte:{url:'http://api.vkontakte.ru/oauth/authorize?client_id=2721994&response_type=code&redirect_uri=', id:'vkontakt'},
 	omailru:{url:'https://connect.mail.ru/oauth/authorize?client_id=655634&response_type=token&redirect_uri=', id:'mail'},
-	ogoog:{url:'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=503983129880.apps.googleusercontent.com&redirect_uri=http://buildpc.ru?pr=goog&scope=https://www.googleapis.com/auth/userinfo.profile', 'id':'goog'}
+	ogoog:{url:'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=503983129880.apps.googleusercontent.com&redirect_uri=http://buildpc.ru?pr=goog&scope=https://www.googleapis.com/auth/userinfo.profile', 'id':'goog'},
+	oyandex:{url:'/openid?backurl=', 'id':'yandex'}
     };
 
-    var auth_html = '<div id="oauth"><h3>Авторизация</h3><p>Для авторизации на нашем сайте можно использовать ваш акаунт в следующих сервисах:</p><div class="_oauth" id="ofacebook">войти через Фейсбук</div><div id="ovkontakte" class="_oauth">войти через Вконтакт</div><div id="omailru" class="_oauth">Войти через МайлРу</div><div id="ogoog" class="_oauth">Войти через Google</div><div style="clear:both;"></div><div><a style="color:black;" href="/whyauth">Зачем нужна авторизация?</a></div></div>';
+    var auth_html = '<div id="oauth"><h3>Авторизация</h3><p>Для авторизации на нашем сайте можно использовать ваш акаунт в следующих сервисах:</p><div class="_oauth" id="ofacebook">войти через Фейсбук</div><div id="ovkontakte" class="_oauth">войти через Вконтакт</div><div id="omailru" class="_oauth">Войти через МайлРу</div><div style="clear:both;"></div><div id="ogoog" class="_oauth">Войти через Гугл</div><div id="oyandex" class="_oauth">Войти через Яндекс</div><div style="clear:both;"></div><div><a style="color:black;" href="/whyauth">Зачем нужна авторизация?</a></div></div>';
     $('#avatar')
 	.unbind('click')
 	.click(makeAuthMask(function(){
@@ -287,9 +288,9 @@ function bindAuth(){
 						   url = provider['url'];
 					       }
 					       else{
+						   //.replace('localhost','buildpc.ru')
 						   url = provider['url']+
-						       document.location.href.replace('localhost',
-										  'buildpc.ru')
+						       document.location.href
 						       .split('?')[0]+
 						       '?pr='+provider['id'];
 					       }
@@ -317,6 +318,7 @@ function bindLogout(){
 }
 
 function makeAvatar(data){
+    if (data === 'fail')return;
     var in_cart = document.location.href.split('?')[0].match(/cart\/[0-9a-f]*$/g);
     if (in_cart){
 	var user_id = in_cart[0].split('/')[1];

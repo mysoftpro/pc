@@ -2421,6 +2421,7 @@ a.modelicon img{
     padding-left: 35px;
     padding-top: 7px;
     cursor:pointer;
+    width:200px;
 }
 #omailru{
     background-position:0px -106px;
@@ -2492,4 +2493,10 @@ a.modelicon img{
     text-align:center;
     margin-left:10px;
     color:white;
+}
+#ogoog{
+    background-position:0px -144px;
+}
+#oyandex{
+    background-position:0px -183px;
 }

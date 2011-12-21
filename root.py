@@ -29,7 +29,7 @@ from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
 import sys
-from pc.auth import OAuth
+from pc.auth import OAuth, OpenId
 from pc.common import addCookies
 
 simple_titles = {
@@ -646,7 +646,7 @@ class Root(Cookable):
 	self.putChild('store_model_name', StoreModelName())
 	self.putChild('bill.pdf', PdfBill())
 	self.putChild('oauth',OAuth())
-
+        self.putChild('openid',OpenId())
 
     def getChild(self, name, request):
 	self.checkCookie(request)
