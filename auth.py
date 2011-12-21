@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from pc.twsited_client_11_1 import Agent, Headers11
+from twisted.web.http_headers import Headers
+from twisted.web.client import Agent as HTTPAgent
 from twisted.internet.protocol import Protocol
 from cStringIO import StringIO
 import gzip
@@ -12,7 +14,7 @@ from pc import base36
 from datetime import datetime
 from pc.common import addCookies
 import hashlib
-from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key, goog_client_id, goog_secret
+from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key, goog_client_id, goog_secret,odnoklassniki_app_id, odnoklassniki_secret_key,odnoklassniki_pulic_key
 from twisted.internet.defer import succeed
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implements
@@ -68,7 +70,7 @@ class OAuth(Resource):
     def __init__(self):
 	Resource.__init__(self)
 	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook,
-		      'goog':self.goog, 'yandex':self.yandex}
+		      'goog':self.goog, 'yandex':self.yandex, 'odnoklassniki':self.odnoklassniki}
 
 
     # TODO! decorate this method @json_response
@@ -336,6 +338,71 @@ class OAuth(Resource):
 	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
         return d
 
+
+
+    def parseOdnoklassniki(self, f, user_doc, request):
+	soc_user_ob = simplejson.loads(f.read())
+        print "yppppppppppppppppppppppppppppppppppppppppppppppppp"
+        print soc_user_ob
+	f.close()
+	soc_user_ob['uid'] = 'od'+str(soc_user_ob['uid'])
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+
+
+    def getOdnoklassnikiAccessToken(self, f, user_doc, request):
+	""""""
+        src = f.read()
+	f.close()
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print src
+	answer = simplejson.loads(src)        
+        agent = Agent(reactor)
+
+        url = 'http://api.odnoklassniki.ru/fb.do?access_token=%s' % answer['access_token']
+        params = ['method=users.getInfo','application_key='+odnoklassniki_pulic_key,
+                  'client_id='+odnoklassniki_app_id,
+                  'fields=uid,first_name,last_name',
+                  'method=users.getInfo']
+        # sig = md5( request_params_composed_string+ md5(access_token + application_secret_key)  )
+        int_sig_ha = hashlib.md5()
+        int_sig_ha.update(answer['access_token'])
+        int_sig_ha.update(odnoklassniki_secret_key)
+        sig_ha = hashlib.md5()
+        for p in params:
+            sig_ha.update(p)
+        sig_ha.update(int_sig_ha.hexdigest())
+        sig = sig_ha.hexdigest()
+        
+        url = 'http://api.odnoklassniki.ru/fb.do?access_token='+answer['access_token']+'&'\
+            '&'.join(params)+'&sig='+sig
+
+	request_d = agent.request('GET', str(url),Headers11({}),None)
+	d = defer.Deferred()
+	d.addCallback(self.parseOdnoklassniki, user_doc, request)
+	request_d.addCallback(self.getOauthAnswer, d)
+	return request_d
+
+
+
+    def odnoklassniki(self, user_doc, access_token, code, request):
+        print request.uri
+        agent = HTTPAgent(reactor)
+	# cases
+        # quote_plus('http://localhost/?pr=odnoklassniki&code='+code)
+        # quote_plus('http://localhost'+request.uri)
+        # quote_plus('http://localhost?pr=odnoklassniki')
+        body = 'code=%s&redirect_uri=%s&grant_type=authorization_code&client_id=%s&client_secret=%s' % (code, quote_plus('http://buildpc.ru/?pr=odnoklassniki'), odnoklassniki_app_id, odnoklassniki_secret_key)
+	print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        print body
+        request_d = agent.request('POST',
+				  'http://api.odnoklassniki.ru/oauth/token.do?',
+				  Headers({'Content-Type':['application/x-www-form-urlencoded']}),
+                                  PostProducer(body))
+	d = defer.Deferred()
+	d.addCallback(self.getOdnoklassnikiAccessToken, user_doc, request)
+	request_d.addCallback(self.getOauthAnswer, d)
+	return request_d
 
 
 class TestRequest(object):
