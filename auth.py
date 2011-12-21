@@ -410,7 +410,7 @@ from openid.extensions import ax
 
 STORAGE = FileOpenIDStore(tempfile.gettempdir())
 
-ROOT = 'http://localhost'
+ROOT = 'http://buildpc.ru'
 RETURN_TO = ROOT+'/openid'
 AXINFO = {
     'email': 'http://axschema.org/contact/email',
