@@ -223,14 +223,7 @@ class OAuth(Resource):
 
 
     def getGoogAccessToken(self, f, user_doc, request):
-	"""
-	{
-2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "access_token" : "ya29.AHES6ZRdKBc9POlrSDgxXcACypFz5QwPGOgS61jA_PbvzeY",
-2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "token_type" : "Bearer",
-2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "expires_in" : 3600,
-2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "id_token" : "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXVkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiY2lkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaWQiOiIxMDQxMDkyNTg0OTI4NDQ2OTk3ODAiLCJ0b2tlbl9oYXNoIjoibUxuT1UzVkdZTzdfR3ZDelNaOEVRUSIsImlhdCI6MTMyNDQwMTU0MCwiZXhwIjoxMzI0NDA1NDQwfQ.FxO2QUq3toj8VdqywbuQGtmfxdPu5jjyUlG6nI9t2QT4pRGRVgkh9CxhlI73gZSbwNYt6fgO2RWmHnzaJkxB4AQ93wyp7RjmeaxPF2A97-fvj0Z95melwdQSvJDJW8-MphfURAwQ8iDzeCnQCBK4pEQAT0PYa6IcroSHVZ_Sp3A"
-2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client] }
-"""
+	""""""
 	answer = simplejson.loads(f.read())
 	agent = Agent(reactor)
 	url = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token='+answer['access_token']
@@ -258,18 +251,17 @@ class OAuth(Resource):
 
 
     def getVkontaktAccessToken(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())
-	token = answer['access_token']
+        src = f.read()
+	answer = simplejson.loads(src)
 	f.close()
-	url = 'GET https://www.googleapis.com/oauth2/v1/userinfo?access_token=%s' % token
+        url = 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' %\
+	    (answer['user_id'],answer['access_token'])	
 	agent = Agent(reactor)
 	request_d = agent.request('GET', str(url),Headers11({}),None)
 	d = defer.Deferred()
 	d.addCallback(self.parseVkontakt, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
-
-
 
     def vkontakt(self, user_doc, access_token, code, request):
 	# soc_user_id = request.args.get('user_id')[0]
