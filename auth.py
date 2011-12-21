@@ -48,7 +48,7 @@ class PostProducer(object):
     implements(IBodyProducer)
 
     def __init__(self, body):
-	self.body = str(body)	
+	self.body = str(body)
 	self.length = len(self.body)
 
     def startProducing(self, consumer):
@@ -68,16 +68,21 @@ class OAuth(Resource):
     def __init__(self):
 	Resource.__init__(self)
 	self.auths = {'mail':self.mail,'vkontakt':self.vkontakt,'facebook':self.facebook,
-                      'goog':self.goog}
+		      'goog':self.goog}
 
 
     def parseGoog(self, f, user_doc, request):
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print f.read()
-        f.close()
+        answer = simplejson.loads(f.read())
+        soc_user_ob = {}
+	soc_user_ob['uid'] = 'go'+answer['id']
+        soc_user_ob['first_name'] = answer['given_name']
+        soc_user_ob['last_name'] = answer['family_name']
+	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
+	d.addCallback(self.mergeUsers, soc_user_ob, user_doc, request)
+	f.close()
 
     def parseVkontakt(self, f, user_doc, request):
-	answer = simplejson.loads(f.read())        
+	answer = simplejson.loads(f.read())
 	f.close()
 	soc_user_ob = answer['response'][0]
 	soc_user_ob['uid'] = 'vk'+str(soc_user_ob['uid'])
@@ -217,30 +222,34 @@ class OAuth(Resource):
 	request.finish()
 
 
-    def getGoogAccessToken(self, f, user_doc, request):        
-        """
-        {
+    def getGoogAccessToken(self, f, user_doc, request):
+	"""
+	{
 2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "access_token" : "ya29.AHES6ZRdKBc9POlrSDgxXcACypFz5QwPGOgS61jA_PbvzeY",
 2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "token_type" : "Bearer",
 2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "expires_in" : 3600,
 2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client]   "id_token" : "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXVkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiY2lkIjoiNTAzOTgzMTI5ODgwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaWQiOiIxMDQxMDkyNTg0OTI4NDQ2OTk3ODAiLCJ0b2tlbl9oYXNoIjoibUxuT1UzVkdZTzdfR3ZDelNaOEVRUSIsImlhdCI6MTMyNDQwMTU0MCwiZXhwIjoxMzI0NDA1NDQwfQ.FxO2QUq3toj8VdqywbuQGtmfxdPu5jjyUlG6nI9t2QT4pRGRVgkh9CxhlI73gZSbwNYt6fgO2RWmHnzaJkxB4AQ93wyp7RjmeaxPF2A97-fvj0Z95melwdQSvJDJW8-MphfURAwQ8iDzeCnQCBK4pEQAT0PYa6IcroSHVZ_Sp3A"
 2011-12-20 20:25:16+0300 [HTTP11ClientProtocol,client] }
 """
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print f.read()
-        f.close()
+	answer = simplejson.loads(f.read())
+	agent = Agent(reactor)
+	url = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token='+answer['access_token']
+	request_d = agent.request('GET', str(url),Headers11({}),None)
+	d = defer.Deferred()
+	d.addCallback(self.parseGoog, user_doc, request)
+	request_d.addCallback(self.getOauthAnswer, d)
+	return request_d
+	f.close()
 
 
     def goog(self, user_doc, access_token, code, request):
-	# soc_user_id = request.args.get('user_id')[0]        
-	agent = Agent(reactor)        
-        body = 'code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s' % (code, goog_client_id, goog_secret, quote_plus('http://buildpc.ru?pr=goog'))
-        print "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
-        print body
-	request_d = agent.request('POST', 
-                                  'https://accounts.google.com/o/oauth2/token',
-                                  Headers11({'Content-Type':['application/x-www-form-urlencoded']}),PostProducer(body))
-	d = defer.Deferred()        
+	# soc_user_id = request.args.get('user_id')[0]
+	agent = Agent(reactor)
+	body = 'code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s' % (code, goog_client_id, goog_secret, quote_plus('http://buildpc.ru?pr=goog'))
+	request_d = agent.request('POST',
+				  'https://accounts.google.com/o/oauth2/token',
+				  Headers11({'Content-Type':['application/x-www-form-urlencoded']}),PostProducer(body))
+	d = defer.Deferred()
 	d.addCallback(self.getGoogAccessToken, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
@@ -250,13 +259,13 @@ class OAuth(Resource):
 
     def getVkontaktAccessToken(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())
-        token = answer['access_token']
+	token = answer['access_token']
 	f.close()
 	url = 'GET https://www.googleapis.com/oauth2/v1/userinfo?access_token=%s' % token
 	agent = Agent(reactor)
 	request_d = agent.request('GET', str(url),Headers11({}),None)
 	d = defer.Deferred()
-        d.addCallback(self.parseVkontakt, user_doc, request)
+	d.addCallback(self.parseVkontakt, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
 	return request_d
 
