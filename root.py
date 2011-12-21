@@ -784,7 +784,7 @@ class CheckModel(Resource):
     def notify(self, res, author):
 	send_email('inbox@buildpc.ru',
 		   u'Требуется проверить конфигурацию',
-		   'http://buildpc.ru/cart/'+author+' '+res['id'],
+		   'http://buildpc.ru/cart/'+author+' http://buildpc.ru/computer/'+res['id'] +' http://buildpc.ru/admin/couch/_utils/document.html?pc/'+res['id'],
 		   sender=u'Компьютерный магазин <admin@buildpc.ru>')
 
     def checkModel(self, doc, request):
