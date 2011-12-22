@@ -7,7 +7,6 @@ def makeCombinations():
     while cycle<len(words):
         cycle+=1
         for a in xrange(base):
-            print "?----------------------------"
             keys = []
             for b in xrange(a):
                 keys.append(words[b])

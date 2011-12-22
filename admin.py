@@ -761,9 +761,14 @@ def clear_cache():
 
 class NewForMapping(Resource):
     def finish(self, res, request):
+        new_res = {'rows':[]}
+        for r in res['rows']:
+            if r['doc']['new_catalogs'] not in ['videos', 'procs', 'mothers']:
+                continue
+            new_res['rows'].append(r)
 	request.setHeader('Content-Type', 'application/json;charset=utf-8')
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	request.write(simplejson.dumps(res))
+	request.write(simplejson.dumps(new_res))
 	request.finish()
 
     def render_GET(self, request):

@@ -16,6 +16,7 @@ function fillWit(data){
 							      'doc':row['doc']});
 						   return;
 					       }
+					       if (row['doc']['_id'].match('new_'))return;
 					       var td = tr.children().first();
 					       td.attr('id', row['doc']['_id']);
 					       td.text(row['doc']['text']+ ' '+row['doc']['_id']+' $'+row['doc']['price']);
@@ -37,6 +38,8 @@ function fillNew(data){
 			     var td = tr.children().last();
 			     td.attr('id', row['doc']['_id']);
 			     td.text(row['doc']['text']+' '+row['doc']['_id']+' $'+row['doc']['us_price']);
+			     if (row['doc']['catalogs'])
+				 td.css('color','green');
 			     tr = tr.next();
 			 });
     dones+=1;
@@ -50,12 +53,21 @@ function init(){
     _(wits_for_new).each(function(ob){
 			     var wi = ob['doc'];
 			     var ne = news_for_wit[ob['newid']];
-			     first_selected.after(_.template('<tr><td id="{{witid}}">{{wittext}}</td><td id="{{newid}}">{{newtext}}</td><td><input type="submit" value="delete"/></td></tr>',
+			     if (!ne){
+				 console.log('no mapping for this!');
+				 console.log(ob);
+				 return;
+			     }
+			     var color = 'black';
+			     if (ne['catalogs'])
+				 color="blue";
+			     first_selected.after(_.template('<tr><td id="{{witid}}">{{wittext}}</td><td style="color:{{color}}" id="{{newid}}">{{newtext}}</td><td><input type="submit" value="delete"/></td></tr>',
 				      {
 					  witid:wi['_id'],
 					  newid:ne['_id'],
 					  wittext:wi['text'],
-					  newtext:ne['text']
+					  newtext:ne['text'],
+					  color:color
 				      }));
 			     first_selected.next()
 				 .find('input').click(function(e){

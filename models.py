@@ -1573,3 +1573,19 @@ def promotion(template, skin, request):
     d = couch.openDoc(name)
     d.addCallback(renderPromotion, template, skin)
     return d
+
+
+def upgrade_set(template, skin, request):
+
+    if globals()['gChoices'] is None:
+	d = fillChoices()
+	d.addCallback(lambda some: index(template, skin, request))
+	return d
+    def render(self):
+	skin.top = template.top
+	skin.middle = template.middle
+	return skin.render()
+
+    d = couch.openView(designID,'models',include_docs=True,stale=False)
+    d.addCallback(render)
+    return d

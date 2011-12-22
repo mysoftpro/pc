@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, findComponent
+    NamesFor, ParamsFor, promotion, findComponent, upgrade_set
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -39,7 +39,8 @@ simple_titles = {
     '/warranty':u'Гарантии',
     '/support':u'Поддержка',
     '/about':u'Про магазин',
-    '/whyauth':u'Зачем нужна авторизация'
+    '/whyauth':u'Зачем нужна авторизация',
+    '/upgrade_set':u'Наборы для апгрейда',
 }
 
 def simplePage(template, skin, request):
@@ -113,7 +114,8 @@ static_hooks = {
     'payment_success.html':simplePage,
     'payment_fail.html':simplePage,
     'about.html':simplePage,
-    'whyauth.html':simplePage
+    'whyauth.html':simplePage,
+    'upgrade_set.html':upgrade_set
     }
 
 
@@ -173,6 +175,7 @@ class SiteMap(Resource):
 	root.append(self.buildElement('faq'))
 	root.append(self.buildElement('about'))
         root.append(self.buildElement('whyauth'))
+        root.append(self.buildElement('upgrade_set'))
 	root.append(self.buildElement('howtochoose'))
 	root.append(self.buildElement('howtobuy'))
 	root.append(self.buildElement('howtouse'))
@@ -641,6 +644,7 @@ class Root(Cookable):
 	self.putChild('bill.pdf', PdfBill())
 	self.putChild('oauth',OAuth())
         self.putChild('openid',OpenId())
+        self.putChild('upgrade_set',TemplateRenderrer(self.static, 'upgrade_set.html'))
 
     def getChild(self, name, request):
 	self.checkCookie(request)
