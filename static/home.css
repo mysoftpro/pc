@@ -897,7 +897,7 @@ label:hover{
     height:180px;
 }
 #models_top span {
-    background-color: #F3C312;
+    background-color: white;
     color: black;
     padding: 2px;
 }
@@ -1057,7 +1057,7 @@ strong.red{
     -webkit-animation: animate-bg 5s linear infinite;
     -moz-animation: animate-bg 5s linear infinite;
     display:none;
-    background-color: #789d17;
+    background-color: #0687b7;
     border-color: #3b8eb5;
     z-index:9999;
 }
@@ -1703,7 +1703,7 @@ a.modelicon img{
 .dragdealer .red-bar {
 	width: 8px;
 	height: 20px;
-	background:  #7B9C0A;
+	background:  #4e4e94;
 	margin-top:-7px;
 	border-radius:3px;
 	-moz-border-radius:3px 3px 3px 3px;
