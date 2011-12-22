@@ -341,9 +341,11 @@ class OAuth(Resource):
 
 
     def parseOdnoklassniki(self, f, user_doc, request):
-	soc_user_ob = simplejson.loads(f.read())
-        print "yppppppppppppppppppppppppppppppppppppppppppppppppp"
-        print soc_user_ob
+        src = f.read()
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print src
+	f.close()
+	soc_user_ob = simplejson.loads(src)
 	f.close()
 	soc_user_ob['uid'] = 'od'+str(soc_user_ob['uid'])
 	d = couch.openView(designID, 'soc_users', key=soc_user_ob['uid'], include_docs=True)
@@ -354,30 +356,25 @@ class OAuth(Resource):
 	""""""
         src = f.read()
 	f.close()
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print src
 	answer = simplejson.loads(src)        
-        agent = Agent(reactor)
-
-        url = 'http://api.odnoklassniki.ru/fb.do?access_token=%s' % answer['access_token']
-        params = ['method=users.getInfo','application_key='+odnoklassniki_pulic_key,
+        agent = HTTPAgent(reactor)
+        
+        params = ['method=users.getCurrentUser',
+                  'application_key='+odnoklassniki_pulic_key,
                   'client_id='+odnoklassniki_app_id,
-                  'fields=uid,first_name,last_name',
-                  'method=users.getInfo']
-        # sig = md5( request_params_composed_string+ md5(access_token + application_secret_key)  )
+                  'fields=uid,first_name,last_name']
         int_sig_ha = hashlib.md5()
         int_sig_ha.update(answer['access_token'])
         int_sig_ha.update(odnoklassniki_secret_key)
         sig_ha = hashlib.md5()
-        for p in params:
+        for p in sorted(params):
             sig_ha.update(p)
         sig_ha.update(int_sig_ha.hexdigest())
         sig = sig_ha.hexdigest()
         
-        url = 'http://api.odnoklassniki.ru/fb.do?access_token='+answer['access_token']+'&'\
+        url = 'http://api.odnoklassniki.ru/fb.do?access_token='+answer['access_token']+'&'+\
             '&'.join(params)+'&sig='+sig
-
-	request_d = agent.request('GET', str(url),Headers11({}),None)
+	request_d = agent.request('GET', str(url),Headers({}),None)
 	d = defer.Deferred()
 	d.addCallback(self.parseOdnoklassniki, user_doc, request)
 	request_d.addCallback(self.getOauthAnswer, d)
@@ -388,13 +385,7 @@ class OAuth(Resource):
     def odnoklassniki(self, user_doc, access_token, code, request):
         print request.uri
         agent = HTTPAgent(reactor)
-	# cases
-        # quote_plus('http://localhost/?pr=odnoklassniki&code='+code)
-        # quote_plus('http://localhost'+request.uri)
-        # quote_plus('http://localhost?pr=odnoklassniki')
         body = 'code=%s&redirect_uri=%s&grant_type=authorization_code&client_id=%s&client_secret=%s' % (code, quote_plus('http://buildpc.ru/?pr=odnoklassniki'), odnoklassniki_app_id, odnoklassniki_secret_key)
-	print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        print body
         request_d = agent.request('POST',
 				  'http://api.odnoklassniki.ru/oauth/token.do?',
 				  Headers({'Content-Type':['application/x-www-form-urlencoded']}),
