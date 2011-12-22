@@ -10,7 +10,7 @@ body {
 	color: #333;
 	line-height: 22px;
 	height:100%;
-	background-image:url('autumn_leaf.png');
+	background-image:url('winter_leaf.png');
 	background-repeat:no-repeat;
 	background-position: -100px -29px;
 }
@@ -21,7 +21,7 @@ img {
 }
 
 a {
-	color:#C64410;
+	color:#076a8f;
 	outline: none;
 	text-decoration: underline;
 }
@@ -30,7 +30,7 @@ a:hover {
 	text-decoration: underline;
 }
 h1,h2,h3{
-    color:#b47a00;
+    color:#076A8F;
 }
 h4,h5{
     color:#B00606
@@ -105,7 +105,7 @@ p {
 #first {
     font-size:56px;
     line-height:44px;
-    color:#a77d17;
+    color:#076A8F;
     margin-bottom:30px;
     text-align:left;
     padding:0;
@@ -526,7 +526,7 @@ td.body{
 }
 
 td:hover{
-    color:#C64410;
+    color:#0daae5;
 }
 
 
@@ -689,7 +689,7 @@ label:hover{
 }
 
 .incram,.decram  {
-    color: #C64410;
+    color: #0daae5;
     cursor: pointer;
     margin-left: 14px;
     border: 1px solid #777;
@@ -1478,7 +1478,7 @@ a.modelicon img{
     font-size:16px;
 }
 #note_params strong{
-    color:#b47a00;
+    color:#2d78ef;
 }
 
 #notebookfullname{
@@ -1558,7 +1558,7 @@ a.modelicon img{
     display:none;
 }
 #addplease{
-    color:#b47a00;
+    color:#2d78ef;
     opacity:0;
 }
 #chatframe{
@@ -1584,7 +1584,7 @@ a.modelicon img{
     background-image:url('astronaut.png');
 }
 #autumn{
-    background-image:url('autumn.png');
+    background-image:url('cloud_snow.png');
 }
 
 
@@ -1643,6 +1643,7 @@ a.modelicon img{
     width: 127px;
     padding-top:8px;
     float:right;
+    color:white;
 }
 .small_cart{
     background-position:0px -37px;
@@ -1791,7 +1792,7 @@ a.modelicon img{
     padding-right:10px;
 }
 .expanded a{
-    color:#C64410;
+    color:#0daae5;
 }
 .expanded a:hover{
     color: #555;
@@ -1902,7 +1903,7 @@ a.modelicon img{
 }
 .ask{
     cursor:pointer;
-    color:#C64410;
+    color:#0daae5;
 }
 .askresponse{
     padding:20px !important;
@@ -2037,7 +2038,7 @@ a.modelicon img{
 }
 #prheader{
     text-shadow: 0 3px 2px #506A12;
-    color:#75a001;
+    color:#4f3ea7;
     font-size: 45px;
     float:left;
 }
@@ -2090,7 +2091,7 @@ a.modelicon img{
 #pdesc .small_cart{
     margin-right: 20px;
     margin-top: -16px;
-    color:#333;
+    color:white;
     text-shadow:none;
 }
 #promo_image{

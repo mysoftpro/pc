@@ -417,15 +417,9 @@ class Skin(Template):
     except_links = ['/rss']
 
     def render(self):
-	# if self.selected_skin is not None:
-	#     for link in self.tree.getroot().find('body').xpath('//a'):
-	#       old = link.get('href')
-	#       if old in self.except_links: continue
-	#       if old is not None:
-	#           if '?' in old:
-	#               link.set('href',old+'&skin='+self.selected_skin)
-	#           else:
-	#               link.set('href',old+'?skin='+self.selected_skin)
+	if self.selected_skin is not None:
+            logo = self.tree.getroot().find('body').xpath('//img[@id="logoImage"]')[0]
+            logo.set('src', '/static/logo3.png')
 	return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
