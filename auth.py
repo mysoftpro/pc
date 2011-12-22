@@ -341,9 +341,7 @@ class OAuth(Resource):
 
 
     def parseOdnoklassniki(self, f, user_doc, request):
-        src = f.read()
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print src
+        src = f.read()        
 	f.close()
 	soc_user_ob = simplejson.loads(src)
 	f.close()
@@ -381,11 +379,13 @@ class OAuth(Resource):
 	return request_d
 
 
-
     def odnoklassniki(self, user_doc, access_token, code, request):
-        print request.uri
+        referer = 'http://buildpc.ru/?pr=odnoklassniki'
+        for k,v in request.requestHeaders.getAllRawHeaders():
+            if k=='Referer':
+                referer = v[0].replace('localhost','buildpc.ru').split('&')[0]
         agent = HTTPAgent(reactor)
-        body = 'code=%s&redirect_uri=%s&grant_type=authorization_code&client_id=%s&client_secret=%s' % (code, quote_plus('http://buildpc.ru/?pr=odnoklassniki'), odnoklassniki_app_id, odnoklassniki_secret_key)
+        body = 'code=%s&redirect_uri=%s&grant_type=authorization_code&client_id=%s&client_secret=%s' % (code, quote_plus(referer), odnoklassniki_app_id, odnoklassniki_secret_key)
         request_d = agent.request('POST',
 				  'http://api.odnoklassniki.ru/oauth/token.do?',
 				  Headers({'Content-Type':['application/x-www-form-urlencoded']}),

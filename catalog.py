@@ -190,8 +190,7 @@ class XmlGetter(Resource):
     def render_OPTIONS(self, request):
 	for i in request.headers:
 	    print i
-	    print request.headers[i]
-	# print request.headers.getAllRawHeaders()
+	    print request.headers[i]	
 	request.responseHeaders = Headers({'Allow':['POST', 'GET'], 'Access-Control-Allow-Origin': ['*']})
 	return "ok"
 
