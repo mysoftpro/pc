@@ -174,9 +174,9 @@ def makePrice(doc):
     return int(round(our_price/10))*10
 
 
-def cleanDoc(doc, price, clean_text=True):
+def cleanDoc(doc, price, clean_text=True, clean_description=True):
     new_doc = {}
-    to_clean = ['id', '_attachments','description','flags','inCart',
+    to_clean = ['id', '_attachments','flags','inCart',
                      'ordered','reserved','stock1', '_rev', 'warranty_type',
                 'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
                 'new_stock', 'new_link', 'new_catalogs']
@@ -819,6 +819,7 @@ class ModelForModelsPage(object):
         #here is the difference between orders and models!!!
         self.fillComponents(price_span)
         case_found = [c for c in self.components if c.cat_name == case]
+
         if len(case_found) >0:
             if not 'promo' in self.model:
                 self.icon.set('href','/computer/'+self.model['_id'])
@@ -883,7 +884,7 @@ class ModelForModelsPage(object):
                 self.model['author'] == self.user['_id'] and\
                 self.request.getCookie('pc_key') == self.user['pc_key']
 
-            if this_user_is_author:
+            if this_user_is_author and not 'processing' in self.model:
                 extra = deepcopy(self.tree.find('cart_extra'))
                 for el in extra:
                     if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
@@ -951,7 +952,7 @@ class OrderForModelsPage(ModelForModelsPage):
         #hack. see find component
         self.model['order'] = self.order
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-
+        
         # #here is the difference between orders and models!!!
         # components = self.order['components']
         # total = 0
@@ -1148,7 +1149,8 @@ def computers(template,skin,request):
         d = couch.openDoc(name)
         def addOrders(orders,models):
             models_rows = [row for row in models['rows'] \
-                          if len([o_row for o_row in orders['rows'] if o_row['id'] == row['id']])==0]
+                          if len([o_row for o_row in orders['rows'] \
+                                      if o_row['id'].replace('order_','') == row['id']])==0]
             for o in orders['rows']:
                 models_rows.insert(0,o)
             models['rows'] = models_rows
@@ -1204,8 +1206,7 @@ def findComponent(model, name):
                     price = 0
                 else:
                     price = c['ourprice']*c['count']
-                components.append(cleanDoc(c, price, clean_text=False))
-            print components
+                components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
             return lambda code: [c for c in components if c['_id'] == code][0]
         else:
             return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None

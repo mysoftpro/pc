@@ -723,9 +723,9 @@ var init = function(){
 	    var _id = span.attr('id');
 	    //TODO! move to template!
 	    if (span.parent().attr('class').match('processing')){
-		span.parent().css('width','600px');
-		span.after('<span style="margin-left:10px;">Ваш компьютер уже собирают!</span>');
-		continue;
+	    	span.parent().css('width','600px');
+	    	span.after('<span style="margin-left:10px;color:white;">Ваш компьютер уже собирают!</span>');
+	    	continue;
 	    }
 	    span.parent().parent().next().find('.small_reset').click(deleteUUID(_id));
 	    span.parent().parent().next().find('.small_cart').click(checkUUID(_id));
