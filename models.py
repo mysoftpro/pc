@@ -950,7 +950,7 @@ class OrderForModelsPage(ModelForModelsPage):
 
     def fillComponents(self, price_span):
         #hack. see find component
-        self.model['order'] = self.order
+        self.model['this_order'] = self.order
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
         
         # #here is the difference between orders and models!!!
@@ -1198,10 +1198,10 @@ def computers(template,skin,request):
 
 def findComponent(model, name):
     #hack for orders
-    def lookFor():
-        if 'order' in model:
+    def lookFor():        
+        if 'this_order' in model:
             components = []
-            for c in model['order']['components']:
+            for c in model['this_order']['components']:
                 if c['_id'].startswith('no'):
                     price = 0
                 else:
