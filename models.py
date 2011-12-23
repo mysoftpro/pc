@@ -96,64 +96,64 @@ power = [components,"7416","7464"]
 
 
 mother_to_proc_mapping= [(mother_1155,proc_1155),
-			 (mother_1156,proc_1156),
-			 (mother_1366,proc_1366),
-			 (mother_775,proc_775),
-			 (mother_am23,proc_am23),
-			 (mother_fm1,proc_fm1)]
+                         (mother_1156,proc_1156),
+                         (mother_1366,proc_1366),
+                         (mother_775,proc_775),
+                         (mother_am23,proc_am23),
+                         (mother_fm1,proc_fm1)]
 
 
 def walkOnChoices(name = None, _filter=None):
     choices = None
     if name is not None:
-	choices =globals()['gChoices'][name]
+        choices =globals()['gChoices'][name]
     else:
-	choices = (v for k,v in globals()['gChoices'].items())
+        choices = (v for k,v in globals()['gChoices'].items())
     if _filter is None:
-	_filter = lambda x: True
+        _filter = lambda x: True
 
     if type(choices) is dict:
-	for ch in choices['rows']:
-	    if _filter(ch['doc']):
-		yield ch['doc']
+        for ch in choices['rows']:
+            if _filter(ch['doc']):
+                yield ch['doc']
     else:
-	for el in choices:
-	    if el[0]:
-		for ch in el[1][1]['rows']:
-		    if _filter(ch['doc']):
-			yield ch['doc']
+        for el in choices:
+            if el[0]:
+                for ch in el[1][1]['rows']:
+                    if _filter(ch['doc']):
+                        yield ch['doc']
 
 
 
 def getCatalogsKey(doc):
     if 'catalogs' not in doc:
-	return 'no'
+        return 'no'
     if type(doc['catalogs'][0]) is dict:
-	cats = []
-	for c in doc['catalogs']:
-	    cats.append(str(c['id']))
-	return cats
+        cats = []
+        for c in doc['catalogs']:
+            cats.append(str(c['id']))
+        return cats
     return doc['catalogs']
 
 
 def getModelComponents(model):
     for k,v in model['items'].items():
-	if type(v) is list:
-	    for el in v:
-		yield el
-	else:
-	    yield v
+        if type(v) is list:
+            for el in v:
+                yield el
+        else:
+            yield v
 
 
 def nameForCode(code,model):
     retval = None
     for _name,_code in model['items'].items():
-	if type(_code) is list and code in _code:
-	    retval = _name
-	    break
-	elif  code == _code:
-	    retval = _name
-	    break
+        if type(_code) is list and code in _code:
+            retval = _name
+            break
+        elif  code == _code:
+            retval = _name
+            break
     return retval
 
 
@@ -162,55 +162,60 @@ Margin=1.15
 Course = 31.1
 
 def makePrice(doc):
+    #orders! they prices are fixed
+    if 'ourprice' in doc:
+        return doc['ourprice']
     if doc['price'] == 0:
-	return 0
+        return 0
     course = Course
     if getCatalogsKey(doc) == windows:
-	course = 1
+        course = 1
     our_price = float(doc['price'])*Margin*course
     return int(round(our_price/10))*10
 
 
-def cleanDoc(doc, price):
+def cleanDoc(doc, price, clean_text=True):
     new_doc = {}
-    to_clean = ['id', 'text', '_attachments','description','flags','inCart',
-		     'ordered','reserved','stock1', '_rev', 'warranty_type',
-		'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
+    to_clean = ['id', '_attachments','description','flags','inCart',
+                     'ordered','reserved','stock1', '_rev', 'warranty_type',
+                'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
                 'new_stock', 'new_link', 'new_catalogs']
+    if clean_text:
+        to_clean.append('text')
     if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc and 'stock1' in doc) and \
-	    (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
-	to_clean.append('sli')
-	to_clean.append('crossfire')
+            (doc['sli']>0 or doc['crossfire']>0) and doc['stock1']<=1:
+        to_clean.append('sli')
+        to_clean.append('crossfire')
     for token in doc:
-	if token in to_clean:
-	    continue
-	if token == 'catalogs':
-	    new_doc.update({token:getCatalogsKey(doc)})
-	else:
-	    new_doc.update({token:doc[token]})
+        if token in to_clean:
+            continue
+        if token == 'catalogs':
+            new_doc.update({token:getCatalogsKey(doc)})
+        else:
+            new_doc.update({token:doc[token]})
     new_doc['price'] = price
     return new_doc
 
 imgs = ['static/comp_icon_1.png',
-	'static/comp_icon_2.png',
-	'static/comp_icon_3.png',
-	'static/comp_icon_4.png'
-	]
+        'static/comp_icon_2.png',
+        'static/comp_icon_3.png',
+        'static/comp_icon_4.png'
+        ]
 
 
 
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
-	 case:50, displ:90,
-	 audio:100, soft:110,
-	 kbrd:120, mouse:130, audio:140}
+         case:50, displ:90,
+         audio:100, soft:110,
+         kbrd:120, mouse:130, audio:140}
 
 parts_names = {proc:u'Процессор', ram:u'Память',
-	       video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
-	       sound:u'Звуковая карта',
-	       network:u'Сетевая карта',
-	       mother:u'Материнская плата',displ:u'Монитор',
-	       audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
-	       soft:u'ОС'}
+               video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
+               sound:u'Звуковая карта',
+               network:u'Сетевая карта',
+               mother:u'Материнская плата',displ:u'Монитор',
+               audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
+               soft:u'ОС'}
 
 
 parts_aliases = {
@@ -243,24 +248,24 @@ def replaceComponent(code,model):
     original_price = model['original_prices'][code] if code in ['original_prices'] else 10
     name = nameForCode(code,model)
     def sameCatalog(doc):
-	retval = True
-	if mother==name:
-	    retval = model['mother_catalogs'] == getCatalogsKey(doc)
-	if proc==name:
-	    retval = model['proc_catalogs'] == getCatalogsKey(doc)
-	return retval
+        retval = True
+        if mother==name:
+            retval = model['mother_catalogs'] == getCatalogsKey(doc)
+        if proc==name:
+            retval = model['proc_catalogs'] == getCatalogsKey(doc)
+        return retval
     choices = globals()['gChoices'][name]
     flatten = []
     if type(choices) is list:
-	for el in choices:
-	    if el[0]:
-		for ch in el[1][1]['rows']:
-		    if sameCatalog(ch['doc']):
-			flatten.append(ch['doc'])
+        for el in choices:
+            if el[0]:
+                for ch in el[1][1]['rows']:
+                    if sameCatalog(ch['doc']):
+                        flatten.append(ch['doc'])
     else:
-	for ch in choices['rows']:
-	    if sameCatalog(ch['doc']):
-		flatten.append(ch['doc'])
+        for ch in choices['rows']:
+            if sameCatalog(ch['doc']):
+                flatten.append(ch['doc'])
     mock_component = noComponentFactory({},name)
     mock_component['price'] = original_price
     mock_component['_id'] = code
@@ -271,27 +276,27 @@ def replaceComponent(code,model):
     ind = keys.index(code)
     _next = ind+1
     if _next == _length:
-	_next = ind-1
+        _next = ind-1
     next_el = deepcopy(flatten[_next])
     if 'ours' in model and code not in globals()['gWarning_sent']:
-	globals()['gWarning_sent'].append(code)
-	text = model['name'] + ' '+parts_names[name] + ': '+code
-	send_email('admin@buildpc.ru',
-		   u'В модели заменен компонент',
-		   text,
-		   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        globals()['gWarning_sent'].append(code)
+        text = model['name'] + ' '+parts_names[name] + ': '+code
+        send_email('admin@buildpc.ru',
+                   u'В модели заменен компонент',
+                   text,
+                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     return next_el
 
 no_component_added = False
 
 def renderComputer(model, template, skin):
-    
+
     _uuid = ''
     author = ''
     parent = ''
     h2 =template.top.find('div').find('h2')
     # only original models have length
-    
+
     if 'ours' in model:
         h2.text = model['name']
     else:
@@ -299,23 +304,23 @@ def renderComputer(model, template, skin):
         strong = etree.Element('strong')
         strong.text = model['_id'][-3:]
         h2.append(strong)
-	if 'name' in model:
+        if 'name' in model:
             span = etree.Element('span')
             span.text = model['name']
             h2.append(span)
-	_uuid = model.pop('_id')
-	author = model.pop('author')
-	if 'parent' in model:
-	    parent = model.pop('parent')
+        _uuid = model.pop('_id')
+        author = model.pop('author')
+        if 'parent' in model:
+            parent = model.pop('parent')
 
     if 'description' in model:
-	# try:
-	    d = template.top.find('div').find('div')
-	    d.text = ''
-	    for el in html.fragments_fromstring(model['description']):
-		d.append(el)
-	# except:
-	#     pass
+        # try:
+            d = template.top.find('div').find('div')
+            d.text = ''
+            for el in html.fragments_fromstring(model['description']):
+                d.append(el)
+        # except:
+        #     pass
     original_viewlet = template.root().find('componentviewlet')
     choices = globals()['gChoices']
 
@@ -326,26 +331,26 @@ def renderComputer(model, template, skin):
     counted = {}
 
     def makeOption(row, price):
-	# try:
-	    option = etree.Element('option')
-	    if 'font' in row['doc']['text']:
-		row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-		row['doc'].update({'featured':True})
-	    option.text = row['doc']['text']
+        # try:
+            option = etree.Element('option')
+            if 'font' in row['doc']['text']:
+                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+                row['doc'].update({'featured':True})
+            option.text = row['doc']['text']
 
-	    option.text +=u' ' + unicode(price) + u' р'
+            option.text +=u' ' + unicode(price) + u' р'
 
-	    option.set('value',row['id'])
-	    return option
-	# except:
-	#     print row
+            option.set('value',row['id'])
+            return option
+        # except:
+        #     print row
     def appendOptions(options, container):
-	for o in sorted(options, lambda x,y: x[1]-y[1]):
-	    container.append(o[0])
+        for o in sorted(options, lambda x,y: x[1]-y[1]):
+            container.append(o[0])
 
 
     def noComponent(name, component_doc, rows):
-	#hack!
+        #hack!
         if 'catalogs' in component_doc:
             pass
         else:
@@ -353,104 +358,104 @@ def renderComputer(model, template, skin):
                 component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
             except:
                 pass
-	if globals()['no_component_added']:return
-	if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
-	no_doc = noComponentFactory(component_doc, name)
-	rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
+        if globals()['no_component_added']:return
+        if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
+        no_doc = noComponentFactory(component_doc, name)
+        rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
     def addComponent(_options, _row, current_id):
-	_price= makePrice(_row['doc'])
-	_option = makeOption(_row, _price)
-	_options.append((_option, _price))
-	if _row['id'] == current_id:
-	    _option.set('selected','selected')
-	_cleaned_doc = cleanDoc(_row['doc'], _price)
-	_id = _cleaned_doc['_id']
-	if _id in counted:
-	    _cleaned_doc.update({'count':counted[_id]})
-	components_json.update({_id:_cleaned_doc})
+        _price= makePrice(_row['doc'])
+        _option = makeOption(_row, _price)
+        _options.append((_option, _price))
+        if _row['id'] == current_id:
+            _option.set('selected','selected')
+        _cleaned_doc = cleanDoc(_row['doc'], _price)
+        _id = _cleaned_doc['_id']
+        if _id in counted:
+            _cleaned_doc.update({'count':counted[_id]})
+        components_json.update({_id:_cleaned_doc})
 
 
     def fillViewlet(_name, _doc):
-	tr = viewlet.find("tr")
-	tr.set('id',_name)
-	body = viewlet.xpath("//td[@class='body']")[0]
-	body.set('id',_doc['_id'])
-	body.text = re.sub('<font.*</font>', '',_doc['text'])
+        tr = viewlet.find("tr")
+        tr.set('id',_name)
+        body = viewlet.xpath("//td[@class='body']")[0]
+        body.set('id',_doc['_id'])
+        body.text = re.sub('<font.*</font>', '',_doc['text'])
 
-	descr = etree.Element('div')
-	descr.set('class','description')
-	descr.text = ''
+        descr = etree.Element('div')
+        descr.set('class','description')
+        descr.text = ''
 
-	manu = etree.Element('div')
-	manu.set('class','manu')
-	manu.text = ''
+        manu = etree.Element('div')
+        manu.set('class','manu')
+        manu.text = ''
 
-	# our = etree.Element('div')
-	# our.set('class','our')
-	# our.text = u'нет рекоммендаций'
+        # our = etree.Element('div')
+        # our.set('class','our')
+        # our.text = u'нет рекоммендаций'
 
-	clear = etree.Element('div')
-	clear.set('style','clear:both;')
-	clear.text = ''
-	descr.append(manu);
-	# descr.append(our)
-	descr.append(clear)
-	return descr
+        clear = etree.Element('div')
+        clear.set('style','clear:both;')
+        clear.text = ''
+        descr.append(manu);
+        # descr.append(our)
+        descr.append(clear)
+        return descr
 
 
     for name,code in model['items'].items():
-	component_doc = None
-	count = 1
-	if code is None:
-	    component_doc = noComponentFactory({}, name)
-	else:
+        component_doc = None
+        count = 1
+        if code is None:
+            component_doc = noComponentFactory({}, name)
+        else:
 
-	    if type(code) is list:
-		count = len(code)
-		code = code[0]
-		counted.update({code:count})
+            if type(code) is list:
+                count = len(code)
+                code = code[0]
+                counted.update({code:count})
 
-	    component_doc = findComponent(model,name)
+            component_doc = findComponent(model,name)
 
-	if _uuid == '' and 'replaced' in component_doc:
-	    # no need 'replaced' alert' in original models
-	    component_doc.pop('replaced')
+        if _uuid == '' and 'replaced' in component_doc:
+            # no need 'replaced' alert' in original models
+            component_doc.pop('replaced')
 
-	viewlet = deepcopy(original_viewlet)
-	descr = fillViewlet(name, component_doc)
+        viewlet = deepcopy(original_viewlet)
+        descr = fillViewlet(name, component_doc)
 
-	price = makePrice(component_doc)
+        price = makePrice(component_doc)
 
-	total += price
+        total += price
         # print component_doc
-	cleaned_doc = cleanDoc(component_doc, price)
-	cleaned_doc['count'] = count
+        cleaned_doc = cleanDoc(component_doc, price)
+        cleaned_doc['count'] = count
 
-	model_json.update({cleaned_doc['_id']:cleaned_doc})
-	viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
+        model_json.update({cleaned_doc['_id']:cleaned_doc})
+        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
 
-	ch = choices[name]
-	options = []
-	if type(ch) is list:
-	    noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
-	    for el in ch:
-		if el[0]:
-		    option_group = etree.Element('optgroup')
-		    option_group.set('label', el[1][0])
-		    _options = []
-		    for r in el[1][1]['rows']:
-			addComponent(_options, r, cleaned_doc['_id'])
-		    appendOptions(_options, option_group)
-		    options.append((option_group, 0))
-	else:
-	    noComponent(name, cleaned_doc, ch['rows'])
-	    for row in ch['rows']:
-		addComponent(options, row, cleaned_doc['_id'])
+        ch = choices[name]
+        options = []
+        if type(ch) is list:
+            noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
+            for el in ch:
+                if el[0]:
+                    option_group = etree.Element('optgroup')
+                    option_group.set('label', el[1][0])
+                    _options = []
+                    for r in el[1][1]['rows']:
+                        addComponent(_options, r, cleaned_doc['_id'])
+                    appendOptions(_options, option_group)
+                    options.append((option_group, 0))
+        else:
+            noComponent(name, cleaned_doc, ch['rows'])
+            for row in ch['rows']:
+                addComponent(options, row, cleaned_doc['_id'])
 
-	select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
-	appendOptions(options, select)
-	viewlets.append((parts[name],viewlet,descr))
+        select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
+        appendOptions(options, select)
+        viewlets.append((parts[name],viewlet,descr))
 
 
     components_container = template.middle.xpath('//table[@id="components"]')[0]
@@ -459,34 +464,34 @@ def renderComputer(model, template, skin):
     globals()['no_component_added'] = True
 
     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-	components_container.append(viewlet[1].find('tr'))
-	description_container.append(viewlet[2])
+        components_container.append(viewlet[1].find('tr'))
+        description_container.append(viewlet[2])
     processing = False
     if 'processing' in model and model['processing']:
-	processing = True
+        processing = True
 
     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-						    ';var processing=',simplejson.dumps(processing),
-						    ';var uuid=',simplejson.dumps(_uuid),
-						    ';var author=',simplejson.dumps(author),
-						    ';var parent=',simplejson.dumps(parent),
-						    ';var total=',unicode(total),
-						    ';var choices=',simplejson.dumps(components_json),
-						    ';var parts_names=',simplejson.dumps(parts_names),
-						    ';var mother_to_proc_mapping=',
-						    simplejson.dumps(mother_to_proc_mapping),
-						    ';var proc_to_mother_mapping=',
-						    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
-						    ';var installprice=',str(INSTALLING_PRICE),
-						    ';var buildprice=',str(BUILD_PRICE),
-						    ';var dvdprice=',str(DVD_PRICE),
+                                                    ';var processing=',simplejson.dumps(processing),
+                                                    ';var uuid=',simplejson.dumps(_uuid),
+                                                    ';var author=',simplejson.dumps(author),
+                                                    ';var parent=',simplejson.dumps(parent),
+                                                    ';var total=',unicode(total),
+                                                    ';var choices=',simplejson.dumps(components_json),
+                                                    ';var parts_names=',simplejson.dumps(parts_names),
+                                                    ';var mother_to_proc_mapping=',
+                                                    simplejson.dumps(mother_to_proc_mapping),
+                                                    ';var proc_to_mother_mapping=',
+                                                    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
+                                                    ';var installprice=',str(INSTALLING_PRICE),
+                                                    ';var buildprice=',str(BUILD_PRICE),
+                                                    ';var dvdprice=',str(DVD_PRICE),
 
-						    ';var idvd=',simplejson.dumps(model['dvd']),
-						    ';var ibuilding=',simplejson.dumps(model['building']),
-						    ';var iinstalling=',simplejson.dumps(model['installing']),
-						    ';var Course=',str(Course),
-						    ';var parts=',simplejson.dumps(parts_aliases)
-						    ))
+                                                    ';var idvd=',simplejson.dumps(model['dvd']),
+                                                    ';var ibuilding=',simplejson.dumps(model['building']),
+                                                    ';var iinstalling=',simplejson.dumps(model['installing']),
+                                                    ';var Course=',str(Course),
+                                                    ';var parts=',simplejson.dumps(parts_aliases)
+                                                    ))
     title = skin.root().xpath('//title')[0]
     title.text = u' Изменение конфигурации компьютера '+h2.text
     skin.top = template.top
@@ -514,8 +519,8 @@ font_pat_2 = '<font[^>]*>'
 
 def cleanFlattenChoice(doc):
     def _pop(name):
-	if 'descriptions' in doc and name in doc['descriptions']:
-	    doc['descriptions'].pop(name)
+        if 'descriptions' in doc and name in doc['descriptions']:
+            doc['descriptions'].pop(name)
     _pop('img')
     _pop('name')
     _pop('comments')
@@ -525,16 +530,16 @@ def cleanFlattenChoice(doc):
 
 def flatChoices(res):
     for name,choices in globals()['gChoices'].items():
-	if type(choices) is list:
-	    for el in choices:
-		if el[0]:
-		    for ch in el[1][1]['rows']:
-			cleanFlattenChoice(ch['doc'])
-			globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
-	else:
-	    for ch in choices['rows']:
-		cleanFlattenChoice(ch['doc'])
-		globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+        if type(choices) is list:
+            for el in choices:
+                if el[0]:
+                    for ch in el[1][1]['rows']:
+                        cleanFlattenChoice(ch['doc'])
+                        globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+        else:
+            for ch in choices['rows']:
+                cleanFlattenChoice(ch['doc'])
+                globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
 
 
 
@@ -542,16 +547,16 @@ def equipCases(result):
     exclusive_rows = power = power_index = None
     i=0
     for r in result:
-	if r[1][0] == u"Эксклюзивные корпусы":
-	    exclusive_rows = r[1][1]['rows']
-	elif r[1][0] == u"БП":
-	    power = r[1][1]
-	    power_index = i
-	i+=1
+        if r[1][0] == u"Эксклюзивные корпусы":
+            exclusive_rows = r[1][1]['rows']
+        elif r[1][0] == u"БП":
+            power = r[1][1]
+            power_index = i
+        i+=1
     chipest_power = sorted([row['doc'] for row in power['rows']],lambda x,y:int(x['price']-y['price']))[0]
     for r in exclusive_rows:
-	r['doc']['price'] += chipest_power['price']
-	r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
+        r['doc']['price'] += chipest_power['price']
+        r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
     result.pop(power_index)
     return result
 
@@ -562,167 +567,167 @@ def fillChoices():
     # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     _gChoices = globals()['gChoices']
     if _gChoices is not None:
-	d = defer.Deferred()
-	d.addCallback(lambda x: _gChoices)
-	d.callback(None)
-	return d
+        d = defer.Deferred()
+        d.addCallback(lambda x: _gChoices)
+        d.callback(None)
+        return d
     defs = []
     defs.append(defer.DeferredList([
-		# couch.openView(designID,
-		#                                  'catalogs',
-		#                                  include_docs=True, key=mother_1366, stale=False)
-		#                   .addCallback(lambda res: ("LGA1366",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_1155, stale=False)
-				    .addCallback(lambda res: ("LGA1155",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_1156, stale=False)
-				    .addCallback(lambda res: ("LGA1166",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_775, stale=False)
-				    .addCallback(lambda res: ("LGA775",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_am23, stale=False)
-				    .addCallback(lambda res: ("AM2 3",res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=mother_fm1, stale=False)
-				    .addCallback(lambda res: ("FM1",res))
-				    ])
-		.addCallback(lambda res: {mother:res}))
+                # couch.openView(designID,
+                #                                  'catalogs',
+                #                                  include_docs=True, key=mother_1366, stale=False)
+                #                   .addCallback(lambda res: ("LGA1366",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_1155, stale=False)
+                                    .addCallback(lambda res: ("LGA1155",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_1156, stale=False)
+                                    .addCallback(lambda res: ("LGA1166",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_775, stale=False)
+                                    .addCallback(lambda res: ("LGA775",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_am23, stale=False)
+                                    .addCallback(lambda res: ("AM2 3",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=mother_fm1, stale=False)
+                                    .addCallback(lambda res: ("FM1",res))
+                                    ])
+                .addCallback(lambda res: {mother:res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   "catalogs",
-						   include_docs=True,key=proc_1155, stale=False)
-				    .addCallback(lambda res:('LGA1155',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_1156, stale=False)
-						   .addCallback(lambda res:('LGA1156',res)),
-				    # couch.openView(designID,
-				    #              'catalogs',
-				    #              include_docs=True,key=proc_1366, stale=False)
-				    #              .addCallback(lambda res:('LGA1366',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_am23, stale=False)
-				    .addCallback(lambda res:('AM2 3',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True,key=proc_775, stale=False)
-						   .addCallback(lambda res:('LGA755',res)),
-				    couch.openView(designID,
-						   'catalogs',
-						   include_docs=True, key=proc_fm1, stale=False)
-				    .addCallback(lambda res: ("FM1",res))
-				    ])
+                                                   "catalogs",
+                                                   include_docs=True,key=proc_1155, stale=False)
+                                    .addCallback(lambda res:('LGA1155',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_1156, stale=False)
+                                                   .addCallback(lambda res:('LGA1156',res)),
+                                    # couch.openView(designID,
+                                    #              'catalogs',
+                                    #              include_docs=True,key=proc_1366, stale=False)
+                                    #              .addCallback(lambda res:('LGA1366',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_am23, stale=False)
+                                    .addCallback(lambda res:('AM2 3',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True,key=proc_775, stale=False)
+                                                   .addCallback(lambda res:('LGA755',res)),
+                                    couch.openView(designID,
+                                                   'catalogs',
+                                                   include_docs=True, key=proc_fm1, stale=False)
+                                    .addCallback(lambda res: ("FM1",res))
+                                    ])
 
-		.addCallback(lambda res: {proc:res}))
+                .addCallback(lambda res: {proc:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=geforce, stale=False)
-				    .addCallback(lambda res: (u"GeForce",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=radeon, stale=False)
-				    .addCallback(lambda res: (u"Radeon",res))])
-		.addCallback(lambda res: {video:res}))
+                                                   'catalogs',include_docs=True, key=geforce, stale=False)
+                                    .addCallback(lambda res: (u"GeForce",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=radeon, stale=False)
+                                    .addCallback(lambda res: (u"Radeon",res))])
+                .addCallback(lambda res: {video:res}))
 
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=ddr3, stale=False)
-		.addCallback(lambda res: {ram:res}))
+                               'catalogs',include_docs=True, key=ddr3, stale=False)
+                .addCallback(lambda res: {ram:res}))
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=satas, stale=False)
-		.addCallback(lambda res: {hdd:res}))
+                               'catalogs',include_docs=True, key=satas, stale=False)
+                .addCallback(lambda res: {hdd:res}))
     defs.append(couch.openView(designID,
-			       'catalogs',include_docs=True, key=windows, stale=False)
-		.addCallback(lambda res: {soft:res}))
+                               'catalogs',include_docs=True, key=windows, stale=False)
+                .addCallback(lambda res: {soft:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=case_400_650, stale=False)
-				    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=power, stale=False)
-				    .addCallback(lambda res: (u"БП",res)),
-				   couch.openView(designID,
-						  'catalogs',include_docs=True, key=case_exclusive, stale=False)
-				    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
-		.addCallback(equipCases)
-		.addCallback(lambda res: {case:res}))
+                                                   'catalogs',include_docs=True, key=case_400_650, stale=False)
+                                    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=power, stale=False)
+                                    .addCallback(lambda res: (u"БП",res)),
+                                   couch.openView(designID,
+                                                  'catalogs',include_docs=True, key=case_exclusive, stale=False)
+                                    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
+                .addCallback(equipCases)
+                .addCallback(lambda res: {case:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=displ_19_20, stale=False)
-				    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=displ_22_26, stale=False)
-				    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
-		.addCallback(lambda res: {displ:res}))
+                                                   'catalogs',include_docs=True, key=displ_19_20, stale=False)
+                                    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=displ_22_26, stale=False)
+                                    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
+                .addCallback(lambda res: {displ:res}))
 
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_a4, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_acme, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_chikony, stale=False)
-				    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=kbrd_game, stale=False)
-				    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
-		.addCallback(lambda res: {kbrd:res}))
+                                                   'catalogs',include_docs=True, key=kbrd_a4, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_acme, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_chikony, stale=False)
+                                    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=kbrd_game, stale=False)
+                                    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
+                .addCallback(lambda res: {kbrd:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_a4, stale=False)
-				    .addCallback(lambda res: (u"Мыши A4Tech",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_game, stale=False)
-				    .addCallback(lambda res: (u"Игровые Мыши",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_acme, stale=False)
-				    .addCallback(lambda res: (u"Мыши Acme",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=mouse_genius, stale=False)
-				    .addCallback(lambda res: (u"Мыши Genius",res))])
-		.addCallback(lambda res: {mouse:res}))
+                                                   'catalogs',include_docs=True, key=mouse_a4, stale=False)
+                                    .addCallback(lambda res: (u"Мыши A4Tech",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_game, stale=False)
+                                    .addCallback(lambda res: (u"Игровые Мыши",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_acme, stale=False)
+                                    .addCallback(lambda res: (u"Мыши Acme",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=mouse_genius, stale=False)
+                                    .addCallback(lambda res: (u"Мыши Genius",res))])
+                .addCallback(lambda res: {mouse:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_20, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 2.0",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_21, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 2.1",res)),
-				    couch.openView(designID,
-						   'catalogs',include_docs=True, key=audio_51, stale=False)
-				    .addCallback(lambda res: (u"Аудио системы 5.1",res))])
-		.addCallback(lambda res: {audio:res}))
+                                                   'catalogs',include_docs=True, key=audio_20, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 2.0",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=audio_21, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 2.1",res)),
+                                    couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=audio_51, stale=False)
+                                    .addCallback(lambda res: (u"Аудио системы 5.1",res))])
+                .addCallback(lambda res: {audio:res}))
     def makeDict(res):
-	new_res = {}
-	for el in res:
-	    if el[0]:
-		new_res.update(el[1])
-	globals()['gChoices'] = new_res
-	flatChoices(new_res)
-	return globals()['gChoices']
+        new_res = {}
+        for el in res:
+            if el[0]:
+                new_res.update(el[1])
+        globals()['gChoices'] = new_res
+        flatChoices(new_res)
+        return globals()['gChoices']
     #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict).addCallback(fillNew)
 
 def fillNew(global_choices):
     def fill(res):
-	for row in res['rows']:
-	    wit_doc = globals()['gChoices_flatten'][row['key']]
-	    if wit_doc['price']>row['value'][0]:
-		wit_doc['price'] = row['value'][0]
-	    wit_doc['stock1'] = row['value'][1]
-	# send_email('admin@buildpc.ru',
-	# 	   u'Обновление цен и кол-ва Виттеха via Новая Система',
-	# 	   u'Всего позиций: ' + unicode(len(res['rows'])),
-	# 	   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        for row in res['rows']:
+            wit_doc = globals()['gChoices_flatten'][row['key']]
+            if wit_doc['price']>row['value'][0]:
+                wit_doc['price'] = row['value'][0]
+            wit_doc['stock1'] = row['value'][1]
+        # send_email('admin@buildpc.ru',
+        #          u'Обновление цен и кол-ва Виттеха via Новая Система',
+        #          u'Всего позиций: ' + unicode(len(res['rows'])),
+        #          sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     d = couch.openView(designID, 'new_map', keys = globals()['gChoices_flatten'].keys())
     d.addCallback(fill)
     d.addCallback(lambda some: global_choices)
@@ -731,15 +736,15 @@ def fillNew(global_choices):
 
 def computer(template, skin, request):
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: computer(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: computer(template, skin, request))
+        return d
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     # hack! just show em ping!
     if len(name) == 0:
-	name = 'ping'
+        name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
     #d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
@@ -748,96 +753,102 @@ def computer(template, skin, request):
 
 
 model_categories = {'home':['storage','spline','shade'],
-		    'work':['localhost','scroll','chart'],
-		    'admin':['ping','cell','compiler'],
-		    'game':['zoom','render','raytrace']}
+                    'work':['localhost','scroll','chart'],
+                    'admin':['ping','cell','compiler'],
+                    'game':['zoom','render','raytrace']}
 
 model_categories_titles = {'home':u'Домашние компьютеры',
-			   'work':u'Компьюетры для работы',
-			   'admin':u'Компьютеры для айтишников',
-			   'game':u'Игровые компьютеры'}
+                           'work':u'Компьюетры для работы',
+                           'admin':u'Компьютеры для айтишников',
+                           'game':u'Игровые компьютеры'}
 
 class ModelForModelsPage(object):
     def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
         self.user = user
-	self.tree = tree
-	self.model_snippet = deepcopy(self.tree.find('model'))
-	self.request = request
-	self.model = model
-	self.this_is_cart = this_is_cart
-	self.json_prices = json_prices
-	self.icon = icon
-	self.container = container
-	self.components = []
-	divs = self.model_snippet.findall('div')
-	self.model_div = divs[0]
-	self.description_div = divs[1]
-	self.category = request.args.get('cat',[None])[0]
+        self.tree = tree
+        self.model_snippet = deepcopy(self.tree.find('model'))
+        self.request = request
+        self.model = model
+        self.this_is_cart = this_is_cart
+        self.json_prices = json_prices
+        self.icon = icon
+        self.container = container
+        self.components = []
+        divs = self.model_snippet.findall('div')
+        self.model_div = divs[0]
+        self.description_div = divs[1]
+        self.category = request.args.get('cat',[None])[0]
+
+
+    def fillComponents(self, price_span):
+        #here is the difference between orders and models!!!
+        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
     def fillModelDiv(self):
-	if 'processing' in self.model and self.model['processing']:
-	    header = self.model_div.find('h2')
-	    header.set('class', header.get('class')+ ' processing')
-	a = self.model_div.find('.//a')
-	if not 'promo' in self.model:
-	    a.set('href','/computer/%s' % self.model['_id'])
-	else:
-	    a.set('href','/promotion/%s' % self.model['parent'])
+        if 'processing' in self.model and self.model['processing']:
+            header = self.model_div.find('h2')
+            header.set('class', header.get('class')+ ' processing')
+        a = self.model_div.find('.//a')
+        if not 'promo' in self.model:
+            a.set('href','/computer/%s' % self.model['_id'])
+        else:
+            a.set('href','/promotion/%s' % self.model['parent'])
 
-	if self.this_is_cart:
-	    info = self.model_div.xpath('//div[@class="info"]')[0]
-	    if 'checkModel' in self.model:
-		if not self.model['checkModel']:
-		    info.set('class', info.get('class')+ ' ask_info')
-		    info.set('title',u'Ожидает проверки специалистом')
-		else:
-		    info.set('class', info.get('class')+ ' confirm_info')
-		    info.set('title',u'Проверено!')
-	    else:
-		info.set('class', info.get('class')+ ' empty_info')
-	    # self.model_div.remove(info)
+        if self.this_is_cart:
+            info = self.model_div.xpath('//div[@class="info"]')[0]
+            if 'checkModel' in self.model:
+                if not self.model['checkModel']:
+                    info.set('class', info.get('class')+ ' ask_info')
+                    info.set('title',u'Ожидает проверки специалистом')
+                else:
+                    info.set('class', info.get('class')+ ' confirm_info')
+                    info.set('title',u'Проверено!')
+            else:
+                info.set('class', info.get('class')+ ' empty_info')
+            # self.model_div.remove(info)
 
-	if 'name' in self.model and not self.this_is_cart:
-	    a.text=self.model['name']
-	else:
-	    a.text = self.model['_id'][:-3]
-	    strong= etree.Element('strong')
-	    strong.text = self.model['_id'][-3:]
-	    a.append(strong)
-	price_span = self.model_div.find('.//span')
-	price_span.set('id',self.model['_id'])
-	self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-	case_found = [c for c in self.components if c.cat_name == case]
-	if len(case_found) >0:
-	    if not 'promo' in self.model:
-		self.icon.set('href','/computer/'+self.model['_id'])
-	    else:
-		self.icon.set('href','/promotion/'+self.model['parent'])
-		if 'our_price' in self.model:
-		    price_span.text = unicode(self.model['our_price'])+u' р.'
-		else:
-		    price_span.text = u'24900 р.'
-	    self.icon.find('img').set('src',case_found[0].getIconUrl())
-	    self.model_div.insert(0,self.icon)
+        if 'name' in self.model and not self.this_is_cart:
+            a.text=self.model['name']
+        else:
+            a.text = self.model['_id'][:-3]
+            strong= etree.Element('strong')
+            strong.text = self.model['_id'][-3:]
+            a.append(strong)
+        price_span = self.model_div.find('.//span')
+        price_span.set('id',self.model['_id'])
+        #here is the difference between orders and models!!!
+        self.fillComponents(price_span)
+        case_found = [c for c in self.components if c.cat_name == case]
+        if len(case_found) >0:
+            if not 'promo' in self.model:
+                self.icon.set('href','/computer/'+self.model['_id'])
+            else:
+                self.icon.set('href','/promotion/'+self.model['parent'])
+                if 'our_price' in self.model:
+                    price_span.text = unicode(self.model['our_price'])+u' р.'
+                else:
+                    price_span.text = u'24900 р.'
+            self.icon.find('img').set('src',case_found[0].getIconUrl())
+            self.model_div.insert(0,self.icon)
 
-	self.container.append(self.model_div)
+        self.container.append(self.model_div)
 
     def fillDescriptionDiv(self):
-	# description_div = divs[1]
-	ul = etree.Element('ul')
-	ul.set('class','description')
-	for cfm in self.components:
-	    ul.append(cfm.render())
-	self.description_div.append(ul)
+        # description_div = divs[1]
+        ul = etree.Element('ul')
+        ul.set('class','description')
+        for cfm in self.components:
+            ul.append(cfm.render())
+        self.description_div.append(ul)
 
-	h3 = self.description_div.find('h3')
-	if not self.this_is_cart:
-	    h3.text = self.model['title']
-	    for el in html.fragments_fromstring(self.model['description']):
-		self.description_div.append(el)
-	    ul.set('style','display:none')
-	else:
-            if 'name' in self.model:                
+        h3 = self.description_div.find('h3')
+        if not self.this_is_cart:
+            h3.text = self.model['title']
+            for el in html.fragments_fromstring(self.model['description']):
+                self.description_div.append(el)
+            ul.set('style','display:none')
+        else:
+            if 'name' in self.model:
                 span = etree.Element('span')
                 span.set('class', 'customName')
                 span.text = self.model['name']
@@ -854,18 +865,18 @@ class ModelForModelsPage(object):
                 span.set('class', 'customName')
                 span.text = u'Пользовательская конфигурация'
                 h3.append(span)
-            
+
             _date = self.model['date']
             _date.reverse()
             span = etree.Element('span')
             span.text = ('.').join(_date)
             h3.append(span)
-	    
+
             a = etree.Element('a')
             a.text = u'переименовать'
             a.set('href', '')
             h3.append(a)
-            
+
             self.description_div.set('class','cart_description')
 
             this_user_is_author = self.user is not None and\
@@ -879,42 +890,85 @@ class ModelForModelsPage(object):
                         el.set('href', '/bill.pdf?id='+self.model['_id'])
                     self.description_div.append(el)
 
-	    if 'comments' in self.model:
-		last_index = len(self.model['comments'])-1
-		i=0
-		for comment in self.model['comments']:                    
-		    comments = deepcopy(self.tree.find('cart_comment'))
+            if 'comments' in self.model:
+                last_index = len(self.model['comments'])-1
+                i=0
+                for comment in self.model['comments']:
+                    comments = deepcopy(self.tree.find('cart_comment'))
                     if not this_user_is_author and i==0:
                         comments.find('div').set('style', 'margin-top:40px')
-		    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-		    comment['date'].reverse()
-		    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
-		    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
-		    links = comments.xpath('//div[@class="faqlinks"]')[0]
-		    if i!=last_index:
-			links.remove(links.find('a'))
-		    i+=1
-		    self.description_div.append(comments.find('div'))
-	self.container.append(self.description_div)
+                    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
+                    comment['date'].reverse()
+                    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
+                    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
+                    links = comments.xpath('//div[@class="faqlinks"]')[0]
+                    if i!=last_index:
+                        links.remove(links.find('a'))
+                    i+=1
+                    self.description_div.append(comments.find('div'))
+        self.container.append(self.description_div)
 
 
     def render(self):
-	self.fillModelDiv()
-	self.fillDescriptionDiv()
-	if not self.this_is_cart:
-	    self.model_div.set('id','m'+self.model['_id'])
-	    if self.category in model_categories:
-		if self.model['_id'] in model_categories[self.category]:
-		    div = etree.Element('div')
-		    div.set('id', 'desc_'+self.model_div.get('id'))
-		    div.set('class', 'full_desc')
-		    if 'modeldesc' in self.model:
-			div.text = self.model['modeldesc']
-		    self.container.append(div)
-		    self.description_div.set('style','height:220px')
-		else:
-		    self.model_div.set('style',"height:0;overflow:hidden")
-		    self.description_div.set('style',"height:0;overflow:hidden")
+        self.fillModelDiv()
+        self.fillDescriptionDiv()
+        if not self.this_is_cart:
+            self.model_div.set('id','m'+self.model['_id'])
+            if self.category in model_categories:
+                if self.model['_id'] in model_categories[self.category]:
+                    div = etree.Element('div')
+                    div.set('id', 'desc_'+self.model_div.get('id'))
+                    div.set('class', 'full_desc')
+                    if 'modeldesc' in self.model:
+                        div.text = self.model['modeldesc']
+                    self.container.append(div)
+                    self.description_div.set('style','height:220px')
+                else:
+                    self.model_div.set('style',"height:0;overflow:hidden")
+                    self.description_div.set('style',"height:0;overflow:hidden")
+
+
+class OrderForModelsPage(ModelForModelsPage):
+
+    def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
+        self.user = user
+        self.tree = tree
+        self.model_snippet = deepcopy(self.tree.find('model'))
+        self.request = request
+        self.order = order
+        self.model = self.order['model']
+        self.this_is_cart = this_is_cart
+        self.json_prices = json_prices
+        self.icon = icon
+        self.container = container
+        self.components = []
+        divs = self.model_snippet.findall('div')
+        self.model_div = divs[0]
+        self.description_div = divs[1]
+        self.category = request.args.get('cat',[None])[0]
+
+    def fillComponents(self, price_span):
+        #hack. see find component
+        self.model['order'] = self.order
+        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+
+        # #here is the difference between orders and models!!!
+        # components = self.order['components']
+        # total = 0
+        # # self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+        # for c in components:
+        #     cleaned = cleanDoc(c, c['ourprice']*c['count'])
+        #     components.append(cleaned)
+        # if self.order['installing']:
+        #         total += INSTALLING_PRICE
+        # if self.order['building']:
+        #      total += BUILD_PRICE
+        # if self.model['dvd']:
+        #     total += DVD_PRICE
+        # price_span.text = str(total) + u' р'
+        # self.components = [ComponentForModelsPage(self.model,c, cat_name, c['price'], True)\
+        #                        for c in components]
+        # #zzzzzzzzzzzzzzzz
 
 
 def fixDeletedCart(err, request, name):
@@ -929,38 +983,38 @@ def redirectDeletedCart(err):
 
 class NoteBookForCartPage(object):
     def __init__(self,notebook, note, key, icon, container):
-	self.icon = icon
-	self.notebook = notebook
-	self.note = note
-	self.container = container
-	self.key = key
+        self.icon = icon
+        self.notebook = notebook
+        self.note = note
+        self.container = container
+        self.key = key
 
     def render(self):
-	key = self.key
-	note_name = self.note.xpath('//div[@class="cnname"]')[0]
-	note_name.text = self.notebook['doc']['text']
-	note_name.set('id',key+'_'+self.notebook['doc']['_id'])
+        key = self.key
+        note_name = self.note.xpath('//div[@class="cnname"]')[0]
+        note_name.text = self.notebook['doc']['text']
+        note_name.set('id',key+'_'+self.notebook['doc']['_id'])
 
-	link = self.note.xpath('//strong[@class="modellink"]')[0]
-	link.text = key[:-3]
-	strong = etree.Element('strong')
-	strong.text = key[-3:]
-	link.append(strong)
-	price = makeNotePrice(self.notebook['doc'])
+        link = self.note.xpath('//strong[@class="modellink"]')[0]
+        link.text = key[:-3]
+        strong = etree.Element('strong')
+        strong.text = key[-3:]
+        link.append(strong)
+        price = makeNotePrice(self.notebook['doc'])
 
-	self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
 
-	# icon = deepcopy(tree.find('model_icon').find('a'))
-	self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
-	self.note.insert(0,self.icon)
-	self.container.append(self.note)
+        # icon = deepcopy(tree.find('model_icon').find('a'))
+        self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
+        self.note.insert(0,self.icon)
+        self.container.append(self.note)
 
 
 def computers(template,skin,request):
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: computers(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: computers(template, skin, request))
+        return d
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
@@ -968,76 +1022,82 @@ def computers(template,skin,request):
     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
 
     def render(result):
-	models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
-	#fix cookies here!
-	total = 0
-	if not this_is_cart:
-	    models = sorted(models,lambda x,y: x['order']-y['order'])
-	    models.reverse()
-	else:
-	    def sort(m1,m2):
-		if u''.join(m1['date'])>u''.join(m2['date']):
-		    return -1
-		return 1
-	    models = sorted(models,sort)
-	    template.middle.remove(template.middle.find('div'))
+        models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
+        #fix cookies here!
+        total = 0
+        if not this_is_cart:
+            models = sorted(models,lambda x,y: x['order']-y['order'])
+            models.reverse()
+        else:
+            def sort(m1,m2):
+                if u''.join(m1['date'])>u''.join(m2['date']):
+                    return -1
+                return 1
+            models = sorted(models,sort)
+            template.middle.remove(template.middle.find('div'))
 
-	tree = template.root()
-	container = template.middle.xpath('//div[@id="models"]')[0]
+        tree = template.root()
+        container = template.middle.xpath('//div[@id="models"]')[0]
 
-	json_prices = {}
-	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        user_doc = result['user_doc'] if 'user_doc' in result  else None        
-	for m in models:
-	    view = ModelForModelsPage(request, m, tree,
-				      this_is_cart,json_prices,
-				      deepcopy(tree.find('model_icon').find('a')),
-				      container, user_doc)
-	    view.render()
-	    total +=1
-	if this_is_cart:
-	    # comments here and in ModelForModelsPage description_div
-	    cart_form = deepcopy(tree.find('cart_comment_form'))
-	    container.append(cart_form.find('div'))
+        json_prices = {}
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+        user_doc = result['user_doc'] if 'user_doc' in result  else None
+        for m in models:
+            if m['_id'].startswith('order'):
+                view = OrderForModelsPage(request, m, tree,
+                                          this_is_cart,json_prices,
+                                          deepcopy(tree.find('model_icon').find('a')),
+                                          container, user_doc)
+            else:
+                view = ModelForModelsPage(request, m, tree,
+                                      this_is_cart,json_prices,
+                                      deepcopy(tree.find('model_icon').find('a')),
+                                      container, user_doc)
+            view.render()
+            total +=1
+        if this_is_cart:
+            # comments here and in ModelForModelsPage description_div
+            cart_form = deepcopy(tree.find('cart_comment_form'))
+            container.append(cart_form.find('div'))
 
-	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
-	if 'notebooks' in result and 'user_doc' in result:
-	    total_notes = []
-	    need_cleanup = False
-	    note_div = template.root().find('notebook').find('div')
-	    clear_div = etree.Element('div')
-	    clear_div.set('style','clear:both')
-	    container.append(clear_div)
-	    for n in result['notebooks']['rows']:
-		if not 'doc' in n:
-		    need_cleanup = True
-		    continue
-		if n['doc'] is None:
-		    need_cleanup = True
-		    continue
-		keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
-		if len(keys) == 0:
-		    need_cleanup = True
-		    continue
-		key = keys[0][0]
-		note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
-						deepcopy(tree.find('model_icon').find('a')),
-						container)
-		note_view.render()
-		total_notes.append(n['doc']['_id'])
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+        if 'notebooks' in result and 'user_doc' in result:
+            total_notes = []
+            need_cleanup = False
+            note_div = template.root().find('notebook').find('div')
+            clear_div = etree.Element('div')
+            clear_div.set('style','clear:both')
+            container.append(clear_div)
+            for n in result['notebooks']['rows']:
+                if not 'doc' in n:
+                    need_cleanup = True
+                    continue
+                if n['doc'] is None:
+                    need_cleanup = True
+                    continue
+                keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
+                if len(keys) == 0:
+                    need_cleanup = True
+                    continue
+                key = keys[0][0]
+                note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+                                                deepcopy(tree.find('model_icon').find('a')),
+                                                container)
+                note_view.render()
+                total_notes.append(n['doc']['_id'])
 
-	    # clean only for the owner of the cart!
-	    if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
-		# some notes, possible will be deleted from store!
-		to_clean = []
-		for k,v in result['user_doc']['notebooks'].items():
-		    if v not in total_notes:
-			to_clean.append(k)
-		for k in to_clean:
+            # clean only for the owner of the cart!
+            if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
+                # some notes, possible will be deleted from store!
+                to_clean = []
+                for k,v in result['user_doc']['notebooks'].items():
+                    if v not in total_notes:
+                        to_clean.append(k)
+                for k in to_clean:
 
-		    result['user_doc']['notebooks'].pop(k)
-		# update user_doc
-		couch.saveDoc(result['user_doc'])
+                    result['user_doc']['notebooks'].pop(k)
+                # update user_doc
+                couch.saveDoc(result['user_doc'])
 
         # TODO! this_is_cart means have user doc
         # why one more variable?
@@ -1049,93 +1109,127 @@ def computers(template,skin,request):
                 in_cart += len(user_doc['notebooks'])
             addCookies(request, {'pc_cart':in_cart})
 
-	_prices = 'undefined'
+        _prices = 'undefined'
 
-	if this_is_cart:
-	    cart = deepcopy(template.root().find('top_cart'))
-	    cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
-	    cart_divs = cart.findall('div')
-	    for d in cart_divs:
-		template.top.append(d)
-	else:
-	    _prices =simplejson.dumps(json_prices) + ';'
-	    header = deepcopy(template.root().find('top_models'))
-	    header_divs = header.findall('div')
-	    for d in header_divs:
-		template.top.append(d)
+        if this_is_cart:
+            cart = deepcopy(template.root().find('top_cart'))
+            cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+            cart_divs = cart.findall('div')
+            for d in cart_divs:
+                template.top.append(d)
+        else:
+            _prices =simplejson.dumps(json_prices) + ';'
+            header = deepcopy(template.root().find('top_models'))
+            header_divs = header.findall('div')
+            for d in header_divs:
+                template.top.append(d)
 
-	template.middle.find('script').text = 'var prices=' + _prices;
+        template.middle.find('script').text = 'var prices=' + _prices;
 
-	category = request.args.get('cat',[None])[0]
+        category = request.args.get('cat',[None])[0]
 
-	if category is not None and category in model_categories_titles:
-	    title = skin.root().xpath('//title')[0]
-	    title.text = model_categories_titles[category]
-	else:
-	    title = skin.root().xpath('//title')[0]
-	    title.text = u'Готовые модели компьютеров'
+        if category is not None and category in model_categories_titles:
+            title = skin.root().xpath('//title')[0]
+            title.text = model_categories_titles[category]
+        else:
+            title = skin.root().xpath('//title')[0]
+            title.text = u'Готовые модели компьютеров'
 
-	skin.top = template.top
-	skin.middle = template.middle
-	return skin.render()
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
 
     # RENDER MODELS HERE!!!
     if not this_is_cart:
-	d = couch.openView(designID,'models',include_docs=True,stale=False)
-	d.addCallback(render)
+        d = couch.openView(designID,'models',include_docs=True,stale=False)
+        d.addCallback(render)
     # RENDER cart here!!!!
     else:
-	d = couch.openDoc(name)
+        d = couch.openDoc(name)
+        def addOrders(orders,models):
+            models_rows = [row for row in models['rows'] \
+                          if len([o_row for o_row in orders['rows'] if o_row['id'] == row['id']])==0]
+            for o in orders['rows']:
+                models_rows.insert(0,o)
+            models['rows'] = models_rows
+            return models
 
         def addUser(models, user_doc):
             models['user_doc'] = user_doc
+            orders = []
+            for row in models['rows']:
+                if 'doc' in row and row['doc'] is not None and \
+                        'processing' in row['doc'] and row['doc']['processing']:
+                    orders.append(row['doc']['_id'])
+
+            if len(orders)>0:
+                d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
+                d.addCallback(addOrders, models)
+                return d
+            else:
+                return models
+
+        def glueModelsAndNotes(li, _user):
+            models = li[0][1]
+            notebooks = li[1][1]
+            models['notebooks'] = notebooks
             return models
-            
-	def glueModelsAndNotes(li, _user):
-	    models = li[0][1]
-	    notebooks = li[1][1]	
-	    models['notebooks'] = notebooks	    
-	    return models
-	def getModelsAndNotes(user_doc):
-	    models = couch.listDoc(keys=user_doc['models'], include_docs=True)            
+        def getModelsAndNotes(user_doc):
+            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
             models.addCallback(addUser, user_doc)
-	    if not 'notebooks' in user_doc:
-		return models
-	    notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-	    d = defer.DeferredList((models, notes))
-	    d.addCallback(glueModelsAndNotes, user_doc)
-	    d.addErrback(lambda some: models)
-	    return d
-	d.addCallback(getModelsAndNotes)
-	if this_is_cart:
-	    d.addErrback(fixDeletedCart, request, name)
-	d.addCallback(render)
-	if this_is_cart:
-	    d.addErrback(redirectDeletedCart)
+            if not 'notebooks' in user_doc:
+                return models
+            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+            d = defer.DeferredList((models, notes))
+            d.addCallback(glueModelsAndNotes, user_doc)
+            d.addErrback(lambda some: models)
+            return d
+        d.addCallback(getModelsAndNotes)
+        # if this_is_cart:
+        #     d.addErrback(fixDeletedCart, request, name)
+        d.addCallback(render)
+        # if this_is_cart:
+        #     d.addErrback(redirectDeletedCart)
     return d
 
 
 
 def findComponent(model, name):
-    """ ??? i have a flat choices now! why do i need that?"""
+    #hack for orders
+    def lookFor():
+        if 'order' in model:
+            components = []
+            for c in model['order']['components']:
+                if c['_id'].startswith('no'):
+                    price = 0
+                else:
+                    price = c['ourprice']*c['count']
+                components.append(cleanDoc(c, price, clean_text=False))
+            print components
+            return lambda code: [c for c in components if c['_id'] == code][0]
+        else:
+            return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
+    look_for = lookFor()
     code = model['items'][name]
     if type(code) is list:
-	code = code[0]
+        code = code[0]
     if code is None or code.startswith('no'):
-	return noComponentFactory({},name)
+        return noComponentFactory({},name)
     replaced = False
-    retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
+    # retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
+    retval = look_for(code)
     if retval is None:
-	retval = replaceComponent(code,model)
-	replaced = True
+        retval = replaceComponent(code,model)
+        replaced = True
     else:
-	if retval['stock1'] == 0:
-	    # my own components for prebuild promo
-	    if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
-		pass
-	    else:
-		retval = replaceComponent(code,model)
-		replaced = True
+        pass
+        # if retval['stock1'] == 0:
+        #     # my own components for prebuild promo
+        #     if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
+        #         pass
+        #     else:
+        #         retval = replaceComponent(code,model)
+        #         replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
@@ -1148,34 +1242,37 @@ def findComponent(model, name):
 def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
     retval = "/static/icon.png"
     if 'description' in component and'imgs' in component['description']:
-	retval = ''.join(("/image/",component['_id'],"/",
-			  indexExtractor(component['description']['imgs']),'.jpg'))
+        retval = ''.join(("/image/",component['_id'],"/",
+                          indexExtractor(component['description']['imgs']),'.jpg'))
     if '/preview' in retval:
-	splitted = retval.split('/preview')
-	retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+        splitted = retval.split('/preview')
+        retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
 
     return retval
 
 
 class ComponentForModelsPage(object):
     def __init__(self,model,component, cat_name, price, this_is_cart = False):
-	self.component= component
-	self.price = price
-	self.cat_name = cat_name
-	self.model = model
+        self.component= component
+        self.price = price
+        self.cat_name = cat_name
+        self.model = model
         self.this_is_cart = this_is_cart
     def getIconUrl(self):
-	return getComponentIcon(self.component)
+        return getComponentIcon(self.component)
 
     def render(self):
-	li = etree.Element('li')
-	li.text = self.component['text']
-	if not 'promo' in self.model:
-	     li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
-	li.set('id',self.model['_id']+'_'+self.component['_id'])
+        li = etree.Element('li')
+        if 'text' in self.component:
+            li.text = self.component['text']
+        else:
+            li.text=''
+        if not 'promo' in self.model:
+             li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
+        li.set('id',self.model['_id']+'_'+self.component['_id'])
         if self.this_is_cart and 'old_code' in self.component and not 'promo' in self.model:
-            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])            
-	return li
+            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])
+        return li
 
 
 
@@ -1187,35 +1284,35 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
     total = 0
     __components = []
     for k,v in parts_aliases.items():
-	aliasses_reverted.update({v:k})
+        aliasses_reverted.update({v:k})
     def updatePrice(_id, catalogs, required_catalogs, price):
-	if catalogs == required_catalogs:
-	    if _id in json_prices:
-		json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
-	    else:
-		json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
+        if catalogs == required_catalogs:
+            if _id in json_prices:
+                json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
+            else:
+                json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
     for cat_name,code in model['items'].items():
-	count = 1
-	if type(code) is list:
-	    count = len(code)
-	    code = code[0]
-	component_doc = findComponent(model,cat_name)
-	code = component_doc['_id']
-	price = makePrice(component_doc)*count
-	total += price
-	updatePrice(model['_id'],cat_name,displ,price)
-	updatePrice(model['_id'],cat_name,soft,price)
-	updatePrice(model['_id'],cat_name,audio,price)
-	updatePrice(model['_id'],cat_name,mouse,price)
-	updatePrice(model['_id'],cat_name,kbrd,price)
-	__components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
+        count = 1
+        if type(code) is list:
+            count = len(code)
+            code = code[0]
+        component_doc = findComponent(model,cat_name)
+        code = component_doc['_id']
+        price = makePrice(component_doc)*count
+        total += price
+        updatePrice(model['_id'],cat_name,displ,price)
+        updatePrice(model['_id'],cat_name,soft,price)
+        updatePrice(model['_id'],cat_name,audio,price)
+        updatePrice(model['_id'],cat_name,mouse,price)
+        updatePrice(model['_id'],cat_name,kbrd,price)
+        __components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
     if model['installing']:
-	total += INSTALLING_PRICE
+        total += INSTALLING_PRICE
     if model['building']:
-	 total += BUILD_PRICE
+         total += BUILD_PRICE
     if model['dvd']:
-	total += DVD_PRICE
+        total += DVD_PRICE
     price_span.text = str(total) + u' р'
     json_prices[model['_id']]['total'] = total
     return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
@@ -1227,77 +1324,77 @@ def lastUpdateTime():
     retval = ''
     mo = str(now.month)
     if len(mo)<2:
-	mo = "0"+mo
+        mo = "0"+mo
     da = str(now.day)
     if len(da)<2:
-	da = "0"+da
+        da = "0"+da
     if hour>18:
-	retval = '.'.join((da,mo,str(now.year))) +' 18:15'
+        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
     elif hour<9:
-	delta = timedelta(days=-1)
-	now = now + delta
-	retval = '.'.join((da,mo,str(now.year))) +' 18:15'
+        delta = timedelta(days=-1)
+        now = now + delta
+        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
     else:
-	if now.minute<14:
-	    hour-=1
-	retval = '.'.join((da,mo,str(now.year))) +\
-	    ' '+str(hour)+':15'
+        if now.minute<14:
+            hour-=1
+        retval = '.'.join((da,mo,str(now.year))) +\
+            ' '+str(hour)+':15'
     return retval
 
 def index(template, skin, request):
 
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: index(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: index(template, skin, request))
+        return d
 
     def buildProcAndVideo(components):
-	proc_video = {}
-	for c in components:
-	    if c.cat_name == proc:
-		proc_video['proc_code'] = c.component['_id']
-		proc_video['proc_catalog'] = getCatalogsKey(c.component)
-		if 'brand' in c.component:
-		    proc_video['brand'] = c.component['brand']
-		if 'cores' in c.component:
-		    proc_video['cores'] = c.component['cores']
-		if 'cache' in c.component:
-		    proc_video['cache'] = c.component['cache']
-	    elif c.cat_name == video:
-		proc_video['video_code'] = c.component['_id']
-		proc_video['video_catalog'] = getCatalogsKey(c.component)
-	return proc_video
+        proc_video = {}
+        for c in components:
+            if c.cat_name == proc:
+                proc_video['proc_code'] = c.component['_id']
+                proc_video['proc_catalog'] = getCatalogsKey(c.component)
+                if 'brand' in c.component:
+                    proc_video['brand'] = c.component['brand']
+                if 'cores' in c.component:
+                    proc_video['cores'] = c.component['cores']
+                if 'cache' in c.component:
+                    proc_video['cache'] = c.component['cache']
+            elif c.cat_name == video:
+                proc_video['video_code'] = c.component['_id']
+                proc_video['video_catalog'] = getCatalogsKey(c.component)
+        return proc_video
 
     def render(result):
-	i = 0
-	models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
-	tree = template.root()
-	div = template.middle.xpath('//div[@id="computers_container"]')[0]
-	json_prices = {}
-	json_procs_and_videos = {}
-	# TODO! make model view as for ComponentForModelsPage!!!!!!!!
-	for m in models:
-	    model_snippet = tree.find('model')
-	    snippet = deepcopy(model_snippet.find('div'))
-	    snippet.set('style',"background-image:url('" + imgs[i] + "')")
-	    a = snippet.find('.//a')
-	    a.set('href','/computer/%s' % m['_id'])
-	    a.text=m['name']
-	    price_span = snippet.find('.//span')
-	    price_span.set('id',m['_id'])
-	    components = buildPrices(m, json_prices, price_span)
-	    json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
-	    div.append(snippet)
-	    i+=1
-	    if i==len(imgs): i=0
-	template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
-	    'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
-	last_update = template.middle.xpath('//span[@id="last_update"]')[0]
-	last_update.text = lastUpdateTime()
+        i = 0
+        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
+        tree = template.root()
+        div = template.middle.xpath('//div[@id="computers_container"]')[0]
+        json_prices = {}
+        json_procs_and_videos = {}
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+        for m in models:
+            model_snippet = tree.find('model')
+            snippet = deepcopy(model_snippet.find('div'))
+            snippet.set('style',"background-image:url('" + imgs[i] + "')")
+            a = snippet.find('.//a')
+            a.set('href','/computer/%s' % m['_id'])
+            a.text=m['name']
+            price_span = snippet.find('.//span')
+            price_span.set('id',m['_id'])
+            components = buildPrices(m, json_prices, price_span)
+            json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
+            div.append(snippet)
+            i+=1
+            if i==len(imgs): i=0
+        template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
+            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
+        last_update = template.middle.xpath('//span[@id="last_update"]')[0]
+        last_update.text = lastUpdateTime()
 
-	skin.top = template.top
-	skin.middle = template.middle
-	return skin.render()
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
 
     d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(render)
@@ -1306,18 +1403,18 @@ def index(template, skin, request):
 
 def updateOriginalModelPrices():
     def update(models):
-	for row in models['rows']:
-	    model = row['doc']
-	    model['original_prices'] = {}
-	    for name,code in model['items'].items():
-		if type(code) is list:
-		    code = code[0]
-		if code in globals()['gChoices_flatten']:
-		    component = globals()['gChoices_flatten'][code]
-		    model['original_prices'].update({code:component['price']})
-		else:
-		    model['original_prices'].update({code:99})
-	    couch.saveDoc(model)
+        for row in models['rows']:
+            model = row['doc']
+            model['original_prices'] = {}
+            for name,code in model['items'].items():
+                if type(code) is list:
+                    code = code[0]
+                if code in globals()['gChoices_flatten']:
+                    component = globals()['gChoices_flatten'][code]
+                    model['original_prices'].update({code:component['price']})
+                else:
+                    model['original_prices'].update({code:99})
+            couch.saveDoc(model)
     d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(update)
 
@@ -1326,40 +1423,40 @@ def updateOriginalModelPrices():
 def getNoteBookName(doc):
 
     if 'nname' in doc:
-	return doc['nname']
+        return doc['nname']
 
     found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
     _text = None
     if len(found)>0:
-	_text = found[0].strip()
-	# doc['nname'] =_text
-	# couch.saveDoc(doc)
+        _text = found[0].strip()
+        # doc['nname'] =_text
+        # couch.saveDoc(doc)
     else:
-	_text = doc['text'][0:doc['text'].index('"')]
-	_text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
+        _text = doc['text'][0:doc['text'].index('"')]
+        _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
     return _text
 
 
 def getNoteDispl(doc):
     if 'ndispl' in doc:
-	return doc['ndispl']
+        return doc['ndispl']
     retval = ''
     found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
     if len(found)>0:
-	retval = found[0]
-	# doc['ndispl'] =retval
-	# couch.saveDoc(doc)
+        retval = found[0]
+        # doc['ndispl'] =retval
+        # couch.saveDoc(doc)
     return retval
 
 def getNotePerformance(doc):
     if 'nperformance' in doc:
-	return doc['nperformance']
+        return doc['nperformance']
     retval = ""
     found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
     if len(found)>0:
-	retval = found[0]
-	# doc['nperformance'] =retval
-	# couch.saveDoc(doc)
+        retval = found[0]
+        # doc['nperformance'] =retval
+        # couch.saveDoc(doc)
     return retval
 
 
@@ -1370,149 +1467,149 @@ def makeNotePrice(doc):
 
 def notebooks(template, skin, request):
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: notebooks(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: notebooks(template, skin, request))
+        return d
 
     def render(result):
-	json_notebooks= {}
-	for r in result['rows']:
+        json_notebooks= {}
+        for r in result['rows']:
 
-	    r['doc']['price'] = makeNotePrice(r['doc'])
+            r['doc']['price'] = makeNotePrice(r['doc'])
 
-	    note_div = deepcopy(template.root().find('notebook').find('div'))
-	    note_div.set('class',r['doc']['_id']+' note')
+            note_div = deepcopy(template.root().find('notebook').find('div'))
+            note_div.set('class',r['doc']['_id']+' note')
 
 
-	    link = note_div.xpath("//div[@class='nname']")[0].find('a')
-	    name = getNoteBookName(r['doc'])
-	    link.text = name
-	    if 'ourdescription' in r['doc']:
-		link.set('href','/notebook/'+name)
-	    else:
-		link.set('name',name)
+            link = note_div.xpath("//div[@class='nname']")[0].find('a')
+            name = getNoteBookName(r['doc'])
+            link.text = name
+            if 'ourdescription' in r['doc']:
+                link.set('href','/notebook/'+name)
+            else:
+                link.set('name',name)
 
-	    for d in template.middle.xpath("//div[@class='notebook_column']"):
-		clone = deepcopy(note_div)
-		sort_div = clone.xpath("//div[@class='nprice']")[0]
-		if d.get('id') == "s_price":
-		    sort_div.text = unicode(r['doc']['price'])+u' р.'
-		if d.get('id') == "s_size":
-		    sort_div.text = getNoteDispl(r['doc'])
-		if d.get('id') == "s_size":
-		    sort_div.text = getNoteDispl(r['doc'])
-		if d.get('id') == "s_performance":
-		    sort_div.text = getNotePerformance(r['doc'])
-		d.append(clone)
+            for d in template.middle.xpath("//div[@class='notebook_column']"):
+                clone = deepcopy(note_div)
+                sort_div = clone.xpath("//div[@class='nprice']")[0]
+                if d.get('id') == "s_price":
+                    sort_div.text = unicode(r['doc']['price'])+u' р.'
+                if d.get('id') == "s_size":
+                    sort_div.text = getNoteDispl(r['doc'])
+                if d.get('id') == "s_size":
+                    sort_div.text = getNoteDispl(r['doc'])
+                if d.get('id') == "s_performance":
+                    sort_div.text = getNotePerformance(r['doc'])
+                d.append(clone)
 
-	    for token in ['id', 'flags','inCart',
-			  'ordered','reserved','stock1', '_rev', 'warranty_type']:
-		r['doc'].pop(token)
-	    r['doc']['catalogs'] = getCatalogsKey(r['doc'])
-	    #TODO save all this shit found from re
-	    json_notebooks.update({r['doc']['_id']:r['doc']})
+            for token in ['id', 'flags','inCart',
+                          'ordered','reserved','stock1', '_rev', 'warranty_type']:
+                r['doc'].pop(token)
+            r['doc']['catalogs'] = getCatalogsKey(r['doc'])
+            #TODO save all this shit found from re
+            json_notebooks.update({r['doc']['_id']:r['doc']})
 
-	template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
-	title = skin.root().xpath('//title')[0]
-	title.text = u'Ноутбуки Asus'
-	skin.top = template.top
-	skin.middle = template.middle
-	return skin.render()
+        template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
+        title = skin.root().xpath('//title')[0]
+        title.text = u'Ноутбуки Asus'
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
     asus_12 = ["7362","7404","7586"]
     asus_14 = ["7362","7404","7495"]
     asus_15 = ["7362","7404","7468"]
     asus_17 = ["7362","7404","7704"]
     d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
-		       keys = [asus_12,asus_14,asus_15,asus_17])
+                       keys = [asus_12,asus_14,asus_15,asus_17])
     d.addCallback(render)
     return d
 
 class ZipConponents(Resource):
 
     def getPriceAndCode(self, row):
-	return {row['doc']['_id']:makePrice(row['doc'])}
+        return {row['doc']['_id']:makePrice(row['doc'])}
 
     def render_GET(self, request):
-	mothers = []
-	procs = []
-	videos = []
-	for sockets in globals()['gChoices'][mother]:
-	    mothers.append(sockets[1][1]['rows'])
-	for sockets in globals()['gChoices'][proc]:
-	    procs.append(sockets[1][1]['rows'])
-	for sockets in globals()['gChoices'][video]:
-	    for r in sockets[1][1]['rows']:
-		videos.append(self.getPriceAndCode(r))
+        mothers = []
+        procs = []
+        videos = []
+        for sockets in globals()['gChoices'][mother]:
+            mothers.append(sockets[1][1]['rows'])
+        for sockets in globals()['gChoices'][proc]:
+            procs.append(sockets[1][1]['rows'])
+        for sockets in globals()['gChoices'][video]:
+            for r in sockets[1][1]['rows']:
+                videos.append(self.getPriceAndCode(r))
 
-	mothers_mapping = {}
-	for m in mothers:
-	    if len(m)==0:continue
-	    cats = getCatalogsKey(m[0]['doc'])
-	    mothers_mapping.update({tuple(cats):m})
-	proc_mapping = {}
-	for p in procs:
-	    if len(p)==0:continue
-	    cats = getCatalogsKey(p[0]['doc'])
-	    proc_mapping.update({tuple(cats):p})
-	mother_procs = []
-	for tu in mother_to_proc_mapping:
-	    tm = tuple(tu[0])
-	    tp = tuple(tu[1])
-	    if  tm in mothers_mapping and tp in proc_mapping:
-		mother_procs.append([[self.getPriceAndCode(c) for c in mothers_mapping[tm]],
-				     [self.getPriceAndCode(c) for c in proc_mapping[tp]]])
+        mothers_mapping = {}
+        for m in mothers:
+            if len(m)==0:continue
+            cats = getCatalogsKey(m[0]['doc'])
+            mothers_mapping.update({tuple(cats):m})
+        proc_mapping = {}
+        for p in procs:
+            if len(p)==0:continue
+            cats = getCatalogsKey(p[0]['doc'])
+            proc_mapping.update({tuple(cats):p})
+        mother_procs = []
+        for tu in mother_to_proc_mapping:
+            tm = tuple(tu[0])
+            tp = tuple(tu[1])
+            if  tm in mothers_mapping and tp in proc_mapping:
+                mother_procs.append([[self.getPriceAndCode(c) for c in mothers_mapping[tm]],
+                                     [self.getPriceAndCode(c) for c in proc_mapping[tp]]])
 
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	return simplejson.dumps({'mp':mother_procs,'v':videos})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps({'mp':mother_procs,'v':videos})
 
 
 class CatalogsFor(Resource):
     def render_GET(self, request):
-	codes = request.args.get('c',[])
-	if len(codes)==0:
-	    request.finish()
-	res = {}
-	for c in codes:
-	    res.update({c:getCatalogsKey(globals()['gChoices_flatten'][c])})
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	return simplejson.dumps(res)
+        codes = request.args.get('c',[])
+        if len(codes)==0:
+            request.finish()
+        res = {}
+        for c in codes:
+            res.update({c:getCatalogsKey(globals()['gChoices_flatten'][c])})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps(res)
 
 
 class NamesFor(Resource):
     def render_GET(self, request):
-	codes = request.args.get('c',[])
-	if len(codes)==0:
-	    request.finish()
-	res = {}
-	for c in codes:
-	    component = globals()['gChoices_flatten'][c]
-	    res.update({c:component['text'] + ' <strong>'+unicode(makePrice(component)) + u' р</strong>'})
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	return simplejson.dumps(res)
+        codes = request.args.get('c',[])
+        if len(codes)==0:
+            request.finish()
+        res = {}
+        for c in codes:
+            component = globals()['gChoices_flatten'][c]
+            res.update({c:component['text'] + ' <strong>'+unicode(makePrice(component)) + u' р</strong>'})
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps(res)
 
 class ParamsFor(Resource):
     def render_GET(self, request):
-	_type = request.args.get('type',[None])[0]
-	if _type is None:
-	    return "ok"
-	codes = request.args.get('c',[])
-	if len(codes)==0:
-	    request.finish()
-	res = {}
-	for c in codes:
-	    component = globals()['gChoices_flatten'][c]
-	    if _type == 'proc':
-		res.update({c:
-			    {'brand':component['brand'] if 'brand' in component else '',
-			    'cores':component['cores'] if 'cores' in component else '',
-			    'cache':component['cache'] if 'cache' in component else ''}
-			    })
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	return simplejson.dumps(res)
+        _type = request.args.get('type',[None])[0]
+        if _type is None:
+            return "ok"
+        codes = request.args.get('c',[])
+        if len(codes)==0:
+            request.finish()
+        res = {}
+        for c in codes:
+            component = globals()['gChoices_flatten'][c]
+            if _type == 'proc':
+                res.update({c:
+                            {'brand':component['brand'] if 'brand' in component else '',
+                            'cores':component['cores'] if 'cores' in component else '',
+                            'cache':component['cache'] if 'cache' in component else ''}
+                            })
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return simplejson.dumps(res)
 
 def renderPromotion(doc, template, skin):
     template.top.find('h1').text = doc['name']
@@ -1520,29 +1617,29 @@ def renderPromotion(doc, template, skin):
     record = template.root().find('record')
 
     def setImage(img, src):
-	img.set('src','/image/'+doc['_id']+'/'+src)
+        img.set('src','/image/'+doc['_id']+'/'+src)
     components = {}
     for c in sorted(doc['components'],lambda x,y:x['order']-y['order']):
-	rec = deepcopy(record)
-	tr = rec.find('tr')
-	tds = tr.findall('td')
-	tds[0].find('img').set('src','/static/promotion/'+c['type']+'.png');
-	tds[-1].text = c['name']
-	tr.set('id', c['code'])
-	stuff.append(tr)
-	if c['order'] == 10:
-	    i = template.middle.xpath('//div[@id="promo_image"]')[0].find('img')
-	    setImage(i,c['top_image'])
-	    desc = template.middle.xpath('//div[@id="promo_description"]')[0]
-	    p = etree.Element('p')
-	    p.text = c['description']
-	    desc.append(p)
-	    if 'bottom_images' in c:
-		for i in c['bottom_images']:
-		    img = etree.Element('img')
-		    setImage(img,i)
-		    p.append(img)
-	components.update({c['code']:c})
+        rec = deepcopy(record)
+        tr = rec.find('tr')
+        tds = tr.findall('td')
+        tds[0].find('img').set('src','/static/promotion/'+c['type']+'.png');
+        tds[-1].text = c['name']
+        tr.set('id', c['code'])
+        stuff.append(tr)
+        if c['order'] == 10:
+            i = template.middle.xpath('//div[@id="promo_image"]')[0].find('img')
+            setImage(i,c['top_image'])
+            desc = template.middle.xpath('//div[@id="promo_description"]')[0]
+            p = etree.Element('p')
+            p.text = c['description']
+            desc.append(p)
+            if 'bottom_images' in c:
+                for i in c['bottom_images']:
+                    img = etree.Element('img')
+                    setImage(img,i)
+                    p.append(img)
+        components.update({c['code']:c})
 
     scr = template.middle.find('script')
     scr.text = 'var _id="'+doc['_id']+'";var components='+simplejson.dumps(components)+';'
@@ -1551,7 +1648,7 @@ def renderPromotion(doc, template, skin):
     template.top.xpath('//div[@id="promo_extra"]')[0].text = doc['extra']
     descr = template.top.xpath('//p[@id="promo_desc"]')[0]
     for el in html.fragments_fromstring(doc['description']):
-	descr.append(el)
+        descr.append(el)
     template.top.xpath('//div[@id="pprice"]')[0].text = unicode(doc['our_price'])
 
     skin.top = template.top
@@ -1562,29 +1659,28 @@ def renderPromotion(doc, template, skin):
 
 def promotion(template, skin, request):
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: promotion(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: promotion(template, skin, request))
+        return d
 
     splitted = request.path.split('/')
     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
     if len(name) == 0 or name=='promotion':
-	name = 'ajax'
+        name = 'ajax'
     d = couch.openDoc(name)
     d.addCallback(renderPromotion, template, skin)
     return d
 
 
 def upgrade_set(template, skin, request):
-
     if globals()['gChoices'] is None:
-	d = fillChoices()
-	d.addCallback(lambda some: index(template, skin, request))
-	return d
+        d = fillChoices()
+        d.addCallback(lambda some: upgrade_set(template, skin, request))
+        return d
     def render(self):
-	skin.top = template.top
-	skin.middle = template.middle
-	return skin.render()
+        skin.top = template.top
+        skin.middle = template.middle
+        return skin.render()
 
     d = couch.openView(designID,'models',include_docs=True,stale=False)
     d.addCallback(render)
