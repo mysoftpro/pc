@@ -209,7 +209,7 @@ var forceCookie = function(){
     var a = $.cookie('pc_avatar');
     if (a){
         $.cookie('pc_avatar', null);
-        $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+        $.cookie('pc_avatar', k, {domain:'.buildpc.ru', path:'/', expires:1000});
     }
     $.cookie('pc_cookie_forced1', true, {domain:'.buildpc.ru', path:'/', expires:1000});
 
