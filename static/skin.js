@@ -71,11 +71,11 @@ function CartAndContacts(){
         var style = 'width:0';
         if ($.browser.msie || $.browser.opera)
             style = 'width:94';
-	if ($('#cart').length==0){
-	    $('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
+        if ($('#cart').length==0){
+            $('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
             $('#cart').parent().animate({'width':'94px'},400);
-	}
-        
+        }
+
     }
     if (!document.location.href.match('faq'))
         _.delay(function(){
@@ -182,23 +182,36 @@ function ask(e){
 }
 var forceCookie = function(){
 
-    if ($.cookie('pc_cookie_forced'))
+    if ($.cookie('pc_cookie_forced1', {path:'/', domain:'.buildpc.ru'}))
         return;
 
+    $.cookie('pc_cookie_forced', null);
+
     var u = $.cookie('pc_user');
-    $.cookie('pc_user', null);
-    $.cookie('pc_user', u, {domain:'.buildpc.ru', path:'/', expires:1000});
+    if (u){
+        $.cookie('pc_user', null);
+        $.cookie('pc_user', u, {domain:'.buildpc.ru', path:'/', expires:1000});
+    }
 
     var c = $.cookie('pc_cart');
-    $.cookie('pc_cart', null);
-    $.cookie('pc_cart', c, {domain:'.buildpc.ru', path:'/', expires:1000});
-
+    if (c){
+        $.cookie('pc_cart', null);
+        $.cookie('pc_cart', c, {domain:'.buildpc.ru', path:'/', expires:1000});
+    }
 
     var k = $.cookie('pc_key');
-    $.cookie('pc_key', null);
-    $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+    if (k){
+        $.cookie('pc_key', null);
+        $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+    }
 
-    $.cookie('pc_cookie_forced', true, {domain:'.buildpc.ru', path:'/', expires:1000});
+
+    var a = $.cookie('pc_avatar');
+    if (a){
+        $.cookie('pc_avatar', null);
+        $.cookie('pc_key', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+    }
+    $.cookie('pc_cookie_forced1', true, {domain:'.buildpc.ru', path:'/', expires:1000});
 
 };
 
@@ -213,7 +226,7 @@ var init = function(){
             if (eva['first_name'] && eva['last_name'])
                 makeAvatar(eva);
         else
-            $.cookie('pc_avatar', null);
+            $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
         } catch (x) {
             console.log(x);
         }
