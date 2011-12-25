@@ -15,3 +15,20 @@ def addCookies(request, cookies):
 	    request.addCookie(str(k),str(v),expires=t,path='/',domain='.buildpc.ru')
 	else:
 	    request.addCookie(str(k),str(v),expires=t,path='/')
+
+
+class forceCond(object):
+    def __init__(self, beforeCond, deferedCreator):
+        self.beforeCond = beforeCond
+        self.deferedCreator = deferedCreator
+
+    def __call__(self, afterProc):
+        def chainning(*args, **kwargs):
+            retval = None
+            if self.beforeCond():
+                retval = afterProc(*args, **kwargs)
+            else:
+                retval = self.deferedCreator()
+                retval.addCallback(lambda some: afterProc(*args, **kwargs))
+            return retval
+        return chainning
