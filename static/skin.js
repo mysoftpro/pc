@@ -182,7 +182,7 @@ function ask(e){
 }
 var forceCookie = function(){
 
-    if ($.cookie('pc_cookie_forced1', {path:'/', domain:'.buildpc.ru'}))
+    if ($.cookie('pc_cookie_forced1'))
         return;
 
     $.cookie('pc_cookie_forced', null);
