@@ -11,8 +11,7 @@ from pc.mail import send_email
 from random import randint
 import re
 from twisted.web.resource import Resource
-from pc.common import addCookies
-from pc.common import forceCond
+from pc.common import addCookies, MIMETypeJSON, forceCond
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -1340,6 +1339,7 @@ class ZipConponents(Resource):
     def getPriceAndCode(self, row):
         return {row['doc']['_id']:makePrice(row['doc'])}
 
+    @MIMETypeJSON
     def render_GET(self, request):
         mothers = []
         procs = []
@@ -1370,12 +1370,12 @@ class ZipConponents(Resource):
                 mother_procs.append([[self.getPriceAndCode(c) for c in mothers_mapping[tm]],
                                      [self.getPriceAndCode(c) for c in proc_mapping[tp]]])
 
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps({'mp':mother_procs,'v':videos})
 
 
 class CatalogsFor(Resource):
+
+    @MIMETypeJSON
     def render_GET(self, request):
         codes = request.args.get('c',[])
         if len(codes)==0:
@@ -1383,12 +1383,11 @@ class CatalogsFor(Resource):
         res = {}
         for c in codes:
             res.update({c:getCatalogsKey(globals()['gChoices_flatten'][c])})
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps(res)
 
 
 class NamesFor(Resource):
+    @MIMETypeJSON
     def render_GET(self, request):
         codes = request.args.get('c',[])
         if len(codes)==0:
@@ -1397,11 +1396,10 @@ class NamesFor(Resource):
         for c in codes:
             component = globals()['gChoices_flatten'][c]
             res.update({c:component['text'] + ' <strong>'+unicode(makePrice(component)) + u' р</strong>'})
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps(res)
 
 class ParamsFor(Resource):
+    @MIMETypeJSON
     def render_GET(self, request):
         _type = request.args.get('type',[None])[0]
         if _type is None:
@@ -1418,8 +1416,6 @@ class ParamsFor(Resource):
                             'cores':component['cores'] if 'cores' in component else '',
                             'cache':component['cache'] if 'cache' in component else ''}
                             })
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-        request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return simplejson.dumps(res)
 
 def renderPromotion(doc, template, skin):

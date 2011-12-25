@@ -32,3 +32,10 @@ class forceCond(object):
                 retval.addCallback(lambda some: afterProc(*args, **kwargs))
             return retval
         return chainning
+
+def MIMETypeJSON(f):
+    def render(self, request):
+        request.setHeader('Content-Type', 'application/json;charset=utf-8')
+	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+        return f(self, request)
+    return render

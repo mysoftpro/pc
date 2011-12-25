@@ -35,7 +35,7 @@ from twisted.cred.checkers import FilePasswordDB
 from twisted.cred.portal import IRealm, Portal
 from zope.interface import implements
 from twisted.web.resource import IResource
-
+from pc.common import MIMETypeJSON
 
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
 
@@ -107,8 +107,6 @@ class AdminGate(Resource):
 class Promo(Resource):
 
     def finish(self, components, promo, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	components = [c for c in components if c[0]]
 	request.write(simplejson.dumps({'components':components, 'promo':promo}))
 	request.finish()
@@ -121,7 +119,7 @@ class Promo(Resource):
 	li.addCallback(self.finish, promo, request)
 	return li
 
-
+    @MIMETypeJSON
     def render_GET(self, request):
 	key = request.args.get('key',[None])[0]
 	if key is None: return "ok"
@@ -131,12 +129,11 @@ class Promo(Resource):
 
 
 class Mothers(Resource):
-    def finish(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+    def finish(self, result, request):	
 	request.write(simplejson.dumps(result))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	from pc import models
 	defer.DeferredList([
@@ -166,11 +163,9 @@ class Mothers(Resource):
 
 class Videos(Resource):
     def finish(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(result))
 	request.finish()
-
+    @MIMETypeJSON
     def render_GET(self, request):
 	from pc import models
 	defer.DeferredList([
@@ -189,11 +184,10 @@ class Videos(Resource):
 
 class Procs(Resource):
     def finish(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(result))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	from pc import models
 	defer.DeferredList([couch.openView(designID,
@@ -226,12 +220,12 @@ class Procs(Resource):
 
 
 class NoteBooks(Resource):
-    def finish(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+
+    def finish(self, result, request):	
 	request.write(simplejson.dumps(result))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	asus_12 = ["7362","7404","7586"]
 	asus_14 = ["7362","7404","7495"]
@@ -252,8 +246,6 @@ class FindOrder(Resource):
 
 
     def finish(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	# first level
 	for li in result:
 	    for tu in li:
@@ -445,7 +437,7 @@ class FindOrder(Resource):
 	# li.addCallback(self.addComponents, model['_id'])
 	# li.addCallback(self.finish, request)
 	# return li
-
+    @MIMETypeJSON
     def render_GET(self, request):
 	_id = request.args.get('id')[0]
 	if len(_id)>3:
@@ -464,8 +456,6 @@ class FindOrder(Resource):
 # somewhone make an order for several models will have some orders
 class StoreOrder(Resource):
     def finish(self, order_res, model_rev, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(order_res['rev'])+'.'+str(model_rev))
 	request.finish()
 
@@ -476,6 +466,7 @@ class StoreOrder(Resource):
 	d = couch.saveDoc(order)
 	d.addCallback(self.finish, model['_rev'], request)
 
+    @MIMETypeJSON
     def render_POST(self, request):
 	order = request.args.get('order')[0]
 	jorder = simplejson.loads(order)
@@ -494,11 +485,10 @@ class StoreOrder(Resource):
 
 class StorePromo(Resource):
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(doc['rev']))
 	request.finish()
 
+    @MIMETypeJSON
     def render_POST(self, request):
 	promo = request.args.get('promo')[0]
 	jpromo = simplejson.loads(promo)
@@ -511,11 +501,10 @@ class StorePromo(Resource):
 
 class StoreMother(Resource):
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(doc['rev']))
 	request.finish()
 
+    @MIMETypeJSON
     def render_POST(self, request):
 	mother = request.args.get('mother')[0]
 	jmother = simplejson.loads(mother)
@@ -527,11 +516,10 @@ class StoreMother(Resource):
 
 class StoreVideo(Resource):
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(doc['rev']))
 	request.finish()
 
+    @MIMETypeJSON
     def render_POST(self, request):
 	video = request.args.get('video')[0]
 	jvideo = simplejson.loads(video)
@@ -541,9 +529,9 @@ class StoreVideo(Resource):
 
 
 class StoreProc(Resource):
+
+    @MIMETypeJSON
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(doc['rev']))
 	request.finish()
 
@@ -557,11 +545,10 @@ class StoreProc(Resource):
 
 class StoreNote(Resource):
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(str(doc['rev']))
 	request.finish()
 
+    @MIMETypeJSON
     def render_POST(self, request):
 	note = request.args.get('note')[0]
 	jnote = simplejson.loads(note)
@@ -634,12 +621,10 @@ class WarrantyFill(Resource):
 	ob.update({'building':model['building']})
 	ob.update({'installing':model['building']})
 	ob.update({'dvd':model['dvd']})
-
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(ob))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	_id = request.args.get("_id", [None])[0]
 	if _id is None:
@@ -652,13 +637,10 @@ class WarrantyFill(Resource):
 
 class ShowHow(Resource):
     def finish(self, res, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(res))
 	request.finish()
 
-# ('how_7388','how_7396','how_7406','how_7394','how_7383',
-#                      'how_7369','how_7387','how_7390','how_7389')
+    @MIMETypeJSON
     def render_POST(self,request):
 	defs = []
 	for name in parts_aliases.values():
@@ -670,11 +652,10 @@ class ShowHow(Resource):
 class EditHow(Resource):
 
     def finish(self, res, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(res))
 	request.finish()
 
+    @MIMETypeJSON
     def render_POST(self,request):
 	doc = request.args.get('doc',[None])[0]
 	d = couch.saveDoc(simplejson.loads(doc))
@@ -683,9 +664,9 @@ class EditHow(Resource):
 
 
 class AdminComet(Resource):
+
+    @MIMETypeJSON
     def render_GET(self, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(globals()['_comet_users'].keys()))
 	request.finish()
 
@@ -705,9 +686,8 @@ class AcceptComet(Resource):
 	return "fail"
 
 class SessionGetter(Resource):
+    @MIMETypeJSON
     def render_GET(self, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	return simplejson.dumps({'Authorization':request.getHeader('authorization')})
 
 
@@ -772,11 +752,10 @@ class NewForMapping(Resource):
             if r['doc']['new_catalogs'] not in ['videos', 'procs', 'mothers']:
                 continue
             new_res['rows'].append(r)
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(new_res))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	d = couch.openView(designID, 'new_components', include_docs=True)
 	d.addCallback(self.finish, request)
@@ -785,11 +764,10 @@ class NewForMapping(Resource):
 class WitForMapping(Resource):
 
     def finish(self, res, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	request.write(simplejson.dumps(res))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	import models
 	defer.DeferredList([
@@ -911,11 +889,10 @@ class DeleteWitNewMap(Resource):
 class GetNewDescriptions(Resource):
 
     def finish(self, res, request):
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         request.write(simplejson.dumps(res))
         request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
         d = couch.openView(designID, 'new_unique_components', include_docs=True)
         d.addCallback(self.finish, request)
@@ -924,11 +901,10 @@ class GetNewDescriptions(Resource):
 class GetDescFromNew(Resource):
 
     def finish(self, res, request):
-        request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         request.write(res)
         request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
         link = request.args.get('link')[0]        
         d = getNewDescription(link)

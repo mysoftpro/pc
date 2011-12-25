@@ -30,7 +30,7 @@ from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
 import sys
 from pc.auth import OAuth, OpenId
-from pc.common import addCookies
+from pc.common import addCookies, MIMETypeJSON
 
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
@@ -123,6 +123,8 @@ static_hooks = {
 _cached_statics = {}
 
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
+
+
 
 
 class SiteMap(Resource):
@@ -612,7 +614,7 @@ class Root(Cookable):
 	self.putChild('deleteNote',DeleteNote())
 	self.putChild('deleteAll',DeleteAll())
 	self.putChild('sender', Sender())
-	self.putChild('select_helps', SelectHelpsProxy())
+	# self.putChild('select_helps', SelectHelpsProxy())
 	from pc.admin import Admin
 	self.putChild('admin',Admin())
 	self.host_url = host_url
@@ -807,9 +809,8 @@ class FromBlog(Resource):
 	self.blog_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blog', reactor=reactor)
 	self.faq_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/faq', reactor=reactor)
 
+    @MIMETypeJSON
     def render_GET(self, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	proxy = self.blog_proxy
 	if 'faq' in request.getHeader('Referer'):
 	    proxy = self.faq_proxy
@@ -833,10 +834,6 @@ class ModelStats(Resource):
 
 class ModelDesc(Resource):
     def finish(self, doc, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	# request.setHeader('Content-Type', 'text/html;charset=utf-8')
-	# request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	res = {}
 	if 'modeldesc' in doc:
 	    res.update({'modeldesc':doc['modeldesc']})
@@ -846,9 +843,7 @@ class ModelDesc(Resource):
 	# request.write(doc['modeldesc'].encode('utf-8'))
 	request.finish()
 
-    def finishHitsOnly(self, result, request):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
+    def finishHitsOnly(self, result, request):	
 	res = {}
 	for r in result['rows']:
 	    doc = r['doc']
@@ -859,6 +854,7 @@ class ModelDesc(Resource):
 	request.write(simplejson.dumps(res))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	_id = request.args.get('id', [None])[0]
 	if _id is not None:
@@ -943,12 +939,11 @@ class Component(Resource):
 	request.write(simplejson.dumps(descr))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	_id = request.args.get('id', [None])[0]
 	if _id is None: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
 	if 'no' in _id: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	d = couch.openDoc(_id)
 	d.addCallback(self.writeComponent, request)
 	return NOT_DONE_YET
@@ -956,10 +951,7 @@ class Component(Resource):
 
 
 class Save(Resource):
-
     def finish(self, user_model, request, user_doc):
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
 	if user_model[0][0] and user_model[1][0]:
 	    in_cart = len(user_doc['models'])
 	    if 'notebooks' in user_doc:
@@ -970,6 +962,7 @@ class Save(Resource):
 	    request.write(simplejson.dumps({}))
 	request.finish()
 
+    @MIMETypeJSON
     def render_GET(self, request):
 	model = request.args.get('model', [None])[0]
 	if model is not None:
@@ -1257,21 +1250,19 @@ class Rss(Resource):
     def render_GET(self, request):
 	return self.proxy.render(request)
 
-class SelectHelpsProxy(Resource):
-    def __init__(self, *args, **kwargs):
-	Resource.__init__(self, *args, **kwargs)
-	self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
+# class SelectHelpsProxy(Resource):
+#     def __init__(self, *args, **kwargs):
+# 	Resource.__init__(self, *args, **kwargs)
+# 	self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
 
-    def getChild(self, path, request):
-	last = request.uri.split('/')[-1]
+#     def getChild(self, path, request):
+# 	last = request.uri.split('/')[-1]
 
-	# safety to not show couch internals
-	# just check that it endswith image extension and no parameters in it
-	if '?' in last or '&' in last:
-	    return NoResource()
-	_help = 'how_' in last
-	if not _help:
-	    return NoResource()
-	request.setHeader('Content-Type', 'application/json;charset=utf-8')
-	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
-	return self.proxy.getChild(last, request)
+# 	# safety to not show couch internals
+# 	# just check that it endswith image extension and no parameters in it
+# 	if '?' in last or '&' in last:
+# 	    return NoResource()
+# 	_help = 'how_' in last
+# 	if not _help:
+# 	    return NoResource()
+# 	return self.proxy.getChild(last, request)
