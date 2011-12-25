@@ -724,7 +724,10 @@ var init = function(){
 	    //TODO! move to template!
 	    if (span.parent().attr('class').match('processing')){
 	    	span.parent().css('width','600px');
-	    	span.after('<span style="margin-left:10px;color:white;">Ваш компьютер уже собирают!</span>');
+	    	var color = 'white';
+		if ($.cookie('pc_skin')=='home')
+		    color = '#B00606';		    
+		span.after('<span style="margin-left:10px;color:'+color+';">Ваш компьютер уже собирают!</span>');
 	    	continue;
 	    }
 	    span.parent().parent().next().find('.small_reset').click(deleteUUID(_id));
