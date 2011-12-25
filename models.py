@@ -1495,33 +1495,22 @@ def upgrade_set(template, skin, request):
 
 
 
+def userFactory(name):
+    d = couch.openDoc(name)
+    d.addCallback(lambda doc: User(doc))
+    return d
+                  
+class User(object):
+    def __init__(self, user_doc):
+        self._id = user_doc['_id']
+        self._rev = user_doc['_rev']
+        self.models = user_doc['models']
+        self.date = user_doc['date']
+        if 'notebooks' in user_doc:
+            self.notebooks = user_doc['notebooks']
+        else:
+            self.notebooks = []
 
-
-
-
-
-
-class PCView(object):
-    def __init__(self, template,skin,request, name):
-        self.template = template
-        self.request = request
-        self.skin = skin
-        self.name = name
-
-    def preRender(self):
-        pass
-
-    def render(self):
-        self.preRender()
-        self.skin.top = self.template.top
-        self.skin.middle = self.template.middle
-        return defer.succeed(self.skin.render())
-
-class Cart(PCView):
-    def preRender(self):
-        user_doc = couch.openDoc(self.name)
-        print "yaaaaaaaaaaaaaaaaaaa"
-        print self.name
 
 
 @forceCond(noChoicesYet, fillChoices)
