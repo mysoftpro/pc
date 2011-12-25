@@ -186,6 +186,7 @@ var forceCookie = function(){
         return;
 
     $.cookie('pc_cookie_forced', null);
+    $.cookie('pc_cookie_forced', null, {path:'/', domain:'.buildpc.ru'});
 
     var u = $.cookie('pc_user');
     if (u){
@@ -209,7 +210,7 @@ var forceCookie = function(){
     var a = $.cookie('pc_avatar');
     if (a){
         $.cookie('pc_avatar', null);
-        $.cookie('pc_avatar', k, {domain:'.buildpc.ru', path:'/', expires:1000});
+        $.cookie('pc_avatar', a, {domain:'.buildpc.ru', path:'/', expires:1000});
     }
     $.cookie('pc_cookie_forced1', true, {domain:'.buildpc.ru', path:'/', expires:1000});
 
