@@ -2443,3 +2443,27 @@ a.modelicon img{
     font-size:13px;
     margin-top:10px;
 }
+.upgrade_set{
+    font-size:16px;
+    color:white;
+    padding-top:40px;
+    float:left;
+    background-image:url('/static/motherboard.png');
+    background-repeat:no-repeat;
+    width:330px;
+    margin-bottom:20px;    
+    height:200px;
+}
+.uproc{
+    margin-top:10px;
+}
+.uproc .mvendors{
+    margin-top:30px;
+    top:0px;left:0px;
+    margin:0;
+    float:left;
+}
+.uproc .pproc{
+    top:0px;left:0px;
+    float:left;    
+}

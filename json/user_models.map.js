@@ -1,8 +1,9 @@
 function(doc){
     if (doc['building']&&doc['author']){
-	var price = 0;
-	if (doc.items['7396'])
-	    emit(1);
+	emit(doc['_id'], [doc['date'],doc['author']]);
+	// var price = 0;
+	// if (doc.items['7396'])
+	//     emit(1);
 	// for (var key in doc['original_prices']){
 	//     var p =doc['original_prices'][key];
 	//     //windows
