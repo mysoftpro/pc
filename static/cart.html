@@ -1,0 +1,166 @@
+<top>
+  <a name="game"></a><a name="home"></a><a name="admin"></a><a name="work"></a>
+</top>
+<middle>
+  <div id="categories">
+    <a id="all" title="все компьютеры" href="/computer">все</a>
+    <a id="home" title="домашние компьютеры" href="?cat=home"></a>
+    <a id="work" title="компьютеры для работы" href="?cat=work"></a>
+    <a id="admin" title="компьютеры для айтишников" href="?cat=admin"></a>
+    <a id="game" title="игровые компьютеры" href="?cat=game"></a>
+  </div>
+  <script type="text/javascript"></script>
+  <div id="models_container">
+    <div id="models">
+    </div>
+    <div style="clear:both;"></div>
+  </div>
+  <script type="text/javascript">
+    var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
+    '/static/jquery.mousewheel.js','/static/jScrollPane.js',
+    '/static/guider.js','/static/dragdealer.js'];
+    var _next = ['/static/computers.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
+    scripts['next'] = {'top':_top,'next':{'top':_next}};
+  </script>
+  <div id="toppopup">   
+  </div>
+</middle>
+
+<model>
+<div class="computeritem">
+  <div class="info"></div>
+  <h2 class="section">
+    <a class="modellink" href="/computer/name">
+      Пинг
+    </a>
+    <span class="modelprice">
+      12000 р.
+    </span>
+  </h2>
+</div>
+
+<div class="computers_description">
+  <h3></h3>
+
+</div>
+</model>
+
+
+
+<top_models>
+  <div id="models_top">
+    <h1>Модели компьютеров</h1>
+    <div class="computers_top">
+      <div style="float:left;">Вы можете сравнить компоненты разных моделей, кликнув на значок</div>
+      <div style="float:left;background-image:url('/static/build_icons.png');background-position:0px -385px;margin-left:5px;width:16px;height:16px;"></div>
+      <div style="clear:both;"></div>
+      <span>
+	В каждой модели можно поменять любые компоненты прямо на сайте.
+	 Кликайте на название компьютера.</span>
+    </div>
+    <div  id="pricetext" style="padding-left:0px;">
+      <em>Цена включает:</em>
+      <input checked="checked" type="checkbox" id="idisplay"/>
+      <label for="idisplay">монитор</label>
+      <input checked="checked" type="checkbox" id="isoft"/>
+      <label for="isoft">Windows с установкой</label>
+      <input checked="checked" type="checkbox" id="iaudio"/>
+      <label for="iaudio">аудио систему</label>
+      <input checked="checked" type="checkbox" id="iinput"/>
+      <label for="iinput">мышь и клавиатуру</label>
+    </div>
+  </div>
+  </div>
+</top_models>
+
+
+<top_cart>
+  <div id="cart_top">
+    <h1>Корзина</h1>
+    <p class="computers_top">
+      Все корзины анонимны.
+      Они не удаляются с сайта.
+
+      Сохраните ссылку на корзину.
+
+      Отправьте эту ссылку друзьям и знакомым.
+
+      Любой человек
+      может заказать в нашем магазине собранный вами компьютер.
+    </p>
+    <table style="float:left;">
+      <tr>
+	<td>
+	  <strong class="red">Сссылка на эту корзину:</strong>
+	</td>
+	<td colspan="2">
+	  <input id="cartlink" width="20" type="text"/>
+	</td>
+      </tr>
+      <tr>
+	<td><span id="ya_share_cart"></span></td>
+	<td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
+	<td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
+      </tr>
+    </table>
+    <div id="cartcall">
+      Чтобы купить любой товар в нашем магазине, просто <strong class="red">позвоните нам</strong>
+      и назовите его номер.
+      Чтобы посмотреть описание компонентов, кликайте на их название.
+      Чтобы изменить конфигурацию компьютера, кликайте его иконку.
+    </div>
+    <div style="clear:both;"></div>
+  </div>
+
+
+</top_cart>
+<model_icon>
+  <a class="modelicon" name="icon">
+  <span class="rollover" style="opacity: 0;"></span>
+  <span class="gallery-shadow"></span>
+  <img src="/static/sample.jpg"></a>
+</model_icon>
+<notebook>
+  <div class="note_in_cart">
+    <div class="computeritem">
+      <h2 class="section" style="margin-top: 0px; width: 260px;">
+	<strong class="modellink"></strong>
+	<span class="modelprice">15570 р</span>
+      </h2>
+    </div>
+    <div class="cnname"></div>
+    <div style="clear:both"></div>
+  </div>
+</notebook>
+
+
+<cart_extra>
+  
+  <div class="small_square_button small_cart">Проверить</div>
+  <div class="small_square_button small_reset">Удалить</div>
+  <a target="_blank" class="pdf_link">счет на оплату по безналу</a>
+  <div style="clear:both"></div>
+</cart_extra>
+
+<cart_comment>
+<div class="faqrecord">
+  <div class="faqauthor">builder</div>
+  <div class="faqdate">2011,11,18</div>
+  <div style="clear: both;"></div>
+  <div class="faqbody">
+  </div>
+  <div class="faqlinks"><a name="answer">комментировать</a></div>
+</div>
+</cart_comment>
+<cart_comment_form>
+  <div id="faq_top" style="display:none;opacity:0.0;">
+    <textarea class="computers_top" style="width:730px;">Напишите здесь вопрос, пожелание или просьбу. Что угодно.
+    </textarea>
+    <ul><li><input type="text" value="имя" class="computers_top" name="name"></li>
+      <li><input type="text" value="email" class="computers_top" name="email"></li>
+    </ul><em>Если хотите получить уведомление об ответе, укажите email.
+      Ответ можно посмотреть на этой странице.</em>
+    <span class="sendfaq">Отправить</span>
+    <div style="clear:both;"></div>
+  </div>
+</cart_comment_form>

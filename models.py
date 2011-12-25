@@ -1501,7 +1501,20 @@ def upgrade_set(template, skin, request):
 
 
 
+class PCView(object):
+    def __init__(self, template,skin,request):
+        self.template = template
+        self.request = request
+        self.skin = skin
 
+    def render(self):
+        print "yooooooooooooooooooooooooooooooooo!"
+        self.skin.top = self.template.top
+        self.skin.middle = self.template.middle
+        return defer.succeed(self.skin.render())
+
+class Cart(PCView):
+    pass
 
 
 @forceCond(noChoicesYet, fillChoices)
