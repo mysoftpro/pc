@@ -1502,19 +1502,26 @@ def upgrade_set(template, skin, request):
 
 
 class PCView(object):
-    def __init__(self, template,skin,request):
+    def __init__(self, template,skin,request, name):
         self.template = template
         self.request = request
         self.skin = skin
+        self.name = name
+
+    def preRender(self):
+        pass
 
     def render(self):
-        print "yooooooooooooooooooooooooooooooooo!"
+        self.preRender()
         self.skin.top = self.template.top
         self.skin.middle = self.template.middle
         return defer.succeed(self.skin.render())
 
 class Cart(PCView):
-    pass
+    def preRender(self):
+        user_doc = couch.openDoc(self.name)
+        print "yaaaaaaaaaaaaaaaaaaa"
+        print self.name
 
 
 @forceCond(noChoicesYet, fillChoices)

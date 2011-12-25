@@ -547,18 +547,13 @@ class CachedStatic(File):
         else:
             short_name = fileForReading.name.split('\\')[-1]
 
-        print "dddddddddddddddddddd"
-        print short_name
-        print self.hooks
         if short_name in static_hooks:
             template = Template(fileForReading,short_name,last_modified)
             d = static_hooks[short_name](template, self.skin, request)
         elif short_name in self.hooks:
             template = Template(fileForReading,short_name,last_modified)
-            klass = self.hooks[short_name]
-            print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            print klass
-            renderrer = klass(template, self.skin, request)
+            han = self.hooks[short_name]            
+            renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
         else:
             # just an empty snippet
@@ -904,6 +899,13 @@ class Comet(Resource):
         return NOT_DONE_YET
 
 
+class HandlerAndName(object):
+    def __init__(self, handler, name):
+        self.handler = handler
+        self.name = name
+
+        
+
 class PCTemplateRenderrer(Cookable):
     def __init__(self, klass, static, name):
         Cookable.__init__(self)
@@ -911,13 +913,12 @@ class PCTemplateRenderrer(Cookable):
         self.name = name
         self.klass = klass
 
-
     def render_GET(self, request):
-        return NoResource()
+        return NoResource().render(request)
 
     def getChild(self, name, request):
         child = self.static.getChild(self.name, request)
-        child.hooks.update({self.name:self.klass})
+        child.hooks.update({self.name:HandlerAndName(self.klass, name)})
         return child
 
 
@@ -1267,14 +1268,14 @@ class ImageProxy(Resource):
         # safety to not show couch internals
         # just check that it endswith image extension and no parameters in it
         if '?' in last or '&' in last:
-            return NoResource()
+            return NoResource().render(request)
         image = last.endswith('.jpg')
         image = image or last.endswith('.jpeg')
         image = image or last.endswith('.png')
         image = image or last.endswith('.gif')
 
         if not image:
-            return NoResource()
+            return NoResource().render(request)
 
         return self.proxy.getChild(path, request)
 
