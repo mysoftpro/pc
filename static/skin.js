@@ -345,7 +345,23 @@ function makeAvatar(data){
 		   $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
 		   $.cookie('pc_avatar', JSON.stringify(data), {path:'/', domain:'.buildpc.ru'});
 		   bindLogout();
-	       });
+	       });    
+    var ca = $.cookie('pc_cart');
+    if (ca){	
+	var cart_el = $('#cart');
+	if (cart_el.length>0){
+	    cart_el.text('Корзина('+ca+')');	    
+	}
+	else{	    
+	    $('#main_menu')
+		.append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина({{ammo}})</a></li>',
+				   {
+				       cart:$.cookie('pc_user'),
+				       ammo:ca
+				   }));
+	    
+	}
+    }
 };
 
 function makeAuth(){

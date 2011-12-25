@@ -470,8 +470,9 @@ class StoreOrder(Resource):
 	request.finish()
 
     def storeOrder(self, model_res, order, model, request):
-	model['_rev'] = model_res['rev']
-	order['model'] = model
+        if model_res is not None:
+            model['_rev'] = model_res['rev']
+            order['model'] = model
 	d = couch.saveDoc(order)
 	d.addCallback(self.finish, model['_rev'], request)
 
@@ -480,9 +481,14 @@ class StoreOrder(Resource):
 	jorder = simplejson.loads(order)
 	jorder['date']=str(date.today()).split('-')
 	model = jorder['model']
-	model['processing'] = True
-	d = couch.saveDoc(model)
-	d.addCallback(self.storeOrder, jorder,model,request)
+        if not 'processing' in model:
+            model['processing'] = True
+            d = couch.saveDoc(model)
+            d.addCallback(self.storeOrder, jorder,model,request)
+        else:
+            d = defer.Deferred()
+            d.addCallback(self.storeOrder, jorder,model,request)
+            d.callback(None)
 	return NOT_DONE_YET
 
 

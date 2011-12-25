@@ -134,13 +134,16 @@ class OAuth(Resource):
 
 
     def installPreviousUser(self, soc_user_doc, request):
-	in_cart = len(soc_user_doc['models'])
+        print "oooooooooooooooooooooooooooooooooooooooooooooo"        
+        addCookies(request, {'pc_user':soc_user_doc['_id'],
+                             'pc_key':soc_user_doc['pc_key']})
+        in_cart = 0
+        if 'models' in soc_user_doc:
+            in_cart +=len(soc_user_doc['models'])
 	if 'notebooks' in soc_user_doc:
 	    in_cart+=len(soc_user_doc['notebooks'].keys())
-	    addCookies(request, {'pc_user':soc_user_doc['_id'],
-				 'pc_key':soc_user_doc['pc_key'],
-				 'pc_cart':str(in_cart)})
-
+        if in_cart>0:
+            addCookies(request, {'pc_cart':str(in_cart)})
 	d = couch.listDoc(keys=soc_user_doc['models'], include_docs=True)
 	d.addCallback(self.updateModelsAuthor, soc_user_doc)
 
@@ -164,6 +167,7 @@ class OAuth(Resource):
 	    # just take first doc! oldest one and merge all to it
 	    soc_user_doc = sorted(clean_rows, lambda x,y: int(x['_id'], 16)-int(y['_id'],16))[0]
 	    if soc_user_doc['_id'] == user_doc['_id']:
+                self.installPreviousUser(soc_user_doc, request)
 		# its the same doc. all ok.
 		# print "cookies are the same for this user and authorized user!"
 		pass
@@ -264,6 +268,8 @@ class OAuth(Resource):
     def getVkontaktAccessToken(self, f, user_doc, request):
         src = f.read()
 	answer = simplejson.loads(src)
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print answer
 	f.close()
         url = 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' %\
 	    (answer['user_id'],answer['access_token'])	
@@ -313,6 +319,8 @@ class OAuth(Resource):
     def parseFacebook(self, f, user_doc, request):
 	answer = simplejson.loads(f.read())
 	f.close()
+        print "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+        print answer
 	soc_user_ob = {'uid':answer['id'],
 		       'first_name':answer['first_name'],
 		       'last_name':answer['last_name']}
