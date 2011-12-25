@@ -311,7 +311,7 @@ function bindLogout(){
 		   $('#avatar_text').css({'font-size':'12px'}).text('авторизация');
 		   av.css('poadding-top', '8px');
 		   bindAuth();
-		   $.cookie('pc_avatar', null);
+		   $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
 		   //av.fadeIn(400);
 	       });
 }
@@ -323,8 +323,8 @@ function makeAvatar(data){
 	var user_id = in_cart[0].split('/')[1];
 	if (user_id!=$.cookie('pc_user')){
 	    document.location.href = '/cart/'+$.cookie('pc_user');
-	    $.cookie('pc_avatar', null);
-	    $.cookie('pc_avatar', JSON.stringify(data), {path:'/'});
+	    $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
+	    $.cookie('pc_avatar', JSON.stringify(data), {path:'/', domain:'.buildpc.ru'});
 	    return;
 	}
 
@@ -342,8 +342,8 @@ function makeAvatar(data){
 				 else
 				     av.css('padding-top','0px');
 			     });
-		   $.cookie('pc_avatar', null);
-		   $.cookie('pc_avatar', JSON.stringify(data), {path:'/'});
+		   $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
+		   $.cookie('pc_avatar', JSON.stringify(data), {path:'/', domain:'.buildpc.ru'});
 		   bindLogout();
 	       });
 };
