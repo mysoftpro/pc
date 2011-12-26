@@ -23,5 +23,12 @@ class PCView(object):
 
 
 class Cart(PCView):
+    def prepare(self, user_ob):
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print user_ob
+        print user_ob.user
+        print user_ob.notebooks
+        print user_ob.models
     def preRender(self):
-        user = userFactory(self.name)        
+        user_d = userFactory(self.name)
+        user_d.addCallback(self.prepare)

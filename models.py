@@ -1496,22 +1496,37 @@ def upgrade_set(template, skin, request):
 
 
 def userFactory(name):
-    d = couch.openDoc(name)
-    d.addCallback(lambda doc: User(doc))
-    return d
+    user = couch.openDoc(name)
+
+    results = {}
+
+    def di(res, name):
+        results[name] = res
+        
+    user.addCallback(di, 'user')
+    
+    def getFields(some, name):
+        di(None, name)
+        defs = []
+        if name in results['user']:
+            for _id in results['user'][name]:
+                defs.append(couch.openDoc(_id))
+        li = defer.DeferredList(defs)
+        li.addCallback(di, name)
+        return li
+    
+    user.addCallback(getFields, 'models')
+    user.addCallback(getFields, 'notebooks')    
+    user.addCallback(lambda some: User(results))
+    return user
                   
 class User(object):
-    def __init__(self, user_doc):
-        self._id = user_doc['_id']
-        self._rev = user_doc['_rev']
-        self.models = user_doc['models']
-        self.date = user_doc['date']
-        if 'notebooks' in user_doc:
-            self.notebooks = user_doc['notebooks']
-        else:
-            self.notebooks = []
-
-
+    def __init__(self, results):
+        self.user = results['user']
+        self.models = results['models']
+        self.notebooks = results['notebooks']
+        
+    
 
 @forceCond(noChoicesYet, fillChoices)
 def computers(template,skin,request):
