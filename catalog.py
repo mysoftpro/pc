@@ -118,12 +118,11 @@ class XmlGetter(Resource):
 		continue
 	    all_count +=1
 	    if row['id'] not in codes:
-		# reset stock for wit components
-                if not row['id'].startswith('new_'):
-                    if 'doc' in row:
-                        row['doc']['stock1'] = 0
-                        couch.saveDoc(row['doc'])
-                        deleted_count +=1
+		# reset stock for wit components                
+                if 'doc' in row:
+                    row['doc']['stock1'] = 0
+                    couch.saveDoc(row['doc'])
+                    deleted_count +=1
 	# destroy cache here!
 	from pc import admin
 	admin.clear_cache()
@@ -137,7 +136,7 @@ class XmlGetter(Resource):
 	    item = gen.next()
 	except StopIteration:
 	    # separate view
-	    _all = couch.openView(designID,'codes',stale=False) #couch.listDoc()
+	    _all = couch.openView(designID,'wit_codes',stale=False) #couch.listDoc()
 	    _all.addCallback(self.cleanDocs, codes)
 	    _all.addErrback(self.pr)
 	    return
@@ -643,7 +642,9 @@ class NewTarget:
 
     def storeNewComponent(self, c):
 	def store(err):
-	    return couch.saveDoc(c)
+	    d = couch.saveDoc(c)
+            d.addCallback(lambda x: c['_id'])
+            return d
 	return store
 
     def updateComponent(self, c):
@@ -658,8 +659,17 @@ class NewTarget:
             if 'stock1' in doc:
                 doc['stock1'] = c['new_stock']
             if need_save:
-                return couch.saveDoc(doc)
+                d = couch.saveDoc(doc)
+                d.addCallback(lambda x: c['_id'])
+                return d
+            else:
+                return c['_id']
 	return update
+
+
+    def cleanNewDocs(self, some):
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print some
 
     def prepareNewComponents(self, external_id):
 	defs = []
@@ -695,7 +705,8 @@ class NewTarget:
 	    except:
 		pass
 	li = defer.DeferredList(defs)
-	li.addCallback(lambda x: send_email('admin@buildpc.ru',
+	li.addCallback(self.cleanNewDocs)
+        li.addCallback(lambda x: send_email('admin@buildpc.ru',
 					    u'Обновление new system '+external_id,
 					    u'Всего позиций:' + unicode(len(defs)),
 					    sender=u'Компьютерный магазин <inbox@buildpc.ru>'))
