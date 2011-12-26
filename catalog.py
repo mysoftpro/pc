@@ -344,6 +344,7 @@ class WitNewMap(Resource):
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers',
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos',
+        'http://newsystem.ru/goods-and-services/catalog/108/9475/?IBLOCK_ID=108&SECTION_ID=9475&PAGEN_1=2':'videos1',
 	'http://www.newsystem.ru/goods-and-services/catalog/108/9689/':'exclusive_cases',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9420/':'game_cases',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9422/':'simple_cases',
@@ -351,9 +352,12 @@ class WitNewMap(Resource):
         'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
         'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft'
         }
-    def goForNew(self, headers):
+    def goForNew(self, headers, request):
+        first = request.args.get('first', [None])[0]
 	defs = []
 	for k,v in self.new_places.items():
+            if first is None and v.endswith('1'):continue
+            if first is not None and not v.endswith('1'):continue
 	    defs.append(requestNewPage(headers,k,v))
 	li = defer.DeferredList(defs)
 	return li.addCallback(lambda x: headers)
@@ -364,7 +368,7 @@ class WitNewMap(Resource):
 	    return "fail"
 	login_response = loginToNew()
 	login_response.addCallback(prepareNewRequest)
-	all_done = login_response.addCallback(self.goForNew)
+	all_done = login_response.addCallback(self.goForNew, request)
 	all_done.addCallback(logoutFromNew)
 	return "ok"
 
@@ -666,13 +670,31 @@ class NewTarget:
                 return c['_id']
 	return update
 
+    def compareNewDocs(self, res, ids):
+        deleted = []
+        for row in res['rows']:
+            if 'doc' in row and row['doc']['_id'] not in ids:                
+                row['doc']['stock1'] = 0
+                row['doc']['new_stock'] = 0
+                deleted.append(row['doc']['_id'])
+                couch.saveDoc(row['doc'])
+        return ','.join(deleted)
 
-    def cleanNewDocs(self, some):
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print some
+    def cleanNewDocs(self, li, external_id):
+        ids = []
+        for tu in li:
+            if tu[0]:
+                ids.append(tu[1])
+        d = couch.openView(designID, 'new_catalogs', key=external_id, include_docs=True, stale=False)
+        d.addCallback(self.compareNewDocs, ids)
+        return d
 
     def prepareNewComponents(self, external_id):
 	defs = []
+        noClean = False
+        if external_id.endswith('1'):
+            external_id = external_id[:-1]
+            noClean = True
 	for c in self.components:
 	    if c['spans'][-1]==u'в наличии':
 		c['new_stock'] = 5
@@ -705,10 +727,13 @@ class NewTarget:
 	    except:
 		pass
 	li = defer.DeferredList(defs)
-	li.addCallback(self.cleanNewDocs)
-        li.addCallback(lambda x: send_email('admin@buildpc.ru',
+	if noClean:
+            li.addCallback(lambda x: '0')
+        else:
+            li.addCallback(self.cleanNewDocs, external_id)
+        li.addCallback(lambda deleted: send_email('admin@buildpc.ru',
 					    u'Обновление new system '+external_id,
-					    u'Всего позиций:' + unicode(len(defs)),
+					    u'Всего позиций:' + unicode(len(defs))+u' Удалено:'+deleted,
 					    sender=u'Компьютерный магазин <inbox@buildpc.ru>'))
 	return li
 
