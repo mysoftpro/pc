@@ -145,16 +145,16 @@ def getModelComponents(model):
             yield v
 
 
-def nameForCode(code,model):
-    retval = None
-    for _name,_code in model['items'].items():
-        if type(_code) is list and code in _code:
-            retval = _name
-            break
-        elif  code == _code:
-            retval = _name
-            break
-    return retval
+# def nameForCode(code,model):
+#     retval = None
+#     for _name,_code in model['items'].items():
+#         if type(_code) is list and code in _code:
+#             retval = _name
+#             break
+#         elif  code == _code:
+#             retval = _name
+#             break
+#     return retval
 
 
 
@@ -246,7 +246,8 @@ def noComponentFactory(_doc, name):
 # check slots! may be 2 video installed with sli or with crossfire!
 def replaceComponent(code,model):
     original_price = model['original_prices'][code] if code in ['original_prices'] else 10
-    name = nameForCode(code,model)
+    # name = nameForCode(code,model)
+    name = model.nameForCode(code)
     def sameCatalog(doc):
         retval = True
         if mother==name:
@@ -954,7 +955,7 @@ class OrderForModelsPage(ModelForModelsPage):
         #hack. see find component
         self.model['this_order'] = self.order
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-        
+
         # #here is the difference between orders and models!!!
         # components = self.order['components']
         # total = 0
@@ -1015,7 +1016,7 @@ class NoteBookForCartPage(object):
 
 def findComponent(model, name):
     #hack for orders
-    def lookFor():        
+    def lookFor():
         if 'this_order' in model:
             components = []
             for c in model['this_order']['components']:
@@ -1028,7 +1029,8 @@ def findComponent(model, name):
         else:
             return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
     look_for = lookFor()
-    code = model['items'][name]
+    # code = model['items'][name]
+    code = model.getCode(name)
     if type(code) is list:
         code = code[0]
     if code is None or code.startswith('no'):
@@ -1087,9 +1089,9 @@ class ComponentForModelsPage(object):
             li.text=''
         if not 'promo' in self.model:
              li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
-        li.set('id',self.model['_id']+'_'+self.component['_id'])
-        if self.this_is_cart and 'old_code' in self.component and not 'promo' in self.model:
-            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])
+        li.set('id',self.model._id+'_'+self.component['_id'])
+        if self.this_is_cart and 'old_code' in self.component and not self.model.promo:
+            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model._id+'_'+self.component['old_code'])
         return li
 
 
@@ -1110,7 +1112,9 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
             else:
                 json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
-    for cat_name,code in model['items'].items():
+    # for cat_name,code in model['items'].items():
+    # refactor            
+    for cat_name,code in model:
         count = 1
         if type(code) is list:
             count = len(code)
@@ -1119,20 +1123,20 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
         code = component_doc['_id']
         price = makePrice(component_doc)*count
         total += price
-        updatePrice(model['_id'],cat_name,displ,price)
-        updatePrice(model['_id'],cat_name,soft,price)
-        updatePrice(model['_id'],cat_name,audio,price)
-        updatePrice(model['_id'],cat_name,mouse,price)
-        updatePrice(model['_id'],cat_name,kbrd,price)
+        updatePrice(model._id,cat_name,displ,price)
+        updatePrice(model._id,cat_name,soft,price)
+        updatePrice(model._id,cat_name,audio,price)
+        updatePrice(model._id,cat_name,mouse,price)
+        updatePrice(model._id,cat_name,kbrd,price)
         __components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
-    if model['installing']:
+    if model.installing:
         total += INSTALLING_PRICE
-    if model['building']:
+    if model.building:
          total += BUILD_PRICE
-    if model['dvd']:
+    if model.dvd:
         total += DVD_PRICE
     price_span.text = str(total) + u' р'
-    json_prices[model['_id']]['total'] = total
+    json_prices[model._id]['total'] = total
     return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
@@ -1502,9 +1506,9 @@ def userFactory(name):
 
     def di(res, name):
         results[name] = res
-        
+
     user.addCallback(di, 'user')
-    
+
     def getFields(some, name):
         di(None, name)
         defs = []
@@ -1514,19 +1518,115 @@ def userFactory(name):
         li = defer.DeferredList(defs)
         li.addCallback(di, name)
         return li
-    
+
     user.addCallback(getFields, 'models')
-    user.addCallback(getFields, 'notebooks')    
+    user.addCallback(getFields, 'notebooks')
     user.addCallback(lambda some: User(results))
     return user
-                  
+
+
+
+class Model(object):
+    def __init__(self, model_doc):
+        self.model_doc = model_doc
+
+    def get(self, field, default=None):
+        return self.model_doc.get(field, default)
+
+    def isOrder(self):
+        return self.get('_id').startswith('order')
+
+    def isProcessing(self):
+        return self.get('processing', False)
+
+    @property
+    def promo(self):
+        return self.get('processing', False)
+
+    @property
+    def _id(self):
+        return self.get('_id')
+
+    @property
+    def checkRequired(self):
+        return 'checkModel' in self.model_doc
+
+    @property
+    def checkPerformed(self):
+        return self.get('checkModel', False)
+
+    @property
+    def name(self):
+        return self.get('name', False)
+
+    @property
+    def parent(self):
+        return self.get('parent', '')
+
+    @property
+    def ourPrice(self):
+        return self.get('our_price', False)
+
+    def __iter__(self):
+        for k,v in self.model_doc['items'].items():
+            yield k,v
+
+    def getCode(self, cat_name):
+        return self.model_doc['items'][cat_name]
+
+    def nameForCode(self, code):
+        retval = None
+        for _name,_code in self.model_doc['items'].items():
+            if type(_code) is list and code in _code:
+                retval = _name
+                break
+            elif  code == _code:
+                retval = _name
+                break
+        return retval
+
+    @property
+    def installing(self):
+        return self.get('installing', False)
+
+    @property
+    def building(self):
+        return self.get('building', False)
+
+    @property
+    def dvd(self):
+        return self.get('dvd', False)
+
+    @property
+    def date(self):
+        return self.get('date')
+
+    def isAuthor(self, user):
+        return self.get('author') == user._id
+
+
 class User(object):
     def __init__(self, results):
         self.user = results['user']
         self.models = results['models']
         self.notebooks = results['notebooks']
-        
+
+    def isValid(self, request):
+        return  self.user['_id'] == request.getCookie('pc_user') and \
+                self.user['pc_key'] == request.getCookie('pc_key')
+
+    def getUserModels(self):
+        for k,v in self.models:
+            if k:
+                yield Model(v)
+
     
+    def get(self, field, default=None):
+        return self.user.get(field, default)
+
+    @property
+    def _id(self):
+        return self.get('_id')
 
 @forceCond(noChoicesYet, fillChoices)
 def computers(template,skin,request):
