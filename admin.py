@@ -720,7 +720,7 @@ class ClearAttachments(Resource):
 		doc['_attachments'].pop(a)
 	    couch.saveDoc(doc)
     def render_GET(self, request):
-	d = couch.openView(designID,"codes", include_docs=True, stale=False)
+	d = couch.openView(designID,"wit_codes", include_docs=True, stale=False)
 	d.addCallback(self.clear)
 	return "ok"
 
