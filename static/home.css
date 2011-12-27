@@ -2506,3 +2506,6 @@ a.modelicon img{
     font-size:13px;
     margin-top:10px;
 }
+.cart_description li strong{
+    margin-left:5px;
+}

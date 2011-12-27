@@ -956,24 +956,6 @@ class OrderForModelsPage(ModelForModelsPage):
         self.model['this_order'] = self.order
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
-        # #here is the difference between orders and models!!!
-        # components = self.order['components']
-        # total = 0
-        # # self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-        # for c in components:
-        #     cleaned = cleanDoc(c, c['ourprice']*c['count'])
-        #     components.append(cleaned)
-        # if self.order['installing']:
-        #         total += INSTALLING_PRICE
-        # if self.order['building']:
-        #      total += BUILD_PRICE
-        # if self.model['dvd']:
-        #     total += DVD_PRICE
-        # price_span.text = str(total) + u' р'
-        # self.components = [ComponentForModelsPage(self.model,c, cat_name, c['price'], True)\
-        #                        for c in components]
-        # #zzzzzzzzzzzzzzzz
-
 
 def fixDeletedCart(err, request, name):
     if request.getCookie('pc_user') == name:
@@ -1088,7 +1070,9 @@ class ComponentForModelsPage(object):
         else:
             li.text=''
         if not 'promo' in self.model:
-             li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
+            strong = etree.Element('strong')
+            strong.text = unicode(self.price)+ u' р'
+            li.append(strong)
         li.set('id',self.model._id+'_'+self.component['_id'])
         if self.this_is_cart and 'old_code' in self.component and not self.model.promo:
             a = etree.Element('a')
@@ -1532,8 +1516,7 @@ def userFactory(name):
 
 
 class Model(object):
-    def __init__(self, model_doc):
-        self.model_doc = model_doc
+
 
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
@@ -1618,6 +1601,47 @@ class Model(object):
         return self.get('proc_catalogs')
 
 
+    def __init__(self, model_doc):
+        self.model_doc = model_doc
+        self.components = []##ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart)
+        self.prices = {}#json prices but without self._id   json_prices[model._id]['total'] = total
+        self.total = 0#price_span
+        self.walkOnComponents()
+    
+    def updatePrice(self, _id, catalogs, required_catalogs, price):
+        if catalogs == required_catalogs:
+            self.prices.update({self.aliasses_reverted[required_catalogs]:price})
+            
+
+    def walkOnComponents(self):
+        self.aliasses_reverted = {}
+        for k,v in parts_aliases.items():
+            self.aliasses_reverted.update({v:k})
+        for cat_name,code in self:
+            count = 1
+            if type(code) is list:
+                count = len(code)
+                code = code[0]
+            component_doc = findComponent(self,cat_name)
+            code = component_doc['_id']
+            price = makePrice(component_doc)*count
+            self.total += price
+            self.updatePrice(cat_name,displ,price)
+            self.updatePrice(cat_name,soft,price)
+            self.updatePrice(cat_name,audio,price)
+            self.updatePrice(cat_name,mouse,price)
+            self.updatePrice(cat_name,kbrd,price)
+            self.components.append(component_doc)
+        if self.installing:
+            self.total += INSTALLING_PRICE
+        if self.building:
+             self.total += BUILD_PRICE
+        if self.dvd:
+            self.total += DVD_PRICE        
+        # return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
+
+
+
 
 
 class User(object):
@@ -1638,7 +1662,6 @@ class User(object):
 
     def get(self, field, default=None):
         return self.user.get(field, default)
-
 
     @property
     def _id(self):

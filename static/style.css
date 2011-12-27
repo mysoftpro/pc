@@ -2467,3 +2467,6 @@ a.modelicon img{
     top:0px;left:0px;
     float:left;    
 }
+.cart_description li strong{
+    margin-left:5px;
+}
