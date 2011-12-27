@@ -6,6 +6,7 @@ from pc.models import buildPrices, case, model_categories
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
+from urllib import unquote_plus, quote_plus
 
 
 class ModelInCart(object):
@@ -26,65 +27,67 @@ class ModelInCart(object):
         self.category = request.args.get('cat',[None])[0]
 
 
+    def getCaseIcon(self):
+        retval = "/static/icon.png"
+        if 'description' in self.model.case and'imgs' in self.model.case['description']:
+            retval = ''.join(("/image/",self.model.case['_id'],"/",
+                              self.model.case['description']['imgs'][0],'.jpg'))
+        if '/preview' in retval:
+            splitted = retval.split('/preview')
+            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+
+        return retval
+
+
     def fillComponents(self, price_span):
         #here is the difference between orders and models!!!
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
-    def fillModelDiv(self):
-        #if 'processing' in self.model and self.model['processing']:
+    def fillModelDiv(self):        
         if self.model.isProcessing():
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
-        a = self.model_div.find('.//a')
-        # if not 'promo' in self.model:
+
+        link = self.model_div.find('.//a')        
+        link.text = self.model._id[:-3]
+        strong= etree.Element('strong')
+
+        strong.text = self.model._id[-3:]
+        link.append(strong)
+
         if not self.model.promo:
-            a.set('href','/computer/%s' % self.model._id)
+            link.set('href','/computer/%s' % self.model._id)
         else:
-            a.set('href','/promotion/%s' % self.model.parent)
+            link.set('href','/promotion/%s' % self.model.parent)
 
-        if self.this_is_cart:
-            info = self.model_div.xpath('//div[@class="info"]')[0]
-            # if 'checkModel' in self.model:
-            if self.model.checkRequired:
-                # if self.model['checkModel']:
-                if self.model.checkPerformed:
-                    info.set('class', info.get('class')+ ' ask_info')
-                    info.set('title',u'Ожидает проверки специалистом')
-                else:
-                    info.set('class', info.get('class')+ ' confirm_info')
-                    info.set('title',u'Проверено!')
+        info = self.model_div.xpath('//div[@class="info"]')[0]
+        if self.model.checkRequired:
+            if self.model.checkPerformed:
+                info.set('class', info.get('class')+ ' ask_info')
+                info.set('title',u'Ожидает проверки специалистом')
             else:
-                info.set('class', info.get('class')+ ' empty_info')
-            # self.model_div.remove(info)
-
-        # if 'name' in self.model and not self.this_is_cart:
-        if self.model.name:
-            # a.text=self.model['name']
-            a.text=self.model.name
+                info.set('class', info.get('class')+ ' confirm_info')
+                info.set('title',u'Проверено!')
         else:
-            a.text = self.model._id[:-3]
-            strong= etree.Element('strong')
-            # strong.text = self.model['_id'][-3:]
-            strong.text = self.model._id[-3:]
-            a.append(strong)
+            info.set('class', info.get('class')+ ' empty_info')
+
+
         price_span = self.model_div.find('.//span')        
         price_span.set('id',self.model._id)
+
         #here is the difference between orders and models!!!
         self.fillComponents(price_span)
-        case_found = [c for c in self.components if c.cat_name == case]
 
-        if len(case_found) >0:
-            if self.model.promo:
-                self.icon.set('href','/computer/'+self.model._id)
+        if self.model.promo:
+            self.icon.set('href','/computer/'+self.model._id)
+        else:
+            self.icon.set('href','/promotion/'+self.model.parent)
+            if self.model.ourPrice:
+                price_span.text = unicode(self.model.ourPrice)+u' р.'
             else:
-                self.icon.set('href','/promotion/'+self.model.parent)
-                if self.model.ourPrice:
-                    price_span.text = unicode(self.model.ourPrice)+u' р.'
-                else:
-                    price_span.text = u'24900 р.'
-            self.icon.find('img').set('src',case_found[0].getIconUrl())
-            self.model_div.insert(0,self.icon)
-
+                price_span.text = u'24900 р.'
+        self.icon.find('img').set('src',self.getCaseIcon())
+        self.model_div.insert(0,self.icon)
         self.container.append(self.model_div)
 
     def fillDescriptionDiv(self):
@@ -250,9 +253,9 @@ class Cart(PCView):
         for m in user.getUserModels():
             if m.isOrder():
                 view = OrderInCart(self.request, m, self.tree,
-                                          True,json_prices,
-                                          deepcopy(self.tree.find('model_icon').find('a')),
-                                          models_div, user)
+                                   True,json_prices,
+                                   deepcopy(self.tree.find('model_icon').find('a')),
+                                   models_div, user)
             else:
                 view = ModelInCart(self.request, m, self.tree,
                                       True,json_prices,

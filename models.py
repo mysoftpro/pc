@@ -1608,7 +1608,7 @@ class Model(object):
         self.total = 0#price_span
         self.walkOnComponents()
     
-    def updatePrice(self, _id, catalogs, required_catalogs, price):
+    def updatePrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.prices.update({self.aliasses_reverted[required_catalogs]:price})
             
@@ -1632,6 +1632,8 @@ class Model(object):
             self.updatePrice(cat_name,mouse,price)
             self.updatePrice(cat_name,kbrd,price)
             self.components.append(component_doc)
+            if cat_name == case:
+                self.case = component_doc
         if self.installing:
             self.total += INSTALLING_PRICE
         if self.building:
@@ -1639,7 +1641,6 @@ class Model(object):
         if self.dvd:
             self.total += DVD_PRICE        
         # return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
-
 
 
 
