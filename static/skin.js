@@ -229,7 +229,6 @@ var init = function(){
         else
             $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
         } catch (x) {
-            console.log(x);
         }
 
     }
