@@ -11,7 +11,7 @@ function setGlobalArray(garr, arr){
     }
 }
 
-var descr_img_template = '<img src="/image/{{id}}/{{name}}.jpg" align="right"/>';
+var descr_img_template = '<img src="/image/{{id}}/{{name}}{{ext}}" align="right"/>';
 function showDescription(_id){
     function _show(data){
 	if (!data['comments'])
@@ -21,7 +21,14 @@ function showDescription(_id){
 		     var text = '';
 		     if (data['imgs']){
 			 for (var i=0,l=data['imgs'].length;i<l;i++){
-			     text +=_.template(descr_img_template,{'id':_id,'name':data['imgs'][i]});
+			     var img_name = data['imgs'][i];
+			     var ext = '.jpg';
+			     var path = data['imgs'][i];
+			     if (path.match('jpeg')){
+				 ext = '';
+				 path = encodeURIComponent(path);
+			     }
+			     text +=_.template(descr_img_template,{'id':_id,'name':path, 'ext':ext});
 			 }
 		     }
 		     text += '<div>' +data['name'] + ' - '+ data['price'] + ' руб.</div><div>' +
