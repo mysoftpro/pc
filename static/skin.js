@@ -335,16 +335,19 @@ function bindLogout(){
 
 function makeAvatar(data){
     if (data === 'fail')return;
-    var in_cart = document.location.href.split('?')[0].match(/cart\/[0-9a-f]*$/g);
-    if (in_cart){
-        var user_id = in_cart[0].split('/')[1];
-        if (user_id!=$.cookie('pc_user')){
-            document.location.href = '/cart/'+$.cookie('pc_user');
-            $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
-            $.cookie('pc_avatar', JSON.stringify(data), {path:'/', domain:'.buildpc.ru'});
-            return;
+    //if user auth in self, cart and get another cookie(after merge) - redirect him
+    if (data['old_user']){
+        var in_cart = document.location.href.split('?')[0].match(/cart\/[0-9a-f]*$/g);
+        var old_cart = in_cart[0].split('/')[1];
+        if (old_cart == data['old_user'] && $.cookie('pc_user')!==data['old_user']){
+            var user_id = in_cart[0].split('/')[1];
+            if (user_id!=$.cookie('pc_user')){
+                document.location.href = '/cart/'+$.cookie('pc_user');
+                $.cookie('pc_avatar', null, {path:'/', domain:'.buildpc.ru'});
+                $.cookie('pc_avatar', JSON.stringify(data), {path:'/', domain:'.buildpc.ru'});
+                return;
+            }
         }
-
     }
     var av = $('#avatar');
     av.fadeOut(200, function(){
@@ -390,8 +393,9 @@ function makeAuth(){
         tok = ['mock=true'];
     if (!code)
         code = ['mock=true'];
+    var old_user = $.cookie('pc_user');
     $.ajax({
                url:'/oauth?'+pr[0]+'&'+tok[0]+'&'+code[0],
-               success:makeAvatar
+               success:function(ob){ob['old_user']=old_user;makeAvatar(ob);}
            });
 }
