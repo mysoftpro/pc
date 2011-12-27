@@ -349,6 +349,7 @@ class WitNewMap(Resource):
     new_places = {
         'http://www.newsystem.ru/goods-and-services/catalog/108/9438/':'procs',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9426/':'mothers',
+        'http://newsystem.ru/goods-and-services/catalog/108/9426/?IBLOCK_ID=108&SECTION_ID=9426&PAGEN_1=2':'mothers1',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos',
         'http://newsystem.ru/goods-and-services/catalog/108/9475/?IBLOCK_ID=108&SECTION_ID=9475&PAGEN_1=2':'videos1',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9689/':'exclusive_cases',
