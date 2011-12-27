@@ -251,9 +251,9 @@ def replaceComponent(code,model):
     def sameCatalog(doc):
         retval = True
         if mother==name:
-            retval = model['mother_catalogs'] == getCatalogsKey(doc)
+            retval = model.motherCatalogs == getCatalogsKey(doc)
         if proc==name:
-            retval = model['proc_catalogs'] == getCatalogsKey(doc)
+            retval = model.procCatalogs == getCatalogsKey(doc)
         return retval
     choices = globals()['gChoices'][name]
     flatten = []
@@ -1091,7 +1091,12 @@ class ComponentForModelsPage(object):
              li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
         li.set('id',self.model._id+'_'+self.component['_id'])
         if self.this_is_cart and 'old_code' in self.component and not self.model.promo:
-            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model._id+'_'+self.component['old_code'])
+            a = etree.Element('a')
+            a.text = u'Посмотреть старый компонент'
+            a.set('href', '')
+            a.set('class', 'showOldComponent')
+            a.set('id', self.model._id+'_'+self.component['old_code'])
+            li.append(a)
         return li
 
 
@@ -1113,7 +1118,7 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
                 json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
     # for cat_name,code in model['items'].items():
-    # refactor            
+    # refactor
     for cat_name,code in model:
         count = 1
         if type(code) is list:
@@ -1604,6 +1609,16 @@ class Model(object):
     def isAuthor(self, user):
         return self.get('author') == user._id
 
+    @property
+    def motherCatalogs(self):
+        return self.get('mother_catalogs')
+
+    @property
+    def procCatalogs(self):
+        return self.get('proc_catalogs')
+
+
+
 
 class User(object):
     def __init__(self, results):
@@ -1620,9 +1635,10 @@ class User(object):
             if k:
                 yield Model(v)
 
-    
+
     def get(self, field, default=None):
         return self.user.get(field, default)
+
 
     @property
     def _id(self):
@@ -1725,6 +1741,9 @@ def computers(template,skin,request):
 
         _prices = 'undefined'
 
+        print "eeeeeeeeeeeeeeeeeeeeeeha"
+        print this_is_cart
+        print ""
         if this_is_cart:
             cart = deepcopy(template.root().find('top_cart'))
             cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
