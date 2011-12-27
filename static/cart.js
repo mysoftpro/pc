@@ -19,6 +19,13 @@ var all_cats_come = 0;
 
 
 var init = function(){    
+    var splitted = document.location.href.split('/');
+    var uuid = splitted[splitted.length-1].split('?')[0];
+    if (!uuid.match('computer')){
+	$('ul.description')
+	    .css('cursor','pointer')
+	    .find('li').click(function(e){showComponent(e);});
+    }
     //this means cart!
     var links = $('a.modellink');
     function deleteUUID(_id){
