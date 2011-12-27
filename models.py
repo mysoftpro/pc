@@ -1604,14 +1604,18 @@ class Model(object):
     def __init__(self, model_doc):
         self.model_doc = model_doc
         self.components = []##ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart)
-        self.prices = {}#json prices but without self._id   json_prices[model._id]['total'] = total
+        self.cat_prices = {}#json prices but without self._id   json_prices[model._id]['total'] = total
+        self.component_prices = {}
         self.total = 0#price_span
         self.walkOnComponents()
     
-    def updatePrice(self, catalogs, required_catalogs, price):
+    def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
-            self.prices.update({self.aliasses_reverted[required_catalogs]:price})
-            
+            self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
+        
+
+    def getComponentPrice(self, component_doc):
+        return self.component_prices[component_doc['_id']]
 
     def walkOnComponents(self):
         self.aliasses_reverted = {}
@@ -1626,11 +1630,12 @@ class Model(object):
             code = component_doc['_id']
             price = makePrice(component_doc)*count
             self.total += price
-            self.updatePrice(cat_name,displ,price)
-            self.updatePrice(cat_name,soft,price)
-            self.updatePrice(cat_name,audio,price)
-            self.updatePrice(cat_name,mouse,price)
-            self.updatePrice(cat_name,kbrd,price)
+            self.updateCatPrice(cat_name,displ,price)
+            self.updateCatPrice(cat_name,soft,price)
+            self.updateCatPrice(cat_name,audio,price)
+            self.updateCatPrice(cat_name,mouse,price)
+            self.updateCatPrice(cat_name,kbrd,price)
+            self.component_prices[code] = price
             self.components.append(component_doc)
             if cat_name == case:
                 self.case = component_doc

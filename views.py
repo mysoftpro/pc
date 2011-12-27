@@ -90,100 +90,123 @@ class ModelInCart(object):
         self.model_div.insert(0,self.icon)
         self.container.append(self.model_div)
 
+
+    def renderComponent(self, component):
+        li = etree.Element('li')
+        if 'text' in component:
+            li.text = component['text']
+        else:
+            li.text=''
+        if not 'promo' in self.model:
+            strong = etree.Element('strong')
+            strong.text = unicode(self.model.getComponentPrice(component))+ u' р'
+            li.append(strong)
+        li.set('id',self.model._id+'_'+component['_id'])
+        if 'old_code' in component and not self.model.promo:
+            a = etree.Element('a')
+            a.text = u'Посмотреть старый компонент'
+            a.set('href', '')
+            a.set('class', 'showOldComponent')
+            a.set('id', self.model._id+'_'+component['old_code'])
+            li.append(a)
+        return li
+
+
+
     def fillDescriptionDiv(self):
         # description_div = divs[1]
         ul = etree.Element('ul')
         ul.set('class','description')
-        for cfm in self.components:
-            ul.append(cfm.render())
+        
+        for c in self.model.components:
+            ul.append(self.renderComponent(c))
+
+        # for cfm in self.components:
+        #     ul.append(cfm.render())
+        
         self.description_div.append(ul)
 
         h3 = self.description_div.find('h3')
-        if not self.this_is_cart:
-            h3.text = self.model['title']
-            for el in html.fragments_fromstring(self.model['description']):
-                self.description_div.append(el)
-            ul.set('style','display:none')
-        else:
-            if 'name' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = self.model['name']
-                h3.append(span)
 
-            if 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customTitle')
-                span.text = self.model['title']
-                h3.append(span)
-
-            if not 'name' in self.model and not 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = u'Пользовательская конфигурация'
-                h3.append(span)
-
-            _date = self.model.date
-            _date.reverse()
+        if 'name' in self.model:
             span = etree.Element('span')
-            span.text = ('.').join(_date)
+            span.set('class', 'customName')
+            span.text = self.model['name']
             h3.append(span)
 
-            a = etree.Element('a')
-            a.text = u'переименовать'
-            a.set('href', '')
-            h3.append(a)
+        if 'title' in self.model:
+            span = etree.Element('span')
+            span.set('class', 'customTitle')
+            span.text = self.model['title']
+            h3.append(span)
 
-            self.description_div.set('class','cart_description')
+        if not 'name' in self.model and not 'title' in self.model:
+            span = etree.Element('span')
+            span.set('class', 'customName')
+            span.text = u'Пользовательская конфигурация'
+            h3.append(span)
 
-            this_user_is_author = self.user.isValid(self.request) and self.model.isAuthor(self.user)
-            #self.user is not None and\
-                # self.model['author'] == self.user['_id'] and\
-                # self.request.getCookie('pc_key') == self.user['pc_key']
+        _date = self.model.date
+        _date.reverse()
+        span = etree.Element('span')
+        span.text = ('.').join(_date)
+        h3.append(span)
 
-            if this_user_is_author and not 'processing' in self.model:
-                extra = deepcopy(self.tree.find('cart_extra'))
-                for el in extra:
-                    if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
-                        el.set('href', '/bill.pdf?id='+self.model._id)
-                    self.description_div.append(el)
+        a = etree.Element('a')
+        a.text = u'переименовать'
+        a.set('href', '')
+        h3.append(a)
 
-            if 'comments' in self.model:
-                last_index = len(self.model['comments'])-1
-                i=0
-                for comment in self.model['comments']:
-                    comments = deepcopy(self.tree.find('cart_comment'))
-                    if not this_user_is_author and i==0:
-                        comments.find('div').set('style', 'margin-top:40px')
-                    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-                    comment['date'].reverse()
-                    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
-                    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
-                    links = comments.xpath('//div[@class="faqlinks"]')[0]
-                    if i!=last_index:
-                        links.remove(links.find('a'))
-                    i+=1
-                    self.description_div.append(comments.find('div'))
+        self.description_div.set('class','cart_description')
+
+        this_user_is_author = self.user.isValid(self.request) and self.model.isAuthor(self.user)
+        #self.user is not None and\
+            # self.model['author'] == self.user['_id'] and\
+            # self.request.getCookie('pc_key') == self.user['pc_key']
+
+        if this_user_is_author and not 'processing' in self.model:
+            extra = deepcopy(self.tree.find('cart_extra'))
+            for el in extra:
+                if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+                    el.set('href', '/bill.pdf?id='+self.model._id)
+                self.description_div.append(el)
+
+        if 'comments' in self.model:
+            last_index = len(self.model['comments'])-1
+            i=0
+            for comment in self.model['comments']:
+                comments = deepcopy(self.tree.find('cart_comment'))
+                if not this_user_is_author and i==0:
+                    comments.find('div').set('style', 'margin-top:40px')
+                comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
+                comment['date'].reverse()
+                comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
+                comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
+                links = comments.xpath('//div[@class="faqlinks"]')[0]
+                if i!=last_index:
+                    links.remove(links.find('a'))
+                i+=1
+                self.description_div.append(comments.find('div'))
         self.container.append(self.description_div)
 
 
     def render(self):
         self.fillModelDiv()
         self.fillDescriptionDiv()
-        if not self.this_is_cart:
-            self.model_div.set('id','m'+self.model._id)
-            if self.category in model_categories:
-                if self.model._id in model_categories[self.category]:
-                    div = etree.Element('div')
-                    div.set('id', 'desc_'+self.model_div.get('id'))
-                    div.set('class', 'full_desc')
-                    if 'modeldesc' in self.model:
-                        div.text = self.model['modeldesc']
-                    self.container.append(div)
-                    self.description_div.set('style','height:220px')
-                else:
-                    self.model_div.set('style',"height:0;overflow:hidden")
-                    self.description_div.set('style',"height:0;overflow:hidden")
+        # if not self.this_is_cart:
+        #     self.model_div.set('id','m'+self.model._id)
+        #     if self.category in model_categories:
+        #         if self.model._id in model_categories[self.category]:
+        #             div = etree.Element('div')
+        #             div.set('id', 'desc_'+self.model_div.get('id'))
+        #             div.set('class', 'full_desc')
+        #             if 'modeldesc' in self.model:
+        #                 div.text = self.model['modeldesc']
+        #             self.container.append(div)
+        #             self.description_div.set('style','height:220px')
+        #         else:
+        #             self.model_div.set('style',"height:0;overflow:hidden")
+        #             self.description_div.set('style',"height:0;overflow:hidden")
 
 
 
