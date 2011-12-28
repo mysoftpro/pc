@@ -29,9 +29,9 @@ class ModelInCart(object):
 
     def getCaseIcon(self):
         retval = "/static/icon.png"
-        if 'description' in self.model.case and'imgs' in self.model.case['description']:
-            retval = ''.join(("/image/",self.model.case['_id'],"/",
-                              self.model.case['description']['imgs'][0],'.jpg'))
+        if self.model.case.description and'imgs' in self.model.case.description:
+            retval = ''.join(("/image/",self.model.case._id,"/",
+                              self.model.case.description['imgs'][0],'.jpg'))
         if '/preview' in retval:
             splitted = retval.split('/preview')
             retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
@@ -39,16 +39,12 @@ class ModelInCart(object):
         return retval
 
 
-    # def fillComponents(self, price_span):
-    #     #here is the difference between orders and models!!!
-    #     self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-
-    def fillModelDiv(self):        
+    def fillModelDiv(self):
         if self.model.isProcessing():
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
 
-        link = self.model_div.find('.//a')        
+        link = self.model_div.find('.//a')
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
@@ -72,11 +68,11 @@ class ModelInCart(object):
             info.set('class', info.get('class')+ ' empty_info')
 
 
-        price_span = self.model_div.find('.//span')        
+        price_span = self.model_div.find('.//span')
         price_span.set('id',self.model._id)
         price_span.text = unicode(self.model.total) + u' р'
 
-        if self.model.promo:
+        if not self.model.promo:
             self.icon.set('href','/computer/'+self.model._id)
         else:
             self.icon.set('href','/promotion/'+self.model.parent)
@@ -91,21 +87,21 @@ class ModelInCart(object):
 
     def renderComponent(self, component):
         li = etree.Element('li')
-        if 'text' in component:
-            li.text = component['text']
+        if component.text:
+            li.text = component.text
         else:
             li.text=''
         if not 'promo' in self.model:
             strong = etree.Element('strong')
             strong.text = unicode(self.model.getComponentPrice(component))+ u' р'
             li.append(strong)
-        li.set('id',self.model._id+'_'+component['_id'])
-        if 'old_code' in component and not self.model.promo:
+        li.set('id',self.model._id+'_'+component._id)
+        if component.old_code and not self.model.promo:
             a = etree.Element('a')
             a.text = u'Посмотреть старый компонент'
             a.set('href', '')
             a.set('class', 'showOldComponent')
-            a.set('id', self.model._id+'_'+component['old_code'])
+            a.set('id', self.model._id+'_'+component.old_code)
             li.append(a)
         return li
 
@@ -115,13 +111,13 @@ class ModelInCart(object):
         # description_div = divs[1]
         ul = etree.Element('ul')
         ul.set('class','description')
-        
-        for c in self.model.components:
+
+        for c in self.model.getComponents():
             ul.append(self.renderComponent(c))
 
         # for cfm in self.components:
         #     ul.append(cfm.render())
-        
+
         self.description_div.append(ul)
 
         h3 = self.description_div.find('h3')
@@ -188,31 +184,7 @@ class ModelInCart(object):
     def render(self):
         self.fillModelDiv()
         self.fillDescriptionDiv()
- 
 
-
-# class OrderInCart(ModelInCart):
-#     def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
-#         self.user = user
-#         self.tree = tree
-#         self.model_snippet = deepcopy(self.tree.find('model'))
-#         self.request = request
-#         self.order = order
-#         self.model = self.order['model']
-#         self.this_is_cart = this_is_cart
-#         self.json_prices = json_prices
-#         self.icon = icon
-#         self.container = container
-#         self.components = []
-#         divs = self.model_snippet.findall('div')
-#         self.model_div = divs[0]
-#         self.description_div = divs[1]
-#         self.category = request.args.get('cat',[None])[0]
-
-    # def fillComponents(self, price_span):
-    #     #hack. see find component
-    #     self.model['this_order'] = self.order
-    #     self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
 
 class PCView(object):
@@ -220,11 +192,11 @@ class PCView(object):
         self.template = template
         self.request = request
         self.skin = skin
-        self.name = name    
+        self.name = name
         self.tree = template.root()
 
     def preRender(self):
-        pass    
+        pass
 
     @forceCond(noChoicesYet, fillChoices)
     def render(self):
@@ -243,7 +215,7 @@ class Cart(PCView):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
         return user_d
- 
+
 
     def getModelsDiv(self):
         return self.template.middle.xpath('//div[@id="models"]')[0]

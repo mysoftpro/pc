@@ -1585,6 +1585,9 @@ class Model(object):
                 break
         return retval
 
+    def getComponents(self):
+        return sorted(self.components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
+
     @property
     def installing(self):
         return self.get('installing', False)
@@ -1627,7 +1630,7 @@ class Model(object):
         
 
     def getComponentPrice(self, component_doc):
-        return self.component_prices[component_doc['_id']]
+        return self.component_prices[component_doc._id]
 
 
     def orderComponents(self):
@@ -1758,9 +1761,9 @@ class Model(object):
             self.updateCatPrice(cat_name,mouse,price)
             self.updateCatPrice(cat_name,kbrd,price)
             self.component_prices[code] = price
-            self.components.append(component_doc)
+            self.components.append(Component(component_doc, cat_name))
             if cat_name == case:
-                self.case = component_doc
+                self.case = Component(component_doc, case)
         if self.installing:
             self.total += INSTALLING_PRICE
         if self.building:
@@ -1770,6 +1773,33 @@ class Model(object):
         # return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
+class Component(object):
+
+    def __init__(self, component_doc, cat_name):
+        self.component_doc = component_doc
+        self.cat_name = cat_name
+
+    def get(self, field, default=None):
+        return self.component_doc.get(field, default)
+
+    def __iter__(self):        
+        for k,v in self.component_doc.items():
+            yield k,v        
+            
+    @property
+    def _id(self):
+        return self.get('_id')
+    @property
+    def old_code(self):
+        return self.get('old_code', False)
+
+    @property
+    def text(self):
+        return self.get('text', False)
+
+    @property
+    def description(self):
+        return self.get('description', False)
 
 
 class User(object):
@@ -1782,8 +1812,14 @@ class User(object):
         return  self.user['_id'] == request.getCookie('pc_user') and \
                 self.user['pc_key'] == request.getCookie('pc_key')
 
+
+    def modelsSort(self, m1,m2):
+        if u''.join(m1[1]['date'])>u''.join(m2[1]['date']):
+            return -1
+        return 1
+
     def getUserModels(self):
-        for k,v in self.models:
+        for k,v in sorted(self.models, self.modelsSort):
             if k:
                 yield Model(v)
 
