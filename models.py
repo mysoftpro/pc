@@ -787,6 +787,7 @@ class ModelForModelsPage(object):
     def modeldesc(self):
         return self.get('modeldesc')
 
+    
     def fillComponents(self, price_span):
         #here is the difference between orders and models!!!
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)

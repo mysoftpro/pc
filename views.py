@@ -7,7 +7,7 @@ from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
 from urllib import unquote_plus, quote_plus
-
+import simplejson
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -36,7 +36,7 @@ class ModelInCart(object):
 
 
     def setModelLink(self, link):
-        
+
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
@@ -51,7 +51,7 @@ class ModelInCart(object):
             header.set('class', header.get('class')+ ' processing')
 
         link = self.model_div.find('.//a')
-        
+
         self.setModelLink(link)
 
         if not self.model.promo:
@@ -110,7 +110,7 @@ class ModelInCart(object):
 
 
     def fillHeader(self, h3):
-        
+
         if self.model.name:
             span = etree.Element('span')
             span.set('class', 'customName')
@@ -152,12 +152,12 @@ class ModelInCart(object):
         self.description_div.append(ul)
 
 
-    def fillDescriptionDiv(self):        
+    def fillDescriptionDiv(self):
         self.fillComponentsList()
 
         h3 = self.description_div.find('h3')
         self.fillHeader(h3)
-        
+
 
         if self.author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
@@ -268,7 +268,7 @@ class Cart(PCView):
 
 
     def renderModels(self, user):
-        models_div = self.getModelsDiv()        
+        models_div = self.getModelsDiv()
         for m in user.getUserModels():
             print "yaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             print user.isValid(self.request)
@@ -314,7 +314,7 @@ class ModelOnModels(ModelInCart):
         for el in html.fragments_fromstring(self.model.description):
             self.description_div.append(el)
 
-    def setModelLink(self, link):        
+    def setModelLink(self, link):
         link.text = self.model.name
 
 
@@ -341,14 +341,20 @@ class Computers(Cart):
 
     def renderComputers(self, res):
         models_div = self.getModelsDiv()
+        models=  []
         for row in res['rows']:
             if row['doc'] is None:
                 continue
-            model = Model(row['doc'])
+            models.append(Model(row['doc']))
+        json_prices = {}
+        for model in sorted(models, lambda m1,m2: m2.order-m1.order):
+            json_prices.update({model._id:model.cat_prices})
+            json_prices[model._id]['total'] = model.total
             view = ModelOnModels(self.request, model, self.tree,
                                  models_div, False)
             view.render()
             view.postRender()
+        self.template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
 
     def preRender(self):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
