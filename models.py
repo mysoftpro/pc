@@ -1174,7 +1174,6 @@ def index(template, skin, request):
 
     def render(result):
         i = 0
-        #zzzzzzzzzz
         models = sorted([Model(row['doc']) for row in result['rows']],
                         lambda x,y: x.order-y.order)
         tree = template.root()
@@ -1522,6 +1521,7 @@ class Model(object):
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
 
+    @property
     def isOrder(self):
         return self.get('_id').startswith('order')
 
@@ -1561,15 +1561,22 @@ class Model(object):
         return self.get('our_price', False)
 
     def __iter__(self):
-        for k,v in self.model_doc['items'].items():
-            yield k,v
+        if self.isOrder:            
+            for k,v in self.model_doc['model']['items'].items():
+                yield k,v
+        else:
+            for k,v in self.model_doc['items'].items():
+                yield k,v
 
     def getCode(self, cat_name):
-        return self.model_doc['items'][cat_name]
+        retval = self.model_doc['items'][cat_name]
+        if self.isOrder:
+            self.model_doc['model']['items'][cat_name]
+        return retval
 
     def nameForCode(self, code):
         retval = None
-        for _name,_code in self.model_doc['items'].items():
+        for _name,_code in self:
             if type(_code) is list and code in _code:
                 retval = _name
                 break
@@ -1622,6 +1629,116 @@ class Model(object):
     def getComponentPrice(self, component_doc):
         return self.component_prices[component_doc['_id']]
 
+
+    def orderComponents(self):
+        """ model doc here is Order. Not the model!!!"""
+        return self.model_doc['components']
+
+    @property
+    def original_prices(self):
+        return self.get('original_prices', {})
+
+
+    def getCatalogsKey(self, doc):
+        if 'catalogs' not in doc:
+            return 'no'
+        if type(doc['catalogs'][0]) is dict:
+            cats = []
+            for c in doc['catalogs']:
+                cats.append(str(c['id']))
+            return cats
+        return doc['catalogs']
+
+    @property
+    def ours(self):
+        return self.get('ours', False)
+
+
+    # TODO! than replace mother or video
+    # check slots! may be 2 video installed with sli or with crossfire!
+    def replaceComponent(self, code):
+        original_price = self.original_prices[code] \
+            if code in self.original_prices else 10
+        # name = nameForCode(code,model)
+        name = self.nameForCode(code)
+        def sameCatalog(doc):
+            retval = True
+            if mother==name:
+                retval = self.motherCatalogs == self.getCatalogsKey(doc)
+            if proc==name:
+                retval = self.procCatalogs == self.getCatalogsKey(doc)
+            return retval
+        choices = globals()['gChoices'][name]
+        flatten = []
+        if type(choices) is list:
+            for el in choices:
+                if el[0]:
+                    for ch in el[1][1]['rows']:
+                        if sameCatalog(ch['doc']):
+                            flatten.append(ch['doc'])
+        else:
+            for ch in choices['rows']:
+                if sameCatalog(ch['doc']):
+                    flatten.append(ch['doc'])
+        mock_component = noComponentFactory({},name)
+        mock_component['price'] = original_price
+        mock_component['_id'] = code
+        flatten.append(mock_component)
+        flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
+        keys = [doc['_id'] for doc in flatten]
+        _length = len(keys)
+        ind = keys.index(code)
+        _next = ind+1
+        if _next == _length:
+            _next = ind-1
+        next_el = deepcopy(flatten[_next])
+        if self.ours and code not in globals()['gWarning_sent']:
+            globals()['gWarning_sent'].append(code)
+            text = self.name + ' '+parts_names[name] + ': '+code
+            send_email('admin@buildpc.ru',
+                       u'В модели заменен компонент',
+                       text,
+                       sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        return next_el
+
+
+    #zzzzzzzzzz
+    def findComponent(self, cat_name):
+        def lookFor():
+            if self.isOrder:
+                components = []
+                for c in self.orderComponents:
+                    if c['_id'].startswith('no'):
+                        price = 0
+                    else:
+                        price = c['ourprice']*c['count']
+                    components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+                return lambda code: [c for c in components if c['_id'] == code][0]
+            else:
+                return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
+        look_for = lookFor()
+        # code = model['items'][name]
+        code = self.getCode(cat_name)
+        if type(code) is list:
+            code = code[0]
+        if code is None or code.startswith('no'):
+            return noComponentFactory({},cat_name)
+        replaced = False
+
+        retval = look_for(code)
+        if retval is None:
+            retval = replaceComponent(code,self)
+            replaced = True
+        else:
+            pass
+        # there is 1 thing downwhere count! is is installed just in this component!
+        ret = deepcopy(retval)
+        ret['replaced'] = replaced
+        if replaced:
+            ret['old_code'] = code
+        return ret
+
+
     def walkOnComponents(self):
         self.aliasses_reverted = {}
         for k,v in parts_aliases.items():
@@ -1631,7 +1748,7 @@ class Model(object):
             if type(code) is list:
                 count = len(code)
                 code = code[0]
-            component_doc = findComponent(self,cat_name)
+            component_doc = self.findComponent(cat_name)
             code = component_doc['_id']
             price = makePrice(component_doc)*count
             self.total += price
@@ -1677,6 +1794,23 @@ class User(object):
     @property
     def _id(self):
         return self.get('_id')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @forceCond(noChoicesYet, fillChoices)
 def computers(template,skin,request):

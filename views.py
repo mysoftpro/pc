@@ -39,9 +39,9 @@ class ModelInCart(object):
         return retval
 
 
-    def fillComponents(self, price_span):
-        #here is the difference between orders and models!!!
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+    # def fillComponents(self, price_span):
+    #     #here is the difference between orders and models!!!
+    #     self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
     def fillModelDiv(self):        
         if self.model.isProcessing():
@@ -74,9 +74,7 @@ class ModelInCart(object):
 
         price_span = self.model_div.find('.//span')        
         price_span.set('id',self.model._id)
-
-        #here is the difference between orders and models!!!
-        self.fillComponents(price_span)
+        price_span.text = unicode(self.model.total) + u' р'
 
         if self.model.promo:
             self.icon.set('href','/computer/'+self.model._id)
@@ -160,9 +158,6 @@ class ModelInCart(object):
         self.description_div.set('class','cart_description')
 
         this_user_is_author = self.user.isValid(self.request) and self.model.isAuthor(self.user)
-        #self.user is not None and\
-            # self.model['author'] == self.user['_id'] and\
-            # self.request.getCookie('pc_key') == self.user['pc_key']
 
         if this_user_is_author and not 'processing' in self.model:
             extra = deepcopy(self.tree.find('cart_extra'))
@@ -193,46 +188,31 @@ class ModelInCart(object):
     def render(self):
         self.fillModelDiv()
         self.fillDescriptionDiv()
-        # if not self.this_is_cart:
-        #     self.model_div.set('id','m'+self.model._id)
-        #     if self.category in model_categories:
-        #         if self.model._id in model_categories[self.category]:
-        #             div = etree.Element('div')
-        #             div.set('id', 'desc_'+self.model_div.get('id'))
-        #             div.set('class', 'full_desc')
-        #             if 'modeldesc' in self.model:
-        #                 div.text = self.model['modeldesc']
-        #             self.container.append(div)
-        #             self.description_div.set('style','height:220px')
-        #         else:
-        #             self.model_div.set('style',"height:0;overflow:hidden")
-        #             self.description_div.set('style',"height:0;overflow:hidden")
+ 
 
 
+# class OrderInCart(ModelInCart):
+#     def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
+#         self.user = user
+#         self.tree = tree
+#         self.model_snippet = deepcopy(self.tree.find('model'))
+#         self.request = request
+#         self.order = order
+#         self.model = self.order['model']
+#         self.this_is_cart = this_is_cart
+#         self.json_prices = json_prices
+#         self.icon = icon
+#         self.container = container
+#         self.components = []
+#         divs = self.model_snippet.findall('div')
+#         self.model_div = divs[0]
+#         self.description_div = divs[1]
+#         self.category = request.args.get('cat',[None])[0]
 
-
-class OrderInCart(ModelInCart):
-    def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
-        self.request = request
-        self.order = order
-        self.model = self.order['model']
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
-
-    def fillComponents(self, price_span):
-        #hack. see find component
-        self.model['this_order'] = self.order
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+    # def fillComponents(self, price_span):
+    #     #hack. see find component
+    #     self.model['this_order'] = self.order
+    #     self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
 
 class PCView(object):
@@ -274,17 +254,15 @@ class Cart(PCView):
         models_div = self.getModelsDiv()
         total = 0
         for m in user.getUserModels():
-            if m.isOrder():
-                view = OrderInCart(self.request, m, self.tree,
-                                   True,json_prices,
-                                   deepcopy(self.tree.find('model_icon').find('a')),
-                                   models_div, user)
-            else:
-                view = ModelInCart(self.request, m, self.tree,
-                                      True,json_prices,
-                                      deepcopy(self.tree.find('model_icon').find('a')),
-                                      models_div, user)
+            # if m.isOrder():
+            #     view = OrderInCart(self.request, m, self.tree,
+            #                        True,json_prices,
+            #                        deepcopy(self.tree.find('model_icon').find('a')),
+            #                        models_div, user)
+            # else:
+            view = ModelInCart(self.request, m, self.tree,
+                               True,json_prices,
+                               deepcopy(self.tree.find('model_icon').find('a')),
+                               models_div, user)
             view.render()
             total +=1
-        print "---("
-        print total
