@@ -115,9 +115,6 @@ class ModelInCart(object):
         for c in self.model.getComponents():
             ul.append(self.renderComponent(c))
 
-        # for cfm in self.components:
-        #     ul.append(cfm.render())
-
         self.description_div.append(ul)
 
         h3 = self.description_div.find('h3')
@@ -187,6 +184,46 @@ class ModelInCart(object):
 
 
 
+class NotebookInCart(object):
+
+    def __init__(self,notebook, note, icon, container):
+        self.icon = icon
+        self.notebook = notebook
+        self.note = note
+        self.container = container
+
+
+    def getNotebookIcon(self):
+        retval = "/static/icon.png"
+        if self.notebook.description and'imgs' in self.notebook.description:
+            retval = ''.join(("/image/",self.notebook._id,"/",
+                              self.notebook.description['imgs'][0],'.jpg'))
+        if '/preview' in retval:
+            splitted = retval.split('/preview')
+            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+
+        return retval
+
+
+    def render(self):
+        note_name = self.note.xpath('//div[@class="cnname"]')[0]
+        note_name.text = self.notebook.text
+        note_name.set('id',self.notebook.key+'_'+self.notebook._id)
+
+        link = self.note.xpath('//strong[@class="modellink"]')[0]
+        link.text = self.notebook.key[:-3]
+        strong = etree.Element('strong')
+        strong.text = self.notebook.key[-3:]
+        link.append(strong)
+        price = self.notebook.makePrice()
+
+        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+
+        self.icon.find('img').set('src',self.getNotebookIcon())
+        self.note.insert(0,self.icon)
+        self.container.append(self.note)
+
+
 class PCView(object):
     def __init__(self, template,skin,request, name):
         self.template = template
@@ -214,6 +251,7 @@ class Cart(PCView):
     def preRender(self):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
+        user_d.addCallback(self.renderNotes)
         return user_d
 
 
@@ -225,16 +263,62 @@ class Cart(PCView):
         json_prices = {}
         models_div = self.getModelsDiv()
         total = 0
+        icon = self.tree.find('model_icon').find('a')
         for m in user.getUserModels():
-            # if m.isOrder():
-            #     view = OrderInCart(self.request, m, self.tree,
-            #                        True,json_prices,
-            #                        deepcopy(self.tree.find('model_icon').find('a')),
-            #                        models_div, user)
-            # else:
             view = ModelInCart(self.request, m, self.tree,
                                True,json_prices,
-                               deepcopy(self.tree.find('model_icon').find('a')),
+                               deepcopy(icon),
                                models_div, user)
             view.render()
             total +=1
+
+        cart_form = deepcopy(self.tree.find('cart_comment_form'))
+        models_div.append(cart_form.find('div'))
+        return user
+
+
+    def getNotesDiv(self):
+        return self.tree.find('notebook').find('div')
+
+
+    def renderNotes(self, user):
+        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+        models_div = self.getModelsDiv()
+        clear_div = etree.Element('div')
+        clear_div.set('style','clear:both')
+        models_div.append(clear_div)
+        note_div = self.getNotesDiv()
+        icon = self.tree.find('model_icon').find('a')
+        for n in user.getUserNotebooks():
+            # note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+            #                                 deepcopy(tree.find('model_icon').find('a')),
+            #                                 container)
+            note_view = NotebookInCart(n,deepcopy(note_div),
+                                            deepcopy(icon),
+                                            models_div)
+            note_view.render()
+
+        # if 'notebooks' in result and 'user_doc' in result:
+        #     total_notes = []
+        #     need_cleanup = False
+        #     note_div = template.root().find('notebook').find('div')
+        #     clear_div = etree.Element('div')
+        #     clear_div.set('style','clear:both')
+        #     container.append(clear_div)
+        #     for n in result['notebooks']['rows']:
+        #         if not 'doc' in n:
+        #             need_cleanup = True
+        #             continue
+        #         if n['doc'] is None:
+        #             need_cleanup = True
+        #             continue
+        #         keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
+        #         if len(keys) == 0:
+        #             need_cleanup = True
+        #             continue
+        #         key = keys[0][0]
+        #         note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+        #                                         deepcopy(tree.find('model_icon').find('a')),
+        #                                         container)
+        #         note_view.render()
+        #         total_notes.append(n['doc']['_id'])

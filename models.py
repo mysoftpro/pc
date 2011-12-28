@@ -967,33 +967,33 @@ def fixDeletedCart(err, request, name):
 def redirectDeletedCart(err):
     return []
 
-class NoteBookForCartPage(object):
-    def __init__(self,notebook, note, key, icon, container):
-        self.icon = icon
-        self.notebook = notebook
-        self.note = note
-        self.container = container
-        self.key = key
+# class NoteBookForCartPage(object):
+#     def __init__(self,notebook, note, key, icon, container):
+#         self.icon = icon
+#         self.notebook = notebook
+#         self.note = note
+#         self.container = container
+#         self.key = key
 
-    def render(self):
-        key = self.key
-        note_name = self.note.xpath('//div[@class="cnname"]')[0]
-        note_name.text = self.notebook['doc']['text']
-        note_name.set('id',key+'_'+self.notebook['doc']['_id'])
+#     def render(self):
+#         key = self.key
+#         note_name = self.note.xpath('//div[@class="cnname"]')[0]
+#         note_name.text = self.notebook['doc']['text']
+#         note_name.set('id',key+'_'+self.notebook['doc']['_id'])
 
-        link = self.note.xpath('//strong[@class="modellink"]')[0]
-        link.text = key[:-3]
-        strong = etree.Element('strong')
-        strong.text = key[-3:]
-        link.append(strong)
-        price = makeNotePrice(self.notebook['doc'])
+#         link = self.note.xpath('//strong[@class="modellink"]')[0]
+#         link.text = key[:-3]
+#         strong = etree.Element('strong')
+#         strong.text = key[-3:]
+#         link.append(strong)
+#         price = makeNotePrice(self.notebook['doc'])
 
-        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+#         self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
 
-        # icon = deepcopy(tree.find('model_icon').find('a'))
-        self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
-        self.note.insert(0,self.icon)
-        self.container.append(self.note)
+#         # icon = deepcopy(tree.find('model_icon').find('a'))
+#         self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
+#         self.note.insert(0,self.icon)
+#         self.container.append(self.note)
 
 
 def findComponent(model, name):
@@ -1060,6 +1060,7 @@ class ComponentForModelsPage(object):
         self.cat_name = cat_name
         self.model = model
         self.this_is_cart = this_is_cart
+
     def getIconUrl(self):
         return getComponentIcon(self.component)
 
@@ -1500,7 +1501,7 @@ class Model(object):
 
     @property
     def promo(self):
-        return self.get('processing', False)
+        return self.get('promo', False)
 
     @property
     def order(self):
@@ -1737,17 +1738,14 @@ class Model(object):
             self.components.append(Component(component_doc, cat_name))
             if cat_name == case:
                 self.case = Component(component_doc, case)
-        print self._id
-        if self.installing:
-            print "self.installing:"
+        
+        if self.installing:        
             self.total += INSTALLING_PRICE
         if self.building:
-            print "self.building"
             self.total += BUILD_PRICE
         if self.dvd:
-            print "self.dvd"
             self.total += DVD_PRICE
-        print self.total
+
 
 
 class Component(object):
@@ -1792,17 +1790,26 @@ def userFactory(name):
 
     def fail(fail):
         pass
+    
+    def installKey(doc, key):
+        if doc is not None:
+            doc['key'] = key
+        return doc
 
-    def getFields(some, name, orders=False):
+    def getFields(some, name, orders=False, keys=False):
+        """ {'models':[3afs123, 3b456a], 'notebooks':{'3afs456':171515}} """
         defs = []
         if name in results['user']:
             for _id in results['user'][name]:
                 uid = _id
+                if keys:
+                    uid = results['user'][name][uid]
                 if orders:
                     uid = 'order_'+uid
                 d = couch.openDoc(uid)
-                if orders:
-                    d.addErrback(fail)
+                d.addErrback(fail)
+                if keys:
+                    d.addCallback(installKey, _id)
                 defs.append(d)
         li = defer.DeferredList(defs)
         res_name = name
@@ -1812,9 +1819,9 @@ def userFactory(name):
         return li
 
     user.addCallback(getFields, 'models')
-    user.addCallback(getFields, 'notebooks')
+    user.addCallback(getFields, 'notebooks', keys=True)
     user.addCallback(getFields, 'models', orders=True)
-    user.addCallback(getFields, 'notebooks', orders=True)
+    user.addCallback(getFields, 'notebooks', orders=True, keys = True)
     user.addCallback(lambda some: User(results))
     return user
 
@@ -1835,12 +1842,7 @@ class User(object):
         for res,note in results['notebooks']:
             if res and note['_id'] not in orders_notebooks_ids:
                 self.notebooks.append(note)
-
         self.user = results['user']
-        # self.models = results['models']
-        # self.notebooks = results['notebooks']
-        # self.orders_models = results['orders_models']
-        # self.orders_models = results['orders_notebooks']
 
     def isValid(self, request):
         return  self.user['_id'] == request.getCookie('pc_user') and \
@@ -1856,6 +1858,10 @@ class User(object):
         for m in sorted(self.models, self.modelsSort):
             yield Model(m)
 
+    def getUserNotebooks(self):
+        for n in self.notebooks:
+            yield Notebook(n, None)
+
 
     def get(self, field, default=None):
         return self.user.get(field, default)
@@ -1864,11 +1870,19 @@ class User(object):
     def _id(self):
         return self.get('_id')
 
+  
 
 
+class Notebook(Component):
 
+    @property
+    def key(self):
+        return self.get('key')
 
-
+  
+    def makePrice(self):
+        our_price = self.component_doc['price']*Course+NOTE_MARGIN
+        return int(round(our_price/10))*10
 
 
 
