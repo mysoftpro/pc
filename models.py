@@ -1489,33 +1489,6 @@ def upgrade_set(template, skin, request):
 
 
 
-def userFactory(name):
-    user = couch.openDoc(name)
-
-    results = {}
-
-    def di(res, name):
-        results[name] = res
-
-    user.addCallback(di, 'user')
-
-    def getFields(some, name):
-        di(None, name)
-        defs = []
-        if name in results['user']:
-            for _id in results['user'][name]:
-                defs.append(couch.openDoc(_id))
-        li = defer.DeferredList(defs)
-        li.addCallback(di, name)
-        return li
-
-    user.addCallback(getFields, 'models')
-    user.addCallback(getFields, 'notebooks')
-    user.addCallback(lambda some: User(results))
-    return user
-
-
-
 class Model(object):
 
     def get(self, field, default=None):
@@ -1538,7 +1511,10 @@ class Model(object):
 
     @property
     def _id(self):
-        return self.get('_id')
+        retval = self.get('_id')
+        if self.isOrder:
+            retval = retval.replace('order_','')
+        return retval
 
     @property
     def checkRequired(self):
@@ -1561,7 +1537,7 @@ class Model(object):
         return self.get('our_price', False)
 
     def __iter__(self):
-        if self.isOrder:            
+        if self.isOrder:
             for k,v in self.model_doc['model']['items'].items():
                 yield k,v
         else:
@@ -1569,9 +1545,10 @@ class Model(object):
                 yield k,v
 
     def getCode(self, cat_name):
-        retval = self.model_doc['items'][cat_name]
-        if self.isOrder:
-            self.model_doc['model']['items'][cat_name]
+        retval = None
+        for k,v in self:
+            if k==cat_name:
+                retval = v
         return retval
 
     def nameForCode(self, code):
@@ -1623,16 +1600,16 @@ class Model(object):
         self.component_prices = {}
         self.total = 0#price_span
         self.walkOnComponents()
-    
+
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
-        
+
 
     def getComponentPrice(self, component_doc):
         return self.component_prices[component_doc._id]
 
-
+    @property
     def orderComponents(self):
         """ model doc here is Order. Not the model!!!"""
         return self.model_doc['components']
@@ -1769,7 +1746,7 @@ class Model(object):
         if self.building:
              self.total += BUILD_PRICE
         if self.dvd:
-            self.total += DVD_PRICE        
+            self.total += DVD_PRICE
         # return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
@@ -1782,10 +1759,10 @@ class Component(object):
     def get(self, field, default=None):
         return self.component_doc.get(field, default)
 
-    def __iter__(self):        
+    def __iter__(self):
         for k,v in self.component_doc.items():
-            yield k,v        
-            
+            yield k,v
+
     @property
     def _id(self):
         return self.get('_id')
@@ -1802,11 +1779,68 @@ class Component(object):
         return self.get('description', False)
 
 
+
+def userFactory(name):
+    user = couch.openDoc(name)
+
+    results = {}
+
+    def di(res, name):
+        results[name] = res
+
+    user.addCallback(di, 'user')
+
+    def fail(fail):
+        pass
+
+    def getFields(some, name, orders=False):
+        defs = []
+        if name in results['user']:
+            for _id in results['user'][name]:
+                uid = _id
+                if orders:
+                    uid = 'order_'+uid
+                d = couch.openDoc(uid)                
+                if orders:
+                    d.addErrback(fail)
+                defs.append(d)
+        li = defer.DeferredList(defs)
+        res_name = name
+        if orders:
+            res_name='orders_'+res_name
+        li.addCallback(di, res_name)
+        return li
+
+    user.addCallback(getFields, 'models')
+    user.addCallback(getFields, 'notebooks')
+    user.addCallback(getFields, 'models', orders=True)
+    user.addCallback(getFields, 'notebooks', orders=True)
+    user.addCallback(lambda some: User(results))
+    return user
+
+
 class User(object):
     def __init__(self, results):
+        """ if has orders - get orders instead appropriate models"""
+        orders_models = [tu[1] for tu in results['orders_models'] if tu[1] is not None]
+        self.models = orders_models
+        orders_models_ids = [o['_id'].replace('order_','') for o in orders_models]
+        for res,model in results['models']:
+            if res and model['_id'] not in orders_models_ids:
+                self.models.append(model)
+
+        orders_notebooks = [tu[1] for tu in results['orders_notebooks'] if tu[1] is not None]
+        self.notebooks = orders_notebooks
+        orders_notebooks_ids = [o['_id'] for o in orders_notebooks]
+        for res,note in results['notebooks']:
+            if res and note['_id'] not in orders_notebooks_ids:
+                self.notebooks.append(note)
+
         self.user = results['user']
-        self.models = results['models']
-        self.notebooks = results['notebooks']
+        # self.models = results['models']
+        # self.notebooks = results['notebooks']
+        # self.orders_models = results['orders_models']
+        # self.orders_models = results['orders_notebooks']
 
     def isValid(self, request):
         return  self.user['_id'] == request.getCookie('pc_user') and \
@@ -1814,14 +1848,13 @@ class User(object):
 
 
     def modelsSort(self, m1,m2):
-        if u''.join(m1[1]['date'])>u''.join(m2[1]['date']):
+        if u''.join(m1['date'])>u''.join(m2['date']):
             return -1
         return 1
 
     def getUserModels(self):
-        for k,v in sorted(self.models, self.modelsSort):
-            if k:
-                yield Model(v)
+        for m in sorted(self.models, self.modelsSort):            
+            yield Model(m)
 
 
     def get(self, field, default=None):
