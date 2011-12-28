@@ -1174,7 +1174,9 @@ def index(template, skin, request):
 
     def render(result):
         i = 0
-        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
+        #zzzzzzzzzz
+        models = sorted([Model(row['doc']) for row in result['rows']],
+                        lambda x,y: x.order-y.order)
         tree = template.root()
         div = template.middle.xpath('//div[@id="computers_container"]')[0]
         json_prices = {}
@@ -1185,12 +1187,12 @@ def index(template, skin, request):
             snippet = deepcopy(model_snippet.find('div'))
             snippet.set('style',"background-image:url('" + imgs[i] + "')")
             a = snippet.find('.//a')
-            a.set('href','/computer/%s' % m['_id'])
-            a.text=m['name']
+            a.set('href','/computer/%s' % m._id)
+            a.text=m.name
             price_span = snippet.find('.//span')
-            price_span.set('id',m['_id'])
+            price_span.set('id',m._id)
             components = buildPrices(m, json_prices, price_span)
-            json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
+            json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
             div.append(snippet)
             i+=1
             if i==len(imgs): i=0
@@ -1517,7 +1519,6 @@ def userFactory(name):
 
 class Model(object):
 
-
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
 
@@ -1530,6 +1531,10 @@ class Model(object):
     @property
     def promo(self):
         return self.get('processing', False)
+
+    @property
+    def order(self):
+        return self.get('order', 0)
 
     @property
     def _id(self):
