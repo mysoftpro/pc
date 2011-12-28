@@ -35,17 +35,24 @@ class ModelInCart(object):
         return retval
 
 
+    def setModelLink(self, link):
+        
+        link.text = self.model._id[:-3]
+        strong= etree.Element('strong')
+
+        strong.text = self.model._id[-3:]
+        link.append(strong)
+
+
+
     def fillModelDiv(self):
         if self.model.processing:
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
 
         link = self.model_div.find('.//a')
-        link.text = self.model._id[:-3]
-        strong= etree.Element('strong')
-
-        strong.text = self.model._id[-3:]
-        link.append(strong)
+        
+        self.setModelLink(link)
 
         if not self.model.promo:
             link.set('href','/computer/%s' % self.model._id)
@@ -135,6 +142,7 @@ class ModelInCart(object):
 
 
     def fillComponentsList(self):
+        self.description_div.set('class','cart_description')
         ul = etree.Element('ul')
         ul.set('class','description')
 
@@ -149,8 +157,7 @@ class ModelInCart(object):
 
         h3 = self.description_div.find('h3')
         self.fillHeader(h3)
-
-        self.description_div.set('class','cart_description')
+        
 
         if self.author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
@@ -307,6 +314,29 @@ class ModelOnModels(ModelInCart):
         for el in html.fragments_fromstring(self.model.description):
             self.description_div.append(el)
 
+    def setModelLink(self, link):        
+        link.text = self.model.name
+
+
+    def postRender(self):
+        self.model_div.set('id','m'+self.model._id)
+        category = self.request.args.get('cat',[None])[0]
+        if category in model_categories:
+            if self.model['_id'] in model_categories[category]:
+                div = etree.Element('div')
+                div.set('id', 'desc_'+self.model_div.get('id'))
+                div.set('class', 'full_desc')
+                if 'modeldesc' in self.model:
+                    div.text = self.model.modeldesc
+                self.container.append(div)
+                self.description_div.set('style','height:220px')
+            else:
+                self.model_div.set('style',"height:0;overflow:hidden")
+                self.description_div.set('style',"height:0;overflow:hidden")
+
+
+
+
 class Computers(Cart):
 
     def renderComputers(self, res):
@@ -318,6 +348,7 @@ class Computers(Cart):
             view = ModelOnModels(self.request, model, self.tree,
                                  models_div, False)
             view.render()
+            view.postRender()
 
     def preRender(self):
         d = couch.openView(designID,'models',include_docs=True,stale=False)

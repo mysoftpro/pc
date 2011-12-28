@@ -783,6 +783,10 @@ class ModelForModelsPage(object):
         self.category = request.args.get('cat',[None])[0]
 
 
+    @property
+    def modeldesc(self):
+        return self.get('modeldesc')
+
     def fillComponents(self, price_span):
         #here is the difference between orders and models!!!
         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
@@ -2110,11 +2114,6 @@ class Comment(object):
     @property
     def date(self):
         return self.get('date',[])
-
-    @property
-    def body(self):
-        return self.get('body','')
-
 
     @property
     def body(self):
