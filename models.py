@@ -783,10 +783,6 @@ class ModelForModelsPage(object):
         self.category = request.args.get('cat',[None])[0]
 
 
-    @property
-    def modeldesc(self):
-        return self.get('modeldesc')
-
     
     def fillComponents(self, price_span):
         #here is the difference between orders and models!!!
@@ -1499,6 +1495,12 @@ class Model(object):
 
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
+
+
+    @property
+    def modeldesc(self):
+        return self.get('modeldesc', False)
+
 
     @property
     def processing(self):

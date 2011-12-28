@@ -322,11 +322,11 @@ class ModelOnModels(ModelInCart):
         self.model_div.set('id','m'+self.model._id)
         category = self.request.args.get('cat',[None])[0]
         if category in model_categories:
-            if self.model['_id'] in model_categories[category]:
+            if self.model._id in model_categories[category]:
                 div = etree.Element('div')
                 div.set('id', 'desc_'+self.model_div.get('id'))
                 div.set('class', 'full_desc')
-                if 'modeldesc' in self.model:
+                if self.model.modeldesc:
                     div.text = self.model.modeldesc
                 self.container.append(div)
                 self.description_div.set('style','height:220px')
