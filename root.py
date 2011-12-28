@@ -12,11 +12,11 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, parts,\
+from pc.models import index, parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
-from pc.views import Cart, Computers
+from pc.views import Cart, Computers, Computer
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -99,7 +99,7 @@ def partPage(template, skin, request):
 
 static_hooks = {
     'index.html':index,
-    'computer.html':computer,
+    # 'computer.html':computer,
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,
@@ -429,12 +429,12 @@ class Skin(Template):
 
 
 
-def checkCookie(self, f):
-    def check(request):        
+def checkCookie(f):
+    def check(self, request):        
         user_cookie = request.getCookie('pc_user')
         if  user_cookie is None:
             addCookies(request, {'pc_user':base36.gen_id()})
-        f()
+        return f(self, request)
     return check
 
 class CachedStatic(File):
@@ -594,8 +594,6 @@ class Root(Resource):
         self.static = CachedStatic(static_dir)
         self.static.indexNames = [index_page]
         self.putChild('static',self.static)
-        # self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
-        # self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
 
         self.putChild('cart', 
                       PCTemplateRenderrer(self.static,
@@ -606,7 +604,7 @@ class Root(Resource):
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=HandlerAndName(Computers,
                                                                             'computers.html'),
-                                                        childs=HandlerAndName(Cart,
+                                                        childs=HandlerAndName(Computer,
                                                                               'computer.html'))))
 
         # self.putChild('cart', PCTemplateRenderrer(Cart, self.static, 'cart.html'))

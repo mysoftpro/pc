@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices, Model
-from pc.models import buildPrices, case, model_categories
+from pc.models import userFactory, noChoicesYet, fillChoices, Model,makePrice, cleanDoc,getCatalogsKey
+from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
+    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
 from urllib import unquote_plus, quote_plus
 import simplejson
+import re
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -360,3 +362,214 @@ class Computers(Cart):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
         d.addCallback(self.renderComputers)
         return d
+
+
+no_component_added = False
+
+class Computer(PCView):
+    def preRender(self):
+        d = couch.openDoc(self.name)
+        d.addCallback(lambda m: Model(m))
+        d.addCallback(self.renderComputer)
+        return d
+
+    def renderComputer(self, model):
+
+        _uuid = ''
+        author = ''
+        parent = ''
+        h2 =self.template.top.find('div').find('h2')
+        # only original models have length
+
+        if model.ours:
+            h2.text = model.name
+        else:
+            h2.text = model._id[0:-3]
+            strong = etree.Element('strong')
+            strong.text = model._id[-3:]
+            h2.append(strong)
+            if model.name:
+                span = etree.Element('span')
+                span.text = model.name
+                h2.append(span)
+            _uuid = model._id
+            author = model.author
+            parent = model.parent
+
+        if model.description:
+            d = self.template.top.find('div').find('div')
+            d.text = ''
+            for el in html.fragments_fromstring(model.description):
+                d.append(el)
+
+        original_viewlet = self.template.root().find('componentviewlet')
+
+        model_json = {}
+        total = 0
+        components_json = {}
+        viewlets = []
+        counted = {}
+
+        def makeOption(row, price):
+            option = etree.Element('option')
+            if 'font' in row['doc']['text']:
+                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+                row['doc'].update({'featured':True})
+            option.text = row['doc']['text']
+
+            option.text +=u' ' + unicode(price) + u' р'
+
+            option.set('value',row['id'])
+            return option
+
+        def appendOptions(options, container):
+            for o in sorted(options, lambda x,y: x[1]-y[1]):
+                container.append(o[0])
+
+
+        def noComponent(name, component_doc, rows):
+            #hack!
+            if 'catalogs' in component_doc:
+                pass
+            else:
+                try:
+                    component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+                except:
+                    pass
+            if globals()['no_component_added']:return
+            if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
+            no_doc = noComponentFactory(component_doc, name)
+            rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
+
+        def addComponent(_options, _row, current_id):
+            _price= makePrice(_row['doc'])
+            _option = makeOption(_row, _price)
+            _options.append((_option, _price))
+            if _row['id'] == current_id:
+                _option.set('selected','selected')
+            _cleaned_doc = cleanDoc(_row['doc'], _price)
+            _id = _cleaned_doc['_id']
+            if _id in counted:
+                _cleaned_doc.update({'count':counted[_id]})
+            components_json.update({_id:_cleaned_doc})
+
+
+        def fillViewlet(_name, _doc):
+            tr = viewlet.find("tr")
+            tr.set('id',_name)
+            body = viewlet.xpath("//td[@class='body']")[0]
+            body.set('id',_doc['_id'])
+            body.text = re.sub('<font.*</font>', '',_doc['text'])
+
+            descr = etree.Element('div')
+            descr.set('class','description')
+            descr.text = ''
+
+            manu = etree.Element('div')
+            manu.set('class','manu')
+            manu.text = ''
+
+            # our = etree.Element('div')
+            # our.set('class','our')
+            # our.text = u'нет рекоммендаций'
+
+            clear = etree.Element('div')
+            clear.set('style','clear:both;')
+            clear.text = ''
+            descr.append(manu);
+            # descr.append(our)
+            descr.append(clear)
+            return descr
+        from pc.models import gChoices
+        for name,code in model:
+            component_doc = None
+            count = 1
+            if code is None:
+                component_doc = noComponentFactory({}, name)
+            else:
+
+                if type(code) is list:
+                    count = len(code)
+                    code = code[0]
+                    counted.update({code:count})
+
+                component_doc = model.findComponent(name)
+
+            if _uuid == '' and 'replaced' in component_doc:
+                # no need 'replaced' alert' in original models
+                component_doc.pop('replaced')
+
+            viewlet = deepcopy(original_viewlet)
+            descr = fillViewlet(name, component_doc)
+
+            price = makePrice(component_doc)
+
+            total += price
+            # print component_doc
+            cleaned_doc = cleanDoc(component_doc, price)
+            cleaned_doc['count'] = count
+
+            model_json.update({cleaned_doc['_id']:cleaned_doc})
+            viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
+
+            ch = gChoices[name]
+            options = []
+            if type(ch) is list:
+                noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
+                for el in ch:
+                    if el[0]:
+                        option_group = etree.Element('optgroup')
+                        option_group.set('label', el[1][0])
+                        _options = []
+                        for r in el[1][1]['rows']:
+                            addComponent(_options, r, cleaned_doc['_id'])
+                        appendOptions(_options, option_group)
+                        options.append((option_group, 0))
+            else:
+                noComponent(name, cleaned_doc, ch['rows'])
+                for row in ch['rows']:
+                    addComponent(options, row, cleaned_doc['_id'])
+
+            select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
+            appendOptions(options, select)
+            viewlets.append((parts[name],viewlet,descr))
+
+
+        components_container = self.template.middle.xpath('//table[@id="components"]')[0]
+        description_container = self.template.middle.xpath('//div[@id="descriptions"]')[0]
+
+        import pc.models
+        pc.models.no_component_added=True
+
+        for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
+            components_container.append(viewlet[1].find('tr'))
+            description_container.append(viewlet[2])
+        processing = False
+        if 'processing' in model and model['processing']:
+            processing = True
+
+        self.template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
+                                                        ';var processing=',simplejson.dumps(processing),
+                                                        ';var uuid=',simplejson.dumps(_uuid),
+                                                        ';var author=',simplejson.dumps(author),
+                                                        ';var parent=',simplejson.dumps(parent),
+                                                        ';var total=',unicode(total),
+                                                        ';var choices=',simplejson.dumps(components_json),
+                                                        ';var parts_names=',simplejson.dumps(parts_names),
+                                                        ';var mother_to_proc_mapping=',
+                                                        simplejson.dumps(mother_to_proc_mapping),
+                                                        ';var proc_to_mother_mapping=',
+                                                        simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
+                                                        ';var installprice=',str(INSTALLING_PRICE),
+                                                        ';var buildprice=',str(BUILD_PRICE),
+                                                        ';var dvdprice=',str(DVD_PRICE),
+
+                                                        ';var idvd=',simplejson.dumps(model.dvd),
+                                                        ';var ibuilding=',simplejson.dumps(model.building),
+                                                        ';var iinstalling=',simplejson.dumps(model.installing),
+                                                        ';var Course=',str(Course),
+                                                        ';var parts=',simplejson.dumps(parts_aliases)
+                                                        ))
+        title = self.skin.root().xpath('//title')[0]
+        title.text = u' Изменение конфигурации компьютера '+h2.text
+

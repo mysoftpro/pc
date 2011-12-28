@@ -735,8 +735,9 @@ def clear_cache():
 	    os.utime(os.path.join(root.static_dir,f), None)
 	except:
 	    pass
+    from pc import views
+    views.no_component_added = False
     from pc import models
-    models.no_component_added = False
     models.gChoices = None
     models.gChoices_flatten = {}
     models.gWarning_sent = []

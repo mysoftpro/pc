@@ -750,7 +750,6 @@ def computer(template, skin, request):
         name = 'ping'
     d = couch.openDoc(name)
     d.addCallback(renderComputer, template, skin)
-    #d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
 
@@ -1498,6 +1497,15 @@ class Model(object):
 
 
     @property
+    def author(self):
+        return self.get('author','')
+
+    @property
+    def parent(self):
+        return self.get('parent','')
+
+
+    @property
     def modeldesc(self):
         return self.get('modeldesc', False)
 
@@ -1520,7 +1528,7 @@ class Model(object):
 
     @property
     def _id(self):
-        retval = self.get('_id')
+        retval = self.get('_id', '')
         if self.isOrder:
             retval = retval.replace('order_','')
         return retval
@@ -1540,11 +1548,6 @@ class Model(object):
     @property
     def title(self):
         return self.get('title', False)
-
-
-    @property
-    def parent(self):
-        return self.get('parent', '')
 
     @property
     def ourPrice(self):
