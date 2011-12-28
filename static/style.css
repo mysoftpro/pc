@@ -866,11 +866,7 @@ background-color: #3F3F3F;
     margin-left:auto;
     margin-right:auto;
 }
-#cart_top{
-    height:150px;
-    margin-top:20px;
-    margin-bottom:70px;
-}
+
 #cartlink{
     width:265px;
 }
@@ -2469,4 +2465,9 @@ a.modelicon img{
 }
 .cart_description li strong{
     margin-left:5px;
+}
+#cart_top{
+    height:150px;
+    margin-top:20px;
+    margin-bottom:100px;
 }

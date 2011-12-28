@@ -1495,9 +1495,13 @@ class Model(object):
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
 
-
-    def isProcessing(self):
+    @property
+    def processing(self):
         return self.get('processing', False)
+
+    @property
+    def comments(self):
+        return [Comment(c) for c in self.get('comments', [])]
 
     @property
     def promo(self):
@@ -1525,6 +1529,11 @@ class Model(object):
     @property
     def name(self):
         return self.get('name', False)
+
+    @property
+    def title(self):
+        return self.get('title', False)
+
 
     @property
     def parent(self):
@@ -1678,8 +1687,19 @@ class Model(object):
                        sender=u'Компьютерный магазин <inbox@buildpc.ru>')
         return next_el
 
+    def preparePdf(self):
+        self.model_doc['full_items'] = []
+        for k,v in self:
+            if type(v) is list:
+                v = v[0]
+            if v is None: continue
+            if v.startswith('no'):continue
+            component = deepcopy(self.findComponent(k))
+            component['price'] = makePrice(component)
+            self.model_doc['full_items'].append(component)
+        self.model_doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
+        return self.model_doc
 
-    #zzzzzzzzzz
     def findComponent(self, cat_name):
         def lookFor():
             if self.isOrder:
@@ -1738,8 +1758,8 @@ class Model(object):
             self.components.append(Component(component_doc, cat_name))
             if cat_name == case:
                 self.case = Component(component_doc, case)
-        
-        if self.installing:        
+
+        if self.installing:
             self.total += INSTALLING_PRICE
         if self.building:
             self.total += BUILD_PRICE
@@ -1790,7 +1810,7 @@ def userFactory(name):
 
     def fail(fail):
         pass
-    
+
     def installKey(doc, key):
         if doc is not None:
             doc['key'] = key
@@ -1870,7 +1890,7 @@ class User(object):
     def _id(self):
         return self.get('_id')
 
-  
+
 
 
 class Notebook(Component):
@@ -1879,7 +1899,7 @@ class Notebook(Component):
     def key(self):
         return self.get('key')
 
-  
+
     def makePrice(self):
         our_price = self.component_doc['price']*Course+NOTE_MARGIN
         return int(round(our_price/10))*10
@@ -1992,9 +2012,6 @@ def computers(template,skin,request):
 
         _prices = 'undefined'
 
-        print "eeeeeeeeeeeeeeeeeeeeeeha"
-        print this_is_cart
-        print ""
         if this_is_cart:
             cart = deepcopy(template.root().find('top_cart'))
             cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
@@ -2076,3 +2093,35 @@ def computers(template,skin,request):
         # if this_is_cart:
         #     d.addErrback(redirectDeletedCart)
     return d
+
+
+class Comment(object):
+
+    def __init__(self, comment_doc):
+        self.comment_doc = comment_doc
+
+    def get(self, field, default=None):
+        return self.comment_doc.get(field, default)
+
+    @property
+    def date(self):
+        return self.get('date',[])
+
+    @property
+    def body(self):
+        return self.get('body','')
+
+
+    @property
+    def body(self):
+        return self.get('body','')
+
+
+    @property
+    def email(self):
+        return self.get('email','')
+
+
+    @property
+    def author(self):
+        return self.get('author','')

@@ -40,7 +40,7 @@ class ModelInCart(object):
 
 
     def fillModelDiv(self):
-        if self.model.isProcessing():
+        if self.model.processing:
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
 
@@ -119,19 +119,19 @@ class ModelInCart(object):
 
         h3 = self.description_div.find('h3')
 
-        if 'name' in self.model:
+        if self.model.name:
             span = etree.Element('span')
             span.set('class', 'customName')
-            span.text = self.model['name']
+            span.text = self.model.name
             h3.append(span)
 
-        if 'title' in self.model:
+        if self.model.title:
             span = etree.Element('span')
             span.set('class', 'customTitle')
-            span.text = self.model['title']
+            span.text = self.model.title
             h3.append(span)
 
-        if not 'name' in self.model and not 'title' in self.model:
+        if not self.model.name and not self.model.title:
             span = etree.Element('span')
             span.set('class', 'customName')
             span.text = u'Пользовательская конфигурация'
@@ -152,24 +152,25 @@ class ModelInCart(object):
 
         this_user_is_author = self.user.isValid(self.request) and self.model.isAuthor(self.user)
 
-        if this_user_is_author and not 'processing' in self.model:
+        if this_user_is_author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
             for el in extra:
                 if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
                     el.set('href', '/bill.pdf?id='+self.model._id)
                 self.description_div.append(el)
 
-        if 'comments' in self.model:
-            last_index = len(self.model['comments'])-1
+        comments_len = len(self.model.comments)
+        if comments_len>0:
+            last_index = comments_len-1
             i=0
-            for comment in self.model['comments']:
+            for comment in self.model.comments:
                 comments = deepcopy(self.tree.find('cart_comment'))
                 if not this_user_is_author and i==0:
                     comments.find('div').set('style', 'margin-top:40px')
-                comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-                comment['date'].reverse()
-                comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
-                comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
+                comments.xpath('//div[@class="faqauthor"]')[0].text = comment.author
+                comment.date.reverse()
+                comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment.date)
+                comments.xpath('//div[@class="faqbody"]')[0].text = comment.body
                 links = comments.xpath('//div[@class="faqlinks"]')[0]
                 if i!=last_index:
                     links.remove(links.find('a'))
