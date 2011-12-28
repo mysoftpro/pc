@@ -16,7 +16,7 @@ from pc.models import index, computer, computers,parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
-from pc.views import Cart
+from pc.views import Cart, Computers
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -100,7 +100,7 @@ def partPage(template, skin, request):
 static_hooks = {
     'index.html':index,
     'computer.html':computer,
-    'computers.html':computers,
+    # 'computers.html':computers,
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,
@@ -590,6 +590,7 @@ class Root(Cookable):
         self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
 
         self.putChild('cart1', PCTemplateRenderrer(Cart, self.static, 'cart.html'))
+        self.putChild('computer1', PCTemplateRenderrer(Computers, self.static, 'computers.html', direct=True))
 
         self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
@@ -894,20 +895,27 @@ class HandlerAndName(object):
         
 
 class PCTemplateRenderrer(Cookable):
-    def __init__(self, klass, static, name):
+    def __init__(self, klass, static, name, direct=False):
         Cookable.__init__(self)
         self.static = static
         self.name = name
         self.klass = klass
+        self.direct = direct
 
     def render_GET(self, request):
-        return NoResource().render(request)
+        print "1"
+        if not self.direct:
+            return NoResource().render(request)        
+        child = self.static.getChild(self.name, request)
+        child.hooks.update({self.name:HandlerAndName(self.klass, None)})
+        return child.render(request)
 
     def getChild(self, name, request):
+        if self.direct:
+            return self
         child = self.static.getChild(self.name, request)
         child.hooks.update({self.name:HandlerAndName(self.klass, name)})
         return child
-
 
 class TemplateRenderrer(Cookable):
     def __init__(self, static, name, default_name=None, title=None):

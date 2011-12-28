@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices
+from pc.models import userFactory, noChoicesYet, fillChoices, Model
 from pc.models import buildPrices, case, model_categories
 from copy import deepcopy
 from lxml import etree, html
@@ -10,14 +10,12 @@ from urllib import unquote_plus, quote_plus
 
 
 class ModelInCart(object):
-    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
+    def __init__(self, request, model, tree, icon, container, author):
+        self.author = author
         self.tree = tree
         self.model_snippet = deepcopy(self.tree.find('model'))
         self.request = request
         self.model = model
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
         self.icon = icon
         self.container = container
         self.components = []
@@ -149,10 +147,8 @@ class ModelInCart(object):
         h3.append(a)
 
         self.description_div.set('class','cart_description')
-
-        this_user_is_author = self.user.isValid(self.request) and self.model.isAuthor(self.user)
-
-        if this_user_is_author and not self.model.processing:
+        
+        if self.author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
             for el in extra:
                 if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
@@ -165,7 +161,7 @@ class ModelInCart(object):
             i=0
             for comment in self.model.comments:
                 comments = deepcopy(self.tree.find('cart_comment'))
-                if not this_user_is_author and i==0:
+                if not self.author and i==0:
                     comments.find('div').set('style', 'margin-top:40px')
                 comments.xpath('//div[@class="faqauthor"]')[0].text = comment.author
                 comment.date.reverse()
@@ -260,19 +256,14 @@ class Cart(PCView):
         return self.template.middle.xpath('//div[@id="models"]')[0]
 
 
-    def renderModels(self, user):
-        json_prices = {}
+    def renderModels(self, user):        
         models_div = self.getModelsDiv()
-        total = 0
         icon = self.tree.find('model_icon').find('a')
         for m in user.getUserModels():
-            view = ModelInCart(self.request, m, self.tree,
-                               True,json_prices,
+            view = ModelInCart(self.request, m, self.tree,                               
                                deepcopy(icon),
-                               models_div, user)
+                               models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
-            total +=1
-
         cart_form = deepcopy(self.tree.find('cart_comment_form'))
         models_div.append(cart_form.find('div'))
         return user
@@ -299,27 +290,29 @@ class Cart(PCView):
                                             models_div)
             note_view.render()
 
-        # if 'notebooks' in result and 'user_doc' in result:
-        #     total_notes = []
-        #     need_cleanup = False
-        #     note_div = template.root().find('notebook').find('div')
-        #     clear_div = etree.Element('div')
-        #     clear_div.set('style','clear:both')
-        #     container.append(clear_div)
-        #     for n in result['notebooks']['rows']:
-        #         if not 'doc' in n:
-        #             need_cleanup = True
-        #             continue
-        #         if n['doc'] is None:
-        #             need_cleanup = True
-        #             continue
-        #         keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
-        #         if len(keys) == 0:
-        #             need_cleanup = True
-        #             continue
-        #         key = keys[0][0]
-        #         note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
-        #                                         deepcopy(tree.find('model_icon').find('a')),
-        #                                         container)
-        #         note_view.render()
-        #         total_notes.append(n['doc']['_id'])
+
+
+class ModelOnModels(ModelInCart):
+    pass
+
+class Computers(PCView):
+
+    def renderComputers(self, res):
+        json_prices = {}
+        models_div = self.getModelsDiv()
+        icon = self.tree.find('model_icon').find('a')
+        for row in res['rows']:
+            if row['doc'] is None:
+                continue
+            model = Model(row['doc'])
+            view = ModelOnModels(self.request, model, self.tree,
+                                 True,json_prices,
+                                 deepcopy(icon),
+                                 models_div, user)
+            view.render()
+
+    def preRender(self):
+        d = couch.openView(designID,'models',include_docs=True,stale=False)
+        d.addCallback(self.renderComputers)
+        
+
