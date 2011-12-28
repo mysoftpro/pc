@@ -245,12 +245,16 @@ class PCView(object):
     def preRender(self):
         pass
 
+    def postRender(self):
+        pass
+
     @forceCond(noChoicesYet, fillChoices)
     def render(self):
         d = self.preRender()
         def _render(some):
             self.skin.top = self.template.top
             self.skin.middle = self.template.middle
+            self.postRender()
             return self.skin.render()
         d.addCallback(_render)
         return d
@@ -573,3 +577,6 @@ class Computer(PCView):
         title = self.skin.root().xpath('//title')[0]
         title.text = u' Изменение конфигурации компьютера '+h2.text
 
+    def postRender(self):
+        self.skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 300px;')
+        self.skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')

@@ -290,216 +290,216 @@ def replaceComponent(code,model):
 
 no_component_added = False
 
-def renderComputer(model, template, skin):
+# def renderComputer(model, template, skin):
 
-    _uuid = ''
-    author = ''
-    parent = ''
-    h2 =template.top.find('div').find('h2')
-    # only original models have length
+#     _uuid = ''
+#     author = ''
+#     parent = ''
+#     h2 =template.top.find('div').find('h2')
+#     # only original models have length
 
-    if 'ours' in model:
-        h2.text = model['name']
-    else:
-        h2.text = model['_id'][0:-3]
-        strong = etree.Element('strong')
-        strong.text = model['_id'][-3:]
-        h2.append(strong)
-        if 'name' in model:
-            span = etree.Element('span')
-            span.text = model['name']
-            h2.append(span)
-        _uuid = model.pop('_id')
-        author = model.pop('author')
-        if 'parent' in model:
-            parent = model.pop('parent')
+#     if 'ours' in model:
+#         h2.text = model['name']
+#     else:
+#         h2.text = model['_id'][0:-3]
+#         strong = etree.Element('strong')
+#         strong.text = model['_id'][-3:]
+#         h2.append(strong)
+#         if 'name' in model:
+#             span = etree.Element('span')
+#             span.text = model['name']
+#             h2.append(span)
+#         _uuid = model.pop('_id')
+#         author = model.pop('author')
+#         if 'parent' in model:
+#             parent = model.pop('parent')
 
-    if 'description' in model:
-        # try:
-            d = template.top.find('div').find('div')
-            d.text = ''
-            for el in html.fragments_fromstring(model['description']):
-                d.append(el)
-        # except:
-        #     pass
-    original_viewlet = template.root().find('componentviewlet')
-    choices = globals()['gChoices']
+#     if 'description' in model:
+#         # try:
+#             d = template.top.find('div').find('div')
+#             d.text = ''
+#             for el in html.fragments_fromstring(model['description']):
+#                 d.append(el)
+#         # except:
+#         #     pass
+#     original_viewlet = template.root().find('componentviewlet')
+#     choices = globals()['gChoices']
 
-    model_json = {}
-    total = 0
-    components_json = {}
-    viewlets = []
-    counted = {}
+#     model_json = {}
+#     total = 0
+#     components_json = {}
+#     viewlets = []
+#     counted = {}
 
-    def makeOption(row, price):
-        # try:
-            option = etree.Element('option')
-            if 'font' in row['doc']['text']:
-                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-                row['doc'].update({'featured':True})
-            option.text = row['doc']['text']
+#     def makeOption(row, price):
+#         # try:
+#             option = etree.Element('option')
+#             if 'font' in row['doc']['text']:
+#                 row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
+#                 row['doc'].update({'featured':True})
+#             option.text = row['doc']['text']
 
-            option.text +=u' ' + unicode(price) + u' р'
+#             option.text +=u' ' + unicode(price) + u' р'
 
-            option.set('value',row['id'])
-            return option
-        # except:
-        #     print row
-    def appendOptions(options, container):
-        for o in sorted(options, lambda x,y: x[1]-y[1]):
-            container.append(o[0])
-
-
-    def noComponent(name, component_doc, rows):
-        #hack!
-        if 'catalogs' in component_doc:
-            pass
-        else:
-            try:
-                component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
-            except:
-                pass
-        if globals()['no_component_added']:return
-        if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
-        no_doc = noComponentFactory(component_doc, name)
-        rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
-
-    def addComponent(_options, _row, current_id):
-        _price= makePrice(_row['doc'])
-        _option = makeOption(_row, _price)
-        _options.append((_option, _price))
-        if _row['id'] == current_id:
-            _option.set('selected','selected')
-        _cleaned_doc = cleanDoc(_row['doc'], _price)
-        _id = _cleaned_doc['_id']
-        if _id in counted:
-            _cleaned_doc.update({'count':counted[_id]})
-        components_json.update({_id:_cleaned_doc})
+#             option.set('value',row['id'])
+#             return option
+#         # except:
+#         #     print row
+#     def appendOptions(options, container):
+#         for o in sorted(options, lambda x,y: x[1]-y[1]):
+#             container.append(o[0])
 
 
-    def fillViewlet(_name, _doc):
-        tr = viewlet.find("tr")
-        tr.set('id',_name)
-        body = viewlet.xpath("//td[@class='body']")[0]
-        body.set('id',_doc['_id'])
-        body.text = re.sub('<font.*</font>', '',_doc['text'])
+#     def noComponent(name, component_doc, rows):
+#         #hack!
+#         if 'catalogs' in component_doc:
+#             pass
+#         else:
+#             try:
+#                 component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+#             except:
+#                 pass
+#         if globals()['no_component_added']:return
+#         if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
+#         no_doc = noComponentFactory(component_doc, name)
+#         rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
-        descr = etree.Element('div')
-        descr.set('class','description')
-        descr.text = ''
-
-        manu = etree.Element('div')
-        manu.set('class','manu')
-        manu.text = ''
-
-        # our = etree.Element('div')
-        # our.set('class','our')
-        # our.text = u'нет рекоммендаций'
-
-        clear = etree.Element('div')
-        clear.set('style','clear:both;')
-        clear.text = ''
-        descr.append(manu);
-        # descr.append(our)
-        descr.append(clear)
-        return descr
-
-
-    for name,code in model['items'].items():
-        component_doc = None
-        count = 1
-        if code is None:
-            component_doc = noComponentFactory({}, name)
-        else:
-
-            if type(code) is list:
-                count = len(code)
-                code = code[0]
-                counted.update({code:count})
-
-            component_doc = findComponent(model,name)
-
-        if _uuid == '' and 'replaced' in component_doc:
-            # no need 'replaced' alert' in original models
-            component_doc.pop('replaced')
-
-        viewlet = deepcopy(original_viewlet)
-        descr = fillViewlet(name, component_doc)
-
-        price = makePrice(component_doc)
-
-        total += price
-        # print component_doc
-        cleaned_doc = cleanDoc(component_doc, price)
-        cleaned_doc['count'] = count
-
-        model_json.update({cleaned_doc['_id']:cleaned_doc})
-        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
-
-        ch = choices[name]
-        options = []
-        if type(ch) is list:
-            noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
-            for el in ch:
-                if el[0]:
-                    option_group = etree.Element('optgroup')
-                    option_group.set('label', el[1][0])
-                    _options = []
-                    for r in el[1][1]['rows']:
-                        addComponent(_options, r, cleaned_doc['_id'])
-                    appendOptions(_options, option_group)
-                    options.append((option_group, 0))
-        else:
-            noComponent(name, cleaned_doc, ch['rows'])
-            for row in ch['rows']:
-                addComponent(options, row, cleaned_doc['_id'])
-
-        select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
-        appendOptions(options, select)
-        viewlets.append((parts[name],viewlet,descr))
+#     def addComponent(_options, _row, current_id):
+#         _price= makePrice(_row['doc'])
+#         _option = makeOption(_row, _price)
+#         _options.append((_option, _price))
+#         if _row['id'] == current_id:
+#             _option.set('selected','selected')
+#         _cleaned_doc = cleanDoc(_row['doc'], _price)
+#         _id = _cleaned_doc['_id']
+#         if _id in counted:
+#             _cleaned_doc.update({'count':counted[_id]})
+#         components_json.update({_id:_cleaned_doc})
 
 
-    components_container = template.middle.xpath('//table[@id="components"]')[0]
-    description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
+#     def fillViewlet(_name, _doc):
+#         tr = viewlet.find("tr")
+#         tr.set('id',_name)
+#         body = viewlet.xpath("//td[@class='body']")[0]
+#         body.set('id',_doc['_id'])
+#         body.text = re.sub('<font.*</font>', '',_doc['text'])
 
-    globals()['no_component_added'] = True
+#         descr = etree.Element('div')
+#         descr.set('class','description')
+#         descr.text = ''
 
-    for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-        components_container.append(viewlet[1].find('tr'))
-        description_container.append(viewlet[2])
-    processing = False
-    if 'processing' in model and model['processing']:
-        processing = True
+#         manu = etree.Element('div')
+#         manu.set('class','manu')
+#         manu.text = ''
 
-    template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-                                                    ';var processing=',simplejson.dumps(processing),
-                                                    ';var uuid=',simplejson.dumps(_uuid),
-                                                    ';var author=',simplejson.dumps(author),
-                                                    ';var parent=',simplejson.dumps(parent),
-                                                    ';var total=',unicode(total),
-                                                    ';var choices=',simplejson.dumps(components_json),
-                                                    ';var parts_names=',simplejson.dumps(parts_names),
-                                                    ';var mother_to_proc_mapping=',
-                                                    simplejson.dumps(mother_to_proc_mapping),
-                                                    ';var proc_to_mother_mapping=',
-                                                    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
-                                                    ';var installprice=',str(INSTALLING_PRICE),
-                                                    ';var buildprice=',str(BUILD_PRICE),
-                                                    ';var dvdprice=',str(DVD_PRICE),
+#         # our = etree.Element('div')
+#         # our.set('class','our')
+#         # our.text = u'нет рекоммендаций'
 
-                                                    ';var idvd=',simplejson.dumps(model['dvd']),
-                                                    ';var ibuilding=',simplejson.dumps(model['building']),
-                                                    ';var iinstalling=',simplejson.dumps(model['installing']),
-                                                    ';var Course=',str(Course),
-                                                    ';var parts=',simplejson.dumps(parts_aliases)
-                                                    ))
-    title = skin.root().xpath('//title')[0]
-    title.text = u' Изменение конфигурации компьютера '+h2.text
-    skin.top = template.top
-    skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
-    return skin.render()
+#         clear = etree.Element('div')
+#         clear.set('style','clear:both;')
+#         clear.text = ''
+#         descr.append(manu);
+#         # descr.append(our)
+#         descr.append(clear)
+#         return descr
+
+
+#     for name,code in model['items'].items():
+#         component_doc = None
+#         count = 1
+#         if code is None:
+#             component_doc = noComponentFactory({}, name)
+#         else:
+
+#             if type(code) is list:
+#                 count = len(code)
+#                 code = code[0]
+#                 counted.update({code:count})
+
+#             component_doc = findComponent(model,name)
+
+#         if _uuid == '' and 'replaced' in component_doc:
+#             # no need 'replaced' alert' in original models
+#             component_doc.pop('replaced')
+
+#         viewlet = deepcopy(original_viewlet)
+#         descr = fillViewlet(name, component_doc)
+
+#         price = makePrice(component_doc)
+
+#         total += price
+#         # print component_doc
+#         cleaned_doc = cleanDoc(component_doc, price)
+#         cleaned_doc['count'] = count
+
+#         model_json.update({cleaned_doc['_id']:cleaned_doc})
+#         viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
+
+#         ch = choices[name]
+#         options = []
+#         if type(ch) is list:
+#             noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
+#             for el in ch:
+#                 if el[0]:
+#                     option_group = etree.Element('optgroup')
+#                     option_group.set('label', el[1][0])
+#                     _options = []
+#                     for r in el[1][1]['rows']:
+#                         addComponent(_options, r, cleaned_doc['_id'])
+#                     appendOptions(_options, option_group)
+#                     options.append((option_group, 0))
+#         else:
+#             noComponent(name, cleaned_doc, ch['rows'])
+#             for row in ch['rows']:
+#                 addComponent(options, row, cleaned_doc['_id'])
+
+#         select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
+#         appendOptions(options, select)
+#         viewlets.append((parts[name],viewlet,descr))
+
+
+#     components_container = template.middle.xpath('//table[@id="components"]')[0]
+#     description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
+
+#     globals()['no_component_added'] = True
+
+#     for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
+#         components_container.append(viewlet[1].find('tr'))
+#         description_container.append(viewlet[2])
+#     processing = False
+#     if 'processing' in model and model['processing']:
+#         processing = True
+
+#     template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
+#                                                     ';var processing=',simplejson.dumps(processing),
+#                                                     ';var uuid=',simplejson.dumps(_uuid),
+#                                                     ';var author=',simplejson.dumps(author),
+#                                                     ';var parent=',simplejson.dumps(parent),
+#                                                     ';var total=',unicode(total),
+#                                                     ';var choices=',simplejson.dumps(components_json),
+#                                                     ';var parts_names=',simplejson.dumps(parts_names),
+#                                                     ';var mother_to_proc_mapping=',
+#                                                     simplejson.dumps(mother_to_proc_mapping),
+#                                                     ';var proc_to_mother_mapping=',
+#                                                     simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
+#                                                     ';var installprice=',str(INSTALLING_PRICE),
+#                                                     ';var buildprice=',str(BUILD_PRICE),
+#                                                     ';var dvdprice=',str(DVD_PRICE),
+
+#                                                     ';var idvd=',simplejson.dumps(model['dvd']),
+#                                                     ';var ibuilding=',simplejson.dumps(model['building']),
+#                                                     ';var iinstalling=',simplejson.dumps(model['installing']),
+#                                                     ';var Course=',str(Course),
+#                                                     ';var parts=',simplejson.dumps(parts_aliases)
+#                                                     ))
+#     title = skin.root().xpath('//title')[0]
+#     title.text = u' Изменение конфигурации компьютера '+h2.text
+#     skin.top = template.top
+#     skin.middle = template.middle
+#     skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
+#     skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
+#     return skin.render()
 
 
 from twisted.python import log
@@ -741,16 +741,16 @@ def fillNew(global_choices):
     return d
 
 
-@forceCond(noChoicesYet, fillChoices)
-def computer(template, skin, request):
-    splitted = request.path.split('/')
-    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    # hack! just show em ping!
-    if len(name) == 0:
-        name = 'ping'
-    d = couch.openDoc(name)
-    d.addCallback(renderComputer, template, skin)
-    return d
+# @forceCond(noChoicesYet, fillChoices)
+# def computer(template, skin, request):
+#     splitted = request.path.split('/')
+#     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+#     # hack! just show em ping!
+#     if len(name) == 0:
+#         name = 'ping'
+#     d = couch.openDoc(name)
+#     d.addCallback(renderComputer, template, skin)
+#     return d
 
 
 
