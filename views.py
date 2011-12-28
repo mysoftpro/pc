@@ -10,19 +10,17 @@ from urllib import unquote_plus, quote_plus
 
 
 class ModelInCart(object):
-    def __init__(self, request, model, tree, icon, container, author):
+    def __init__(self, request, model, tree, container, author):
         self.author = author
         self.tree = tree
         self.model_snippet = deepcopy(self.tree.find('model'))
         self.request = request
         self.model = model
-        self.icon = icon
+        self.icon = deepcopy(self.tree.find('model_icon').find('a'))
         self.container = container
-        self.components = []
         divs = self.model_snippet.findall('div')
         self.model_div = divs[0]
         self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
 
 
     def getCaseIcon(self):
@@ -104,19 +102,8 @@ class ModelInCart(object):
         return li
 
 
-
-    def fillDescriptionDiv(self):
-        # description_div = divs[1]
-        ul = etree.Element('ul')
-        ul.set('class','description')
-
-        for c in self.model.getComponents():
-            ul.append(self.renderComponent(c))
-
-        self.description_div.append(ul)
-
-        h3 = self.description_div.find('h3')
-
+    def fillHeader(self, h3):
+        
         if self.model.name:
             span = etree.Element('span')
             span.set('class', 'customName')
@@ -146,8 +133,25 @@ class ModelInCart(object):
         a.set('href', '')
         h3.append(a)
 
+
+    def fillComponentsList(self):
+        ul = etree.Element('ul')
+        ul.set('class','description')
+
+        for c in self.model.getComponents():
+            ul.append(self.renderComponent(c))
+
+        self.description_div.append(ul)
+
+
+    def fillDescriptionDiv(self):        
+        self.fillComponentsList()
+
+        h3 = self.description_div.find('h3')
+        self.fillHeader(h3)
+
         self.description_div.set('class','cart_description')
-        
+
         if self.author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
             for el in extra:
@@ -256,12 +260,13 @@ class Cart(PCView):
         return self.template.middle.xpath('//div[@id="models"]')[0]
 
 
-    def renderModels(self, user):        
-        models_div = self.getModelsDiv()
-        icon = self.tree.find('model_icon').find('a')
+    def renderModels(self, user):
+        models_div = self.getModelsDiv()        
         for m in user.getUserModels():
-            view = ModelInCart(self.request, m, self.tree,                               
-                               deepcopy(icon),
+            print "yaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            print user.isValid(self.request)
+            print m.isAuthor(user)
+            view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
         cart_form = deepcopy(self.tree.find('cart_comment_form'))
@@ -282,37 +287,39 @@ class Cart(PCView):
         note_div = self.getNotesDiv()
         icon = self.tree.find('model_icon').find('a')
         for n in user.getUserNotebooks():
-            # note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
-            #                                 deepcopy(tree.find('model_icon').find('a')),
-            #                                 container)
             note_view = NotebookInCart(n,deepcopy(note_div),
                                             deepcopy(icon),
                                             models_div)
             note_view.render()
 
 
-
 class ModelOnModels(ModelInCart):
-    pass
+    def fillComponentsList(self):
+        ul = etree.Element('ul')
+        ul.set('class','description')
+        ul.set('style','display:none')
+        for c in self.model.getComponents():
+            ul.append(self.renderComponent(c))
+        self.description_div.append(ul)
 
-class Computers(PCView):
+    def fillHeader(self, h3):
+        h3.text = self.model.title
+        for el in html.fragments_fromstring(self.model.description):
+            self.description_div.append(el)
+
+class Computers(Cart):
 
     def renderComputers(self, res):
-        json_prices = {}
         models_div = self.getModelsDiv()
-        icon = self.tree.find('model_icon').find('a')
         for row in res['rows']:
             if row['doc'] is None:
                 continue
             model = Model(row['doc'])
             view = ModelOnModels(self.request, model, self.tree,
-                                 True,json_prices,
-                                 deepcopy(icon),
-                                 models_div, user)
+                                 models_div, False)
             view.render()
 
     def preRender(self):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
         d.addCallback(self.renderComputers)
-        
-
+        return d

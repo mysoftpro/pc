@@ -1687,6 +1687,10 @@ class Model(object):
                        sender=u'Компьютерный магазин <inbox@buildpc.ru>')
         return next_el
 
+    @property
+    def description(self):
+        return self.get('description', '')
+
     def preparePdf(self):
         self.model_doc['full_items'] = []
         for k,v in self:
