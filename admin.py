@@ -12,7 +12,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, computers,parts,\
+from pc.models import index, computer, parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion

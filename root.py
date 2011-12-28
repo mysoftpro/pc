@@ -12,7 +12,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, computers,parts,\
+from pc.models import index, computer, parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
@@ -100,7 +100,6 @@ def partPage(template, skin, request):
 static_hooks = {
     'index.html':index,
     'computer.html':computer,
-    # 'computers.html':computers,
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,
@@ -430,6 +429,14 @@ class Skin(Template):
 
 
 
+def checkCookie(self, f):
+    def check(request):        
+        user_cookie = request.getCookie('pc_user')
+        if  user_cookie is None:
+            addCookies(request, {'pc_user':base36.gen_id()})
+        f()
+    return check
+
 class CachedStatic(File):
 
     def __init__(self, *args, **kwargs):
@@ -440,8 +447,7 @@ class CachedStatic(File):
     def render(self, request):
         return self.render_GET(request)
 
-
-
+    @checkCookie
     def render_GET(self, request):
         self.restat(False)
 
@@ -553,7 +559,7 @@ class CachedStatic(File):
             d = static_hooks[short_name](template, self.skin, request)
         elif short_name in self.hooks:
             template = Template(fileForReading,short_name,last_modified)
-            han = self.hooks[short_name]            
+            han = self.hooks[short_name]
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
         else:
@@ -568,31 +574,46 @@ class CachedStatic(File):
         request.write(gzipped)
         request.finish()
 
-class Cookable(Resource):
-    def __init__(self):
-        self.cookies = []
-        Resource.__init__(self)
+# class Cookable(Resource):
+#     def __init__(self):
+#         self.cookies = []
+#         Resource.__init__(self)
 
-    def checkCookie(self, request):
-        user_cookie = request.getCookie('pc_user')
-        if  user_cookie is None:
-            addCookies(request, {'pc_user':base36.gen_id()})
+#     def checkCookie(self, request):
+#         user_cookie = request.getCookie('pc_user')
+#         if  user_cookie is None:
+#             addCookies(request, {'pc_user':base36.gen_id()})
 
 _comet_users = {}
 
-class Root(Cookable):
+
+
+class Root(Resource):
     def __init__(self, host_url, index_page):
-        Cookable.__init__(self)
+        Resource.__init__(self)
         self.static = CachedStatic(static_dir)
         self.static.indexNames = [index_page]
         self.putChild('static',self.static)
-        self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
-        self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
+        # self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
+        # self.putChild('cart', TemplateRenderrer(self.static, 'computers.html','computers.html'))
 
-        self.putChild('cart1', PCTemplateRenderrer(Cart, self.static, 'cart.html'))
-        self.putChild('computer1', PCTemplateRenderrer(Computers, self.static, 'computers.html', direct=True))
+        self.putChild('cart', 
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=None,
+                                                        childs=HandlerAndName(Cart,
+                                                                              'cart.html'))))
+        self.putChild('computer', 
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=HandlerAndName(Computers,
+                                                                            'computers.html'),
+                                                        childs=HandlerAndName(Cart,
+                                                                              'computer.html'))))
 
-        self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
+        # self.putChild('cart', PCTemplateRenderrer(Cart, self.static, 'cart.html'))
+        # self.putChild('computer', PCTemplateRenderrer(Computers, self.static, 'computers.html', direct=True))
+
+        # self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
+
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
         self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
@@ -660,7 +681,7 @@ class Root(Cookable):
         self.putChild('upgrade_set',TemplateRenderrer(self.static, 'upgrade_set.html'))
 
     def getChild(self, name, request):
-        self.checkCookie(request)
+        # self.checkCookie(request)
         u = str(request.URLPath())
         if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
             return self.static.getChild(name, request)
@@ -892,47 +913,51 @@ class HandlerAndName(object):
         self.handler = handler
         self.name = name
 
-        
 
-class PCTemplateRenderrer(Cookable):
-    def __init__(self, klass, static, name, direct=False):
-        Cookable.__init__(self)
+class RootAndChilds(object):
+    def __init__(self, root=None, childs=None):
+        """ root and childs are the HandlerAndName with the klass and template name"""
+        self.root = root
+        self.childs = childs
+
+
+class PCTemplateRenderrer(Resource):
+    def __init__(self, static, ral):
+        """ ral is the RootAndLeafs for /url and /url/some"""
+        Resource.__init__(self)
         self.static = static
-        self.name = name
-        self.klass = klass
-        self.direct = direct
+        self.root = ral.root
+        self.childs = ral.childs
 
+    @checkCookie
     def render_GET(self, request):
-        print "1"
-        if not self.direct:
-            return NoResource().render(request)        
-        child = self.static.getChild(self.name, request)
-        child.hooks.update({self.name:HandlerAndName(self.klass, None)})
+        if self.root is None:
+            return NoResource().render(request)
+        child = self.static.getChild(self.root.name, request)
+        child.hooks.update({self.root.name:HandlerAndName(self.root.handler, None)})
         return child.render(request)
 
     def getChild(self, name, request):
-        if self.direct:
-            return self
-        child = self.static.getChild(self.name, request)
-        child.hooks.update({self.name:HandlerAndName(self.klass, name)})
+        child = self.static.getChild(self.childs.name, request)
+        child.hooks.update({self.childs.name:HandlerAndName(self.childs.handler, name)})
         return child
 
-class TemplateRenderrer(Cookable):
+class TemplateRenderrer(Resource):
     def __init__(self, static, name, default_name=None, title=None):
-        Cookable.__init__(self)
+        Resource.__init__(self)
         self.static = static
         self.name = name
         self.default_name = default_name
 
     def render_GET(self, request):
-        self.checkCookie(request)
+        # self.checkCookie(request)
         return self.static.getChild(self.name, request).render_GET(request)
 
     def getChild(self, name, request):
-        self.checkCookie(request)
+        # self.checkCookie(request)
         child = None
         if self.default_name is None:
-            child = Cookable.getChild(self, self.name,request)
+            child = Resource.getChild(self, self.name,request)
         else:
             child = self.static.getChild(self.default_name, request)
         return child

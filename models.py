@@ -765,208 +765,208 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
-class ModelForModelsPage(object):
-    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
-        self.request = request
-        self.model = model
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
+# class ModelForModelsPage(object):
+#     def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
+#         self.user = user
+#         self.tree = tree
+#         self.model_snippet = deepcopy(self.tree.find('model'))
+#         self.request = request
+#         self.model = model
+#         self.this_is_cart = this_is_cart
+#         self.json_prices = json_prices
+#         self.icon = icon
+#         self.container = container
+#         self.components = []
+#         divs = self.model_snippet.findall('div')
+#         self.model_div = divs[0]
+#         self.description_div = divs[1]
+#         self.category = request.args.get('cat',[None])[0]
 
 
     
-    def fillComponents(self, price_span):
-        #here is the difference between orders and models!!!
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+#     def fillComponents(self, price_span):
+#         #here is the difference between orders and models!!!
+#         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
-    def fillModelDiv(self):
-        if 'processing' in self.model and self.model['processing']:
-            header = self.model_div.find('h2')
-            header.set('class', header.get('class')+ ' processing')
-        a = self.model_div.find('.//a')
-        if not 'promo' in self.model:
-            a.set('href','/computer/%s' % self.model['_id'])
-        else:
-            a.set('href','/promotion/%s' % self.model['parent'])
+#     def fillModelDiv(self):
+#         if 'processing' in self.model and self.model['processing']:
+#             header = self.model_div.find('h2')
+#             header.set('class', header.get('class')+ ' processing')
+#         a = self.model_div.find('.//a')
+#         if not 'promo' in self.model:
+#             a.set('href','/computer/%s' % self.model['_id'])
+#         else:
+#             a.set('href','/promotion/%s' % self.model['parent'])
 
-        if self.this_is_cart:
-            info = self.model_div.xpath('//div[@class="info"]')[0]
-            if 'checkModel' in self.model:
-                if not self.model['checkModel']:
-                    info.set('class', info.get('class')+ ' ask_info')
-                    info.set('title',u'Ожидает проверки специалистом')
-                else:
-                    info.set('class', info.get('class')+ ' confirm_info')
-                    info.set('title',u'Проверено!')
-            else:
-                info.set('class', info.get('class')+ ' empty_info')
-            # self.model_div.remove(info)
+#         if self.this_is_cart:
+#             info = self.model_div.xpath('//div[@class="info"]')[0]
+#             if 'checkModel' in self.model:
+#                 if not self.model['checkModel']:
+#                     info.set('class', info.get('class')+ ' ask_info')
+#                     info.set('title',u'Ожидает проверки специалистом')
+#                 else:
+#                     info.set('class', info.get('class')+ ' confirm_info')
+#                     info.set('title',u'Проверено!')
+#             else:
+#                 info.set('class', info.get('class')+ ' empty_info')
+#             # self.model_div.remove(info)
 
-        if 'name' in self.model and not self.this_is_cart:
-            a.text=self.model['name']
-        else:
-            a.text = self.model['_id'][:-3]
-            strong= etree.Element('strong')
-            strong.text = self.model['_id'][-3:]
-            a.append(strong)
-        price_span = self.model_div.find('.//span')
-        price_span.set('id',self.model['_id'])
-        #here is the difference between orders and models!!!
-        self.fillComponents(price_span)
-        case_found = [c for c in self.components if c.cat_name == case]
+#         if 'name' in self.model and not self.this_is_cart:
+#             a.text=self.model['name']
+#         else:
+#             a.text = self.model['_id'][:-3]
+#             strong= etree.Element('strong')
+#             strong.text = self.model['_id'][-3:]
+#             a.append(strong)
+#         price_span = self.model_div.find('.//span')
+#         price_span.set('id',self.model['_id'])
+#         #here is the difference between orders and models!!!
+#         self.fillComponents(price_span)
+#         case_found = [c for c in self.components if c.cat_name == case]
 
-        if len(case_found) >0:
-            if not 'promo' in self.model:
-                self.icon.set('href','/computer/'+self.model['_id'])
-            else:
-                self.icon.set('href','/promotion/'+self.model['parent'])
-                if 'our_price' in self.model:
-                    price_span.text = unicode(self.model['our_price'])+u' р.'
-                else:
-                    price_span.text = u'24900 р.'
-            self.icon.find('img').set('src',case_found[0].getIconUrl())
-            self.model_div.insert(0,self.icon)
+#         if len(case_found) >0:
+#             if not 'promo' in self.model:
+#                 self.icon.set('href','/computer/'+self.model['_id'])
+#             else:
+#                 self.icon.set('href','/promotion/'+self.model['parent'])
+#                 if 'our_price' in self.model:
+#                     price_span.text = unicode(self.model['our_price'])+u' р.'
+#                 else:
+#                     price_span.text = u'24900 р.'
+#             self.icon.find('img').set('src',case_found[0].getIconUrl())
+#             self.model_div.insert(0,self.icon)
 
-        self.container.append(self.model_div)
+#         self.container.append(self.model_div)
 
-    def fillDescriptionDiv(self):
-        # description_div = divs[1]
-        ul = etree.Element('ul')
-        ul.set('class','description')
-        for cfm in self.components:
-            ul.append(cfm.render())
-        self.description_div.append(ul)
+#     def fillDescriptionDiv(self):
+#         # description_div = divs[1]
+#         ul = etree.Element('ul')
+#         ul.set('class','description')
+#         for cfm in self.components:
+#             ul.append(cfm.render())
+#         self.description_div.append(ul)
 
-        h3 = self.description_div.find('h3')
-        if not self.this_is_cart:
-            h3.text = self.model['title']
-            for el in html.fragments_fromstring(self.model['description']):
-                self.description_div.append(el)
-            ul.set('style','display:none')
-        else:
-            if 'name' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = self.model['name']
-                h3.append(span)
+#         h3 = self.description_div.find('h3')
+#         if not self.this_is_cart:
+#             h3.text = self.model['title']
+#             for el in html.fragments_fromstring(self.model['description']):
+#                 self.description_div.append(el)
+#             ul.set('style','display:none')
+#         else:
+#             if 'name' in self.model:
+#                 span = etree.Element('span')
+#                 span.set('class', 'customName')
+#                 span.text = self.model['name']
+#                 h3.append(span)
 
-            if 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customTitle')
-                span.text = self.model['title']
-                h3.append(span)
+#             if 'title' in self.model:
+#                 span = etree.Element('span')
+#                 span.set('class', 'customTitle')
+#                 span.text = self.model['title']
+#                 h3.append(span)
 
-            if not 'name' in self.model and not 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = u'Пользовательская конфигурация'
-                h3.append(span)
+#             if not 'name' in self.model and not 'title' in self.model:
+#                 span = etree.Element('span')
+#                 span.set('class', 'customName')
+#                 span.text = u'Пользовательская конфигурация'
+#                 h3.append(span)
 
-            _date = self.model['date']
-            _date.reverse()
-            span = etree.Element('span')
-            span.text = ('.').join(_date)
-            h3.append(span)
+#             _date = self.model['date']
+#             _date.reverse()
+#             span = etree.Element('span')
+#             span.text = ('.').join(_date)
+#             h3.append(span)
 
-            a = etree.Element('a')
-            a.text = u'переименовать'
-            a.set('href', '')
-            h3.append(a)
+#             a = etree.Element('a')
+#             a.text = u'переименовать'
+#             a.set('href', '')
+#             h3.append(a)
 
-            self.description_div.set('class','cart_description')
+#             self.description_div.set('class','cart_description')
 
-            this_user_is_author = self.user is not None and\
-                self.model['author'] == self.user['_id'] and\
-                self.request.getCookie('pc_key') == self.user['pc_key']
+#             this_user_is_author = self.user is not None and\
+#                 self.model['author'] == self.user['_id'] and\
+#                 self.request.getCookie('pc_key') == self.user['pc_key']
 
-            if this_user_is_author and not 'processing' in self.model:
-                extra = deepcopy(self.tree.find('cart_extra'))
-                for el in extra:
-                    if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
-                        el.set('href', '/bill.pdf?id='+self.model['_id'])
-                    self.description_div.append(el)
+#             if this_user_is_author and not 'processing' in self.model:
+#                 extra = deepcopy(self.tree.find('cart_extra'))
+#                 for el in extra:
+#                     if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+#                         el.set('href', '/bill.pdf?id='+self.model['_id'])
+#                     self.description_div.append(el)
 
-            if 'comments' in self.model:
-                last_index = len(self.model['comments'])-1
-                i=0
-                for comment in self.model['comments']:
-                    comments = deepcopy(self.tree.find('cart_comment'))
-                    if not this_user_is_author and i==0:
-                        comments.find('div').set('style', 'margin-top:40px')
-                    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-                    comment['date'].reverse()
-                    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
-                    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
-                    links = comments.xpath('//div[@class="faqlinks"]')[0]
-                    if i!=last_index:
-                        links.remove(links.find('a'))
-                    i+=1
-                    self.description_div.append(comments.find('div'))
-        self.container.append(self.description_div)
-
-
-    def render(self):
-        self.fillModelDiv()
-        self.fillDescriptionDiv()
-        if not self.this_is_cart:
-            self.model_div.set('id','m'+self.model['_id'])
-            if self.category in model_categories:
-                if self.model['_id'] in model_categories[self.category]:
-                    div = etree.Element('div')
-                    div.set('id', 'desc_'+self.model_div.get('id'))
-                    div.set('class', 'full_desc')
-                    if 'modeldesc' in self.model:
-                        div.text = self.model['modeldesc']
-                    self.container.append(div)
-                    self.description_div.set('style','height:220px')
-                else:
-                    self.model_div.set('style',"height:0;overflow:hidden")
-                    self.description_div.set('style',"height:0;overflow:hidden")
+#             if 'comments' in self.model:
+#                 last_index = len(self.model['comments'])-1
+#                 i=0
+#                 for comment in self.model['comments']:
+#                     comments = deepcopy(self.tree.find('cart_comment'))
+#                     if not this_user_is_author and i==0:
+#                         comments.find('div').set('style', 'margin-top:40px')
+#                     comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
+#                     comment['date'].reverse()
+#                     comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
+#                     comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
+#                     links = comments.xpath('//div[@class="faqlinks"]')[0]
+#                     if i!=last_index:
+#                         links.remove(links.find('a'))
+#                     i+=1
+#                     self.description_div.append(comments.find('div'))
+#         self.container.append(self.description_div)
 
 
-class OrderForModelsPage(ModelForModelsPage):
-
-    def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
-        self.request = request
-        self.order = order
-        self.model = self.order['model']
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
-
-    def fillComponents(self, price_span):
-        #hack. see find component
-        self.model['this_order'] = self.order
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
+#     def render(self):
+#         self.fillModelDiv()
+#         self.fillDescriptionDiv()
+#         if not self.this_is_cart:
+#             self.model_div.set('id','m'+self.model['_id'])
+#             if self.category in model_categories:
+#                 if self.model['_id'] in model_categories[self.category]:
+#                     div = etree.Element('div')
+#                     div.set('id', 'desc_'+self.model_div.get('id'))
+#                     div.set('class', 'full_desc')
+#                     if 'modeldesc' in self.model:
+#                         div.text = self.model['modeldesc']
+#                     self.container.append(div)
+#                     self.description_div.set('style','height:220px')
+#                 else:
+#                     self.model_div.set('style',"height:0;overflow:hidden")
+#                     self.description_div.set('style',"height:0;overflow:hidden")
 
 
-def fixDeletedCart(err, request, name):
-    if request.getCookie('pc_user') == name:
-        addCookies(request, {'pc_user':'','pc_key':'','pc_cart':''})
-    request.redirect('http://buildpc.ru')
-    return []
+# class OrderForModelsPage(ModelForModelsPage):
+
+#     def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
+#         self.user = user
+#         self.tree = tree
+#         self.model_snippet = deepcopy(self.tree.find('model'))
+#         self.request = request
+#         self.order = order
+#         self.model = self.order['model']
+#         self.this_is_cart = this_is_cart
+#         self.json_prices = json_prices
+#         self.icon = icon
+#         self.container = container
+#         self.components = []
+#         divs = self.model_snippet.findall('div')
+#         self.model_div = divs[0]
+#         self.description_div = divs[1]
+#         self.category = request.args.get('cat',[None])[0]
+
+#     def fillComponents(self, price_span):
+#         #hack. see find component
+#         self.model['this_order'] = self.order
+#         self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
 
 
-def redirectDeletedCart(err):
-    return []
+# def fixDeletedCart(err, request, name):
+#     if request.getCookie('pc_user') == name:
+#         addCookies(request, {'pc_user':'','pc_key':'','pc_cart':''})
+#     request.redirect('http://buildpc.ru')
+#     return []
+
+
+# def redirectDeletedCart(err):
+#     return []
 
 # class NoteBookForCartPage(object):
 #     def __init__(self,notebook, note, key, icon, container):
@@ -1919,191 +1919,184 @@ class Notebook(Component):
 
 
 
+# @forceCond(noChoicesYet, fillChoices)
+# def computers(template,skin,request):
+#     splitted = request.path.split('/')
+#     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+#     # cart is only /cart/12345. for /cart and for /computer - all models are shown
+#     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
 
+#     def render(result):
+#         models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
+#         #fix cookies here!
+#         total = 0
+#         if not this_is_cart:
+#             models = sorted(models,lambda x,y: x['order']-y['order'])
+#             models.reverse()
+#         else:
+#             def sort(m1,m2):
+#                 if u''.join(m1['date'])>u''.join(m2['date']):
+#                     return -1
+#                 return 1
+#             models = sorted(models,sort)
+#             template.middle.remove(template.middle.find('div'))
 
+#         tree = template.root()
+#         container = template.middle.xpath('//div[@id="models"]')[0]
 
+#         json_prices = {}
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         user_doc = result['user_doc'] if 'user_doc' in result  else None
+#         for m in models:
+#             if m['_id'].startswith('order'):
+#                 view = OrderForModelsPage(request, m, tree,
+#                                           this_is_cart,json_prices,
+#                                           deepcopy(tree.find('model_icon').find('a')),
+#                                           container, user_doc)
+#             else:
+#                 view = ModelForModelsPage(request, m, tree,
+#                                       this_is_cart,json_prices,
+#                                       deepcopy(tree.find('model_icon').find('a')),
+#                                       container, user_doc)
+#             view.render()
+#             total +=1
+#         if this_is_cart:
+#             # comments here and in ModelForModelsPage description_div
+#             cart_form = deepcopy(tree.find('cart_comment_form'))
+#             container.append(cart_form.find('div'))
 
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         if 'notebooks' in result and 'user_doc' in result:
+#             total_notes = []
+#             need_cleanup = False
+#             note_div = template.root().find('notebook').find('div')
+#             clear_div = etree.Element('div')
+#             clear_div.set('style','clear:both')
+#             container.append(clear_div)
+#             for n in result['notebooks']['rows']:
+#                 if not 'doc' in n:
+#                     need_cleanup = True
+#                     continue
+#                 if n['doc'] is None:
+#                     need_cleanup = True
+#                     continue
+#                 keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
+#                 if len(keys) == 0:
+#                     need_cleanup = True
+#                     continue
+#                 key = keys[0][0]
+#                 note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+#                                                 deepcopy(tree.find('model_icon').find('a')),
+#                                                 container)
+#                 note_view.render()
+#                 total_notes.append(n['doc']['_id'])
 
+#             # clean only for the owner of the cart!
+#             if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
+#                 # some notes, possible will be deleted from store!
+#                 to_clean = []
+#                 for k,v in result['user_doc']['notebooks'].items():
+#                     if v not in total_notes:
+#                         to_clean.append(k)
+#                 for k in to_clean:
 
+#                     result['user_doc']['notebooks'].pop(k)
+#                 # update user_doc
+#                 couch.saveDoc(result['user_doc'])
 
-@forceCond(noChoicesYet, fillChoices)
-def computers(template,skin,request):
-    splitted = request.path.split('/')
-    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    # cart is only /cart/12345. for /cart and for /computer - all models are shown
-    this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
+#         # TODO! this_is_cart means have user doc
+#         # why one more variable?
+#         # refresh in_cart coookie, because it is possible now
+#         # to add to the same cart from other browsers
+#         if this_is_cart:
+#             in_cart = len(user_doc['models'])
+#             if 'notebooks' in user_doc:
+#                 in_cart += len(user_doc['notebooks'])
+#             addCookies(request, {'pc_cart':in_cart})
 
-    def render(result):
-        models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
-        #fix cookies here!
-        total = 0
-        if not this_is_cart:
-            models = sorted(models,lambda x,y: x['order']-y['order'])
-            models.reverse()
-        else:
-            def sort(m1,m2):
-                if u''.join(m1['date'])>u''.join(m2['date']):
-                    return -1
-                return 1
-            models = sorted(models,sort)
-            template.middle.remove(template.middle.find('div'))
+#         _prices = 'undefined'
 
-        tree = template.root()
-        container = template.middle.xpath('//div[@id="models"]')[0]
+#         if this_is_cart:
+#             cart = deepcopy(template.root().find('top_cart'))
+#             cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+#             cart_divs = cart.findall('div')
+#             for d in cart_divs:
+#                 template.top.append(d)
+#         else:
+#             _prices =simplejson.dumps(json_prices) + ';'
+#             header = deepcopy(template.root().find('top_models'))
+#             header_divs = header.findall('div')
+#             for d in header_divs:
+#                 template.top.append(d)
 
-        json_prices = {}
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        user_doc = result['user_doc'] if 'user_doc' in result  else None
-        for m in models:
-            if m['_id'].startswith('order'):
-                view = OrderForModelsPage(request, m, tree,
-                                          this_is_cart,json_prices,
-                                          deepcopy(tree.find('model_icon').find('a')),
-                                          container, user_doc)
-            else:
-                view = ModelForModelsPage(request, m, tree,
-                                      this_is_cart,json_prices,
-                                      deepcopy(tree.find('model_icon').find('a')),
-                                      container, user_doc)
-            view.render()
-            total +=1
-        if this_is_cart:
-            # comments here and in ModelForModelsPage description_div
-            cart_form = deepcopy(tree.find('cart_comment_form'))
-            container.append(cart_form.find('div'))
+#         template.middle.find('script').text = 'var prices=' + _prices;
 
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        if 'notebooks' in result and 'user_doc' in result:
-            total_notes = []
-            need_cleanup = False
-            note_div = template.root().find('notebook').find('div')
-            clear_div = etree.Element('div')
-            clear_div.set('style','clear:both')
-            container.append(clear_div)
-            for n in result['notebooks']['rows']:
-                if not 'doc' in n:
-                    need_cleanup = True
-                    continue
-                if n['doc'] is None:
-                    need_cleanup = True
-                    continue
-                keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
-                if len(keys) == 0:
-                    need_cleanup = True
-                    continue
-                key = keys[0][0]
-                note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
-                                                deepcopy(tree.find('model_icon').find('a')),
-                                                container)
-                note_view.render()
-                total_notes.append(n['doc']['_id'])
+#         category = request.args.get('cat',[None])[0]
 
-            # clean only for the owner of the cart!
-            if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
-                # some notes, possible will be deleted from store!
-                to_clean = []
-                for k,v in result['user_doc']['notebooks'].items():
-                    if v not in total_notes:
-                        to_clean.append(k)
-                for k in to_clean:
+#         if category is not None and category in model_categories_titles:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = model_categories_titles[category]
+#         else:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = u'Готовые модели компьютеров'
 
-                    result['user_doc']['notebooks'].pop(k)
-                # update user_doc
-                couch.saveDoc(result['user_doc'])
+#         skin.top = template.top
+#         skin.middle = template.middle
+#         return skin.render()
 
-        # TODO! this_is_cart means have user doc
-        # why one more variable?
-        # refresh in_cart coookie, because it is possible now
-        # to add to the same cart from other browsers
-        if this_is_cart:
-            in_cart = len(user_doc['models'])
-            if 'notebooks' in user_doc:
-                in_cart += len(user_doc['notebooks'])
-            addCookies(request, {'pc_cart':in_cart})
+#     # RENDER MODELS HERE!!!
+#     if not this_is_cart:
+#         d = couch.openView(designID,'models',include_docs=True,stale=False)
+#         d.addCallback(render)
+#     # RENDER cart here!!!!
+#     else:
+#         d = couch.openDoc(name)
+#         def addOrders(orders,models):
+#             models_rows = [row for row in models['rows'] \
+#                           if len([o_row for o_row in orders['rows'] \
+#                                       if o_row['id'].replace('order_','') == row['id']])==0]
+#             for o in orders['rows']:
+#                 models_rows.insert(0,o)
+#             models['rows'] = models_rows
+#             return models
 
-        _prices = 'undefined'
+#         def addUser(models, user_doc):
+#             models['user_doc'] = user_doc
+#             orders = []
+#             for row in models['rows']:
+#                 if 'doc' in row and row['doc'] is not None and \
+#                         'processing' in row['doc'] and row['doc']['processing']:
+#                     orders.append(row['doc']['_id'])
 
-        if this_is_cart:
-            cart = deepcopy(template.root().find('top_cart'))
-            cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
-            cart_divs = cart.findall('div')
-            for d in cart_divs:
-                template.top.append(d)
-        else:
-            _prices =simplejson.dumps(json_prices) + ';'
-            header = deepcopy(template.root().find('top_models'))
-            header_divs = header.findall('div')
-            for d in header_divs:
-                template.top.append(d)
+#             if len(orders)>0:
+#                 d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
+#                 d.addCallback(addOrders, models)
+#                 return d
+#             else:
+#                 return models
 
-        template.middle.find('script').text = 'var prices=' + _prices;
-
-        category = request.args.get('cat',[None])[0]
-
-        if category is not None and category in model_categories_titles:
-            title = skin.root().xpath('//title')[0]
-            title.text = model_categories_titles[category]
-        else:
-            title = skin.root().xpath('//title')[0]
-            title.text = u'Готовые модели компьютеров'
-
-        skin.top = template.top
-        skin.middle = template.middle
-        return skin.render()
-
-    # RENDER MODELS HERE!!!
-    if not this_is_cart:
-        d = couch.openView(designID,'models',include_docs=True,stale=False)
-        d.addCallback(render)
-    # RENDER cart here!!!!
-    else:
-        d = couch.openDoc(name)
-        def addOrders(orders,models):
-            models_rows = [row for row in models['rows'] \
-                          if len([o_row for o_row in orders['rows'] \
-                                      if o_row['id'].replace('order_','') == row['id']])==0]
-            for o in orders['rows']:
-                models_rows.insert(0,o)
-            models['rows'] = models_rows
-            return models
-
-        def addUser(models, user_doc):
-            models['user_doc'] = user_doc
-            orders = []
-            for row in models['rows']:
-                if 'doc' in row and row['doc'] is not None and \
-                        'processing' in row['doc'] and row['doc']['processing']:
-                    orders.append(row['doc']['_id'])
-
-            if len(orders)>0:
-                d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
-                d.addCallback(addOrders, models)
-                return d
-            else:
-                return models
-
-        def glueModelsAndNotes(li, _user):
-            models = li[0][1]
-            notebooks = li[1][1]
-            models['notebooks'] = notebooks
-            return models
-        def getModelsAndNotes(user_doc):
-            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
-            models.addCallback(addUser, user_doc)
-            if not 'notebooks' in user_doc:
-                return models
-            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-            d = defer.DeferredList((models, notes))
-            d.addCallback(glueModelsAndNotes, user_doc)
-            d.addErrback(lambda some: models)
-            return d
-        d.addCallback(getModelsAndNotes)
-        # if this_is_cart:
-        #     d.addErrback(fixDeletedCart, request, name)
-        d.addCallback(render)
-        # if this_is_cart:
-        #     d.addErrback(redirectDeletedCart)
-    return d
+#         def glueModelsAndNotes(li, _user):
+#             models = li[0][1]
+#             notebooks = li[1][1]
+#             models['notebooks'] = notebooks
+#             return models
+#         def getModelsAndNotes(user_doc):
+#             models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+#             models.addCallback(addUser, user_doc)
+#             if not 'notebooks' in user_doc:
+#                 return models
+#             notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+#             d = defer.DeferredList((models, notes))
+#             d.addCallback(glueModelsAndNotes, user_doc)
+#             d.addErrback(lambda some: models)
+#             return d
+#         d.addCallback(getModelsAndNotes)
+#         # if this_is_cart:
+#         #     d.addErrback(fixDeletedCart, request, name)
+#         d.addCallback(render)
+#         # if this_is_cart:
+#         #     d.addErrback(redirectDeletedCart)
+#     return d
 
 
 class Comment(object):
