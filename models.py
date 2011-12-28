@@ -1494,9 +1494,6 @@ class Model(object):
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
 
-    @property
-    def isOrder(self):
-        return self.get('_id').startswith('order')
 
     def isProcessing(self):
         return self.get('processing', False)
@@ -1537,12 +1534,9 @@ class Model(object):
         return self.get('our_price', False)
 
     def __iter__(self):
-        if self.isOrder:
-            for k,v in self.model_doc['model']['items'].items():
-                yield k,v
-        else:
-            for k,v in self.model_doc['items'].items():
-                yield k,v
+        for k,v in self.model_doc['items'].items():
+            yield k,v
+
 
     def getCode(self, cat_name):
         retval = None
@@ -1595,6 +1589,12 @@ class Model(object):
 
     def __init__(self, model_doc):
         self.model_doc = model_doc
+        self.isOrder = False
+        self.orderComponents = []
+        if self.get('_id').startswith('order'):
+            self.orderComponents = self.model_doc['components']
+            self.model_doc = model_doc['model']
+            self.isOrder = True
         self.components = []##ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart)
         self.cat_prices = {}#json prices but without self._id   json_prices[model._id]['total'] = total
         self.component_prices = {}
@@ -1609,10 +1609,6 @@ class Model(object):
     def getComponentPrice(self, component_doc):
         return self.component_prices[component_doc._id]
 
-    @property
-    def orderComponents(self):
-        """ model doc here is Order. Not the model!!!"""
-        return self.model_doc['components']
 
     @property
     def original_prices(self):
@@ -1741,13 +1737,17 @@ class Model(object):
             self.components.append(Component(component_doc, cat_name))
             if cat_name == case:
                 self.case = Component(component_doc, case)
+        print self._id
         if self.installing:
+            print "self.installing:"
             self.total += INSTALLING_PRICE
         if self.building:
-             self.total += BUILD_PRICE
+            print "self.building"
+            self.total += BUILD_PRICE
         if self.dvd:
+            print "self.dvd"
             self.total += DVD_PRICE
-        # return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
+        print self.total
 
 
 class Component(object):
@@ -1800,7 +1800,7 @@ def userFactory(name):
                 uid = _id
                 if orders:
                     uid = 'order_'+uid
-                d = couch.openDoc(uid)                
+                d = couch.openDoc(uid)
                 if orders:
                     d.addErrback(fail)
                 defs.append(d)
@@ -1853,7 +1853,7 @@ class User(object):
         return 1
 
     def getUserModels(self):
-        for m in sorted(self.models, self.modelsSort):            
+        for m in sorted(self.models, self.modelsSort):
             yield Model(m)
 
 
