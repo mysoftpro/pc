@@ -1013,6 +1013,8 @@ class NoteBookForCartPage(object):
         self.container.append(self.note)
 
 
+promo_components = [{u"_id": u"18225",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7383",u"name": u"Корпусы"},{u"id": u"10837",u"name": u"Exclusive Case"}],u"text": u"Корпус Silverstone SST-PS05B Precision Midi-Tower - black",u"price": 62},{u"_id": u"20156",u"text": u"Монитор LED Philips 226V3LSB 21.5'' DVI Black",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7384",u"name": u"Мониторы"},{u"id": u"13209",u"name": u"LCD 22-27\""}],u"price": 135   },{u"_id": u"17398",u"catalogs": [{u"id": u"7369",u"name": u"Программное обеспечение"},{u"id": u"14570",u"name": u"ПО Microsoft (цены в рублях)"},{u"id": u"14571",u"name": u"Microsoft Windows (цены в рублях)"}],u"text": u"ПО Microsoft Win 7 Home Basic 64-bit Rus CIS SP1",u"price": 2230},{u"_id": u"19992",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7388",u"name": u"Материнские платы"},{u"id": u"19238",u"name": u"SOCKET FM1"}],u"price": 68,u"text": u"Материнская плата GIGABYTE GA-A55M-S2V FM1 AMD A75 2DDR3 RAID mATX"},{u"_id": u"20017",u"text": u"Процессор AMD A4 X2 3300 2,5 ГГц Socket FM1 Box cashe 1Mb, TDP 65W (AWAD3300OJGXBOX)",u"price": 72,   u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7399",u"name": u"Процессоры"},{u"id": u"19257",u"name": u"SOCKET FM1"}]},{u"_id": u"19470",u"text": u"Видеокарта HD6450 XFX 1GB DDR3 DVI+VGA+HDMI BOX  HD-645X-ZNH2",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7396",u"name": u"Видеокарты"},{u"id": u"7613",u"name": u"RADEON PCI-E"}],   u"price": 52.59      },{u"_id": u"15318",u"text": u"Жесткий диск 1000GB WD GreenPower Sata2  64mb WD10EARS",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7406",u"name": u"Жесткие диски"},{u"id": u"7673",u"name": u"SATA II&III"}],u"price": 119},{u"_id": u"19575",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7394",u"name": u"Оперативная память"},{u"id": u"11576",u"name": u"DDRIII Лучшие цены"}],   u"text": u"ОЗУ DDR3 4096MB Crucial Rendition CL9 1333 PC3-10600",u"price": 19   },{u"_id": u"18692",u"catalogs": [{u"id": u"7365",u"name": u"Устройства ввода-вывода"},{u"id": u"7389",u"name": u"Акустические системы"},{u"id": u"7448",u"name": u"2.1 системы"}],u"text": u"Акустическая система Genius SW-M2.1 350, 11W black",u"price": 16.6},{u"_id": u"18932",u"text": u"Дисковод  Samsung SH-222AB/BEBE 22x SATA BLACK",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7392",u"name": u"Дисководы DVD RW, FDD"},{u"id": u"7538",u"name": u"DVD-RW"}],   u"price": 25}]
+
 def findComponent(model, name):
     #hack for orders
     def lookFor():        
@@ -1023,6 +1025,15 @@ def findComponent(model, name):
                     price = 0
                 else:
                     price = c['ourprice']*c['count']
+                components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+            return lambda code: [c for c in components if c['_id'] == code][0]
+        elif 'promo' in model:
+            components = []
+            for c in promo_components:
+                if c['_id'].startswith('no'):
+                    price = 0
+                else:
+                    price = c['price']
                 components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
             return lambda code: [c for c in components if c['_id'] == code][0]
         else:
