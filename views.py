@@ -56,7 +56,7 @@ class ModelInCart(object):
 
         self.setModelLink(link)
 
-        if not self.model.promo:
+        if not self.model.isPromo:
             link.set('href','/computer/%s' % self.model._id)
         else:
             link.set('href','/promotion/%s' % self.model.parent)
@@ -77,7 +77,7 @@ class ModelInCart(object):
         price_span.set('id',self.model._id)
         price_span.text = unicode(self.model.total) + u' р'
 
-        if not self.model.promo:
+        if not self.model.isPromo:
             self.icon.set('href','/computer/'+self.model._id)
         else:
             self.icon.set('href','/promotion/'+self.model.parent)
@@ -101,7 +101,7 @@ class ModelInCart(object):
             strong.text = unicode(self.model.getComponentPrice(component))+ u' р'
             li.append(strong)
         li.set('id',self.model._id+'_'+component._id)
-        if component.old_code and not self.model.promo:
+        if component.old_code and not self.model.isPromo:
             a = etree.Element('a')
             a.text = u'Посмотреть старый компонент'
             a.set('href', '')
@@ -289,7 +289,6 @@ class Cart(PCView):
 
 
     def renderNotes(self, user):
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
         models_div = self.getModelsDiv()
         clear_div = etree.Element('div')
         clear_div.set('style','clear:both')
