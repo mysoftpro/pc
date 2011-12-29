@@ -245,7 +245,7 @@ def noComponentFactory(_doc, name):
 # TODO! than replace mother or video
 # check slots! may be 2 video installed with sli or with crossfire!
 def replaceComponent(code,model):
-    original_price = model['original_prices'][code] if code in ['original_prices'] else 10
+    original_price = model['original_prices'][code] if code in model['original_prices'] else 10
     name = nameForCode(code,model)
     def sameCatalog(doc):
         retval = True
