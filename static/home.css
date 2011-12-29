@@ -881,11 +881,7 @@ label:hover{
     margin-left:auto;
     margin-right:auto;
 }
-#cart_top{
-    height:150px;
-    margin-top:20px;
-    margin-bottom:70px;
-}
+
 #cartlink{
     width:265px;
 }
@@ -2505,4 +2501,12 @@ a.modelicon img{
     background-position:0px -228px;
     font-size:13px;
     margin-top:10px;
+}
+.cart_description li strong{
+    margin-left:5px;
+}
+#cart_top{
+    height:150px;
+    margin-top:20px;
+    margin-bottom:100px;
 }

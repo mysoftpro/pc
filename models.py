@@ -8,10 +8,8 @@ from copy import deepcopy
 from urllib import unquote_plus, quote_plus
 from datetime import datetime,timedelta
 from pc.mail import send_email
-from random import randint
-import re
 from twisted.web.resource import Resource
-from pc.common import addCookies, MIMETypeJSON, forceCond
+from pc.common import MIMETypeJSON, forceCond
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -103,27 +101,6 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_fm1,proc_fm1)]
 
 
-def walkOnChoices(name = None, _filter=None):
-    choices = None
-    if name is not None:
-        choices =globals()['gChoices'][name]
-    else:
-        choices = (v for k,v in globals()['gChoices'].items())
-    if _filter is None:
-        _filter = lambda x: True
-
-    if type(choices) is dict:
-        for ch in choices['rows']:
-            if _filter(ch['doc']):
-                yield ch['doc']
-    else:
-        for el in choices:
-            if el[0]:
-                for ch in el[1][1]['rows']:
-                    if _filter(ch['doc']):
-                        yield ch['doc']
-
-
 
 def getCatalogsKey(doc):
     if 'catalogs' not in doc:
@@ -143,19 +120,6 @@ def getModelComponents(model):
                 yield el
         else:
             yield v
-
-
-def nameForCode(code,model):
-    retval = None
-    for _name,_code in model['items'].items():
-        if type(_code) is list and code in _code:
-            retval = _name
-            break
-        elif  code == _code:
-            retval = _name
-            break
-    return retval
-
 
 
 Margin=1.15
@@ -245,14 +209,16 @@ def noComponentFactory(_doc, name):
 # TODO! than replace mother or video
 # check slots! may be 2 video installed with sli or with crossfire!
 def replaceComponent(code,model):
+
     original_price = model['original_prices'][code] if code in model['original_prices'] else 10
     name = nameForCode(code,model)
+
     def sameCatalog(doc):
         retval = True
         if mother==name:
-            retval = model['mother_catalogs'] == getCatalogsKey(doc)
+            retval = model.motherCatalogs == getCatalogsKey(doc)
         if proc==name:
-            retval = model['proc_catalogs'] == getCatalogsKey(doc)
+            retval = model.procCatalogs == getCatalogsKey(doc)
         return retval
     choices = globals()['gChoices'][name]
     flatten = []
@@ -288,217 +254,6 @@ def replaceComponent(code,model):
     return next_el
 
 no_component_added = False
-
-def renderComputer(model, template, skin):
-
-    _uuid = ''
-    author = ''
-    parent = ''
-    h2 =template.top.find('div').find('h2')
-    # only original models have length
-
-    if 'ours' in model:
-        h2.text = model['name']
-    else:
-        h2.text = model['_id'][0:-3]
-        strong = etree.Element('strong')
-        strong.text = model['_id'][-3:]
-        h2.append(strong)
-        if 'name' in model:
-            span = etree.Element('span')
-            span.text = model['name']
-            h2.append(span)
-        _uuid = model.pop('_id')
-        author = model.pop('author')
-        if 'parent' in model:
-            parent = model.pop('parent')
-
-    if 'description' in model:
-        # try:
-            d = template.top.find('div').find('div')
-            d.text = ''
-            for el in html.fragments_fromstring(model['description']):
-                d.append(el)
-        # except:
-        #     pass
-    original_viewlet = template.root().find('componentviewlet')
-    choices = globals()['gChoices']
-
-    model_json = {}
-    total = 0
-    components_json = {}
-    viewlets = []
-    counted = {}
-
-    def makeOption(row, price):
-        # try:
-            option = etree.Element('option')
-            if 'font' in row['doc']['text']:
-                row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
-                row['doc'].update({'featured':True})
-            option.text = row['doc']['text']
-
-            option.text +=u' ' + unicode(price) + u' р'
-
-            option.set('value',row['id'])
-            return option
-        # except:
-        #     print row
-    def appendOptions(options, container):
-        for o in sorted(options, lambda x,y: x[1]-y[1]):
-            container.append(o[0])
-
-
-    def noComponent(name, component_doc, rows):
-        #hack!
-        if 'catalogs' in component_doc:
-            pass
-        else:
-            try:
-                component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
-            except:
-                pass
-        if globals()['no_component_added']:return
-        if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
-        no_doc = noComponentFactory(component_doc, name)
-        rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
-
-    def addComponent(_options, _row, current_id):
-        _price= makePrice(_row['doc'])
-        _option = makeOption(_row, _price)
-        _options.append((_option, _price))
-        if _row['id'] == current_id:
-            _option.set('selected','selected')
-        _cleaned_doc = cleanDoc(_row['doc'], _price)
-        _id = _cleaned_doc['_id']
-        if _id in counted:
-            _cleaned_doc.update({'count':counted[_id]})
-        components_json.update({_id:_cleaned_doc})
-
-
-    def fillViewlet(_name, _doc):
-        tr = viewlet.find("tr")
-        tr.set('id',_name)
-        body = viewlet.xpath("//td[@class='body']")[0]
-        body.set('id',_doc['_id'])
-        body.text = re.sub('<font.*</font>', '',_doc['text'])
-
-        descr = etree.Element('div')
-        descr.set('class','description')
-        descr.text = ''
-
-        manu = etree.Element('div')
-        manu.set('class','manu')
-        manu.text = ''
-
-        # our = etree.Element('div')
-        # our.set('class','our')
-        # our.text = u'нет рекоммендаций'
-
-        clear = etree.Element('div')
-        clear.set('style','clear:both;')
-        clear.text = ''
-        descr.append(manu);
-        # descr.append(our)
-        descr.append(clear)
-        return descr
-
-
-    for name,code in model['items'].items():
-        component_doc = None
-        count = 1
-        if code is None:
-            component_doc = noComponentFactory({}, name)
-        else:
-
-            if type(code) is list:
-                count = len(code)
-                code = code[0]
-                counted.update({code:count})
-
-            component_doc = findComponent(model,name)
-
-        if _uuid == '' and 'replaced' in component_doc:
-            # no need 'replaced' alert' in original models
-            component_doc.pop('replaced')
-
-        viewlet = deepcopy(original_viewlet)
-        descr = fillViewlet(name, component_doc)
-
-        price = makePrice(component_doc)
-
-        total += price
-        # print component_doc
-        cleaned_doc = cleanDoc(component_doc, price)
-        cleaned_doc['count'] = count
-
-        model_json.update({cleaned_doc['_id']:cleaned_doc})
-        viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
-
-        ch = choices[name]
-        options = []
-        if type(ch) is list:
-            noComponent(name, cleaned_doc, ch[0][1][1]['rows'])
-            for el in ch:
-                if el[0]:
-                    option_group = etree.Element('optgroup')
-                    option_group.set('label', el[1][0])
-                    _options = []
-                    for r in el[1][1]['rows']:
-                        addComponent(_options, r, cleaned_doc['_id'])
-                    appendOptions(_options, option_group)
-                    options.append((option_group, 0))
-        else:
-            noComponent(name, cleaned_doc, ch['rows'])
-            for row in ch['rows']:
-                addComponent(options, row, cleaned_doc['_id'])
-
-        select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
-        appendOptions(options, select)
-        viewlets.append((parts[name],viewlet,descr))
-
-
-    components_container = template.middle.xpath('//table[@id="components"]')[0]
-    description_container = template.middle.xpath('//div[@id="descriptions"]')[0]
-
-    globals()['no_component_added'] = True
-
-    for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
-        components_container.append(viewlet[1].find('tr'))
-        description_container.append(viewlet[2])
-    processing = False
-    if 'processing' in model and model['processing']:
-        processing = True
-
-    template.middle.find('script').text = u''.join(('var model=',simplejson.dumps(model_json),
-                                                    ';var processing=',simplejson.dumps(processing),
-                                                    ';var uuid=',simplejson.dumps(_uuid),
-                                                    ';var author=',simplejson.dumps(author),
-                                                    ';var parent=',simplejson.dumps(parent),
-                                                    ';var total=',unicode(total),
-                                                    ';var choices=',simplejson.dumps(components_json),
-                                                    ';var parts_names=',simplejson.dumps(parts_names),
-                                                    ';var mother_to_proc_mapping=',
-                                                    simplejson.dumps(mother_to_proc_mapping),
-                                                    ';var proc_to_mother_mapping=',
-                                                    simplejson.dumps([(el[1],el[0]) for el in mother_to_proc_mapping]),
-                                                    ';var installprice=',str(INSTALLING_PRICE),
-                                                    ';var buildprice=',str(BUILD_PRICE),
-                                                    ';var dvdprice=',str(DVD_PRICE),
-
-                                                    ';var idvd=',simplejson.dumps(model['dvd']),
-                                                    ';var ibuilding=',simplejson.dumps(model['building']),
-                                                    ';var iinstalling=',simplejson.dumps(model['installing']),
-                                                    ';var Course=',str(Course),
-                                                    ';var parts=',simplejson.dumps(parts_aliases)
-                                                    ))
-    title = skin.root().xpath('//title')[0]
-    title.text = u' Изменение конфигурации компьютера '+h2.text
-    skin.top = template.top
-    skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 280px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
-    return skin.render()
 
 
 from twisted.python import log
@@ -730,26 +485,9 @@ def fillNew(global_choices):
             if wit_doc['price']>row['value'][0]:
                 wit_doc['price'] = row['value'][0]
             wit_doc['stock1'] = row['value'][1]
-        # send_email('admin@buildpc.ru',
-        #          u'Обновление цен и кол-ва Виттеха via Новая Система',
-        #          u'Всего позиций: ' + unicode(len(res['rows'])),
-        #          sender=u'Компьютерный магазин <inbox@buildpc.ru>')
     d = couch.openView(designID, 'new_map', keys = globals()['gChoices_flatten'].keys())
     d.addCallback(fill)
     d.addCallback(lambda some: global_choices)
-    return d
-
-
-@forceCond(noChoicesYet, fillChoices)
-def computer(template, skin, request):
-    splitted = request.path.split('/')
-    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    # hack! just show em ping!
-    if len(name) == 0:
-        name = 'ping'
-    d = couch.openDoc(name)
-    d.addCallback(renderComputer, template, skin)
-    #d.addErrback(lambda x: couch.openDoc('cell').addCallback(renderComputer, template, skin))
     return d
 
 
@@ -764,260 +502,10 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
-class ModelForModelsPage(object):
-    def __init__(self, request, model, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
-        self.request = request
-        self.model = model
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
-
-
-    def fillComponents(self, price_span):
-        #here is the difference between orders and models!!!
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-
-    def fillModelDiv(self):
-        if 'processing' in self.model and self.model['processing']:
-            header = self.model_div.find('h2')
-            header.set('class', header.get('class')+ ' processing')
-        a = self.model_div.find('.//a')
-        if not 'promo' in self.model:
-            a.set('href','/computer/%s' % self.model['_id'])
-        else:
-            a.set('href','/promotion/%s' % self.model['parent'])
-
-        if self.this_is_cart:
-            info = self.model_div.xpath('//div[@class="info"]')[0]
-            if 'checkModel' in self.model:
-                if not self.model['checkModel']:
-                    info.set('class', info.get('class')+ ' ask_info')
-                    info.set('title',u'Ожидает проверки специалистом')
-                else:
-                    info.set('class', info.get('class')+ ' confirm_info')
-                    info.set('title',u'Проверено!')
-            else:
-                info.set('class', info.get('class')+ ' empty_info')
-            # self.model_div.remove(info)
-
-        if 'name' in self.model and not self.this_is_cart:
-            a.text=self.model['name']
-        else:
-            a.text = self.model['_id'][:-3]
-            strong= etree.Element('strong')
-            strong.text = self.model['_id'][-3:]
-            a.append(strong)
-        price_span = self.model_div.find('.//span')
-        price_span.set('id',self.model['_id'])
-        #here is the difference between orders and models!!!
-        self.fillComponents(price_span)
-        case_found = [c for c in self.components if c.cat_name == case]
-
-        if len(case_found) >0:
-            if not 'promo' in self.model:
-                self.icon.set('href','/computer/'+self.model['_id'])
-            else:
-                self.icon.set('href','/promotion/'+self.model['parent'])
-                if 'our_price' in self.model:
-                    price_span.text = unicode(self.model['our_price'])+u' р.'
-                else:
-                    price_span.text = u'24900 р.'
-            self.icon.find('img').set('src',case_found[0].getIconUrl())
-            self.model_div.insert(0,self.icon)
-
-        self.container.append(self.model_div)
-
-    def fillDescriptionDiv(self):
-        # description_div = divs[1]
-        ul = etree.Element('ul')
-        ul.set('class','description')
-        for cfm in self.components:
-            ul.append(cfm.render())
-        self.description_div.append(ul)
-
-        h3 = self.description_div.find('h3')
-        if not self.this_is_cart:
-            h3.text = self.model['title']
-            for el in html.fragments_fromstring(self.model['description']):
-                self.description_div.append(el)
-            ul.set('style','display:none')
-        else:
-            if 'name' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = self.model['name']
-                h3.append(span)
-
-            if 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customTitle')
-                span.text = self.model['title']
-                h3.append(span)
-
-            if not 'name' in self.model and not 'title' in self.model:
-                span = etree.Element('span')
-                span.set('class', 'customName')
-                span.text = u'Пользовательская конфигурация'
-                h3.append(span)
-
-            _date = self.model['date']
-            _date.reverse()
-            span = etree.Element('span')
-            span.text = ('.').join(_date)
-            h3.append(span)
-
-            a = etree.Element('a')
-            a.text = u'переименовать'
-            a.set('href', '')
-            h3.append(a)
-
-            self.description_div.set('class','cart_description')
-
-            this_user_is_author = self.user is not None and\
-                self.model['author'] == self.user['_id'] and\
-                self.request.getCookie('pc_key') == self.user['pc_key']
-
-            if this_user_is_author and not 'processing' in self.model:
-                extra = deepcopy(self.tree.find('cart_extra'))
-                for el in extra:
-                    if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
-                        el.set('href', '/bill.pdf?id='+self.model['_id'])
-                    self.description_div.append(el)
-
-            if 'comments' in self.model:
-                last_index = len(self.model['comments'])-1
-                i=0
-                for comment in self.model['comments']:
-                    comments = deepcopy(self.tree.find('cart_comment'))
-                    if not this_user_is_author and i==0:
-                        comments.find('div').set('style', 'margin-top:40px')
-                    comments.xpath('//div[@class="faqauthor"]')[0].text = comment['author']
-                    comment['date'].reverse()
-                    comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment['date'])
-                    comments.xpath('//div[@class="faqbody"]')[0].text = comment['body']
-                    links = comments.xpath('//div[@class="faqlinks"]')[0]
-                    if i!=last_index:
-                        links.remove(links.find('a'))
-                    i+=1
-                    self.description_div.append(comments.find('div'))
-        self.container.append(self.description_div)
-
-
-    def render(self):
-        self.fillModelDiv()
-        self.fillDescriptionDiv()
-        if not self.this_is_cart:
-            self.model_div.set('id','m'+self.model['_id'])
-            if self.category in model_categories:
-                if self.model['_id'] in model_categories[self.category]:
-                    div = etree.Element('div')
-                    div.set('id', 'desc_'+self.model_div.get('id'))
-                    div.set('class', 'full_desc')
-                    if 'modeldesc' in self.model:
-                        div.text = self.model['modeldesc']
-                    self.container.append(div)
-                    self.description_div.set('style','height:220px')
-                else:
-                    self.model_div.set('style',"height:0;overflow:hidden")
-                    self.description_div.set('style',"height:0;overflow:hidden")
-
-
-class OrderForModelsPage(ModelForModelsPage):
-
-    def __init__(self, request, order, tree, this_is_cart, json_prices, icon, container, user):
-        self.user = user
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
-        self.request = request
-        self.order = order
-        self.model = self.order['model']
-        self.this_is_cart = this_is_cart
-        self.json_prices = json_prices
-        self.icon = icon
-        self.container = container
-        self.components = []
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-        self.category = request.args.get('cat',[None])[0]
-
-    def fillComponents(self, price_span):
-        #hack. see find component
-        self.model['this_order'] = self.order
-        self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-        
-        # #here is the difference between orders and models!!!
-        # components = self.order['components']
-        # total = 0
-        # # self.components = buildPrices(self.model, self.json_prices, price_span, self.this_is_cart)
-        # for c in components:
-        #     cleaned = cleanDoc(c, c['ourprice']*c['count'])
-        #     components.append(cleaned)
-        # if self.order['installing']:
-        #         total += INSTALLING_PRICE
-        # if self.order['building']:
-        #      total += BUILD_PRICE
-        # if self.model['dvd']:
-        #     total += DVD_PRICE
-        # price_span.text = str(total) + u' р'
-        # self.components = [ComponentForModelsPage(self.model,c, cat_name, c['price'], True)\
-        #                        for c in components]
-        # #zzzzzzzzzzzzzzzz
-
-
-def fixDeletedCart(err, request, name):
-    if request.getCookie('pc_user') == name:
-        addCookies(request, {'pc_user':'','pc_key':'','pc_cart':''})
-    request.redirect('http://buildpc.ru')
-    return []
-
-
-def redirectDeletedCart(err):
-    return []
-
-class NoteBookForCartPage(object):
-    def __init__(self,notebook, note, key, icon, container):
-        self.icon = icon
-        self.notebook = notebook
-        self.note = note
-        self.container = container
-        self.key = key
-
-    def render(self):
-        key = self.key
-        note_name = self.note.xpath('//div[@class="cnname"]')[0]
-        note_name.text = self.notebook['doc']['text']
-        note_name.set('id',key+'_'+self.notebook['doc']['_id'])
-
-        link = self.note.xpath('//strong[@class="modellink"]')[0]
-        link.text = key[:-3]
-        strong = etree.Element('strong')
-        strong.text = key[-3:]
-        link.append(strong)
-        price = makeNotePrice(self.notebook['doc'])
-
-        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
-
-        # icon = deepcopy(tree.find('model_icon').find('a'))
-        self.icon.find('img').set('src',getComponentIcon(self.notebook['doc']))
-        self.note.insert(0,self.icon)
-        self.container.append(self.note)
-
-
-promo_components = [{u"_id": u"18225",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7383",u"name": u"Корпусы"},{u"id": u"10837",u"name": u"Exclusive Case"}],u"text": u"Корпус Silverstone SST-PS05B Precision Midi-Tower - black",u"price": 62},{u"_id": u"20156",u"text": u"Монитор LED Philips 226V3LSB 21.5'' DVI Black",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7384",u"name": u"Мониторы"},{u"id": u"13209",u"name": u"LCD 22-27\""}],u"price": 135   },{u"_id": u"17398",u"catalogs": [{u"id": u"7369",u"name": u"Программное обеспечение"},{u"id": u"14570",u"name": u"ПО Microsoft (цены в рублях)"},{u"id": u"14571",u"name": u"Microsoft Windows (цены в рублях)"}],u"text": u"ПО Microsoft Win 7 Home Basic 64-bit Rus CIS SP1",u"price": 2230},{u"_id": u"19992",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7388",u"name": u"Материнские платы"},{u"id": u"19238",u"name": u"SOCKET FM1"}],u"price": 68,u"text": u"Материнская плата GIGABYTE GA-A55M-S2V FM1 AMD A75 2DDR3 RAID mATX"},{u"_id": u"20017",u"text": u"Процессор AMD A4 X2 3300 2,5 ГГц Socket FM1 Box cashe 1Mb, TDP 65W (AWAD3300OJGXBOX)",u"price": 72,   u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7399",u"name": u"Процессоры"},{u"id": u"19257",u"name": u"SOCKET FM1"}]},{u"_id": u"19470",u"text": u"Видеокарта HD6450 XFX 1GB DDR3 DVI+VGA+HDMI BOX  HD-645X-ZNH2",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7396",u"name": u"Видеокарты"},{u"id": u"7613",u"name": u"RADEON PCI-E"}],   u"price": 52.59      },{u"_id": u"15318",u"text": u"Жесткий диск 1000GB WD GreenPower Sata2  64mb WD10EARS",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7406",u"name": u"Жесткие диски"},{u"id": u"7673",u"name": u"SATA II&III"}],u"price": 119},{u"_id": u"19575",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7394",u"name": u"Оперативная память"},{u"id": u"11576",u"name": u"DDRIII Лучшие цены"}],   u"text": u"ОЗУ DDR3 4096MB Crucial Rendition CL9 1333 PC3-10600",u"price": 19   },{u"_id": u"18692",u"catalogs": [{u"id": u"7365",u"name": u"Устройства ввода-вывода"},{u"id": u"7389",u"name": u"Акустические системы"},{u"id": u"7448",u"name": u"2.1 системы"}],u"text": u"Акустическая система Genius SW-M2.1 350, 11W black",u"price": 16.6},{u"_id": u"18932",u"text": u"Дисковод  Samsung SH-222AB/BEBE 22x SATA BLACK",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7392",u"name": u"Дисководы DVD RW, FDD"},{u"id": u"7538",u"name": u"DVD-RW"}],   u"price": 25}]
 
 def findComponent(model, name):
     #hack for orders
-    def lookFor():        
+    def lookFor():
         if 'this_order' in model:
             components = []
             for c in model['this_order']['components']:
@@ -1039,7 +527,8 @@ def findComponent(model, name):
         else:
             return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
     look_for = lookFor()
-    code = model['items'][name]
+    # code = model['items'][name]
+    code = model.getCode(name)
     if type(code) is list:
         code = code[0]
     if code is None or code.startswith('no'):
@@ -1052,13 +541,6 @@ def findComponent(model, name):
         replaced = True
     else:
         pass
-        # if retval['stock1'] == 0:
-        #     # my own components for prebuild promo
-        #     if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
-        #         pass
-        #     else:
-        #         retval = replaceComponent(code,model)
-        #         replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
@@ -1087,6 +569,7 @@ class ComponentForModelsPage(object):
         self.cat_name = cat_name
         self.model = model
         self.this_is_cart = this_is_cart
+
     def getIconUrl(self):
         return getComponentIcon(self.component)
 
@@ -1097,10 +580,17 @@ class ComponentForModelsPage(object):
         else:
             li.text=''
         if not 'promo' in self.model:
-             li.text+= u' <strong>'+ unicode(self.price) + u' р</strong>'
-        li.set('id',self.model['_id']+'_'+self.component['_id'])
-        if self.this_is_cart and 'old_code' in self.component and not 'promo' in self.model:
-            li.text += u'<a href="" class="showOldComponent" id="%s">Посмотреть старый компонент</a>' % (self.model['_id']+'_'+self.component['old_code'])
+            strong = etree.Element('strong')
+            strong.text = unicode(self.price)+ u' р'
+            li.append(strong)
+        li.set('id',self.model._id+'_'+self.component['_id'])
+        if self.this_is_cart and 'old_code' in self.component and not self.model.isPromo:
+            a = etree.Element('a')
+            a.text = u'Посмотреть старый компонент'
+            a.set('href', '')
+            a.set('class', 'showOldComponent')
+            a.set('id', self.model._id+'_'+self.component['old_code'])
+            li.append(a)
         return li
 
 
@@ -1121,7 +611,9 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
             else:
                 json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
 
-    for cat_name,code in model['items'].items():
+    # for cat_name,code in model['items'].items():
+    # refactor
+    for cat_name,code in model:
         count = 1
         if type(code) is list:
             count = len(code)
@@ -1130,20 +622,20 @@ def buildPrices(model, json_prices, price_span, this_is_cart=False):
         code = component_doc['_id']
         price = makePrice(component_doc)*count
         total += price
-        updatePrice(model['_id'],cat_name,displ,price)
-        updatePrice(model['_id'],cat_name,soft,price)
-        updatePrice(model['_id'],cat_name,audio,price)
-        updatePrice(model['_id'],cat_name,mouse,price)
-        updatePrice(model['_id'],cat_name,kbrd,price)
+        updatePrice(model._id,cat_name,displ,price)
+        updatePrice(model._id,cat_name,soft,price)
+        updatePrice(model._id,cat_name,audio,price)
+        updatePrice(model._id,cat_name,mouse,price)
+        updatePrice(model._id,cat_name,kbrd,price)
         __components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
-    if model['installing']:
+    if model.installing:
         total += INSTALLING_PRICE
-    if model['building']:
+    if model.building:
          total += BUILD_PRICE
-    if model['dvd']:
+    if model.dvd:
         total += DVD_PRICE
     price_span.text = str(total) + u' р'
-    json_prices[model['_id']]['total'] = total
+    json_prices[model._id]['total'] = total
     return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
 
 
@@ -1192,7 +684,8 @@ def index(template, skin, request):
 
     def render(result):
         i = 0
-        models = sorted([row['doc'] for row in result['rows']],lambda x,y: x['order']-y['order'])
+        models = sorted([Model(row['doc']) for row in result['rows']],
+                        lambda x,y: x.order-y.order)
         tree = template.root()
         div = template.middle.xpath('//div[@id="computers_container"]')[0]
         json_prices = {}
@@ -1203,12 +696,12 @@ def index(template, skin, request):
             snippet = deepcopy(model_snippet.find('div'))
             snippet.set('style',"background-image:url('" + imgs[i] + "')")
             a = snippet.find('.//a')
-            a.set('href','/computer/%s' % m['_id'])
-            a.text=m['name']
+            a.set('href','/computer/%s' % m._id)
+            a.text=m.name
             price_span = snippet.find('.//span')
-            price_span.set('id',m['_id'])
+            price_span.set('id',m._id)
             components = buildPrices(m, json_prices, price_span)
-            json_procs_and_videos.update({m['_id']:buildProcAndVideo(components)})
+            json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
             div.append(snippet)
             i+=1
             if i==len(imgs): i=0
@@ -1506,190 +999,661 @@ def upgrade_set(template, skin, request):
 
 
 
+class Model(object):
+
+    def get(self, field, default=None):
+        return self.model_doc.get(field, default)
 
 
+    @property
+    def author(self):
+        return self.get('author','')
+
+    @property
+    def parent(self):
+        return self.get('parent','')
 
 
+    @property
+    def modeldesc(self):
+        return self.get('modeldesc', False)
 
 
+    @property
+    def processing(self):
+        return self.get('processing', False)
+
+    @property
+    def comments(self):
+        return [Comment(c) for c in self.get('comments', [])]
+
+    @property
+    def isPromo(self):
+        return self.get('promo', False)
+
+    @property
+    def order(self):
+        return self.get('order', 0)
+
+    @property
+    def _id(self):
+        retval = self.get('_id', '')
+        if self.isOrder:
+            retval = retval.replace('order_','')
+        return retval
+
+    @property
+    def checkRequired(self):
+        return 'checkModel' in self.model_doc
+
+    @property
+    def checkPerformed(self):
+        return self.get('checkModel', False)
+
+    @property
+    def name(self):
+        return self.get('name', False)
+
+    @property
+    def title(self):
+        return self.get('title', False)
+
+    @property
+    def ourPrice(self):
+        return self.get('our_price', False)
+
+    def __iter__(self):
+        for k,v in self.model_doc['items'].items():
+            yield k,v
 
 
+    def getCode(self, cat_name):
+        retval = None
+        for k,v in self:
+            if k==cat_name:
+                retval = v
+        return retval
 
-@forceCond(noChoicesYet, fillChoices)
-def computers(template,skin,request):
-    splitted = request.path.split('/')
-    name = unicode(unquote_plus(splitted[-1]), 'utf-8')
-    # cart is only /cart/12345. for /cart and for /computer - all models are shown
-    this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
+    def nameForCode(self, code):
+        retval = None
+        for _name,_code in self:
+            if type(_code) is list and code in _code:
+                retval = _name
+                break
+            elif  code == _code:
+                retval = _name
+                break
+        return retval
 
-    def render(result):
-        models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
-        #fix cookies here!
-        total = 0
-        if not this_is_cart:
-            models = sorted(models,lambda x,y: x['order']-y['order'])
-            models.reverse()
+    def getComponents(self):
+        return sorted(self.components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
+
+    @property
+    def installing(self):
+        return self.get('installing', False)
+
+    @property
+    def building(self):
+        return self.get('building', False)
+
+    @property
+    def dvd(self):
+        return self.get('dvd', False)
+
+    @property
+    def date(self):
+        return self.get('date')
+
+    def isAuthor(self, user):
+        is_author = self.get('author') == user._id
+        is_merged = self.get('author') in user.get('merged_docs', [])
+        return is_author or is_merged
+
+    @property
+    def motherCatalogs(self):
+        return self.get('mother_catalogs')
+
+    @property
+    def procCatalogs(self):
+        return self.get('proc_catalogs')
+
+
+    def __init__(self, model_doc):
+        self.model_doc = model_doc
+        self.isOrder = False
+        self.orderComponents = []
+        if self.get('_id').startswith('order'):
+            self.orderComponents = self.model_doc['components']
+            self.model_doc = model_doc['model']
+            self.isOrder = True
+        self.components = []
+        self.cat_prices = {}
+        self.component_prices = {}
+        self.total = 0
+        self.walkOnComponents()
+
+    def updateCatPrice(self, catalogs, required_catalogs, price):
+        if catalogs == required_catalogs:
+            self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
+
+
+    def getComponentPrice(self, component_doc):
+        return self.component_prices[component_doc._id]
+
+
+    @property
+    def original_prices(self):
+        return self.get('original_prices', {})
+
+
+    def getCatalogsKey(self, doc):
+        if 'catalogs' not in doc:
+            return 'no'
+        if type(doc['catalogs'][0]) is dict:
+            cats = []
+            for c in doc['catalogs']:
+                cats.append(str(c['id']))
+            return cats
+        return doc['catalogs']
+
+    @property
+    def ours(self):
+        return self.get('ours', False)
+
+
+    # TODO! than replace mother or video
+    # check slots! may be 2 video installed with sli or with crossfire!
+    def replaceComponent(self, code):
+        # print "replaaaaaaaaaaaaaaaaaaaaaaaaacing!"
+        # print self._id
+        # print code
+        original_price = self.original_prices[code] \
+            if code in self.original_prices else 10
+        # name = nameForCode(code,model)
+        name = self.nameForCode(code)
+        def sameCatalog(doc):
+            retval = True
+            if mother==name:
+                retval = self.motherCatalogs == self.getCatalogsKey(doc)
+            if proc==name:
+                retval = self.procCatalogs == self.getCatalogsKey(doc)
+            return retval
+        choices = globals()['gChoices'][name]
+        flatten = []
+        if type(choices) is list:
+            for el in choices:
+                if el[0]:
+                    for ch in el[1][1]['rows']:
+                        if sameCatalog(ch['doc']):
+                            flatten.append(ch['doc'])
         else:
-            def sort(m1,m2):
-                if u''.join(m1['date'])>u''.join(m2['date']):
-                    return -1
-                return 1
-            models = sorted(models,sort)
-            template.middle.remove(template.middle.find('div'))
+            for ch in choices['rows']:
+                if sameCatalog(ch['doc']):
+                    flatten.append(ch['doc'])
+        mock_component = noComponentFactory({},name)
+        mock_component['price'] = original_price
+        mock_component['_id'] = code
+        flatten.append(mock_component)
+        flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
+        keys = [doc['_id'] for doc in flatten]
+        _length = len(keys)
+        ind = keys.index(code)
+        _next = ind+1
+        if _next == _length:
+            _next = ind-1
+        next_el = deepcopy(flatten[_next])
+        if self.ours and code not in globals()['gWarning_sent']:
+            globals()['gWarning_sent'].append(code)
+            text = self.name + ' '+parts_names[name] + ': '+code
+            send_email('admin@buildpc.ru',
+                       u'В модели заменен компонент',
+                       text,
+                       sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        # print next_el['_id']
+        return next_el
 
-        tree = template.root()
-        container = template.middle.xpath('//div[@id="models"]')[0]
+    @property
+    def description(self):
+        return self.get('description', '')
 
-        json_prices = {}
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        user_doc = result['user_doc'] if 'user_doc' in result  else None
-        for m in models:
-            if m['_id'].startswith('order'):
-                view = OrderForModelsPage(request, m, tree,
-                                          this_is_cart,json_prices,
-                                          deepcopy(tree.find('model_icon').find('a')),
-                                          container, user_doc)
+    def preparePdf(self):
+        self.model_doc['full_items'] = []
+        for k,v in self:
+            if type(v) is list:
+                v = v[0]
+            if v is None: continue
+            if v.startswith('no'):continue
+            component = deepcopy(self.findComponent(k))
+            component['price'] = makePrice(component)
+            self.model_doc['full_items'].append(component)
+        self.model_doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
+        return self.model_doc
+
+    @property
+    def promoComponents(self):
+        return [{u"_id": u"18225",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7383",u"name": u"Корпусы"},{u"id": u"10837",u"name": u"Exclusive Case"}],u"text": u"Корпус Silverstone SST-PS05B Precision Midi-Tower - black",u"price": 62},{u"_id": u"20156",u"text": u"Монитор LED Philips 226V3LSB 21.5'' DVI Black",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7384",u"name": u"Мониторы"},{u"id": u"13209",u"name": u"LCD 22-27\""}],u"price": 135   },{u"_id": u"17398",u"catalogs": [{u"id": u"7369",u"name": u"Программное обеспечение"},{u"id": u"14570",u"name": u"ПО Microsoft (цены в рублях)"},{u"id": u"14571",u"name": u"Microsoft Windows (цены в рублях)"}],u"text": u"ПО Microsoft Win 7 Home Basic 64-bit Rus CIS SP1",u"price": 2230},{u"_id": u"19992",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7388",u"name": u"Материнские платы"},{u"id": u"19238",u"name": u"SOCKET FM1"}],u"price": 68,u"text": u"Материнская плата GIGABYTE GA-A55M-S2V FM1 AMD A75 2DDR3 RAID mATX"},{u"_id": u"20017",u"text": u"Процессор AMD A4 X2 3300 2,5 ГГц Socket FM1 Box cashe 1Mb, TDP 65W (AWAD3300OJGXBOX)",u"price": 72,   u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7399",u"name": u"Процессоры"},{u"id": u"19257",u"name": u"SOCKET FM1"}]},{u"_id": u"19470",u"text": u"Видеокарта HD6450 XFX 1GB DDR3 DVI+VGA+HDMI BOX  HD-645X-ZNH2",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7396",u"name": u"Видеокарты"},{u"id": u"7613",u"name": u"RADEON PCI-E"}],   u"price": 52.59      },{u"_id": u"15318",u"text": u"Жесткий диск 1000GB WD GreenPower Sata2  64mb WD10EARS",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7406",u"name": u"Жесткие диски"},{u"id": u"7673",u"name": u"SATA II&III"}],u"price": 119},{u"_id": u"19575",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7394",u"name": u"Оперативная память"},{u"id": u"11576",u"name": u"DDRIII Лучшие цены"}],   u"text": u"ОЗУ DDR3 4096MB Crucial Rendition CL9 1333 PC3-10600",u"price": 19   },{u"_id": u"18692",u"catalogs": [{u"id": u"7365",u"name": u"Устройства ввода-вывода"},{u"id": u"7389",u"name": u"Акустические системы"},{u"id": u"7448",u"name": u"2.1 системы"}],u"text": u"Акустическая система Genius SW-M2.1 350, 11W black",u"price": 16.6},{u"_id": u"18932",u"text": u"Дисковод  Samsung SH-222AB/BEBE 22x SATA BLACK",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7392",u"name": u"Дисководы DVD RW, FDD"},{u"id": u"7538",u"name": u"DVD-RW"}],   u"price": 25}]
+
+    def findComponent(self, cat_name):
+        def lookFor():
+            if self.isOrder:
+                components = []
+                for c in self.orderComponents:
+                    if c['_id'].startswith('no'):
+                        price = 0
+                    else:
+                        price = c['ourprice']*c['count']
+                    components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+                return lambda code: [c for c in components if c['_id'] == code][0]
+            elif self.isPromo:
+                components = []
+                for c in self.promoComponents:
+                    if c['_id'].startswith('no'):
+                        price = 0
+                    else:
+                        price = c['price']
+                    components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+                return lambda code: [c for c in components if c['_id'] == code][0]
             else:
-                view = ModelForModelsPage(request, m, tree,
-                                      this_is_cart,json_prices,
-                                      deepcopy(tree.find('model_icon').find('a')),
-                                      container, user_doc)
-            view.render()
-            total +=1
-        if this_is_cart:
-            # comments here and in ModelForModelsPage description_div
-            cart_form = deepcopy(tree.find('cart_comment_form'))
-            container.append(cart_form.find('div'))
+                return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
+        look_for = lookFor()
+        # code = model['items'][name]
+        code = self.getCode(cat_name)
+        if type(code) is list:
+            code = code[0]
+        if code is None or code.startswith('no'):
+            return noComponentFactory({},cat_name)
+        replaced = False
 
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        if 'notebooks' in result and 'user_doc' in result:
-            total_notes = []
-            need_cleanup = False
-            note_div = template.root().find('notebook').find('div')
-            clear_div = etree.Element('div')
-            clear_div.set('style','clear:both')
-            container.append(clear_div)
-            for n in result['notebooks']['rows']:
-                if not 'doc' in n:
-                    need_cleanup = True
-                    continue
-                if n['doc'] is None:
-                    need_cleanup = True
-                    continue
-                keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
-                if len(keys) == 0:
-                    need_cleanup = True
-                    continue
-                key = keys[0][0]
-                note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
-                                                deepcopy(tree.find('model_icon').find('a')),
-                                                container)
-                note_view.render()
-                total_notes.append(n['doc']['_id'])
-
-            # clean only for the owner of the cart!
-            if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
-                # some notes, possible will be deleted from store!
-                to_clean = []
-                for k,v in result['user_doc']['notebooks'].items():
-                    if v not in total_notes:
-                        to_clean.append(k)
-                for k in to_clean:
-
-                    result['user_doc']['notebooks'].pop(k)
-                # update user_doc
-                couch.saveDoc(result['user_doc'])
-
-        # TODO! this_is_cart means have user doc
-        # why one more variable?
-        # refresh in_cart coookie, because it is possible now
-        # to add to the same cart from other browsers
-        if this_is_cart:
-            in_cart = len(user_doc['models'])
-            if 'notebooks' in user_doc:
-                in_cart += len(user_doc['notebooks'])
-            addCookies(request, {'pc_cart':in_cart})
-
-        _prices = 'undefined'
-
-        if this_is_cart:
-            cart = deepcopy(template.root().find('top_cart'))
-            cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
-            cart_divs = cart.findall('div')
-            for d in cart_divs:
-                template.top.append(d)
+        retval = look_for(code)
+        if retval is None:
+            retval = self.replaceComponent(code)
+            replaced = True
         else:
-            _prices =simplejson.dumps(json_prices) + ';'
-            header = deepcopy(template.root().find('top_models'))
-            header_divs = header.findall('div')
-            for d in header_divs:
-                template.top.append(d)
+            pass
+        # there is 1 thing downwhere count! is is installed just in this component!
+        ret = deepcopy(retval)
+        ret['replaced'] = replaced
+        if replaced:
+            ret['old_code'] = code
+        return ret
 
-        template.middle.find('script').text = 'var prices=' + _prices;
 
-        category = request.args.get('cat',[None])[0]
+    def walkOnComponents(self):
+        self.aliasses_reverted = {}
+        for k,v in parts_aliases.items():
+            self.aliasses_reverted.update({v:k})
+        for cat_name,code in self:
+            count = 1
+            if type(code) is list:
+                count = len(code)
+                code = code[0]
+            component_doc = self.findComponent(cat_name)
+            code = component_doc['_id']
+            price = makePrice(component_doc)*count
+            self.total += price
+            self.updateCatPrice(cat_name,displ,price)
+            self.updateCatPrice(cat_name,soft,price)
+            self.updateCatPrice(cat_name,audio,price)
+            self.updateCatPrice(cat_name,mouse,price)
+            self.updateCatPrice(cat_name,kbrd,price)
+            self.component_prices[code] = price
+            self.components.append(Component(component_doc, cat_name))
+            if cat_name == case:
+                self.case = Component(component_doc, case)
 
-        if category is not None and category in model_categories_titles:
-            title = skin.root().xpath('//title')[0]
-            title.text = model_categories_titles[category]
-        else:
-            title = skin.root().xpath('//title')[0]
-            title.text = u'Готовые модели компьютеров'
+        if self.installing:
+            self.total += INSTALLING_PRICE
+        if self.building:
+            self.total += BUILD_PRICE
+        if self.dvd:
+            self.total += DVD_PRICE
 
-        skin.top = template.top
-        skin.middle = template.middle
-        return skin.render()
 
-    # RENDER MODELS HERE!!!
-    if not this_is_cart:
-        d = couch.openView(designID,'models',include_docs=True,stale=False)
-        d.addCallback(render)
-    # RENDER cart here!!!!
-    else:
-        d = couch.openDoc(name)
-        def addOrders(orders,models):
-            models_rows = [row for row in models['rows'] \
-                          if len([o_row for o_row in orders['rows'] \
-                                      if o_row['id'].replace('order_','') == row['id']])==0]
-            for o in orders['rows']:
-                models_rows.insert(0,o)
-            models['rows'] = models_rows
-            return models
 
-        def addUser(models, user_doc):
-            models['user_doc'] = user_doc
-            orders = []
-            for row in models['rows']:
-                if 'doc' in row and row['doc'] is not None and \
-                        'processing' in row['doc'] and row['doc']['processing']:
-                    orders.append(row['doc']['_id'])
+class Component(object):
 
-            if len(orders)>0:
-                d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
-                d.addCallback(addOrders, models)
-                return d
-            else:
-                return models
+    def __init__(self, component_doc, cat_name):
+        self.component_doc = component_doc
+        self.cat_name = cat_name
 
-        def glueModelsAndNotes(li, _user):
-            models = li[0][1]
-            notebooks = li[1][1]
-            models['notebooks'] = notebooks
-            return models
-        def getModelsAndNotes(user_doc):
-            models = couch.listDoc(keys=user_doc['models'], include_docs=True)
-            models.addCallback(addUser, user_doc)
-            if not 'notebooks' in user_doc:
-                return models
-            notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
-            d = defer.DeferredList((models, notes))
-            d.addCallback(glueModelsAndNotes, user_doc)
-            d.addErrback(lambda some: models)
-            return d
-        d.addCallback(getModelsAndNotes)
-        if this_is_cart:
-            d.addErrback(fixDeletedCart, request, name)
-        d.addCallback(render)
-        if this_is_cart:
-            d.addErrback(redirectDeletedCart)
-    return d
+    def get(self, field, default=None):
+        return self.component_doc.get(field, default)
+
+    def __iter__(self):
+        for k,v in self.component_doc.items():
+            yield k,v
+
+    @property
+    def _id(self):
+        return self.get('_id')
+    @property
+    def old_code(self):
+        return self.get('old_code', False)
+
+    @property
+    def text(self):
+        return self.get('text', False)
+
+    @property
+    def description(self):
+        return self.get('description', False)
+
+
+
+def userFactory(name):
+    user = couch.openDoc(name)
+
+    results = {}
+
+    def di(res, name):
+        results[name] = res
+
+    user.addCallback(di, 'user')
+
+    def fail(fail):
+        pass
+
+    def installKey(doc, key):
+        if doc is not None:
+            doc['key'] = key
+        return doc
+
+    def getFields(some, name, orders=False, keys=False):
+        """ {'models':[3afs123, 3b456a], 'notebooks':{'3afs456':171515}} """
+        defs = []
+        if name in results['user']:
+            for _id in results['user'][name]:
+                uid = _id
+                if keys:
+                    uid = results['user'][name][uid]
+                if orders:
+                    uid = 'order_'+uid
+                d = couch.openDoc(uid)
+                d.addErrback(fail)
+                if keys:
+                    d.addCallback(installKey, _id)
+                defs.append(d)
+        li = defer.DeferredList(defs)
+        res_name = name
+        if orders:
+            res_name='orders_'+res_name
+        li.addCallback(di, res_name)
+        return li
+
+    user.addCallback(getFields, 'models')
+    user.addCallback(getFields, 'notebooks', keys=True)
+    user.addCallback(getFields, 'models', orders=True)
+    user.addCallback(getFields, 'notebooks', orders=True, keys = True)
+    user.addCallback(lambda some: User(results))
+    return user
+
+
+class User(object):
+    def __init__(self, results):
+        """ if has orders - get orders instead appropriate models"""
+        orders_models = [tu[1] for tu in results['orders_models'] if tu[1] is not None]
+        self.models = orders_models
+        orders_models_ids = [o['_id'].replace('order_','') for o in orders_models]
+        for res,model in results['models']:
+            if res and model['_id'] not in orders_models_ids:
+                self.models.append(model)
+
+        orders_notebooks = [tu[1] for tu in results['orders_notebooks'] if tu[1] is not None]
+        self.notebooks = orders_notebooks
+        orders_notebooks_ids = [o['_id'] for o in orders_notebooks]
+        for res,note in results['notebooks']:
+            if res and note['_id'] not in orders_notebooks_ids:
+                self.notebooks.append(note)
+        self.user = results['user']
+
+    def isValid(self, request):
+        return  self.user['_id'] == request.getCookie('pc_user') and \
+                self.user['pc_key'] == request.getCookie('pc_key')
+
+
+    def modelsSort(self, m1,m2):
+        if u''.join(m1['date'])>u''.join(m2['date']):
+            return -1
+        return 1
+
+    def getUserModels(self):
+        for m in sorted(self.models, self.modelsSort):
+            yield Model(m)
+
+    def getUserNotebooks(self):
+        for n in self.notebooks:
+            yield Notebook(n, None)
+
+
+    def get(self, field, default=None):
+        return self.user.get(field, default)
+
+    @property
+    def _id(self):
+        return self.get('_id')
+
+
+
+
+class Notebook(Component):
+
+    @property
+    def key(self):
+        return self.get('key')
+
+
+    def makePrice(self):
+        our_price = self.component_doc['price']*Course+NOTE_MARGIN
+        return int(round(our_price/10))*10
+
+
+
+
+# @forceCond(noChoicesYet, fillChoices)
+# def computers(template,skin,request):
+#     splitted = request.path.split('/')
+#     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+#     # cart is only /cart/12345. for /cart and for /computer - all models are shown
+#     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
+
+#     def render(result):
+#         models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
+#         #fix cookies here!
+#         total = 0
+#         if not this_is_cart:
+#             models = sorted(models,lambda x,y: x['order']-y['order'])
+#             models.reverse()
+#         else:
+#             def sort(m1,m2):
+#                 if u''.join(m1['date'])>u''.join(m2['date']):
+#                     return -1
+#                 return 1
+#             models = sorted(models,sort)
+#             template.middle.remove(template.middle.find('div'))
+
+#         tree = template.root()
+#         container = template.middle.xpath('//div[@id="models"]')[0]
+
+#         json_prices = {}
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         user_doc = result['user_doc'] if 'user_doc' in result  else None
+#         for m in models:
+#             if m['_id'].startswith('order'):
+#                 view = OrderForModelsPage(request, m, tree,
+#                                           this_is_cart,json_prices,
+#                                           deepcopy(tree.find('model_icon').find('a')),
+#                                           container, user_doc)
+#             else:
+#                 view = ModelForModelsPage(request, m, tree,
+#                                       this_is_cart,json_prices,
+#                                       deepcopy(tree.find('model_icon').find('a')),
+#                                       container, user_doc)
+#             view.render()
+#             total +=1
+#         if this_is_cart:
+#             # comments here and in ModelForModelsPage description_div
+#             cart_form = deepcopy(tree.find('cart_comment_form'))
+#             container.append(cart_form.find('div'))
+
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         if 'notebooks' in result and 'user_doc' in result:
+#             total_notes = []
+#             need_cleanup = False
+#             note_div = template.root().find('notebook').find('div')
+#             clear_div = etree.Element('div')
+#             clear_div.set('style','clear:both')
+#             container.append(clear_div)
+#             for n in result['notebooks']['rows']:
+#                 if not 'doc' in n:
+#                     need_cleanup = True
+#                     continue
+#                 if n['doc'] is None:
+#                     need_cleanup = True
+#                     continue
+#                 keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
+#                 if len(keys) == 0:
+#                     need_cleanup = True
+#                     continue
+#                 key = keys[0][0]
+#                 note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+#                                                 deepcopy(tree.find('model_icon').find('a')),
+#                                                 container)
+#                 note_view.render()
+#                 total_notes.append(n['doc']['_id'])
+
+#             # clean only for the owner of the cart!
+#             if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
+#                 # some notes, possible will be deleted from store!
+#                 to_clean = []
+#                 for k,v in result['user_doc']['notebooks'].items():
+#                     if v not in total_notes:
+#                         to_clean.append(k)
+#                 for k in to_clean:
+
+#                     result['user_doc']['notebooks'].pop(k)
+#                 # update user_doc
+#                 couch.saveDoc(result['user_doc'])
+
+#         # TODO! this_is_cart means have user doc
+#         # why one more variable?
+#         # refresh in_cart coookie, because it is possible now
+#         # to add to the same cart from other browsers
+#         if this_is_cart:
+#             in_cart = len(user_doc['models'])
+#             if 'notebooks' in user_doc:
+#                 in_cart += len(user_doc['notebooks'])
+#             addCookies(request, {'pc_cart':in_cart})
+
+#         _prices = 'undefined'
+
+#         if this_is_cart:
+#             cart = deepcopy(template.root().find('top_cart'))
+#             cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+#             cart_divs = cart.findall('div')
+#             for d in cart_divs:
+#                 template.top.append(d)
+#         else:
+#             _prices =simplejson.dumps(json_prices) + ';'
+#             header = deepcopy(template.root().find('top_models'))
+#             header_divs = header.findall('div')
+#             for d in header_divs:
+#                 template.top.append(d)
+
+#         template.middle.find('script').text = 'var prices=' + _prices;
+
+#         category = request.args.get('cat',[None])[0]
+
+#         if category is not None and category in model_categories_titles:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = model_categories_titles[category]
+#         else:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = u'Готовые модели компьютеров'
+
+#         skin.top = template.top
+#         skin.middle = template.middle
+#         return skin.render()
+
+#     # RENDER MODELS HERE!!!
+#     if not this_is_cart:
+#         d = couch.openView(designID,'models',include_docs=True,stale=False)
+#         d.addCallback(render)
+#     # RENDER cart here!!!!
+#     else:
+#         d = couch.openDoc(name)
+#         def addOrders(orders,models):
+#             models_rows = [row for row in models['rows'] \
+#                           if len([o_row for o_row in orders['rows'] \
+#                                       if o_row['id'].replace('order_','') == row['id']])==0]
+#             for o in orders['rows']:
+#                 models_rows.insert(0,o)
+#             models['rows'] = models_rows
+#             return models
+
+#         def addUser(models, user_doc):
+#             models['user_doc'] = user_doc
+#             orders = []
+#             for row in models['rows']:
+#                 if 'doc' in row and row['doc'] is not None and \
+#                         'processing' in row['doc'] and row['doc']['processing']:
+#                     orders.append(row['doc']['_id'])
+
+#             if len(orders)>0:
+#                 d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
+#                 d.addCallback(addOrders, models)
+#                 return d
+#             else:
+#                 return models
+
+#         def glueModelsAndNotes(li, _user):
+#             models = li[0][1]
+#             notebooks = li[1][1]
+#             models['notebooks'] = notebooks
+#             return models
+#         def getModelsAndNotes(user_doc):
+#             models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+#             models.addCallback(addUser, user_doc)
+#             if not 'notebooks' in user_doc:
+#                 return models
+#             notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+#             d = defer.DeferredList((models, notes))
+#             d.addCallback(glueModelsAndNotes, user_doc)
+#             d.addErrback(lambda some: models)
+#             return d
+#         d.addCallback(getModelsAndNotes)
+#         # if this_is_cart:
+#         #     d.addErrback(fixDeletedCart, request, name)
+#         d.addCallback(render)
+#         # if this_is_cart:
+#         #     d.addErrback(redirectDeletedCart)
+#     return d
+
+
+
+
+
+class Comment(object):
+
+    def __init__(self, comment_doc):
+        self.comment_doc = comment_doc
+
+    def get(self, field, default=None):
+        return self.comment_doc.get(field, default)
+
+    @property
+    def date(self):
+        return self.get('date',[])
+
+    @property
+    def body(self):
+        return self.get('body','')
+
+
+    @property
+    def email(self):
+        return self.get('email','')
+
+
+    @property
+    def author(self):
+        return self.get('author','')

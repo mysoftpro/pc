@@ -12,7 +12,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import index, computer, computers,parts,\
+from pc.models import index,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion
@@ -28,7 +28,7 @@ from twisted.internet.task import deferLater
 from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
-from pc.root import parts_aliases, CachedStatic, static_dir
+from pc.root import parts_aliases, CachedStatic, static_dir, HandlerAndName, Computer
 
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
@@ -591,9 +591,9 @@ class EditModel(Resource):
     def getChild(self, name, request):
 	static = CachedStatic(static_dir)
 	child = static.getChild("computer.html", request)
+        child.hooks.update({'computer.html':HandlerAndName(Computer, name)})
 	script = etree.Element('script')
 	script.set('type','text/javascript')
-	# script.set('src','../edit_model.js')
 	script.text ='head.ready(function(){head.js("../edit_model.js");});'
 	child.skin.root().append(script)
 	return child
@@ -735,8 +735,9 @@ def clear_cache():
 	    os.utime(os.path.join(root.static_dir,f), None)
 	except:
 	    pass
+    from pc import views
+    views.no_component_added = False
     from pc import models
-    models.no_component_added = False
     models.gChoices = None
     models.gChoices_flatten = {}
     models.gWarning_sent = []
