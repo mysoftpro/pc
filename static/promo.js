@@ -53,12 +53,14 @@ $('#to_cart').click(function(e){
 						     if (cat)
 							 items[cat] = key;
 					      }).value();
-			$.ajax({
-				   url:'/catalogs_for?c='+mother_code+'&c='+proc_code,
-				   success:function(data){
+			//$.ajax({
+				   //url:'/catalogs_for?c='+mother_code+'&c='+proc_code,
+				   //success:function(data){
 				       var model = {};
-				       model['mother_catalogs'] = data[mother_code];
-				       model['proc_catalogs'] = data[proc_code];
+				       model['mother_catalogs'] = ["7363","7388","19238"];
+			//data[mother_code];
+			model['proc_catalogs'] = ["7363","7399","19257"];
+			    //data[proc_code];
 				       model['items'] = items;
 				       model['dvd'] = true;
 				       model['building'] = true;
@@ -82,8 +84,7 @@ $('#to_cart').click(function(e){
 							  cart_el.text('Корзина('+$.cookie('pc_cart')+')');
 						      }
 						      else{
-							  if (!data['edit'])
-							      $('#main_menu')
+							  $('#main_menu')
 							      .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
 										 {
 										     cart:$.cookie('pc_user')
@@ -91,8 +92,8 @@ $('#to_cart').click(function(e){
 						      }
 						  }
 					      });
-				   }
-			       });
+				   //}
+			       //});
 		    });
 $('#promostuff td').first().click();
 $('body').append('<div id="image_storage" style="display:none;"></div>');

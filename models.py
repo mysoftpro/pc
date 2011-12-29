@@ -1424,6 +1424,191 @@ class Notebook(Component):
         return int(round(our_price/10))*10
 
 
+
+
+# @forceCond(noChoicesYet, fillChoices)
+# def computers(template,skin,request):
+#     splitted = request.path.split('/')
+#     name = unicode(unquote_plus(splitted[-1]), 'utf-8')
+#     # cart is only /cart/12345. for /cart and for /computer - all models are shown
+#     this_is_cart = len(name) > 0 and name != 'computer' and name != 'cart'
+
+#     def render(result):
+#         models = [row['doc'] for row in result['rows'] if 'doc' in row and row['doc'] is not None]
+#         #fix cookies here!
+#         total = 0
+#         if not this_is_cart:
+#             models = sorted(models,lambda x,y: x['order']-y['order'])
+#             models.reverse()
+#         else:
+#             def sort(m1,m2):
+#                 if u''.join(m1['date'])>u''.join(m2['date']):
+#                     return -1
+#                 return 1
+#             models = sorted(models,sort)
+#             template.middle.remove(template.middle.find('div'))
+
+#         tree = template.root()
+#         container = template.middle.xpath('//div[@id="models"]')[0]
+
+#         json_prices = {}
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         user_doc = result['user_doc'] if 'user_doc' in result  else None
+#         for m in models:
+#             if m['_id'].startswith('order'):
+#                 view = OrderForModelsPage(request, m, tree,
+#                                           this_is_cart,json_prices,
+#                                           deepcopy(tree.find('model_icon').find('a')),
+#                                           container, user_doc)
+#             else:
+#                 view = ModelForModelsPage(request, m, tree,
+#                                       this_is_cart,json_prices,
+#                                       deepcopy(tree.find('model_icon').find('a')),
+#                                       container, user_doc)
+#             view.render()
+#             total +=1
+#         if this_is_cart:
+#             # comments here and in ModelForModelsPage description_div
+#             cart_form = deepcopy(tree.find('cart_comment_form'))
+#             container.append(cart_form.find('div'))
+
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         if 'notebooks' in result and 'user_doc' in result:
+#             total_notes = []
+#             need_cleanup = False
+#             note_div = template.root().find('notebook').find('div')
+#             clear_div = etree.Element('div')
+#             clear_div.set('style','clear:both')
+#             container.append(clear_div)
+#             for n in result['notebooks']['rows']:
+#                 if not 'doc' in n:
+#                     need_cleanup = True
+#                     continue
+#                 if n['doc'] is None:
+#                     need_cleanup = True
+#                     continue
+#                 keys = [(k,v) for k,v in result['user_doc']['notebooks'].items() if v == n['doc']['_id']]
+#                 if len(keys) == 0:
+#                     need_cleanup = True
+#                     continue
+#                 key = keys[0][0]
+#                 note_view = NoteBookForCartPage(n,deepcopy(note_div),key,
+#                                                 deepcopy(tree.find('model_icon').find('a')),
+#                                                 container)
+#                 note_view.render()
+#                 total_notes.append(n['doc']['_id'])
+
+#             # clean only for the owner of the cart!
+#             if need_cleanup and request.getCookie('pc_key') == result['user_doc']['pc_key']:
+#                 # some notes, possible will be deleted from store!
+#                 to_clean = []
+#                 for k,v in result['user_doc']['notebooks'].items():
+#                     if v not in total_notes:
+#                         to_clean.append(k)
+#                 for k in to_clean:
+
+#                     result['user_doc']['notebooks'].pop(k)
+#                 # update user_doc
+#                 couch.saveDoc(result['user_doc'])
+
+#         # TODO! this_is_cart means have user doc
+#         # why one more variable?
+#         # refresh in_cart coookie, because it is possible now
+#         # to add to the same cart from other browsers
+#         if this_is_cart:
+#             in_cart = len(user_doc['models'])
+#             if 'notebooks' in user_doc:
+#                 in_cart += len(user_doc['notebooks'])
+#             addCookies(request, {'pc_cart':in_cart})
+
+#         _prices = 'undefined'
+
+#         if this_is_cart:
+#             cart = deepcopy(template.root().find('top_cart'))
+#             cart.xpath('//input[@id="cartlink"]')[0].set('value',"http://buildpc.ru/computer/"+name)
+#             cart_divs = cart.findall('div')
+#             for d in cart_divs:
+#                 template.top.append(d)
+#         else:
+#             _prices =simplejson.dumps(json_prices) + ';'
+#             header = deepcopy(template.root().find('top_models'))
+#             header_divs = header.findall('div')
+#             for d in header_divs:
+#                 template.top.append(d)
+
+#         template.middle.find('script').text = 'var prices=' + _prices;
+
+#         category = request.args.get('cat',[None])[0]
+
+#         if category is not None and category in model_categories_titles:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = model_categories_titles[category]
+#         else:
+#             title = skin.root().xpath('//title')[0]
+#             title.text = u'Готовые модели компьютеров'
+
+#         skin.top = template.top
+#         skin.middle = template.middle
+#         return skin.render()
+
+#     # RENDER MODELS HERE!!!
+#     if not this_is_cart:
+#         d = couch.openView(designID,'models',include_docs=True,stale=False)
+#         d.addCallback(render)
+#     # RENDER cart here!!!!
+#     else:
+#         d = couch.openDoc(name)
+#         def addOrders(orders,models):
+#             models_rows = [row for row in models['rows'] \
+#                           if len([o_row for o_row in orders['rows'] \
+#                                       if o_row['id'].replace('order_','') == row['id']])==0]
+#             for o in orders['rows']:
+#                 models_rows.insert(0,o)
+#             models['rows'] = models_rows
+#             return models
+
+#         def addUser(models, user_doc):
+#             models['user_doc'] = user_doc
+#             orders = []
+#             for row in models['rows']:
+#                 if 'doc' in row and row['doc'] is not None and \
+#                         'processing' in row['doc'] and row['doc']['processing']:
+#                     orders.append(row['doc']['_id'])
+
+#             if len(orders)>0:
+#                 d = couch.listDoc(keys=['order_'+i for i in orders], include_docs=True)
+#                 d.addCallback(addOrders, models)
+#                 return d
+#             else:
+#                 return models
+
+#         def glueModelsAndNotes(li, _user):
+#             models = li[0][1]
+#             notebooks = li[1][1]
+#             models['notebooks'] = notebooks
+#             return models
+#         def getModelsAndNotes(user_doc):
+#             models = couch.listDoc(keys=user_doc['models'], include_docs=True)
+#             models.addCallback(addUser, user_doc)
+#             if not 'notebooks' in user_doc:
+#                 return models
+#             notes = couch.listDoc(keys=[v for v in user_doc['notebooks'].values()], include_docs=True)
+#             d = defer.DeferredList((models, notes))
+#             d.addCallback(glueModelsAndNotes, user_doc)
+#             d.addErrback(lambda some: models)
+#             return d
+#         d.addCallback(getModelsAndNotes)
+#         # if this_is_cart:
+#         #     d.addErrback(fixDeletedCart, request, name)
+#         d.addCallback(render)
+#         # if this_is_cart:
+#         #     d.addErrback(redirectDeletedCart)
+#     return d
+
+
+
+
+
 class Comment(object):
 
     def __init__(self, comment_doc):
