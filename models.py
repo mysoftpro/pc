@@ -209,9 +209,10 @@ def noComponentFactory(_doc, name):
 # TODO! than replace mother or video
 # check slots! may be 2 video installed with sli or with crossfire!
 def replaceComponent(code,model):
-    original_price = model['original_prices'][code] if code in ['original_prices'] else 10
-    # name = nameForCode(code,model)
-    name = model.nameForCode(code)
+
+    original_price = model['original_prices'][code] if code in model['original_prices'] else 10
+    name = nameForCode(code,model)
+
     def sameCatalog(doc):
         retval = True
         if mother==name:
@@ -501,6 +502,7 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
+
 def findComponent(model, name):
     #hack for orders
     def lookFor():
@@ -511,6 +513,15 @@ def findComponent(model, name):
                     price = 0
                 else:
                     price = c['ourprice']*c['count']
+                components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+            return lambda code: [c for c in components if c['_id'] == code][0]
+        elif 'promo' in model:
+            components = []
+            for c in promo_components:
+                if c['_id'].startswith('no'):
+                    price = 0
+                else:
+                    price = c['price']
                 components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
             return lambda code: [c for c in components if c['_id'] == code][0]
         else:
