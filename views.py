@@ -275,10 +275,7 @@ class Cart(PCView):
 
     def renderModels(self, user):
         models_div = self.getModelsDiv()
-        for m in user.getUserModels():
-            print "yaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            print user.isValid(self.request)
-            print m.isAuthor(user)
+        for m in user.getUserModels():            
             view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()

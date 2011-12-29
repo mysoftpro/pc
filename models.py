@@ -530,13 +530,6 @@ def findComponent(model, name):
         replaced = True
     else:
         pass
-        # if retval['stock1'] == 0:
-        #     # my own components for prebuild promo
-        #     if 'mystock' in retval and retval['mystock']>0 and 'promo' in model and model['promo']:
-        #         pass
-        #     else:
-        #         retval = replaceComponent(code,model)
-        #         replaced = True
     # there is 1 thing downwhere count! is is installed just in this component!
     ret = deepcopy(retval)
     ret['replaced'] = replaced
@@ -1101,7 +1094,9 @@ class Model(object):
         return self.get('date')
 
     def isAuthor(self, user):
-        return self.get('author') == user._id
+        is_author = self.get('author') == user._id
+        is_merged = self.get('author') in user.get('merged_docs', [])
+        return is_author or is_merged
 
     @property
     def motherCatalogs(self):
@@ -1158,6 +1153,9 @@ class Model(object):
     # TODO! than replace mother or video
     # check slots! may be 2 video installed with sli or with crossfire!
     def replaceComponent(self, code):
+        # print "replaaaaaaaaaaaaaaaaaaaaaaaaacing!"
+        # print self._id
+        # print code
         original_price = self.original_prices[code] \
             if code in self.original_prices else 10
         # name = nameForCode(code,model)
@@ -1200,6 +1198,7 @@ class Model(object):
                        u'В модели заменен компонент',
                        text,
                        sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+        # print next_el['_id']
         return next_el
 
     @property
@@ -1243,7 +1242,7 @@ class Model(object):
 
         retval = look_for(code)
         if retval is None:
-            retval = replaceComponent(code,self)
+            retval = self.replaceComponent(code)
             replaced = True
         else:
             pass
