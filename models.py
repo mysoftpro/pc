@@ -1676,9 +1676,9 @@ def computers(template,skin,request):
             d.addErrback(lambda some: models)
             return d
         d.addCallback(getModelsAndNotes)
-        # if this_is_cart:
-        #     d.addErrback(fixDeletedCart, request, name)
+        if this_is_cart:
+            d.addErrback(fixDeletedCart, request, name)
         d.addCallback(render)
-        # if this_is_cart:
-        #     d.addErrback(redirectDeletedCart)
+        if this_is_cart:
+            d.addErrback(redirectDeletedCart)
     return d
