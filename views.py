@@ -576,3 +576,45 @@ class Computer(PCView):
     def postRender(self):
         self.skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 300px;')
         self.skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
+
+
+
+class Index(PCView):
+    imgs = ['static/comp_icon_1.png',
+        'static/comp_icon_2.png',
+        'static/comp_icon_3.png',
+        'static/comp_icon_4.png'
+        ]
+
+    def renderIndex(self, result):
+        models = sorted([Model(row['doc']) for row in result['rows']],
+                        lambda x,y: x.order-y.order)
+        div = self.template.middle.xpath('//div[@id="computers_container"]')[0]
+        json_prices = {}
+        json_procs_and_videos = {}
+        i = 0
+        for m in models:            
+            model_snippet = self.tree.find('model')
+            snippet = deepcopy(model_snippet.find('div'))
+            snippet.set('style',"background-image:url('" + self.imgs[i] + "')")
+            a = snippet.find('.//a')
+            a.set('href','/computer/%s' % m._id)
+            a.text=m.name
+            price_span = snippet.find('.//span')
+            price_span.set('id',m._id)
+            components = buildPrices(m, json_prices, price_span)
+            json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
+            div.append(snippet)
+            i+=1
+            if i==len(imgs): i=0
+        template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
+            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
+        last_update = template.middle.xpath('//span[@id="last_update"]')[0]
+        last_update.text = lastUpdateTime()
+
+
+
+    def preRender(self):
+        d = couch.openView(designID,'models',include_docs=True,stale=False)
+        d.addCallback(self.renderIndex)
+        return d
