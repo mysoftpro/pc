@@ -159,7 +159,7 @@ def nameForCode(code,model):
 
 
 Margin=1.15
-Course = 31.1
+Course = 32.0
 
 def makePrice(doc):
     #orders! they prices are fixed
@@ -587,14 +587,14 @@ def fillChoices():
                                                    'catalogs',
                                                    include_docs=True, key=mother_1155, stale=False)
                                     .addCallback(lambda res: ("LGA1155",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mother_1156, stale=False)
-                                    .addCallback(lambda res: ("LGA1166",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mother_775, stale=False)
-                                    .addCallback(lambda res: ("LGA775",res)),
+                                    # couch.openView(designID,
+                                    #                'catalogs',
+                                    #                include_docs=True, key=mother_1156, stale=False)
+                                    # .addCallback(lambda res: ("LGA1166",res)),
+                                    # couch.openView(designID,
+                                    #                'catalogs',
+                                    #                include_docs=True, key=mother_775, stale=False)
+                                    # .addCallback(lambda res: ("LGA775",res)),
                                     couch.openView(designID,
                                                    'catalogs',
                                                    include_docs=True, key=mother_am23, stale=False)
@@ -611,10 +611,10 @@ def fillChoices():
                                                    "catalogs",
                                                    include_docs=True,key=proc_1155, stale=False)
                                     .addCallback(lambda res:('LGA1155',res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True,key=proc_1156, stale=False)
-                                                   .addCallback(lambda res:('LGA1156',res)),
+                                    # couch.openView(designID,
+                                    #                'catalogs',
+                                    #                include_docs=True,key=proc_1156, stale=False)
+                                    #                .addCallback(lambda res:('LGA1156',res)),
                                     # couch.openView(designID,
                                     #              'catalogs',
                                     #              include_docs=True,key=proc_1366, stale=False)
@@ -623,10 +623,10 @@ def fillChoices():
                                                    'catalogs',
                                                    include_docs=True,key=proc_am23, stale=False)
                                     .addCallback(lambda res:('AM2 3',res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True,key=proc_775, stale=False)
-                                                   .addCallback(lambda res:('LGA755',res)),
+                                    # couch.openView(designID,
+                                    #                'catalogs',
+                                    #                include_docs=True,key=proc_775, stale=False)
+                                    #                .addCallback(lambda res:('LGA755',res)),
                                     couch.openView(designID,
                                                    'catalogs',
                                                    include_docs=True, key=proc_fm1, stale=False)
