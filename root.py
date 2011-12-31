@@ -12,11 +12,11 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import index, parts,\
+from pc.models import parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
-from pc.views import Cart, Computers, Computer
+from pc.views import Cart, Computers, Computer, Index
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -98,8 +98,7 @@ def partPage(template, skin, request):
 
 
 static_hooks = {
-    'index.html':index,
-    # 'computer.html':computer,
+    # 'index.html':index,
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,
@@ -684,7 +683,10 @@ class Root(Resource):
         # self.checkCookie(request)
         u = str(request.URLPath())
         if ('http://' + self.host_url + '/' == u) or 'favicon' in name:
-            return self.static.getChild(name, request)
+            child = self.static.getChild(name, request)
+            child.hooks.update({'index.html':HandlerAndName(Index, None)})
+            return child
+            # return self.static.getChild(name, request)
         return self
 
 

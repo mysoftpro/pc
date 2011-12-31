@@ -101,7 +101,7 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_fm1,proc_fm1)]
 
 
-
+#refactor (just comment it and youl see
 def getCatalogsKey(doc):
     if 'catalogs' not in doc:
         return 'no'
@@ -112,7 +112,7 @@ def getCatalogsKey(doc):
         return cats
     return doc['catalogs']
 
-
+#refactor (just comment it and youl see
 def getModelComponents(model):
     for k,v in model['items'].items():
         if type(v) is list:
@@ -125,6 +125,7 @@ def getModelComponents(model):
 Margin=1.15
 Course = 32.0
 
+#refactor (just comment it and youl see
 def makePrice(doc):
     #orders! they prices are fixed
     if 'ourprice' in doc:
@@ -137,7 +138,7 @@ def makePrice(doc):
     our_price = float(doc['price'])*Margin*course
     return int(round(our_price/10))*10
 
-
+#refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
     new_doc = {}
     to_clean = ['id', '_attachments','flags','inCart',
@@ -159,13 +160,6 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
             new_doc.update({token:doc[token]})
     new_doc['price'] = price
     return new_doc
-
-imgs = ['static/comp_icon_1.png',
-        'static/comp_icon_2.png',
-        'static/comp_icon_3.png',
-        'static/comp_icon_4.png'
-        ]
-
 
 
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
@@ -206,8 +200,8 @@ def noComponentFactory(_doc, name):
     no_doc['text'] = parts_names[name] + u': нет'
     return no_doc
 
-# TODO! than replace mother or video
-# check slots! may be 2 video installed with sli or with crossfire!
+
+#refactor (just comment it and youl see
 def replaceComponent(code,model):
 
     original_price = model['original_prices'][code] if code in model['original_prices'] else 10
@@ -502,7 +496,7 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
-
+#refactor (just comment it and youl see
 def findComponent(model, name):
     #hack for orders
     def lookFor():
@@ -663,60 +657,60 @@ def lastUpdateTime():
     return retval
 
 
-@forceCond(noChoicesYet, fillChoices)
-def index(template, skin, request):
-    def buildProcAndVideo(components):
-        proc_video = {}
-        for c in components:
-            if c.cat_name == proc:
-                proc_video['proc_code'] = c.component['_id']
-                proc_video['proc_catalog'] = getCatalogsKey(c.component)
-                if 'brand' in c.component:
-                    proc_video['brand'] = c.component['brand']
-                if 'cores' in c.component:
-                    proc_video['cores'] = c.component['cores']
-                if 'cache' in c.component:
-                    proc_video['cache'] = c.component['cache']
-            elif c.cat_name == video:
-                proc_video['video_code'] = c.component['_id']
-                proc_video['video_catalog'] = getCatalogsKey(c.component)
-        return proc_video
+# @forceCond(noChoicesYet, fillChoices)
+# def index(template, skin, request):
+#     def buildProcAndVideo(components):
+#         proc_video = {}
+#         for c in components:
+#             if c.cat_name == proc:
+#                 proc_video['proc_code'] = c.component['_id']
+#                 proc_video['proc_catalog'] = getCatalogsKey(c.component)
+#                 if 'brand' in c.component:
+#                     proc_video['brand'] = c.component['brand']
+#                 if 'cores' in c.component:
+#                     proc_video['cores'] = c.component['cores']
+#                 if 'cache' in c.component:
+#                     proc_video['cache'] = c.component['cache']
+#             elif c.cat_name == video:
+#                 proc_video['video_code'] = c.component['_id']
+#                 proc_video['video_catalog'] = getCatalogsKey(c.component)
+#         return proc_video
 
-    def render(result):
-        i = 0
-        models = sorted([Model(row['doc']) for row in result['rows']],
-                        lambda x,y: x.order-y.order)
-        tree = template.root()
-        div = template.middle.xpath('//div[@id="computers_container"]')[0]
-        json_prices = {}
-        json_procs_and_videos = {}
-        # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-        for m in models:
-            model_snippet = tree.find('model')
-            snippet = deepcopy(model_snippet.find('div'))
-            snippet.set('style',"background-image:url('" + imgs[i] + "')")
-            a = snippet.find('.//a')
-            a.set('href','/computer/%s' % m._id)
-            a.text=m.name
-            price_span = snippet.find('.//span')
-            price_span.set('id',m._id)
-            components = buildPrices(m, json_prices, price_span)
-            json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
-            div.append(snippet)
-            i+=1
-            if i==len(imgs): i=0
-        template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
-            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
-        last_update = template.middle.xpath('//span[@id="last_update"]')[0]
-        last_update.text = lastUpdateTime()
+#     def render(result):
+#         i = 0
+#         models = sorted([Model(row['doc']) for row in result['rows']],
+#                         lambda x,y: x.order-y.order)
+#         tree = template.root()
+#         div = template.middle.xpath('//div[@id="computers_container"]')[0]
+#         json_prices = {}
+#         json_procs_and_videos = {}
+#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
+#         for m in models:
+#             model_snippet = tree.find('model')
+#             snippet = deepcopy(model_snippet.find('div'))
+#             snippet.set('style',"background-image:url('" + imgs[i] + "')")
+#             a = snippet.find('.//a')
+#             a.set('href','/computer/%s' % m._id)
+#             a.text=m.name
+#             price_span = snippet.find('.//span')
+#             price_span.set('id',m._id)
+#             # components = buildPrices(m, json_prices, price_span)
+#             json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
+#             div.append(snippet)
+#             i+=1
+#             if i==len(imgs): i=0
+#         template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
+#             'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
+#         last_update = template.middle.xpath('//span[@id="last_update"]')[0]
+#         last_update.text = lastUpdateTime()
 
-        skin.top = template.top
-        skin.middle = template.middle
-        return skin.render()
+#         skin.top = template.top
+#         skin.middle = template.middle
+#         return skin.render()
 
-    d = couch.openView(designID,'models',include_docs=True,stale=False)
-    d.addCallback(render)
-    return d
+#     d = couch.openView(designID,'models',include_docs=True,stale=False)
+#     d.addCallback(render)
+#     return d
 
 
 def updateOriginalModelPrices():
@@ -1005,17 +999,15 @@ class Model(object):
         proc_video = {}
         for c in self.components:
             if c.cat_name == proc:
-                proc_video['proc_code'] = c.component['_id']
-                proc_video['proc_catalog'] = getCatalogsKey(c.component)
-                if 'brand' in c.component:
-                    proc_video['brand'] = c.component['brand']
-                if 'cores' in c.component:
-                    proc_video['cores'] = c.component['cores']
-                if 'cache' in c.component:
-                    proc_video['cache'] = c.component['cache']
+                proc_video['proc_code'] = c._id
+                #zzzzzzz
+                proc_video['proc_catalog'] = c.getCatalogsKey()
+                proc_video['brand'] = c.brand
+                proc_video['cores'] = c.cores
+                proc_video['cache'] = c.cache
             elif c.cat_name == video:
-                proc_video['video_code'] = c.component['_id']
-                proc_video['video_catalog'] = getCatalogsKey(c.component)
+                proc_video['video_code'] = c._id
+                proc_video['video_catalog'] = c.getCatalogsKey()
         return proc_video
 
 
@@ -1182,9 +1174,6 @@ class Model(object):
     # TODO! than replace mother or video
     # check slots! may be 2 video installed with sli or with crossfire!
     def replaceComponent(self, code):
-        # print "replaaaaaaaaaaaaaaaaaaaaaaaaacing!"
-        # print self._id
-        # print code
         original_price = self.original_prices[code] \
             if code in self.original_prices else 10
         # name = nameForCode(code,model)
@@ -1355,6 +1344,32 @@ class Component(object):
     @property
     def description(self):
         return self.get('description', False)
+
+
+    def getCatalogsKey(self):
+        if 'catalogs' not in self.component_doc:
+            return 'no'
+        if type(self.component_doc['catalogs'][0]) is dict:
+            cats = []
+            for c in self.component_doc['catalogs']:
+                cats.append(str(c['id']))
+            return cats
+        return self.component_doc['catalogs']
+
+    @property
+    def brand(self):
+        return self.get('brand', '')
+    @property
+    def cores(self):
+        return self.get('cores', '')
+    @property
+    def cache(self):
+        return self.get('cache', '')
+
+
+
+
+
 
 
 

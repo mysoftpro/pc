@@ -10,6 +10,7 @@ from pc.common import forceCond
 from urllib import unquote_plus, quote_plus
 import simplejson
 import re
+from datetime import datetime,timedelta
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -427,6 +428,7 @@ class Computer(PCView):
                 container.append(o[0])
 
 
+        #refactor! whats the fucken doc here???
         def noComponent(name, component_doc, rows):
             #hack!
             if 'catalogs' in component_doc:
@@ -585,6 +587,29 @@ class Index(PCView):
         'static/comp_icon_3.png',
         'static/comp_icon_4.png'
         ]
+    def lastUpdateTime(self):
+        now = datetime.now()
+        hour = now.hour+8
+        retval = ''
+        mo = str(now.month)
+        if len(mo)<2:
+            mo = "0"+mo
+        da = str(now.day)
+        if len(da)<2:
+            da = "0"+da
+        if hour>18:
+            retval = '.'.join((da,mo,str(now.year))) +' 18:15'
+        elif hour<9:
+            delta = timedelta(days=-1)
+            now = now + delta
+            retval = '.'.join((da,mo,str(now.year))) +' 18:15'
+        else:
+            if now.minute<14:
+                hour-=1
+            retval = '.'.join((da,mo,str(now.year))) +\
+                ' '+str(hour)+':15'
+        return retval
+
 
     def renderIndex(self, result):
         models = sorted([Model(row['doc']) for row in result['rows']],
@@ -602,15 +627,18 @@ class Index(PCView):
             a.text=m.name
             price_span = snippet.find('.//span')
             price_span.set('id',m._id)
-            components = buildPrices(m, json_prices, price_span)
-            json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
+            price_span.text = unicode(m.total) + u' р'
+            json_procs_and_videos.update({m._id:m.buildProcAndVideo()})
+            json_prices.update({m._id:m.cat_prices})
+            json_prices[m._id]['total'] = m.total
             div.append(snippet)
             i+=1
-            if i==len(imgs): i=0
-        template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
+            if i==len(self.imgs): i=0
+        self.template.middle.find('script').text = 'var prices=' + \
+            simplejson.dumps(json_prices) + ';'+\
             'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
-        last_update = template.middle.xpath('//span[@id="last_update"]')[0]
-        last_update.text = lastUpdateTime()
+        last_update = self.template.middle.xpath('//span[@id="last_update"]')[0]
+        last_update.text = self.lastUpdateTime()
 
 
 
