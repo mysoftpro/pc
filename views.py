@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices, Model,makePrice, cleanDoc,getCatalogsKey
+from pc.models import userFactory, noChoicesYet, fillChoices, Model,makePrice, cleanDoc, Model
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course
 from copy import deepcopy
@@ -435,7 +435,7 @@ class Computer(PCView):
                 pass
             else:
                 try:
-                    component_doc['catalogs'] = getCatalogsKey(rows[0]['doc'])
+                    component_doc['catalogs'] = Model.getCatalogsKey(rows[0]['doc'])
                 except:
                     pass
             if globals()['no_component_added']:return

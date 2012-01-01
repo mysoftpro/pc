@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import parts,\
     noComponentFactory,makePrice,makeNotePrice,parts_names,parts,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
+    NamesFor, ParamsFor, promotion, upgrade_set, Model
 from pc.views import Cart, Computers, Computer, Index
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy

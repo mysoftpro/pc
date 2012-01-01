@@ -101,42 +101,23 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_fm1,proc_fm1)]
 
 
-#refactor (just comment it and youl see
-def getCatalogsKey(doc):
-    if 'catalogs' not in doc:
-        return 'no'
-    if type(doc['catalogs'][0]) is dict:
-        cats = []
-        for c in doc['catalogs']:
-            cats.append(str(c['id']))
-        return cats
-    return doc['catalogs']
-
-#refactor (just comment it and youl see
-def getModelComponents(model):
-    for k,v in model['items'].items():
-        if type(v) is list:
-            for el in v:
-                yield el
-        else:
-            yield v
 
 
 Margin=1.15
 Course = 32.0
 
 #refactor (just comment it and youl see
-def makePrice(doc):
-    #orders! they prices are fixed
-    if 'ourprice' in doc:
-        return doc['ourprice']
-    if doc['price'] == 0:
-        return 0
-    course = Course
-    if getCatalogsKey(doc) == windows:
-        course = 1
-    our_price = float(doc['price'])*Margin*course
-    return int(round(our_price/10))*10
+# def makePrice(doc):
+#     #orders! they prices are fixed
+#     if 'ourprice' in doc:
+#         return doc['ourprice']
+#     if doc['price'] == 0:
+#         return 0
+#     course = Course
+#     if Model.getCatalogsKey(doc) == windows:
+#         course = 1
+#     our_price = float(doc['price'])*Margin*course
+#     return int(round(our_price/10))*10
 
 #refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
@@ -155,7 +136,7 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
         if token in to_clean:
             continue
         if token == 'catalogs':
-            new_doc.update({token:getCatalogsKey(doc)})
+            new_doc.update({token:Model.getCatalogsKey(doc)})
         else:
             new_doc.update({token:doc[token]})
     new_doc['price'] = price
@@ -200,52 +181,6 @@ def noComponentFactory(_doc, name):
     no_doc['text'] = parts_names[name] + u': нет'
     return no_doc
 
-
-#refactor (just comment it and youl see
-def replaceComponent(code,model):
-
-    original_price = model['original_prices'][code] if code in model['original_prices'] else 10
-    name = nameForCode(code,model)
-
-    def sameCatalog(doc):
-        retval = True
-        if mother==name:
-            retval = model.motherCatalogs == getCatalogsKey(doc)
-        if proc==name:
-            retval = model.procCatalogs == getCatalogsKey(doc)
-        return retval
-    choices = globals()['gChoices'][name]
-    flatten = []
-    if type(choices) is list:
-        for el in choices:
-            if el[0]:
-                for ch in el[1][1]['rows']:
-                    if sameCatalog(ch['doc']):
-                        flatten.append(ch['doc'])
-    else:
-        for ch in choices['rows']:
-            if sameCatalog(ch['doc']):
-                flatten.append(ch['doc'])
-    mock_component = noComponentFactory({},name)
-    mock_component['price'] = original_price
-    mock_component['_id'] = code
-    flatten.append(mock_component)
-    flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
-    keys = [doc['_id'] for doc in flatten]
-    _length = len(keys)
-    ind = keys.index(code)
-    _next = ind+1
-    if _next == _length:
-        _next = ind-1
-    next_el = deepcopy(flatten[_next])
-    if 'ours' in model and code not in globals()['gWarning_sent']:
-        globals()['gWarning_sent'].append(code)
-        text = model['name'] + ' '+parts_names[name] + ': '+code
-        send_email('admin@buildpc.ru',
-                   u'В модели заменен компонент',
-                   text,
-                   sender=u'Компьютерный магазин <inbox@buildpc.ru>')
-    return next_el
 
 no_component_added = False
 
@@ -637,7 +572,7 @@ def notebooks(template, skin, request):
             for token in ['id', 'flags','inCart',
                           'ordered','reserved','stock1', '_rev', 'warranty_type']:
                 r['doc'].pop(token)
-            r['doc']['catalogs'] = getCatalogsKey(r['doc'])
+            r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
             #TODO save all this shit found from re
             json_notebooks.update({r['doc']['_id']:r['doc']})
 
@@ -659,6 +594,7 @@ def notebooks(template, skin, request):
 class ZipConponents(Resource):
 
     def getPriceAndCode(self, row):
+        #Component(
         return {row['doc']['_id']:makePrice(row['doc'])}
 
     @MIMETypeJSON
@@ -677,12 +613,12 @@ class ZipConponents(Resource):
         mothers_mapping = {}
         for m in mothers:
             if len(m)==0:continue            
-            cats = getCatalogsKey(m[0]['doc'])
+            cats = Model.getCatalogsKey(m[0]['doc'])
             mothers_mapping.update({tuple(cats):m})
         proc_mapping = {}
         for p in procs:
             if len(p)==0:continue
-            cats = getCatalogsKey(p[0]['doc'])
+            cats = Model.getCatalogsKey(p[0]['doc'])
             proc_mapping.update({tuple(cats):p})
         mother_procs = []
         for tu in mother_to_proc_mapping:
@@ -704,7 +640,7 @@ class CatalogsFor(Resource):
             request.finish()
         res = {}
         for c in codes:
-            res.update({c:getCatalogsKey(globals()['gChoices_flatten'][c])})
+            res.update({c:Model.getCatalogsKey(globals()['gChoices_flatten'][c])})
         return simplejson.dumps(res)
 
 
@@ -1142,9 +1078,18 @@ class Model(object):
 
 class Component(object):
 
-    def __init__(self, component_doc, cat_name):
+    def __init__(self, component_doc, cat_name=None):
         self.component_doc = component_doc
-        self.cat_name = cat_name
+        # ???
+        self._cat_name = cat_name
+    
+    @property
+    def cat_name(self):
+        if self._cat_name is not None:
+            return self._cat_name
+        else:
+            return self.getCatalogsKey()[1]
+                
 
     def get(self, field, default=None):
         return self.component_doc.get(field, default)
@@ -1182,6 +1127,17 @@ class Component(object):
     def cache(self):
         return self.get('cache', '')
 
+    def makePrice(self):
+        #orders! they prices are fixed
+        if 'ourprice' in self.component_doc:
+            return self.component_doc['ourprice']
+        if self.component_doc['price'] == 0:
+            return 0
+        course = Course
+        if Model.getCatalogsKey(self.component_doc) == windows:
+            course = 1
+        our_price = float(self.component_doc['price'])*Margin*course
+        return int(round(our_price/10))*10
 
 
 
