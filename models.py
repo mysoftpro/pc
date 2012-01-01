@@ -979,8 +979,8 @@ class Model(object):
     def original_prices(self):
         return self.get('original_prices', {})
 
-
-    def getCatalogsKey(self, doc):
+    @classmethod
+    def getCatalogsKey(cls, doc):
         if 'catalogs' not in doc:
             return 'no'
         if type(doc['catalogs'][0]) is dict:
@@ -1040,7 +1040,6 @@ class Model(object):
                        u'В модели заменен компонент',
                        text,
                        sender=u'Компьютерный магазин <inbox@buildpc.ru>')
-        # print next_el['_id']
         return next_el
 
     @property
@@ -1170,16 +1169,8 @@ class Component(object):
         return self.get('description', False)
 
 
-    def getCatalogsKey(self):
-        print "yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeha"
-        if 'catalogs' not in self.component_doc:
-            return 'no'
-        if type(self.component_doc['catalogs'][0]) is dict:
-            cats = []
-            for c in self.component_doc['catalogs']:
-                cats.append(str(c['id']))
-            return cats
-        return self.component_doc['catalogs']
+    def getCatalogsKey(self):        
+        return Model.getCatalogsKey(self.component_doc)
 
     @property
     def brand(self):

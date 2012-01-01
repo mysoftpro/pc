@@ -343,7 +343,7 @@ class ModelOnModels(ModelInCart):
 class Computers(Cart):
 
     def renderComputers(self, res):
-        models_div = self.getModelsDiv()
+        models_div = self.getModelsDiv()        
         models=  []
         for row in res['rows']:
             if row['doc'] is None:
