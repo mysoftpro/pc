@@ -542,8 +542,6 @@ def findComponent(model, name):
         ret['old_code'] = code
     return ret
 
-
-
 def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
     retval = "/static/icon.png"
     if 'description' in component and'imgs' in component['description']:
@@ -555,180 +553,6 @@ def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
 
     return retval
 
-
-class ComponentForModelsPage(object):
-    def __init__(self,model,component, cat_name, price, this_is_cart = False):
-        self.component= component
-        self.price = price
-        self.cat_name = cat_name
-        self.model = model
-        self.this_is_cart = this_is_cart
-
-    def getIconUrl(self):
-        return getComponentIcon(self.component)
-
-    def render(self):
-        li = etree.Element('li')
-        if 'text' in self.component:
-            li.text = self.component['text']
-        else:
-            li.text=''
-        if not 'promo' in self.model:
-            strong = etree.Element('strong')
-            strong.text = unicode(self.price)+ u' р'
-            li.append(strong)
-        li.set('id',self.model._id+'_'+self.component['_id'])
-        if self.this_is_cart and 'old_code' in self.component and not self.model.isPromo:
-            a = etree.Element('a')
-            a.text = u'Посмотреть старый компонент'
-            a.set('href', '')
-            a.set('class', 'showOldComponent')
-            a.set('id', self.model._id+'_'+self.component['old_code'])
-            li.append(a)
-        return li
-
-
-
-
-# TODO! refactor it without side effects
-# TODO! rename it. it is absoluttely about no prices!
-def buildPrices(model, json_prices, price_span, this_is_cart=False):
-    aliasses_reverted = {}
-    total = 0
-    __components = []
-    for k,v in parts_aliases.items():
-        aliasses_reverted.update({v:k})
-    def updatePrice(_id, catalogs, required_catalogs, price):
-        if catalogs == required_catalogs:
-            if _id in json_prices:
-                json_prices[_id].update({aliasses_reverted[required_catalogs]:price})
-            else:
-                json_prices[_id] = {aliasses_reverted[required_catalogs]:price}
-
-    # for cat_name,code in model['items'].items():
-    # refactor
-    for cat_name,code in model:
-        count = 1
-        if type(code) is list:
-            count = len(code)
-            code = code[0]
-        component_doc = findComponent(model,cat_name)
-        code = component_doc['_id']
-        price = makePrice(component_doc)*count
-        total += price
-        updatePrice(model._id,cat_name,displ,price)
-        updatePrice(model._id,cat_name,soft,price)
-        updatePrice(model._id,cat_name,audio,price)
-        updatePrice(model._id,cat_name,mouse,price)
-        updatePrice(model._id,cat_name,kbrd,price)
-        __components.append(ComponentForModelsPage(model,component_doc, cat_name, price, this_is_cart))
-    if model.installing:
-        total += INSTALLING_PRICE
-    if model.building:
-         total += BUILD_PRICE
-    if model.dvd:
-        total += DVD_PRICE
-    price_span.text = str(total) + u' р'
-    json_prices[model._id]['total'] = total
-    return sorted(__components, lambda c1,c2:parts[c1.cat_name]-parts[c2.cat_name])
-
-
-def lastUpdateTime():
-    now = datetime.now()
-    hour = now.hour+8
-    retval = ''
-    mo = str(now.month)
-    if len(mo)<2:
-        mo = "0"+mo
-    da = str(now.day)
-    if len(da)<2:
-        da = "0"+da
-    if hour>18:
-        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
-    elif hour<9:
-        delta = timedelta(days=-1)
-        now = now + delta
-        retval = '.'.join((da,mo,str(now.year))) +' 18:15'
-    else:
-        if now.minute<14:
-            hour-=1
-        retval = '.'.join((da,mo,str(now.year))) +\
-            ' '+str(hour)+':15'
-    return retval
-
-
-# @forceCond(noChoicesYet, fillChoices)
-# def index(template, skin, request):
-#     def buildProcAndVideo(components):
-#         proc_video = {}
-#         for c in components:
-#             if c.cat_name == proc:
-#                 proc_video['proc_code'] = c.component['_id']
-#                 proc_video['proc_catalog'] = getCatalogsKey(c.component)
-#                 if 'brand' in c.component:
-#                     proc_video['brand'] = c.component['brand']
-#                 if 'cores' in c.component:
-#                     proc_video['cores'] = c.component['cores']
-#                 if 'cache' in c.component:
-#                     proc_video['cache'] = c.component['cache']
-#             elif c.cat_name == video:
-#                 proc_video['video_code'] = c.component['_id']
-#                 proc_video['video_catalog'] = getCatalogsKey(c.component)
-#         return proc_video
-
-#     def render(result):
-#         i = 0
-#         models = sorted([Model(row['doc']) for row in result['rows']],
-#                         lambda x,y: x.order-y.order)
-#         tree = template.root()
-#         div = template.middle.xpath('//div[@id="computers_container"]')[0]
-#         json_prices = {}
-#         json_procs_and_videos = {}
-#         # TODO! make model view as for ComponentForModelsPage!!!!!!!!
-#         for m in models:
-#             model_snippet = tree.find('model')
-#             snippet = deepcopy(model_snippet.find('div'))
-#             snippet.set('style',"background-image:url('" + imgs[i] + "')")
-#             a = snippet.find('.//a')
-#             a.set('href','/computer/%s' % m._id)
-#             a.text=m.name
-#             price_span = snippet.find('.//span')
-#             price_span.set('id',m._id)
-#             # components = buildPrices(m, json_prices, price_span)
-#             json_procs_and_videos.update({m._id:buildProcAndVideo(components)})
-#             div.append(snippet)
-#             i+=1
-#             if i==len(imgs): i=0
-#         template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'+\
-#             'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
-#         last_update = template.middle.xpath('//span[@id="last_update"]')[0]
-#         last_update.text = lastUpdateTime()
-
-#         skin.top = template.top
-#         skin.middle = template.middle
-#         return skin.render()
-
-#     d = couch.openView(designID,'models',include_docs=True,stale=False)
-#     d.addCallback(render)
-#     return d
-
-
-def updateOriginalModelPrices():
-    def update(models):
-        for row in models['rows']:
-            model = row['doc']
-            model['original_prices'] = {}
-            for name,code in model['items'].items():
-                if type(code) is list:
-                    code = code[0]
-                if code in globals()['gChoices_flatten']:
-                    component = globals()['gChoices_flatten'][code]
-                    model['original_prices'].update({code:component['price']})
-                else:
-                    model['original_prices'].update({code:99})
-            couch.saveDoc(model)
-    d = couch.openView(designID,'models',include_docs=True,stale=False)
-    d.addCallback(update)
 
 
 
@@ -852,7 +676,7 @@ class ZipConponents(Resource):
 
         mothers_mapping = {}
         for m in mothers:
-            if len(m)==0:continue
+            if len(m)==0:continue            
             cats = getCatalogsKey(m[0]['doc'])
             mothers_mapping.update({tuple(cats):m})
         proc_mapping = {}
@@ -1347,6 +1171,7 @@ class Component(object):
 
 
     def getCatalogsKey(self):
+        print "yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeha"
         if 'catalogs' not in self.component_doc:
             return 'no'
         if type(self.component_doc['catalogs'][0]) is dict:

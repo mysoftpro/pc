@@ -13,8 +13,8 @@ from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
 from pc.models import parts,\
-    noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
+    noComponentFactory,makePrice,makeNotePrice,parts_names,parts,\
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, findComponent, upgrade_set, Model
 from pc.views import Cart, Computers, Computer, Index
 from pc.catalog import XmlGetter, WitNewMap
@@ -216,7 +216,7 @@ class PriceForMarket(Resource):
         # tree = root.getroottree()
         # tree.docinfo.doctype = '<!DOCTYPE yml_catalog SYSTEM "shops.dtd">'
         # tree.DocInfo
-        lut = lastUpdateTime()
+        lut = Index.lastUpdateTime()
         da,ta = lut.split(' ')
         lida = da.split('.')
         lida.reverse()

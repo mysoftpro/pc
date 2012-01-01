@@ -12,8 +12,8 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import noComponentFactory,makePrice,makeNotePrice,parts_names,parts,updateOriginalModelPrices,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,lastUpdateTime, ZipConponents, CatalogsFor,\
+from pc.models import noComponentFactory,makePrice,makeNotePrice,parts_names,parts,\
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion
 from pc.catalog import XmlGetter, WitNewMap, getNewImage, getNewDescription
 from twisted.web import proxy
@@ -36,7 +36,31 @@ from zope.interface import implements
 from twisted.web.resource import IResource
 from pc.common import MIMETypeJSON
 
+
+
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
+
+
+def updateOriginalModelPrices():
+    def update(res):
+        for row in res['rows']:
+            model = row['doc']
+            model['original_prices'] = {}
+            from pc import models
+            for name,code in model['items'].items():
+                if type(code) is list:
+                    code = code[0]
+                if code in models.gChoices_flatten:
+                    component = models.gChoices_flatten[code]
+                    model['original_prices'].update({code:component['price']})
+                else:
+                    model['original_prices'].update({code:99})
+            couch.saveDoc(model)
+    d = couch.openView(designID,'models',include_docs=True,stale=False)
+    d.addCallback(update)
+
+
+
 
 class Realm(object):
     implements(IRealm)
@@ -741,7 +765,7 @@ def clear_cache():
     models.gChoices_flatten = {}
     models.gWarning_sent = []
     d = models.fillChoices()
-    d.addCallback(lambda x: models.updateOriginalModelPrices())
+    d.addCallback(lambda x: updateOriginalModelPrices())
 
 
 

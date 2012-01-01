@@ -587,6 +587,8 @@ class Index(PCView):
         'static/comp_icon_3.png',
         'static/comp_icon_4.png'
         ]
+
+    @classmethod
     def lastUpdateTime(self):
         now = datetime.now()
         hour = now.hour+8
