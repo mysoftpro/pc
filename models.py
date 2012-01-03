@@ -418,65 +418,6 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'admin':u'Компьютеры для айтишников',
                            'game':u'Игровые компьютеры'}
 
-#refactor (just comment it and youl see
-def findComponent(model, name):
-    #hack for orders
-    def lookFor():
-        if 'this_order' in model:
-            components = []
-            for c in model['this_order']['components']:
-                if c['_id'].startswith('no'):
-                    price = 0
-                else:
-                    price = c['ourprice']*c['count']
-                components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
-            return lambda code: [c for c in components if c['_id'] == code][0]
-        elif 'promo' in model:
-            components = []
-            for c in promo_components:
-                if c['_id'].startswith('no'):
-                    price = 0
-                else:
-                    price = c['price']
-                components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
-            return lambda code: [c for c in components if c['_id'] == code][0]
-        else:
-            return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
-    look_for = lookFor()
-    # code = model['items'][name]
-    code = model.getCode(name)
-    if type(code) is list:
-        code = code[0]
-    if code is None or code.startswith('no'):
-        return noComponentFactory({},name)
-    replaced = False
-    # retval = globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
-    retval = look_for(code)
-    if retval is None:
-        retval = replaceComponent(code,model)
-        replaced = True
-    else:
-        pass
-    # there is 1 thing downwhere count! is is installed just in this component!
-    ret = deepcopy(retval)
-    ret['replaced'] = replaced
-    if replaced:
-        ret['old_code'] = code
-    return ret
-
-def getComponentIcon(component, indexExtractor=lambda imgs: imgs[0]):
-    retval = "/static/icon.png"
-    if 'description' in component and'imgs' in component['description']:
-        retval = ''.join(("/image/",component['_id'],"/",
-                          indexExtractor(component['description']['imgs']),'.jpg'))
-    if '/preview' in retval:
-        splitted = retval.split('/preview')
-        retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
-
-    return retval
-
-
-
 
 def getNoteBookName(doc):
 
