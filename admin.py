@@ -12,9 +12,9 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import noComponentFactory,makePrice,makeNotePrice,parts_names,parts,\
+from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion
+    NamesFor, ParamsFor, promotion, Model
 from pc.catalog import XmlGetter, WitNewMap, getNewImage, getNewDescription
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -324,7 +324,7 @@ class FindOrder(Resource):
 	def addPrice(ourPrice=None):
 	    def add(doc):
 		if ourPrice is None:
-		    doc['ourprice'] = makePrice(doc)
+		    doc['ourprice'] = Model.makePrice(doc)
 		else:
 		    doc['ourprice'] = ourPrice
 		return doc

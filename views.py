@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices, Model,makePrice, cleanDoc, Model
+from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course
 from copy import deepcopy
@@ -444,7 +444,7 @@ class Computer(PCView):
             rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
         def addComponent(_options, _row, current_id):
-            _price= makePrice(_row['doc'])
+            _price= Model.makePrice(_row['doc'])
             _option = makeOption(_row, _price)
             _options.append((_option, _price))
             if _row['id'] == current_id:
@@ -504,7 +504,7 @@ class Computer(PCView):
             viewlet = deepcopy(original_viewlet)
             descr = fillViewlet(name, component_doc)
 
-            price = makePrice(component_doc)
+            price = Model.makePrice(component_doc)
 
             total += price
             # print component_doc

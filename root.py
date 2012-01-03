@@ -12,8 +12,7 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
 from datetime import datetime, date
-from pc.models import parts,\
-    noComponentFactory,makePrice,makeNotePrice,parts_names,parts,\
+from pc.models import makeNotePrice,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model
 from pc.views import Cart, Computers, Computer, Index
@@ -992,7 +991,7 @@ class Component(Resource):
         descr = {'name':'','comments':'','img':[],'imgs':[]}
         if 'description' in doc:
             descr = doc['description']
-        price = makePrice(doc)
+        price = Model.makePrice(doc)
         descr['price'] = price
         request.write(simplejson.dumps(descr))
         request.finish()

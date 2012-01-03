@@ -107,19 +107,6 @@ Margin=1.15
 Course = 32.0
 
 #refactor (just comment it and youl see
-# def makePrice(doc):
-#     #orders! they prices are fixed
-#     if 'ourprice' in doc:
-#         return doc['ourprice']
-#     if doc['price'] == 0:
-#         return 0
-#     course = Course
-#     if Model.getCatalogsKey(doc) == windows:
-#         course = 1
-#     our_price = float(doc['price'])*Margin*course
-#     return int(round(our_price/10))*10
-
-#refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
     new_doc = {}
     to_clean = ['id', '_attachments','flags','inCart',
@@ -595,7 +582,7 @@ class ZipConponents(Resource):
 
     def getPriceAndCode(self, row):
         #Component(
-        return {row['doc']['_id']:makePrice(row['doc'])}
+        return {row['doc']['_id']:Model.makePrice(row['doc'])}
 
     @MIMETypeJSON
     def render_GET(self, request):
@@ -653,7 +640,7 @@ class NamesFor(Resource):
         res = {}
         for c in codes:
             component = globals()['gChoices_flatten'][c]
-            res.update({c:component['text'] + ' <strong>'+unicode(makePrice(component)) + u' р</strong>'})
+            res.update({c:component['text'] + ' <strong>'+unicode(Model.makePrice(component)) + u' р</strong>'})
         return simplejson.dumps(res)
 
 class ParamsFor(Resource):
@@ -926,6 +913,20 @@ class Model(object):
             return cats
         return doc['catalogs']
 
+    @classmethod
+    def makePrice(cls, doc):
+        #orders! they prices are fixed
+        if 'ourprice' in doc:
+            return doc['ourprice']
+        if doc['price'] == 0:
+            return 0
+        course = Course
+        if Model.getCatalogsKey(doc) == windows:
+            course = 1
+        our_price = float(doc['price'])*Margin*course
+        return int(round(our_price/10))*10
+    
+
     @property
     def ours(self):
         return self.get('ours', False)
@@ -990,7 +991,7 @@ class Model(object):
             if v is None: continue
             if v.startswith('no'):continue
             component = deepcopy(self.findComponent(k))
-            component['price'] = makePrice(component)
+            component['price'] = Model.makePrice(component)
             self.model_doc['full_items'].append(component)
         self.model_doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
         return self.model_doc
@@ -1055,7 +1056,7 @@ class Model(object):
                 code = code[0]
             component_doc = self.findComponent(cat_name)
             code = component_doc['_id']
-            price = makePrice(component_doc)*count
+            price = Model.makePrice(component_doc)*count
             self.total += price
             self.updateCatPrice(cat_name,displ,price)
             self.updateCatPrice(cat_name,soft,price)
@@ -1128,19 +1129,7 @@ class Component(object):
         return self.get('cache', '')
 
     def makePrice(self):
-        #orders! they prices are fixed
-        if 'ourprice' in self.component_doc:
-            return self.component_doc['ourprice']
-        if self.component_doc['price'] == 0:
-            return 0
-        course = Course
-        if Model.getCatalogsKey(self.component_doc) == windows:
-            course = 1
-        our_price = float(self.component_doc['price'])*Margin*course
-        return int(round(our_price/10))*10
-
-
-
+        return Model.makePrice(self.component_doc)
 
 
 
