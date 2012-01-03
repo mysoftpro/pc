@@ -970,18 +970,13 @@ class Model(object):
             code = code[0]
         if code is None or code.startswith('no'):
             return noComponentFactory({},cat_name)
-        replaced = False
 
         retval = look_for(code)
         if retval is None:
             retval = self.replaceComponent(code)
-            replaced = True
-        else:
-            pass
-        # there is 1 thing downwhere count! is is installed just in this component!
         ret = deepcopy(retval)
-        ret['replaced'] = replaced
-        if replaced:
+        ret['replaced'] = code != ret['_id']
+        if ret['replaced']:
             ret['old_code'] = code
         return ret
 
