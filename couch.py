@@ -5,7 +5,8 @@ import os
 import os.path
 
 def pr(failure):
-    print failure
+    pass
+    # print failure
 
 def getDesign(failure):
     d = None
@@ -55,8 +56,6 @@ def syncViews(designDoc):
     def compDicts(di1, di2):
         changed = False
         def getcha(element):
-            print "getcha!"
-            print element
             return True
         try:
             for el in di1:
@@ -69,41 +68,21 @@ def syncViews(designDoc):
                         changed = getcha(eel)
                         break
                     if di1[el][eel] != di2[el][eel]:
-                        # print "fuck!"
-                        # print type(di1[el][eel])
-                        # print type(di2[el][eel])
-                        # print di1[el][eel].encode('utf-8')
-                        # print di2[el][eel].encode('utf-8')
                         changed = getcha((di1[el][eel],di2[el][eel]))
                         break
         except Exception, e:
-            print "fuuuuuuuuuuuuuuuuuuuuuuuuuck"
-            print e
+            pass
         return changed
     res = None
     if compDicts(designDoc['views'], new_design['views']) or compDicts(new_design['views'], designDoc['views']):
-        print "stooooooooooooooooooooooooore new design"
         res = couch.saveDoc(new_design)
         def pr(res):
-            print res
+            pass
+            # print res
         res.addCallback(pr)
         res.addErrback(pr)
     print "finish syncing"
     return res
-
-    # for el in new_design:
-    #     # something added
-    #     if el not in designDoc:
-    #         changed = True
-    #         for eel in el:
-    #             if eel not in designDoc[el]:
-    #                 changed = True
-    #                 break
-    #             if new_design[el][eel] != designDoc[el][eel]:
-    #                 changed = True
-    #                 break
-
-
 
 d = couch.openDoc(design_id)
 d.addCallback(syncViews)

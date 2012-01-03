@@ -4,14 +4,13 @@ from email.Header import Header
 from email.Utils import parseaddr, formataddr
 from twisted.mail.smtp import ESMTPSenderFactory
 from urllib import unquote_plus
-from kalog.secure import mailpassword
+from pc.secure import mailpassword
 import re
 from string import Template
 from email.MIMEText import MIMEText
 from email.mime.multipart import MIMEMultipart
 from twisted.web.server import NOT_DONE_YET
 from twisted.web.resource import Resource
-from kalog.crawler.couch import couch, designID
 
 from cStringIO import StringIO
 from twisted.internet import reactor, defer
