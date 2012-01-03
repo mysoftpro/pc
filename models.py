@@ -104,7 +104,7 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
 
 
 Margin=1.15
-Course = 32.0
+Course = 32.2
 
 #refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
@@ -853,6 +853,21 @@ class Model(object):
                 cats.append(str(c['id']))
             return cats
         return doc['catalogs']
+
+
+    @classmethod
+    def getComponentIcon(cls, component_doc, default = "/static/icon.png"):
+        retval = default
+        if 'description' in component_doc and'imgs' in component_doc['description']:
+            imgs = component_doc['description']['imgs']
+            if len(imgs)>0:
+                retval = ''.join(("/image/",component_doc['_id'],"/",
+                                  imgs[0],'.jpg'))
+        if retval is not None and '/preview' in retval:
+            splitted = retval.split('/preview')
+            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+        return retval
+            
 
     @classmethod
     def makePrice(cls, doc):

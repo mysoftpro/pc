@@ -1,6 +1,14 @@
 function saveDoc(e){
     var tr = $(e.target).parent();
     var doc = tr.data('doc');
+    doc['chip'] = tr.find('input[name="chip"]').val();
+    doc['vendor'] = tr.find('input[name="vendor"]').val();
+    doc['year'] = tr.find('input[name="year"]').val();
+    doc['power'] = tr.find('input[name="power"]').val();
+    doc['cores'] = tr.find('input[name="cores"]').val();
+    doc['memory'] = tr.find('input[name="memory"]').val();
+    doc['memory_ammo'] = tr.find('input[name="memory_ammo"]').val();
+
     // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
     // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
     // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
@@ -58,6 +66,42 @@ function fillVideos(data){
 		description.html(doc['description']['comments']);
 	    }
 
+	    
+	    var chip = $(document.createElement('td'));
+	    chip.append(addInput(doc,'chip'));
+	    chip.find('input').css('width','60px');
+
+	    var vendor = $(document.createElement('td'));
+	    vendor.append(addInput(doc,'vendor'));
+	    vendor.find('input').css('width','60px');
+
+
+
+	    var year = $(document.createElement('td'));
+	    year.append(addInput(doc,'year'));
+	    //year.find('input').css('width','60px');
+
+	    var power = $(document.createElement('td'));
+	    power.append(addInput(doc,'power'));
+	    //power.find('input').css('width','60px');
+
+
+	    var cores = $(document.createElement('td'));
+	    cores.append(addInput(doc,'cores'));
+	    //cores.find('input').css('width','60px');
+
+
+	    var memory = $(document.createElement('td'));
+	    memory.append(addInput(doc,'memory'));
+	    //memory.find('input').css('width','60px');
+
+	    var memory_ammo = $(document.createElement('td'));
+	    memory_ammo.append(addInput(doc,'memory_ammo'));
+	    //memory.find('input').css('width','60px');
+
+
+
+
 	    // var hdmi = $(document.createElement('td'));
 	    // hdmi.append(addInput(doc,'hdmi'));
 
@@ -95,7 +139,8 @@ function fillVideos(data){
 		.click(saveDoc)
 		.text('сохранить');
 	    tr.append(name)
-	    .append(crossfire).append(sli).append(stock)
+	    .append(crossfire).append(sli).append(chip).append(vendor).append(year).append(power)
+		.append(cores).append(memory).append(memory_ammo).append(stock)
 		.append(open).append(save);//.append(hdmi).append(dvi).append(dsub)
 	    tr.data('doc',doc);
 	    tr1.append(description);
@@ -126,7 +171,7 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td></tr>');
+      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>memory_ammo</td><td>stock</td></tr>');
       $.ajax({
 		 url:'videos',
 		 success:fillVideos

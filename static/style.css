@@ -1219,14 +1219,14 @@ h1.bold.left{
     color:#B6C974;
 }
 
-a.modelicon{
+.modelicon{
     position:relative;
     display:block;
     height:150px;
     width:150px;
     left:-10px;
 }
-a.modelicon .gallery-shadow{
+.modelicon .gallery-shadow{
     display:block;
     position:absolute;
     top:0%;
@@ -1237,7 +1237,7 @@ a.modelicon .gallery-shadow{
     background-repeat:no-repeat;
 }
 
-a.modelicon img{
+.modelicon img{
     max-height:150px;
     max-width:140px;
 }
@@ -2470,4 +2470,34 @@ a.modelicon img{
     height:150px;
     margin-top:20px;
     margin-bottom:100px;
+}
+.chip{
+    float:left;    
+    min-height:350px;
+    margin-left:20px;
+}
+.chipname{
+    font-weight:bold;
+}
+.chipVendors{
+    padding-left:5px;
+}
+
+.chipVendors li {
+    background-image:url('/static/build_icons.png');
+    background-position:0px -385px;   
+    height:16px;
+    background-repeat:no-repeat;
+    padding-left:18px;
+    list-style-type:none;
+    cursor:pointer;
+    margin-bottom:6px;
+}
+
+.chipVendors strong{
+    margin-left:5px;
+    margin-right:5px;
+}
+.chip table{
+    max-width:150px;
 }

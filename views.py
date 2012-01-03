@@ -26,6 +26,7 @@ class ModelInCart(object):
         self.description_div = divs[1]
 
 
+    # TODO! use Model.getNotebookIcon !!!!!!!!!!!!!
     def getCaseIcon(self):
         retval = "/static/icon.png"
         if self.model.case.description and'imgs' in self.model.case.description:
@@ -204,6 +205,7 @@ class NotebookInCart(object):
         self.container = container
 
 
+    #TODO! use Model.getComponentIcon !!!!!!!!!!!!!!!!!!
     def getNotebookIcon(self):
         retval = "/static/icon.png"
         if self.notebook.description and'imgs' in self.notebook.description:
@@ -276,7 +278,7 @@ class Cart(PCView):
 
     def renderModels(self, user):
         models_div = self.getModelsDiv()
-        for m in user.getUserModels():            
+        for m in user.getUserModels():
             view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
@@ -343,7 +345,7 @@ class ModelOnModels(ModelInCart):
 class Computers(Cart):
 
     def renderComputers(self, res):
-        models_div = self.getModelsDiv()        
+        models_div = self.getModelsDiv()
         models=  []
         for row in res['rows']:
             if row['doc'] is None:
@@ -620,7 +622,7 @@ class Index(PCView):
         json_prices = {}
         json_procs_and_videos = {}
         i = 0
-        for m in models:            
+        for m in models:
             model_snippet = self.tree.find('model')
             snippet = deepcopy(model_snippet.find('div'))
             snippet.set('style',"background-image:url('" + self.imgs[i] + "')")
@@ -647,4 +649,67 @@ class Index(PCView):
     def preRender(self):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
         d.addCallback(self.renderIndex)
+        return d
+
+
+class VideoCards(PCView):
+    def renderChips(self, res):
+        chips = {}
+        for row in res['rows']:
+            if row['key'] in chips:
+                chips[row['key']].append(row['value'])
+            else:
+                chips[row['key']] = [row['value']]
+        container = self.template.middle.xpath('//div[@id="models"]')[0]
+        for chip in chips:
+            ch = deepcopy(self.template.root().find('chip'))
+            chip_div = etree.Element('div')
+            chip_div.set('class', 'chip')
+            chip_name = ch.xpath('//div[@class="chipname"]')[0]
+            chip_name.text = u'Видеокарта ' + chip
+
+            chip_vendors = ch.xpath('//ul[@class="chipVendors"]')[0]
+
+            from pc.models import gChoices_flatten as choices
+            price_is_good = True
+            image_was_set = False
+            for _id in chips[chip]:
+                if _id not in choices:
+                    continue
+                doc = choices[_id]
+                price = Model.makePrice(doc)
+                if price < 3500:
+                    price_is_good = False
+                    continue
+
+                if not image_was_set:
+                    icon = Model.getComponentIcon(doc, default=None)
+                    if icon is not None:
+                        image = ch.xpath('//img')[0]
+                        image.set('src', icon)
+                        image_was_set = True
+
+                
+                ve = etree.Element('li')
+                link = etree.Element('a')
+                span = etree.Element('span')
+                strong = etree.Element('strong')
+                span.text = doc['vendor']
+                strong.text = unicode(price)+u' р'
+                link.text = u'Подробнее'
+                link.set('href','video'+doc['_id'].replace('new_','_'))
+                ve.append(span)
+                ve.append(strong)
+                ve.append(link)
+                chip_vendors.append(ve)
+            if price_is_good:
+                for el in ch:
+                    chip_div.append(el)
+                container.append(chip_div)
+
+        print len(chips)
+
+    def preRender(self):
+        d = couch.openView(designID,'video_chips',stale=False)
+        d.addCallback(self.renderChips)
         return d
