@@ -241,6 +241,7 @@ class NotebookInCart(object):
 
 
 class PCView(object):
+    title = u'Компьютерный магазин Билд'
     def __init__(self, template,skin,request, name):
         self.template = template
         self.request = request
@@ -260,6 +261,8 @@ class PCView(object):
         def _render(some):
             self.skin.top = self.template.top
             self.skin.middle = self.template.middle
+            title = self.skin.root().xpath('//title')[0]
+            title.text = self.title
             self.postRender()
             return self.skin.render()
         d.addCallback(_render)
@@ -267,7 +270,7 @@ class PCView(object):
 
 
 class Cart(PCView):
-
+    title = u'Корзина'
     def preRender(self):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
@@ -348,7 +351,7 @@ class ModelOnModels(ModelInCart):
 
 
 class Computers(Cart):
-
+    title = u'Модели компьютеров'
     def renderComputers(self, res):
         models_div = self.getModelsDiv()
         models=  []
@@ -375,6 +378,7 @@ class Computers(Cart):
 no_component_added = False
 
 class Computer(PCView):
+    title=u'Изменение конфигурации компьютера'
     def preRender(self):
         d = couch.openDoc(self.name)
         d.addCallback(lambda m: Model(m))
@@ -589,6 +593,7 @@ class Computer(PCView):
 
 
 class Index(PCView):
+    title = u'Компьютерный магащин Билд. Компьютеры в любой конфигурации. Большой выбор процессоров, материнских плат и видеокарт.'
     imgs = ['static/comp_icon_1.png',
         'static/comp_icon_2.png',
         'static/comp_icon_3.png',
@@ -658,6 +663,7 @@ class Index(PCView):
 
 
 class VideoCards(PCView):
+    title=u'Лучшие видеокарты GeForce и Radeon для апгрейда'
     def renderChips(self, res):
         chips = {}
         vendors = set()
