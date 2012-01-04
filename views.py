@@ -3,7 +3,7 @@ from pc.couch import couch, designID
 from twisted.internet import defer
 from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
-    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course
+    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
@@ -48,6 +48,19 @@ class ModelInCart(object):
         link.append(strong)
 
 
+    def fillInfo(self):
+        info = self.model_div.xpath('//div[@class="info"]')[0]
+        if self.model.checkRequired:
+            if self.model.checkPerformed:
+                info.set('class', info.get('class')+ ' ask_info')
+                info.set('title',u'Ожидает проверки специалистом')
+            else:
+                info.set('class', info.get('class')+ ' confirm_info')
+                info.set('title',u'Проверено!')
+        else:
+            info.set('class', info.get('class')+ ' empty_info')
+
+
 
     def fillModelDiv(self):
         if self.model.processing:
@@ -63,17 +76,7 @@ class ModelInCart(object):
         else:
             link.set('href','/promotion/%s' % self.model.parent)
 
-        info = self.model_div.xpath('//div[@class="info"]')[0]
-        if self.model.checkRequired:
-            if self.model.checkPerformed:
-                info.set('class', info.get('class')+ ' ask_info')
-                info.set('title',u'Ожидает проверки специалистом')
-            else:
-                info.set('class', info.get('class')+ ' confirm_info')
-                info.set('title',u'Проверено!')
-        else:
-            info.set('class', info.get('class')+ ' empty_info')
-
+        self.fillInfo()
 
         price_span = self.model_div.find('.//span')
         price_span.set('id',self.model._id)
@@ -306,6 +309,8 @@ class Cart(PCView):
 
 
 class ModelOnModels(ModelInCart):
+    def fillInfo(self):
+        pass
     def fillComponentsList(self):
         ul = etree.Element('ul')
         ul.set('class','description')
@@ -677,27 +682,32 @@ class VideoCards(PCView):
                 if _id not in choices:
                     continue
                 doc = choices[_id]
-                price = Model.makePrice(doc)
-                if price < 3500:
+                video_card = VideoCard(doc, video)
+                print "+"
+                print video_card.goodPrice()
+                if not video_card.goodPrice():
                     price_is_good = False
-                    continue
-
+                    continue                
                 if not image_was_set:
-                    icon = Model.getComponentIcon(doc, default=None)
+                    icon = video_card.getComponentIcon(default=None)
                     if icon is not None:
                         image = ch.xpath('//img')[0]
                         image.set('src', icon)
                         image_was_set = True
-
-                
+                ch.xpath('//td[@class="vcores"]')[0].text = str(video_card.cores)
+                ch.xpath('//td[@class="power"]')[0].text = str(video_card.power)
+                ch.xpath('//td[@class="year"]')[0].text = str(video_card.year)
+                ch.xpath('//td[@class="memory"]')[0].text = str(video_card.memory)
+                ch.xpath('//td[@class="memory_ammo"]')[0].text = str(video_card.memory_ammo)
                 ve = etree.Element('li')
+                ve.set('id', video_card._id)
                 link = etree.Element('a')
                 span = etree.Element('span')
                 strong = etree.Element('strong')
-                span.text = doc['vendor']
-                strong.text = unicode(price)+u' р'
+                span.text = video_card.vendor
+                strong.text = unicode(video_card.makePrice())+u' р'
                 link.text = u'Подробнее'
-                link.set('href','video'+doc['_id'].replace('new_','_'))
+                link.set('href','video'+video_card.hid)
                 ve.append(span)
                 ve.append(strong)
                 ve.append(link)

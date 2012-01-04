@@ -1217,3 +1217,47 @@ class Comment(object):
     @property
     def author(self):
         return self.get('author','')
+
+
+class VideoCard(Component):
+
+
+    def goodPrice(self):        
+        return self.makePrice()>=4000
+
+    @property
+    def cores(self):
+        return self.get('cores', '-')
+
+    @property
+    def year(self):
+        return self.get('year', '-')
+
+    @property
+    def power(self):
+        return self.get('power', '-')
+
+
+    @property
+    def memory(self):
+        return self.get('memory', '-')
+
+    @property
+    def memory_ammo(self):
+        return self.get('memory_ammo', '-')
+
+    def getComponentIcon(self, default = "/static/icon.png"):
+        return Model.getComponentIcon(self.component_doc, default = default)
+
+    @property
+    def vendor(self):
+        return self.get('vendor', '-')
+
+    @property
+    def chip(self):
+        return self.get('chip', self._id)
+
+    @property
+    def hid(self):
+        """ hidden id"""
+        return self._id.replace('new_','_')

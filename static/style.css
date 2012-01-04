@@ -2474,7 +2474,7 @@ h1.bold.left{
 .chip{
     float:left;    
     min-height:350px;
-    margin-left:20px;
+    margin-left:15px;
 }
 .chipname{
     font-weight:bold;
