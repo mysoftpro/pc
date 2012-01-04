@@ -2477,7 +2477,13 @@ h1.bold.left{
     margin-left:15px;
 }
 .chipname{
-    font-weight:bold;
+    font-weight: bold;
+    border: 1px solid #777;
+    padding: 5px;
+    width: 140px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px 1px #222;
+    margin-bottom:10px;
 }
 .chipVendors{
     padding-left:5px;
@@ -2500,4 +2506,21 @@ h1.bold.left{
 }
 .chip table{
     max-width:150px;
+}
+.chip tr{
+    line-height:18px;
+}
+.video_image{
+    height:180px;
+}
+.videoicon{
+    float:right;
+    margin-left:10px; 
+}
+.video_rate{
+    background-image:url('bui_thumbs.png');
+    width:30px;
+    height:32px;
+    background-position:0px -263px;
+    float:left;
 }

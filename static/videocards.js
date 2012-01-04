@@ -9,8 +9,8 @@ function init(){
 				       target = target.parent();
 				       tag = target[0].tagName.toLowerCase();
 				   }
-				   console.log(target[0].id);
-				   showComponent({preventDefault:function(){},target:target[0]});
+				   showComponent({preventDefault:function(){},
+						  target:{id:'_'+target[0].id}});
 			       });
 }
 init();

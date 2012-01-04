@@ -1226,6 +1226,10 @@ class VideoCard(Component):
         return self.makePrice()>=4000
 
     @property
+    def rate(self):
+        return self.get('rate', 5)
+
+    @property
     def cores(self):
         return self.get('cores', '-')
 

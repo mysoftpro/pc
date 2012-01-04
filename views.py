@@ -671,20 +671,24 @@ class VideoCards(PCView):
             chip_div = etree.Element('div')
             chip_div.set('class', 'chip')
             chip_name = ch.xpath('//div[@class="chipname"]')[0]
-            chip_name.text = u'Видеокарта ' + chip
+            chip_name.text = u'Видеокарта '
+            br = etree.Element('br')
+            br.tail = chip
+            chip_name.append(br)
+            
 
             chip_vendors = ch.xpath('//ul[@class="chipVendors"]')[0]
 
             from pc.models import gChoices_flatten as choices
             price_is_good = True
             image_was_set = False
+            rate_was_set = False
             for _id in chips[chip]:
                 if _id not in choices:
                     continue
                 doc = choices[_id]
                 video_card = VideoCard(doc, video)
-                print "+"
-                print video_card.goodPrice()
+
                 if not video_card.goodPrice():
                     price_is_good = False
                     continue                
@@ -694,11 +698,20 @@ class VideoCards(PCView):
                         image = ch.xpath('//img')[0]
                         image.set('src', icon)
                         image_was_set = True
-                ch.xpath('//td[@class="vcores"]')[0].text = str(video_card.cores)
-                ch.xpath('//td[@class="power"]')[0].text = str(video_card.power)
-                ch.xpath('//td[@class="year"]')[0].text = str(video_card.year)
-                ch.xpath('//td[@class="memory"]')[0].text = str(video_card.memory)
-                ch.xpath('//td[@class="memory_ammo"]')[0].text = str(video_card.memory_ammo)
+                if not rate_was_set:
+                    video_img = ch.xpath('//div[@class="modelicon videoicon"]')[0]
+                    rate = video_card.rate
+                    while rate>0:
+                        d = etree.Element('div')
+                        d.set('class', 'video_rate')
+                        video_img.append(d)
+                        rate-=1
+                    rate_was_set = True
+                ch.xpath('//td[@class="vcores"]')[0].text = unicode(video_card.cores)
+                ch.xpath('//td[@class="power"]')[0].text = unicode(video_card.power) + u' Вт'
+                ch.xpath('//td[@class="year"]')[0].text = unicode(video_card.year)
+                ch.xpath('//td[@class="memory"]')[0].text = unicode(video_card.memory)
+                ch.xpath('//td[@class="memory_ammo"]')[0].text = unicode(video_card.memory_ammo)
                 ve = etree.Element('li')
                 ve.set('id', video_card._id)
                 link = etree.Element('a')
