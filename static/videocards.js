@@ -1,3 +1,8 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
 function init(){
     var chipvendors = $('.chipVendors li');
     chipvendors.click(function(e){
@@ -72,6 +77,45 @@ function init(){
                                      });
                        }
                    });
-
+    //var vendor_list = $('#video_vendor_list');
+    //var row= $(document.createElement('tr'));
+    //vendor_list.append(row);
+    _(vendors)
+        .each(function(v,i){
+                  // if (i==4){
+                  //     row = $(document.createElement('tr'));
+                  //     vendor_list.append(row);
+                  // }
+                  // row.append(_.template('<td><input id="{{vendor_id}}" type="checkbox" checked="checked"/><label for="{{vendor_id}}">{{vendor}}</label></td>',{vendor_id:v.replace(' ','_'),vendor:v}));
+                  $('#'+v.replace(' ','_')).change(function(e){
+                                      _(chipvendors.toArray())
+                                          .each(function(_el){
+                                                    var target = $(e.target);
+                                                    var _vendor = target.attr('id');
+                                                    var el = $(_el);
+                                                    var vendor = el
+                                                        .find('span')
+                                                        .text().replace(' ','_');
+                                                    if (vendor !==_vendor)
+                                                        return;
+                                                    if (!target.is(':checked'))
+                                                        el.hide();
+                                                    else
+                                                        el.show();
+                                                    var pa = el.parent();
+                                                    var all_hidden = _(pa.children().toArray())
+                                                        .every(function(l){
+                                                                   return $(l).css('display')=='none';
+                                                               });
+                                                    var papa = pa.parent();
+                                                    if (all_hidden)
+                                                        pa.parent().hide();
+                                                    else{
+                                                        if(!papa.data('fltr_hidden'))
+                                                            papa.show();
+                                                    }
+                                                });
+                                  });
+              });
 }
 init();

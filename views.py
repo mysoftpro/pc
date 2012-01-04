@@ -660,6 +660,7 @@ class Index(PCView):
 class VideoCards(PCView):
     def renderChips(self, res):
         chips = {}
+        vendors = set()
         for row in res['rows']:
             if row['key'] in chips:
                 chips[row['key']].append(row['value'])
@@ -674,8 +675,7 @@ class VideoCards(PCView):
             chip_name.text = u'Видеокарта '
             br = etree.Element('br')
             br.tail = chip
-            chip_name.append(br)
-            
+            chip_name.append(br)            
 
             chip_vendors = ch.xpath('//ul[@class="chipVendors"]')[0]
 
@@ -707,6 +707,10 @@ class VideoCards(PCView):
                         video_img.append(d)
                         rate-=1
                     rate_was_set = True
+                
+                if not video_card.vendor in vendors:
+                    vendors.add(video_card.vendor)
+
                 ch.xpath('//td[@class="vcores"]')[0].text = unicode(video_card.cores)
                 ch.xpath('//td[@class="power"]')[0].text = unicode(video_card.power) + u' Вт'
                 ch.xpath('//td[@class="year"]')[0].text = unicode(video_card.year)
@@ -717,10 +721,10 @@ class VideoCards(PCView):
                 link = etree.Element('a')
                 span = etree.Element('span')
                 strong = etree.Element('strong')
-                span.text = video_card.vendor
+                span.text = video_card.vendor                
                 strong.text = unicode(video_card.makePrice())
                 strong.tail = u' р'
-                link.text = u'Подробнее'
+                link.text = u'На страницу товара'
                 link.set('href','video'+video_card.hid)
                 ve.append(span)
                 ve.append(strong)
@@ -730,9 +734,24 @@ class VideoCards(PCView):
                 for el in ch:
                     chip_div.append(el)
                 container.append(chip_div)
-
-        print len(chips)
-
+        self.template.middle.find('script').text = 'var vendors='+simplejson.dumps(list(vendors))+';'
+        vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]        
+        row = etree.Element('tr')
+        vendors_boxes.append(row)
+        vendor_td = self.template.root().find('vendor_td').find('td')
+        i = 0
+        for v in vendors:
+            if i==4:
+                row = etree.Element('tr')
+                vendors_boxes.append(row)
+            td = deepcopy(vendor_td)
+            inp = td.find('input')
+            inp.set('id', v.replace(' ','_'))
+            label = td.find('label')
+            label.set('for',v.replace(' ','_'))
+            label.text = v
+            row.append(td)
+            i+=1
     def preRender(self):
         d = couch.openView(designID,'video_chips',stale=False)
         d.addCallback(self.renderChips)

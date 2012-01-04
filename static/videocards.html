@@ -14,7 +14,9 @@
 	  </div>
 	</div>
 	<div style="float:right;margin-right:20px;">0 р.</div>
-
+	<div style="clear:both;"></div>
+	<div id="video_vendor">Фильтр по производителю карты</div>
+	<table id="video_vendor_list"></table>
       </div>
       <div style="clear:both;"></div>
     </div>
@@ -62,3 +64,11 @@
   <ul class="chipVendors"></ul>
 
 </chip>
+
+
+<vendor_td>
+  <td>
+    <input id="{{vendor_id}}" type="checkbox" checked="checked"/>
+    <label for="{{vendor_id}}">{{vendor}}</label>
+  </td>
+</vendor_td>

@@ -2549,3 +2549,7 @@ h1.bold.left{
 .radeon_inactive{
     background-position:-190px 0px;
 }
+#video_vendor{
+    margin-top:30px;
+    margin-left:15px;
+}
