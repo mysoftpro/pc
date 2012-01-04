@@ -2,9 +2,20 @@
 
     <h1>Видеокарты</h1>
     <div class="computers_top" style="margin-bottom:30px;">
-      <div>Кликайте на лого производителя чтобы исключить его из списка.</div>
+      <div>Кликайте бренд GPU чтобы исключить его из списка.</div>
       <div class="video_filter nvidia_active"></div>
       <div class="video_filter radeon_active" id="radeon"></div>
+      <div style="float:left;margin-left:155px;">
+	<div style="margin-left:55px;margin-top:-20px;margin-bottom:20px;">Ограничение по цене:</div>
+	<div style="float:right;"><span id="maxvideoprice">30000</span> р.</div>
+	<div title="Управление ценой" id="sliderprice" class="dragdealer rounded-cornered" style="width:200px;">
+	  <div class="red-bar handle" >
+	    <div class="dragfiller"></div>
+	  </div>
+	</div>
+	<div style="float:right;margin-right:20px;">0 р.</div>
+
+      </div>
       <div style="clear:both;"></div>
     </div>
   </div>

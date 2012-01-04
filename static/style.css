@@ -2502,8 +2502,11 @@ h1.bold.left{
 
 .chipVendors strong{
     margin-left:5px;
-    margin-right:5px;
 }
+.chipVendors a{
+    margin-left:5px;
+}
+
 .chip table{
     max-width:150px;
 }

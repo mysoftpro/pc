@@ -1227,7 +1227,7 @@ class VideoCard(Component):
 
     @property
     def rate(self):
-        return self.get('rate', 5)
+        return int(self.get('rate', 5))
 
     @property
     def cores(self):

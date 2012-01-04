@@ -8,6 +8,8 @@ function saveDoc(e){
     doc['cores'] = tr.find('input[name="cores"]').val();
     doc['memory'] = tr.find('input[name="memory"]').val();
     doc['memory_ammo'] = tr.find('input[name="memory_ammo"]').val();
+    doc['rate'] = tr.find('input[name="rate"]').val();
+
 
     // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
     // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
@@ -99,6 +101,9 @@ function fillVideos(data){
 	    memory_ammo.append(addInput(doc,'memory_ammo'));
 	    //memory.find('input').css('width','60px');
 
+	    var rate = $(document.createElement('td'));
+	    rate.append(addInput(doc,'rate'));	    
+
 
 
 
@@ -140,7 +145,7 @@ function fillVideos(data){
 		.text('сохранить');
 	    tr.append(name)
 	    .append(crossfire).append(sli).append(chip).append(vendor).append(year).append(power)
-		.append(cores).append(memory).append(memory_ammo).append(stock)
+		.append(cores).append(memory).append(memory_ammo).append(rate).append(stock)
 		.append(open).append(save);//.append(hdmi).append(dvi).append(dsub)
 	    tr.data('doc',doc);
 	    tr1.append(description);
@@ -171,7 +176,7 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>memory_ammo</td><td>stock</td></tr>');
+      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>m_ammo</td><td>rate</td><td>stock</td></tr>');
       $.ajax({
 		 url:'videos',
 		 success:fillVideos

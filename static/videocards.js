@@ -1,5 +1,6 @@
 function init(){
-    $('.chipVendors li').click(function(e){
+    var chipvendors = $('.chipVendors li');
+    chipvendors.click(function(e){
                                    var target = $(e.target);
                                    var tag = target[0].tagName.toLowerCase();
                                    if(tag=='a')
@@ -26,7 +27,7 @@ function init(){
                                      fltr = 'HD';
                                  }
                                  chipnames.each(function(el){
-						    if (!el.text().match(fltr))
+                                                    if (!el.text().match(fltr))
                                                           return;
                                                       if (inactive){
                                                           el.parent().parent().show();
@@ -36,5 +37,35 @@ function init(){
                                                       }
                                                   });
                              });
+    var pos = 300;
+    var steps = 300;
+    var price = $('#maxvideoprice');
+    new Dragdealer('sliderprice',{
+                       x:pos/steps,
+                       steps:steps,
+                       callback:function(x){
+                           var max_price = (this.stepRatios).indexOf(x)*100;
+                           price.text(max_price);
+                           _(chipvendors.toArray())
+                               .each(function(_el){
+                                         var el = $(_el);
+                                         var price = parseInt(el.find('strong').text());
+                                         if (price>max_price)
+                                             el.hide();
+                                         else
+                                             el.show();
+					 var pa = el.parent();
+					 var all_hidden = _(pa.children().toArray())
+					     .every(function(l){
+						       return $(l).css('display')=='none';
+						   });
+					 if (all_hidden)
+					     pa.parent().hide();
+					 else
+					     pa.parent().show();
+                                     });
+                       }
+                   });
+
 }
 init();

@@ -718,7 +718,8 @@ class VideoCards(PCView):
                 span = etree.Element('span')
                 strong = etree.Element('strong')
                 span.text = video_card.vendor
-                strong.text = unicode(video_card.makePrice())+u' р'
+                strong.text = unicode(video_card.makePrice())
+                strong.tail = u' р'
                 link.text = u'Подробнее'
                 link.set('href','video'+video_card.hid)
                 ve.append(span)
