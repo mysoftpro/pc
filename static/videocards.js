@@ -29,11 +29,13 @@ function init(){
                                  chipnames.each(function(el){
                                                     if (!el.text().match(fltr))
                                                           return;
+                                                    var pa = el.parent().parent();
                                                       if (inactive){
-                                                          el.parent().parent().show();
+                                                          pa.show().data('fltr_hidden', false);
                                                       }
                                                       else{
-                                                          el.parent().parent().hide();
+                                                          pa.hide().data('fltr_hidden', true);
+
                                                       }
                                                   });
                              });
@@ -54,15 +56,19 @@ function init(){
                                              el.hide();
                                          else
                                              el.show();
-					 var pa = el.parent();
-					 var all_hidden = _(pa.children().toArray())
-					     .every(function(l){
-						       return $(l).css('display')=='none';
-						   });
-					 if (all_hidden)
-					     pa.parent().hide();
-					 else
-					     pa.parent().show();
+                                         var pa = el.parent();
+                                         var all_hidden = _(pa.children().toArray())
+                                             .every(function(l){
+                                                       return $(l).css('display')=='none';
+                                                   });
+                                         if (all_hidden)
+                                             pa.parent().hide();
+                                         else{
+                                             var papa = pa.parent();
+                                             if(!papa.data('fltr_hidden'))
+                                                 papa.show();
+                                         }
+
                                      });
                        }
                    });
