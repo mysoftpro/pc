@@ -2524,3 +2524,25 @@ h1.bold.left{
     background-position:0px -263px;
     float:left;
 }
+.video_filter{
+    background-image:url('video_filter.png');
+    background-repeat:no-repeat;
+    float:left;
+    height:160px;
+    width:190px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:10px;
+}
+.nvidia_active{
+    background-position:-379px 0px;
+}
+.nvidia_inactive{
+    background-position:-566px 0px;
+}
+.radeon_active{
+    background-position:0px 0px;
+}
+.radeon_inactive{
+    background-position:-190px 0px;
+}

@@ -1,12 +1,16 @@
 <top>
-  <div id="models_top">
+
     <h1>Видеокарты</h1>
-    <div class="computers_top">            
-    </div>  
+    <div class="computers_top" style="margin-bottom:30px;">
+      <div>Кликайте на лого производителя чтобы исключить его из списка.</div>
+      <div class="video_filter nvidia_active"></div>
+      <div class="video_filter radeon_active" id="radeon"></div>
+      <div style="clear:both;"></div>
+    </div>
   </div>
-  </div>
+
 </top>
-<middle>  
+<middle>
   <script type="text/javascript"></script>
   <div id="models_container">
     <div id="models">
@@ -20,19 +24,19 @@
     var _next = ['/static/videocards.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <div id="toppopup">   
+  <div id="toppopup">
   </div>
 </middle>
 
 <chip>
 
-  <div style="float:left;max-width:160px;"> 
-  <div class="chipname"></div>  
+  <div style="float:left;max-width:160px;">
+  <div class="chipname"></div>
   <table>
+    <tr><td>Дата выпуска</td><td class="year">2011</td></tr>
     <tr><td>Процессоры</td><td class="vcores">3250</td></tr>
     <tr><td>Тип памяти</td><td class="memory">GDR5</td></tr>
     <tr><td>Память Mb</td><td class="memory_ammo">GDR5</td></tr>
-    <tr><td>Дата выпуска</td><td class="year">2011</td></tr>
     <tr><td>Питание</td><td class="power">250Вт</td></tr>
     <tr><td></td></tr>
   </table>
@@ -41,9 +45,9 @@
   <div class="modelicon videoicon">
     <span class="rollover" style="opacity: 0;"></span>
     <span class="gallery-shadow"></span>
-    <img class="video_image" alt="component_image" src="" style="">    
+    <img class="video_image" alt="component_image" src="" style="">
   </div>
   <div style="clear:both;"></div>
-  <ul class="chipVendors"></ul>  
+  <ul class="chipVendors"></ul>
 
 </chip>
