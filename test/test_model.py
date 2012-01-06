@@ -5,10 +5,8 @@ from pc import models
 
 
 class TestModel(unittest.TestCase):
-    
-    def setUp(self):        
-        # if not reactor.running:
-        #     reactor.run()
+
+    def setUp(self):
         models.gChoices = {models.proc:[], models.video:[]}
         models.gChoices_flatten = {}
 
@@ -16,8 +14,6 @@ class TestModel(unittest.TestCase):
         return models.Model({'_id':'test_model',
                               'items':items})
 
-    def test_Amock(self):
-        pass
 
     def test_findComponent(self):
         model = self.makeTestModel({models.proc:'test proc'})
@@ -26,12 +22,12 @@ class TestModel(unittest.TestCase):
         self.assertTrue(found['price'] == 10)
         self.assertTrue(found['_id'] == 'test proc')
         self.assertFalse(found['replaced'])
-        
+
         models.gChoices_flatten = {'test proc':{'_id':'replaced proc', 'price':20}}
         found1 = model.findComponent(models.proc)
 
         self.assertTrue(found1['price'] == 20)
-        self.assertTrue(found1['_id'] == 'replaced proc')        
+        self.assertTrue(found1['_id'] == 'replaced proc')
         self.assertTrue(found1['replaced'])
 
 
@@ -41,4 +37,3 @@ class TestModel(unittest.TestCase):
         proc_video = model.buildProcAndVideo()
         self.assertTrue(proc_video['proc_catalog'] == 'no')
         self.assertTrue(proc_video['video_catalog'] == 'no')
-        

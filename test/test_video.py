@@ -2,24 +2,20 @@
 from twisted.trial import unittest
 from twisted.internet import defer, reactor
 from pc import models, couch
-
+from pc.couch import couch, designID, sync as couch_sync
 
 class TestVideo(unittest.TestCase):
-    
-    def setUp(self):        
-        # if not reactor.running:
-        #     reactor.run()
+
+    def setUp(self):
         models.gChoices = {models.proc:[], models.video:[]}
         models.gChoices_flatten = {}
-
-
-    def test_Amock(self):
-        pass
+        return couch_sync()
 
     def getChips(self, res):
         print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         print res
 
     def test_Chips(self):
-        d = couch.couch.openView(couch.designID,'vieo_chops')
+        d = couch.openView(designID,'vieo_chops')
         d.addCallback(self.getChips)
+        return d

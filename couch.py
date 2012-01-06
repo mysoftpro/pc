@@ -88,3 +88,4 @@ def sync():
     d = couch.openDoc(design_id)
     d.addCallback(syncViews)
     d.addErrback(pr)
+    return d
