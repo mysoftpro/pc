@@ -84,6 +84,7 @@ def syncViews(designDoc):
     print "finish syncing"
     return res
 
-d = couch.openDoc(design_id)
-d.addCallback(syncViews)
-d.addErrback(pr)
+def sync():
+    d = couch.openDoc(design_id)
+    d.addCallback(syncViews)
+    d.addErrback(pr)

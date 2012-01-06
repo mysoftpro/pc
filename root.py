@@ -9,7 +9,7 @@ from pc import base36
 from twisted.web.server import NOT_DONE_YET
 import os
 from twisted.web.http import CACHED
-from pc.couch import couch, designID
+from pc.couch import couch, designID, sync as couch_sync
 import simplejson
 from datetime import datetime, date
 from pc.models import makeNotePrice,\
@@ -589,6 +589,11 @@ _comet_users = {}
 
 
 class Root(Resource):
+
+    @classmethod
+    def sync(cls):
+        couch_sync()
+
     def __init__(self, host_url, index_page):
         Resource.__init__(self)
         self.static = CachedStatic(static_dir)
