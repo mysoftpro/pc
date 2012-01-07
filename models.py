@@ -1265,3 +1265,7 @@ class VideoCard(Component):
     def hid(self):
         """ hidden id"""
         return self.get('articul', self._id.replace('new_','_')).lstrip().rstrip()
+
+    @property
+    def marketParams(self):
+        return self.get('marketParams', default='<table></table')

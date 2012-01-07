@@ -2553,3 +2553,38 @@ h1.bold.left{
     margin-top:30px;
     margin-left:15px;
 }
+#maparams{
+    float:left;
+}
+#videoimage{
+    float:right;
+    max-width:400px;
+}
+#maparams .b-properties__title {
+    padding: .8em 0 .6em;
+    font-size: 140%;
+}
+#maparams th, td {
+    padding: 0;
+    text-align: left;
+    vertical-align: top;
+    border-collapse: collapse;
+}
+#videoprice{
+    float:left;
+    font-size:14px;
+}
+#videoprice td{
+    padding-right: 5px;
+    text-align:right;
+}
+.videofeatures{
+    width:360px;
+}
+.videoadd{
+    font-size:12px;
+    margin-left:5px;
+    text-decoration:underline;
+    color:white;
+    cursor:pointer;
+}

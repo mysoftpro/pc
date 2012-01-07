@@ -791,7 +791,23 @@ class VideocardView(PCView):
 
         card = VideoCard(res['doc'])
         self.template.top.find('h1').text = card.text
-        # self.template.top.xpath('//div[@class="computers_top"]')[0].text = card.description['comments']
+        maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
+        for el in html.fragments_fromstring(card.marketParams):
+            maparams.append(el)
+        videoimage = self.template.middle.xpath('//div[@id="videoimage"]')[0].find('img')
+        videoimage.set('alt', card.description.get('name', ''))
+        videoimage.set('src', card.getComponentIcon())
+        
+        price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
+        rows = price_table.findall('tr')
+        for r in rows:
+            r[-1].text = unicode(card.makePrice())+ u' р.'
+            first = r[0]
+            if first.text != u'Итого':
+                first.text = card.description.get('name', card.text)
+            
+
+        # self.template.middle.xpath('//div[@id="videoprice"]')[0].text = unicode(card.makePrice())+ u' р.'
 
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _ 
