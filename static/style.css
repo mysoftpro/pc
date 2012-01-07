@@ -2588,3 +2588,21 @@ h1.bold.left{
     color:white;
     cursor:pointer;
 }
+#videopower{
+    background-image: url('bui_thumbs.png');
+    background-position: 0px -302px;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    margin-top: -26px;
+    margin-left: 330px;
+}
+#videoparallel{
+    background-image: url('bui_thumbs.png');
+    background-position: 0px -341px;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    margin-top: -26px;
+    margin-left: 330px;
+}
