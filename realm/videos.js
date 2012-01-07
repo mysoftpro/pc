@@ -11,6 +11,10 @@ function saveDoc(e){
     doc['rate'] = tr.find('input[name="rate"]').val();
     doc['articul'] = tr.find('input[name="articul"]').val();
 
+    doc['marketParams'] = tr.find('input[name="marketParams"]').val();
+    doc['marketComments'] = tr.find('input[name="marketComments"]').val();
+    doc['marketReviews'] = tr.find('input[name="marketReviews"]').val();
+
     // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
     // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
     // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
@@ -48,6 +52,7 @@ function addInput(doc,name){
         input.val(-1);
     return input;
 }
+
 
 function fillVideos(data){
     var table = $('#videotable');
@@ -108,6 +113,16 @@ function fillVideos(data){
 	    var articul = $(document.createElement('td'));
             articul.append(addInput(doc,'articul'));
             
+	    var marketParams = $(document.createElement('td'));
+            marketParams.append(addInput(doc,'marketParams'));
+
+	    var marketComments = $(document.createElement('td'));
+            marketComments.append(addInput(doc,'marketComments'));
+
+	    var marketReviews = $(document.createElement('td'));
+            marketReviews.append(addInput(doc,'marketReviews'));
+
+	    
 
 
             // var hdmi = $(document.createElement('td'));
@@ -148,7 +163,9 @@ function fillVideos(data){
                 .text('сохранить');
             tr.append(name)
             .append(crossfire).append(sli).append(chip).append(vendor).append(year).append(power)
-                .append(cores).append(memory).append(memory_ammo).append(rate).append(articul).append(stock)
+                .append(cores).append(memory).append(memory_ammo).append(rate).append(articul)
+		.append(marketParams).append(marketComments).append(marketReviews)
+		.append(stock)
                 .append(open).append(save);//.append(hdmi).append(dvi).append(dsub)
             tr.data('doc',doc);
             tr1.append(description);
@@ -179,7 +196,7 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>m_ammo</td><td>rate</td><td>articul</td><td>stock</td></tr>');
+      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>m_ammo</td><td>rate</td><td>articul</td><td>params</td><td>comments</td><td>reviews</td><td>stock</td></tr>');
       $.ajax({
                  url:'videos',
                  success:fillVideos

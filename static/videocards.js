@@ -125,15 +125,21 @@ init();
 function marketFor(){
     var links = _($('li a').toArray()).chain().map(function(el){return $(el);});
     links.each(function(el){
+		   var art = el.attr('href').split('/')[2];
 		   $.ajax({
 			      url:'marketFor',
-			      data:{'articul':el.attr('href').split('/')[2]},
+			      data:{'articul':art},
 			      success:function(data){
-			      	  if (data['error'])
+			      	  if (data['error']){
+				      console.log('----------------------');
 				      console.log(data['error']);
+				      console.log(el.parent().attr('id'));
+				      console.log('http://market.yandex.ru/search.xml?text='+
+						  art+'&cvredirect=1');
+				      console.log('..');
+				  }
 			      }
 			  });
 		  });
-
-
 }
+//was done for [<li id=​"new_88368">​…​</li>​] 
