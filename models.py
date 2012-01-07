@@ -1264,4 +1264,4 @@ class VideoCard(Component):
     @property
     def hid(self):
         """ hidden id"""
-        return self._id.replace('new_','_')
+        return self.get('articul', self._id.replace('new_','_')).lstrip().rstrip()

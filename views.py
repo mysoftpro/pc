@@ -11,6 +11,7 @@ from urllib import unquote_plus, quote_plus
 import simplejson
 import re
 from datetime import datetime,timedelta
+from twisted.web.error import NoResource
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -242,6 +243,7 @@ class NotebookInCart(object):
 
 class PCView(object):
     title = u'Компьютерный магазин Билд'
+
     def __init__(self, template,skin,request, name):
         self.template = template
         self.request = request
@@ -255,9 +257,16 @@ class PCView(object):
     def postRender(self):
         pass
 
+    force_no_resource = False
+
+    def noResource(self, fail=None):
+        return NoResource().render(self.request)
+
     @forceCond(noChoicesYet, fillChoices)
     def render(self):
         d = self.preRender()
+        if self.force_no_resource:
+            return self.noResource()
         def _render(some):
             self.skin.top = self.template.top
             self.skin.middle = self.template.middle
@@ -266,6 +275,7 @@ class PCView(object):
             self.postRender()
             return self.skin.render()
         d.addCallback(_render)
+        # d.addErrback(self.noResource)
         return d
 
 
@@ -731,7 +741,7 @@ class VideoCards(PCView):
                 strong.text = unicode(video_card.makePrice())
                 strong.tail = u' р'
                 link.text = u'На страницу товара'
-                link.set('href','video'+video_card.hid)
+                link.set('href','/videocard/'+quote_plus(video_card.hid))
                 ve.append(span)
                 ve.append(strong)
                 ve.append(link)
@@ -761,4 +771,31 @@ class VideoCards(PCView):
     def preRender(self):
         d = couch.openView(designID,'video_chips',stale=False)
         d.addCallback(self.renderChips)
+        return d
+
+
+class VideocardView(PCView):
+
+    title=u'Видеокарта'
+
+    def renderCard(self, res):
+
+        if len(res['rows'])==0:
+            self.force_no_resource = True
+            return
+        res = res['rows'][0]
+
+        if 'doc' not in res:
+            self.force_no_resource = True
+            return
+
+        card = VideoCard(res['doc'])
+        self.template.top.find('h1').text = card.text
+        # self.template.top.xpath('//div[@class="computers_top"]')[0].text = card.description['comments']
+
+    def preRender(self):
+        """ here the name is articul. or doc['_id'] with replaced _new replaced by _ 
+        (see hid property and articul.map.js)"""
+        d = couch.openView(designID, 'articul', include_docs=True, key=self.name, stale=False)
+        d.addCallback(self.renderCard)
         return d

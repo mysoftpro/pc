@@ -15,7 +15,7 @@ from datetime import datetime, date
 from pc.models import makeNotePrice,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model
-from pc.views import Cart, Computers, Computer, Index, VideoCards
+from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -616,8 +616,8 @@ class Root(Resource):
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=HandlerAndName(VideoCards,
                                                                             'videocards.html'),
-                                                        childs=None)))#HandlerAndName(Computer,
-                                                                              #'computer.html')
+                                                        childs=HandlerAndName(Videocard,
+                                                                              'videocard.html'))))
 
         # self.putChild('cart', PCTemplateRenderrer(Cart, self.static, 'cart.html'))
         # self.putChild('computer', PCTemplateRenderrer(Computers, self.static, 'computers.html', direct=True))

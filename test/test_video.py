@@ -12,7 +12,6 @@ class TestVideo(unittest.TestCase):
         return couch_sync()
 
     def getChips(self, res):
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         print res
 
     def test_Chips(self):
