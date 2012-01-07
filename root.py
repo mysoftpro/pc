@@ -619,10 +619,6 @@ class Root(Resource):
                                                         childs=HandlerAndName(Videocard,
                                                                               'videocard.html'))))
 
-        # self.putChild('cart', PCTemplateRenderrer(Cart, self.static, 'cart.html'))
-        # self.putChild('computer', PCTemplateRenderrer(Computers, self.static, 'computers.html', direct=True))
-
-        # self.putChild('computer', TemplateRenderrer(self.static, 'computers.html','computer.html'))
 
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
         self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
@@ -689,6 +685,8 @@ class Root(Resource):
         self.putChild('oauth',OAuth())
         self.putChild('openid',OpenId())
         self.putChild('upgrade_set',TemplateRenderrer(self.static, 'upgrade_set.html'))
+        self.putChild('marketFor',MarketFor())
+
 
     def getChild(self, name, request):
         # self.checkCookie(request)
@@ -700,8 +698,30 @@ class Root(Resource):
             # return self.static.getChild(name, request)
         return self
 
+class MarketFor(Resource):
+    def checkMarketParams(self, res, request):
+        if len(res['rows'])==0:
+            request.write(simplejson.dumps({'error':'no such articul'}))
+        elif 'doc' not in res['rows'][0]:
+            request.write(simplejson.dumps({'error':'no doc'}))
+        else:
+            doc = res['rows'][0]['doc']
+            if 'marketParams' in doc and 'marketComments' in doc and 'marketReviews' in doc:
+                request.write(simplejson.dumps({}))
+            else:
+                request.write(simplejson.dumps({'error':'params is not completed'}))
+        request.finish()
 
 
+        
+    @MIMETypeJSON
+    def render_GET(self, request):
+        d = couch.openView(designID, 'articul', 
+                           key=request.args.get('articul', ['no articule'])[0],
+                           include_docs=True)
+        d.addCallback(self.checkMarketParams, request)
+        return  NOT_DONE_YET
+    
 
 class PdfBill(Resource):
     def done(self, data, request):
