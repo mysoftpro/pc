@@ -8,14 +8,16 @@ class TestMarket(unittest.TestCase):
     def done(self, some):
         print "done man!"
 
-    def cardResult(self, lires, doc):
-        print "thats was the cart " + doc['_id']
+    def cardResult(self, lires, card):
+        print "thats was the cart " + card._id + "\n"
+        print card.marketComments
+        print card.marketReviews
         for r in lires:
             if not r[0]:
                 print "comments failed"
             else:
                 print "are the some comments?: " +str(r[1])
-
+                
 
     def checkComments(self, res):
         lis = []
@@ -31,11 +33,9 @@ class TestMarket(unittest.TestCase):
                     print "something wrong with with card. we sell it, but not all params are present"
                     print card._id
                 continue
-            print "go for market page"
-            d = market.getMarket(card.marketComments)
-            d1 = market.getMarket(card.marketReviews)
-            li = defer.DeferredList((d,d1))
-            li.addCallback(self.cardResult, doc)
+
+            li = market.getMarket(card)
+            li.addCallback(self.cardResult, card)
             lis.append(li)
         tot = defer.DeferredList(lis)
         tot.addCallback(self.done)
