@@ -1268,4 +1268,16 @@ class VideoCard(Component):
 
     @property
     def marketParams(self):
-        return self.get('marketParams', default='<table></table')
+        return self.get('marketParams', default='<table></table>')
+
+    @property
+    def marketComments(self):
+        return self.get('marketComments')
+
+    @property
+    def marketReviews(self):
+        return self.get('marketReviews')
+
+
+    def has(self, field):
+        return self.get(field,default='-1')!='-1'

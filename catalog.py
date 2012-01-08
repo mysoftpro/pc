@@ -409,12 +409,13 @@ class NewReceiver(Protocol):
         # so. the file is at the end, and it tell() me how much bytes it has!
         if self.gzip:
             self.ungzip()
-        self.file.seek(0,2)
+        self.file.seek(0,2)        
         self.finished.callback(self.file)
 
 
 def downloadPage(response, further_d):
-    for h in response.headers.getAllRawHeaders():
+    enc = ''
+    for h in response.headers.getAllRawHeaders():        
         if h[0] == 'Content-Encoding':
             enc = h[1][0]
             break
