@@ -539,7 +539,7 @@ class Comparator():
         return 'data' in self.params
 
 
-class NewTarget:
+class NewTarget(object):
     def makeDate(self):
         t = str(date.today())
         return t.split('-')
