@@ -851,3 +851,30 @@ class MarketForVideo(Resource):
         d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getMarketComments, request)
         return NOT_DONE_YET
+
+class SpecsForVideo(Resource):
+    def fail(self, request):
+        request.write('')
+        request.finish()
+        return ""
+
+    def getSpecs(self, res, request):
+        print 1
+        if len(res['rows'])==0:
+            return self.fail(request)
+        row = res['rows'][0]
+        print 2
+        if not 'doc' in row:
+            return self.fail(request)
+        card = VideoCard(row['doc'])
+        print card
+        request.write(card.marketParams.encode('utf-8'))
+        request.finish()
+
+    def render_GET(self, request):
+        art = request.args.get('art', [None])[0]
+        if art is None:
+            return self.fail(request)
+        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
+        d.addCallback(self.getSpecs, request)
+        return NOT_DONE_YET

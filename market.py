@@ -12,10 +12,8 @@ from twisted.internet.task import deferLater
 
 
 
-empty_review_pat = re.compile("Комментариев пока нет")
-empty_comment_pat = re.compile("Вы можете стать первым.")
 
-def parseMarket(f, remaining=None, parser=None):
+def parseMarket(f, url='url', remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
         remaining = f.tell()
@@ -24,7 +22,7 @@ def parseMarket(f, remaining=None, parser=None):
         rd = f.read(spoon)
         parser.feed(rd)
         remaining -= spoon
-        d = deferLater(reactor, 0, parseMarket, f, remaining, parser)
+        d = deferLater(reactor, 0, parseMarket, f, url, remaining, parser)
         return d
     else:
         if remaining < spoon:
@@ -44,16 +42,30 @@ def parseMarket(f, remaining=None, parser=None):
                         i.getparent().remove(i)
 
                 all_divs+=divs
+            globals()['gMarket_Cached'][url] = all_divs            
             return all_divs
         else:
             rd = f.read(spoon)
             parser.feed(rd)
             remaining -= spoon
-            d = deferLater(reactor, 0, parseMarket, f, remaining, parser)
+            d = deferLater(reactor, 0, parseMarket, f, url, remaining, parser)
             return d
      
 
+
+gMarket_Cached = {}
+
 def getMarket(card):
+    cached = globals()['gMarket_Cached']
+    if card.marketComments in cached and card.marketReviews in cached:
+        d1 = defer.Deferred()
+        d1.addCallback(lambda x: cached[card.marketComments])
+        d1.callback(None)
+        d2 = defer.Deferred()
+        d2.addCallback(lambda x: cached[card.marketReviews])
+        d2.callback(None)        
+        return defer.DeferredList((d1,d2))
+
     agent = Agent(reactor)
     headers = {}
     for k,v in standard_headers.items():
@@ -63,9 +75,9 @@ def getMarket(card):
             headers.update({k:v})
     
     c = defer.Deferred()
-    c.addCallback(parseMarket)
+    c.addCallback(parseMarket, url=card.marketComments)
     r = defer.Deferred()
-    r.addCallback(parseMarket)
+    r.addCallback(parseMarket, url=card.marketReviews)
 
 
     request_comments = agent.request('GET', str(card.marketComments),Headers(),None)
