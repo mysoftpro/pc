@@ -2560,10 +2560,17 @@ h1.bold.left{
     float:right;
     max-width:400px;
 }
+#maparams {
+    max-width:600px;
+}
 #maparams .b-properties__title {
     padding: .8em 0 .6em;
     font-size: 140%;
 }
+#maparams table{
+    width:600px;
+}
+
 #maparams th, td {
     padding: 0;
     text-align: left;
@@ -2580,6 +2587,7 @@ h1.bold.left{
 }
 .videofeatures{
     width:360px;
+    max-height:360px;
 }
 .videoadd{
     font-size:12px;
@@ -2605,4 +2613,7 @@ h1.bold.left{
     height: 32px;
     margin-top: -26px;
     margin-left: 330px;
+}
+.b-grade{
+    margin-bottom:30px;
 }

@@ -15,7 +15,8 @@ from datetime import datetime, date
 from pc.models import makeNotePrice,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model
-from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard
+from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
+   MarketForVideo
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -686,7 +687,7 @@ class Root(Resource):
         self.putChild('openid',OpenId())
         self.putChild('upgrade_set',TemplateRenderrer(self.static, 'upgrade_set.html'))
         self.putChild('marketFor',MarketFor())
-
+        self.putChild('videoComments', MarketForVideo())
 
     def getChild(self, name, request):
         # self.checkCookie(request)

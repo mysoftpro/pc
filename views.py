@@ -12,6 +12,9 @@ import simplejson
 import re
 from datetime import datetime,timedelta
 from twisted.web.error import NoResource
+from twisted.web.resource import Resource
+from twisted.web.server import NOT_DONE_YET
+from pc.market import getMarket
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -804,14 +807,47 @@ class VideocardView(PCView):
             r[-1].text = unicode(card.makePrice())+ u' р.'
             first = r[0]
             if first.text != u'Итого':
-                first.text = card.description.get('name', card.text)
-            
-
-        # self.template.middle.xpath('//div[@id="videoprice"]')[0].text = unicode(card.makePrice())+ u' р.'
+                first.text = card.description.get('name', card.text)            
+        # self.middle.find('script').text = 'var _id='+card._id+';'
 
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _ 
         (see hid property and articul.map.js)"""
-        d = couch.openView(designID, 'articul', include_docs=True, key=self.name, stale=False)
+        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(self.name), stale=False)
         d.addCallback(self.renderCard)
         return d
+
+class MarketForVideo(Resource):
+
+    def fail(self, request):
+        request.write('')
+        request.finish()
+        return ""
+
+
+    def done(self, lires, request):
+        for tu in lires:
+            if tu[0]:
+                for el in tu[1]:
+                    request.write(etree.tostring(el))
+        request.finish()
+                                  
+
+    def getMarketComments(self, res, request):
+        if len(res['rows'])==0:
+            return self.fail(request)
+        row = res['rows'][0]
+        if not 'doc' in row:
+            return self.fail(request)
+        card = VideoCard(row['doc'])
+        d = getMarket(card)
+        d.addCallback(self.done, request)
+        return d
+
+    def render_GET(self, request):
+        art = request.args.get('art', [None])[0]
+        if art is None:
+            return self.fail(request)
+        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
+        d.addCallback(self.getMarketComments, request)
+        return NOT_DONE_YET

@@ -11,38 +11,6 @@ from lxml import etree
 from twisted.internet.task import deferLater
 
 
-# class Marketarget(object):
-#     def __init__(self):
-#         self.walker = self.walk()
-#         self.walker.next()
-#         self.readyHtml = ''
-
-#     def start(self, tag, attrib):
-#         params = {'tag':tag, 'start':'start'}
-#         for k,v in attrib.items():
-#             params.update({k:v})
-#         self.walker.send(params)
-
-
-#     def end(self, tag):
-#         params = {'tag':tag, 'end':'end'}
-#         self.walker.send(params)
-
-#     def data(self, data):
-#         self.walker.send({'data':data})
-
-#     def comment(self, text):
-#         pass
-
-#     def close(self):
-#         return self
-
-
-#     def walk(self):
-#         while True:
-#             params = yield
-#             comp = Comparator(params)
-
 
 empty_review_pat = re.compile("Комментариев пока нет")
 empty_comment_pat = re.compile("Вы можете стать первым.")
@@ -66,13 +34,22 @@ def parseMarket(f, remaining=None, parser=None):
             root = parser.close()
             all_divs = []
             for i in xrange(3):
-                all_divs+=root.xpath('//div[@class="b-grade comment left'+str(i)+'"]')
+                divs = root.xpath('//div[@class="b-grade comment left'+str(i)+'"]')
+                for d in divs:
+                    td = d.xpath('//td[@class="b-grade__feedback grade-opinion-actions"]')
+                    for t in td:
+                        t.getparent().remove(t)
+                    imgs = d.xpath('//img[@class="b-rating__icon"]')
+                    for i in imgs:
+                        i.getparent().remove(i)
+
+                all_divs+=divs
             return all_divs
         else:
             rd = f.read(spoon)
             parser.feed(rd)
             remaining -= spoon
-            d = deferLater(reactor, 1, parseMarket, f, remaining, parser)
+            d = deferLater(reactor, 0, parseMarket, f, remaining, parser)
             return d
      
 
