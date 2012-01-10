@@ -17,6 +17,31 @@ function setHashe(ob){
     _(present_ob).chain().keys().each(function(key){if (key=='')return;new_hash+=key+'='+present_ob[key]+';';});
     document.location.hash = new_hash;
 }
+function getHash(){
+    var hash = document.location.hash.split('#');
+    if (hash.length==1)
+        return;
+    _(hash[1].split(';'))
+        .chain()
+        .select(function(pair){return pair.indexOf('=')>0;})
+        .map(function(pair){return pair.split('=');})
+        .select(function (pair){return pair[0].length>0 && pair[1].length>0;})
+        .each(function(pair){
+                  switch (pair[0]){
+                  case 'brnd':
+                      _(pair[1].split(',')).each(function(br){$('.'+br+'_active').click();});
+                      break;
+                  case 'prc':
+                      console.log('pr');
+                      console.log(pair[1]);
+                      break;
+                  case 'vndr':
+		      _(pair[1].split(',')).each(function(_id){$('#'+_id).click();});
+                      break;
+                  }
+
+              });
+}
 
 function init(){
     var chipvendors = $('.chipVendors li');
@@ -35,39 +60,39 @@ function init(){
                       });
     var chipnames = _($('.chipname').toArray()).chain().map(function(el){return $(el);});
     var fltrs = $('.video_filter')
-	.click(function(e){
-		   var target = $(e.target);
-		   var klass = target.attr('class');
-		   var inactive = klass.match('inactive');
-		   if (inactive)
-		       $(e.target).attr('class', klass.replace('inactive','active'));
-		   else
-		       $(e.target).attr('class', klass.replace('active','inactive'));
-		   var fltr = 'GTX';
-		   if (klass.match('radeon')){
-		       fltr = 'HD';
-		   }
-		   var filtered_brands = chipnames
-		       .each(function(el){
-				 if (!el.text().match(fltr))
-				     return;
-				 var pa = el.parent().parent();
-				 if (inactive){
-				     pa.show().data('fltr_hidden', false);
-				 }
-				 else{
-				     pa.hide().data('fltr_hidden', true);
-				 }
-			     });
-		setHashe({'brnd':_(fltrs)
-			  .chain()
-			  .map(function(el){return $(el);})
-			  .select(function(el){return el.attr('class').match('inactive');})
-			  .map(function(el){return el.attr('class').match(/[^ ]*_inactive/g)[0].split('_')[0];})
-			  .value()
-			  .join(',')
-			 });   
-	       });
+        .click(function(e){
+                   var target = $(e.target);
+                   var klass = target.attr('class');
+                   var inactive = klass.match('inactive');
+                   if (inactive)
+                       $(e.target).attr('class', klass.replace('inactive','active'));
+                   else
+                       $(e.target).attr('class', klass.replace('active','inactive'));
+                   var fltr = 'GTX';
+                   if (klass.match('radeon')){
+                       fltr = 'HD';
+                   }
+                   var filtered_brands = chipnames
+                       .each(function(el){
+                                 if (!el.text().match(fltr))
+                                     return;
+                                 var pa = el.parent().parent();
+                                 if (inactive){
+                                     pa.show().data('fltr_hidden', false);
+                                 }
+                                 else{
+                                     pa.hide().data('fltr_hidden', true);
+                                 }
+                             });
+                setHashe({'brnd':_(fltrs)
+                          .chain()
+                          .map(function(el){return $(el);})
+                          .select(function(el){return el.attr('class').match('inactive');})
+                          .map(function(el){return el.attr('class').match(/[^ ]*_inactive/g)[0].split('_')[0];})
+                          .value()
+                          .join(',')
+                         });
+               });
 
     var pos = 300;
     var steps = 300;
@@ -142,8 +167,9 @@ function init(){
                                             .map(function(el){return el.attr('id');})
                                             .value()
                                             .join(',');
-                                        setHashe({vndrs:vndrs});
+                                        setHashe({vndr:vndrs});
                                     }));
               });
+    getHash();
 }
 init();
