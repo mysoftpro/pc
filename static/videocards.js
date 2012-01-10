@@ -17,6 +17,7 @@ function setHashe(ob){
     _(present_ob).chain().keys().each(function(key){if (key=='')return;new_hash+=key+'='+present_ob[key]+';';});
     document.location.hash = new_hash;
 }
+
 function init(){
     var chipvendors = $('.chipVendors li');
     chipvendors.click(function(e){
@@ -33,31 +34,41 @@ function init(){
                                          target:{id:'_'+target[0].id}});
                       });
     var chipnames = _($('.chipname').toArray()).chain().map(function(el){return $(el);});
-    $('.video_filter').click(function(e){
-                                 var target = $(e.target);
-                                 var klass = target.attr('class');
-                                 var inactive = klass.match('inactive');
-                                 if (inactive)
-                                     $(e.target).attr('class', klass.replace('inactive','active'));
-                                 else
-                                     $(e.target).attr('class', klass.replace('active','inactive'));
-                                 var fltr = 'GTX';
-                                 if (klass.match('radeon')){
-                                     fltr = 'HD';
-                                 }
-                                 chipnames.each(function(el){
-                                                    if (!el.text().match(fltr))
-                                                        return;
-                                                    var pa = el.parent().parent();
-                                                    if (inactive){
-                                                        pa.show().data('fltr_hidden', false);
-                                                    }
-                                                    else{
-                                                        pa.hide().data('fltr_hidden', true);
+    var fltrs = $('.video_filter')
+	.click(function(e){
+		   var target = $(e.target);
+		   var klass = target.attr('class');
+		   var inactive = klass.match('inactive');
+		   if (inactive)
+		       $(e.target).attr('class', klass.replace('inactive','active'));
+		   else
+		       $(e.target).attr('class', klass.replace('active','inactive'));
+		   var fltr = 'GTX';
+		   if (klass.match('radeon')){
+		       fltr = 'HD';
+		   }
+		   var filtered_brands = chipnames
+		       .each(function(el){
+				 if (!el.text().match(fltr))
+				     return;
+				 var pa = el.parent().parent();
+				 if (inactive){
+				     pa.show().data('fltr_hidden', false);
+				 }
+				 else{
+				     pa.hide().data('fltr_hidden', true);
+				 }
+			     });
+		setHashe({'brnd':_(fltrs)
+			  .chain()
+			  .map(function(el){return $(el);})
+			  .select(function(el){return el.attr('class').match('inactive');})
+			  .map(function(el){return el.attr('class').match(/[^ ]*_inactive/g)[0].split('_')[0];})
+			  .value()
+			  .join(',')
+			 });   
+	       });
 
-                                                    }
-                                                });
-                             });
     var pos = 300;
     var steps = 300;
     var price = $('#maxvideoprice');
@@ -67,6 +78,7 @@ function init(){
                        callback:function(x){
                            var max_price = (this.stepRatios).indexOf(x)*100;
                            price.text(max_price);
+                           setHashe({prc:max_price});
                            _(chipvendors.toArray())
                                .each(function(_el){
                                          var el = $(_el);
@@ -92,39 +104,46 @@ function init(){
                        }
                    });
     var vendor_list = $('#video_vendor_list');
-    var row= $(document.createElement('tr'));
-    vendor_list.append(row);
+    var vendors_inputs = [];
     _(vendors)
         .each(function(v,i){
-                  $('#'+v.replace(' ','_')).change(function(e){
-                                                       _(chipvendors.toArray())
-                                                           .each(function(_el){
-                                                                     var target = $(e.target);
-                                                                     var _vendor = target.attr('id');
-                                                                     var el = $(_el);
-                                                                     var vendor = el
-                                                                         .find('span')
-                                                                         .text().replace(' ','_');
-                                                                     if (vendor !==_vendor)
-                                                                         return;
-                                                                     if (!target.is(':checked'))
-                                                                         el.hide();
-                                                                     else
-                                                                         el.show();
-                                                                     var pa = el.parent();
-                                                                     var all_hidden = _(pa.children().toArray())
-                                                                         .every(function(l){
-                                                                                    return $(l).css('display')=='none';
-                                                                                });
-                                                                     var papa = pa.parent();
-                                                                     if (all_hidden)
-                                                                         pa.parent().hide();
-                                                                     else{
-                                                                         if(!papa.data('fltr_hidden'))
-                                                                             papa.show();
-                                                                     }
+                  vendors_inputs
+                      .push($('#'+v.replace(' ','_'))
+                            .change(function(e){
+                                        _(chipvendors.toArray())
+                                            .each(function(_el){
+                                                      var target = $(e.target);
+                                                      var _vendor = target.attr('id');
+                                                      var el = $(_el);
+                                                      var vendor = el
+                                                          .find('span')
+                                                          .text().replace(' ','_');
+                                                      if (vendor !==_vendor)
+                                                          return;
+                                                      if (!target.is(':checked'))
+                                                          el.hide();
+                                                      else
+                                                          el.show();
+                                                      var pa = el.parent();
+                                                      var all_hidden = _(pa.children().toArray())
+                                                          .every(function(l){
+                                                                     return $(l).css('display')=='none';
                                                                  });
-                                                   });
+                                                      var papa = pa.parent();
+                                                      if (all_hidden)
+                                                          pa.parent().hide();
+                                                      else{
+                                                          if(!papa.data('fltr_hidden'))
+                                                              papa.show();
+                                                      }
+                                                  });
+                                        var vndrs = _(vendors_inputs).chain()
+                                            .select(function(el){return !el.is(':checked');})
+                                            .map(function(el){return el.attr('id');})
+                                            .value()
+                                            .join(',');
+                                        setHashe({vndrs:vndrs});
+                                    }));
               });
 }
 init();
