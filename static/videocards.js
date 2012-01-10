@@ -6,8 +6,6 @@ var dealer;
 var hash_lock = false;
 function setHashe(ob){
     if (hash_lock)return;
-    console.log('setHashe');
-    console.log(ob);
     var hash = document.location.hash.split('#');
     var present_ob = {};
     if (hash.length>1){
@@ -17,17 +15,53 @@ function setHashe(ob){
                           present_ob[splitted[0]] = splitted[1];
                       });
     }
-    console.log(present_ob);
     _(ob).chain().keys().each(function(key){if (key=='')return;present_ob[key] = ob[key];});
     var new_hash = '';
     _(present_ob).chain().keys().each(function(key){if (key=='')return;new_hash+=key+'='+present_ob[key]+';';});
     document.location.hash = new_hash;
 }
+
+
+function hide(el, brand, token){
+    if (brand){
+        el.hide();
+        el.data('filtered', true);
+        return;
+    }
+    var ul = el.parent();
+    var div = ul.parent();
+    el.hide();
+    el.data(token, true);
+    if (_(ul.children().toArray())
+        .every(function(el){
+                   return $(el).css('display')=='none';
+               })){
+        div.hide();
+    }
+};
+
+
+function show(el, brand, token){
+    if (brand){
+        el.show();
+        el.data('filtered', false);
+        return;
+    }
+    var ul = el.parent();
+    var div = ul.parent();
+    el.data(token, false);
+    if(_(['price','vendor']).every(function(key){return !el.data(key);})){	    
+        el.show();
+        if (!div.data('filtered') && el.css('display')!=='none')
+            div.show();
+    }
+}
+
 function getHash(){
-    hash_lock = true;
     var hash = document.location.hash.split('#');
     if (hash.length==1)
         return;
+    hash_lock = true;
     _(hash[1].split(';'))
         .chain()
         .select(function(pair){return pair.indexOf('=')>0;})
@@ -94,16 +128,14 @@ function init(){
                        .each(function(el){
                                  if (!el.text().match(fltr))
                                      return;
-                                 var pa = el.parent().parent();
-                                 if (inactive){
-                                     pa.show().data('brand_hidden', false);
-                                 }
-                                 else{
-                                     pa.hide().data('brand_hidden', true);
-                                 }
+                                 if (inactive)
+                                     show(el.parent().parent(),'brand');
+                                 else
+                                     hide(el.parent().parent(),'brand');
+
                              });
-                setHashe({'brnd':_(fltrs)
-                          .chain()
+                   setHashe({'brnd':_(fltrs)
+                             .chain()
                           .map(function(el){return $(el);})
                           .select(function(el){return el.attr('class').match('inactive');})
                           .map(function(el){return el.attr('class').match(/[^ ]*_inactive/g)[0].split('_')[0];})
@@ -127,21 +159,9 @@ function init(){
                                          var el = $(_el);
                                          var price = parseInt(el.find('strong').text());
                                          if (price>max_price)
-                                             el.hide();
+                                             hide(el, false, 'price');
                                          else
-                                             el.show();
-                                         var pa = el.parent();
-                                         var all_hidden = _(pa.children().toArray())
-                                             .every(function(l){
-                                                        return $(l).css('display')=='none';
-                                                    });
-                                         if (all_hidden){
-                                             pa.parent().hide();
-                                         }
-                                         else{
-                                             if(!papa.data('brand_hidden'))
-                                                 papa.show();
-                                         }
+                                             show(el, false, 'price');
                                      });
                        }
                    });
@@ -163,21 +183,11 @@ function init(){
                                                           .text().replace(' ','_');
                                                       if (vendor !==_vendor)
                                                           return;
-                                                      if (!target.is(':checked'))
-                                                          el.hide();
-                                                      else
-                                                          el.show();
-                                                      var pa = el.parent();
-                                                      var all_hidden = _(pa.children().toArray())
-                                                          .every(function(l){
-                                                                     return $(l).css('display')=='none';
-                                                                 });
-                                                      var papa = pa.parent();
-                                                      if (all_hidden)
-                                                          pa.parent().hide();
+                                                      if (!target.is(':checked')){
+                                                          hide(el, false, 'vendor');
+                                                      }
                                                       else{
-                                                          if(!papa.data('brand_hidden'))
-                                                              papa.show();
+                                                          show(el, false, 'vendor');
                                                       }
                                                   });
                                         var vndrs = _(vendors_inputs).chain()
