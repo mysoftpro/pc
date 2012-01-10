@@ -2,6 +2,7 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
+var dealer;
 function setHashe(ob){
     var hash = document.location.hash.split('#');
     var present_ob = {};
@@ -32,8 +33,18 @@ function getHash(){
                       _(pair[1].split(',')).each(function(br){$('.'+br+'_active').click();});
                       break;
                   case 'prc':
-                      console.log('pr');
-                      console.log(pair[1]);
+		      var x = parseInt(pair[1])/30000;
+		      var delta = x;
+		      var true_x = x;
+		      _(dealer.stepRatios).each(function(r){
+						    var new_delta = Math.abs(r-x);
+						    if (new_delta<delta){
+							true_x = r;
+							delta = new_delta;
+						    }
+						});		      
+                      dealer.setValue(true_x);
+		      dealer.callback(true_x);
                       break;
                   case 'vndr':
 		      _(pair[1].split(',')).each(function(_id){$('#'+_id).click();});
@@ -97,12 +108,12 @@ function init(){
     var pos = 300;
     var steps = 300;
     var price = $('#maxvideoprice');
-    new Dragdealer('sliderprice',{
+    dealer = new Dragdealer('sliderprice',{
                        x:pos/steps,
                        steps:steps,
                        callback:function(x){
-                           var max_price = (this.stepRatios).indexOf(x)*100;
-                           price.text(max_price);
+                           var max_price = (this.stepRatios).indexOf(x)*100;			   
+			   price.text(max_price);
                            setHashe({prc:max_price});
                            _(chipvendors.toArray())
                                .each(function(_el){
