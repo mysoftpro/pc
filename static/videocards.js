@@ -3,7 +3,11 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 var dealer;
+var hash_lock = false;
 function setHashe(ob){
+    if (hash_lock)return;
+    console.log('setHashe');
+    console.log(ob);
     var hash = document.location.hash.split('#');
     var present_ob = {};
     if (hash.length>1){
@@ -13,12 +17,14 @@ function setHashe(ob){
                           present_ob[splitted[0]] = splitted[1];
                       });
     }
+    console.log(present_ob);
     _(ob).chain().keys().each(function(key){if (key=='')return;present_ob[key] = ob[key];});
     var new_hash = '';
     _(present_ob).chain().keys().each(function(key){if (key=='')return;new_hash+=key+'='+present_ob[key]+';';});
     document.location.hash = new_hash;
 }
 function getHash(){
+    hash_lock = true;
     var hash = document.location.hash.split('#');
     if (hash.length==1)
         return;
@@ -33,25 +39,26 @@ function getHash(){
                       _(pair[1].split(',')).each(function(br){$('.'+br+'_active').click();});
                       break;
                   case 'prc':
-		      var x = parseInt(pair[1])/30000;
-		      var delta = x;
-		      var true_x = x;
-		      _(dealer.stepRatios).each(function(r){
-						    var new_delta = Math.abs(r-x);
-						    if (new_delta<delta){
-							true_x = r;
-							delta = new_delta;
-						    }
-						});		      
+                      var x = parseInt(pair[1])/30000;
+                      var delta = x;
+                      var true_x = x;
+                      _(dealer.stepRatios).each(function(r){
+                                                    var new_delta = Math.abs(r-x);
+                                                    if (new_delta<delta){
+                                                        true_x = r;
+                                                        delta = new_delta;
+                                                    }
+                                                });
                       dealer.setValue(true_x);
-		      dealer.callback(true_x);
+                      dealer.callback(true_x);
                       break;
                   case 'vndr':
-		      _(pair[1].split(',')).each(function(_id){$('#'+_id).click();});
+                      _(pair[1].split(',')).each(function(_id){$('#'+_id).click();});
                       break;
                   }
 
               });
+    hash_lock = false;
 }
 
 function init(){
@@ -89,10 +96,10 @@ function init(){
                                      return;
                                  var pa = el.parent().parent();
                                  if (inactive){
-                                     pa.show().data('fltr_hidden', false);
+                                     pa.show().data('brand_hidden', false);
                                  }
                                  else{
-                                     pa.hide().data('fltr_hidden', true);
+                                     pa.hide().data('brand_hidden', true);
                                  }
                              });
                 setHashe({'brnd':_(fltrs)
@@ -112,8 +119,8 @@ function init(){
                        x:pos/steps,
                        steps:steps,
                        callback:function(x){
-                           var max_price = (this.stepRatios).indexOf(x)*100;			   
-			   price.text(max_price);
+                           var max_price = (this.stepRatios).indexOf(x)*100;
+                           price.text(max_price);
                            setHashe({prc:max_price});
                            _(chipvendors.toArray())
                                .each(function(_el){
@@ -128,14 +135,13 @@ function init(){
                                              .every(function(l){
                                                         return $(l).css('display')=='none';
                                                     });
-                                         if (all_hidden)
+                                         if (all_hidden){
                                              pa.parent().hide();
+                                         }
                                          else{
-                                             var papa = pa.parent();
-                                             if(!papa.data('fltr_hidden'))
+                                             if(!papa.data('brand_hidden'))
                                                  papa.show();
                                          }
-
                                      });
                        }
                    });
@@ -145,6 +151,7 @@ function init(){
         .each(function(v,i){
                   vendors_inputs
                       .push($('#'+v.replace(' ','_'))
+                            .prop('checked',true)
                             .change(function(e){
                                         _(chipvendors.toArray())
                                             .each(function(_el){
@@ -169,7 +176,7 @@ function init(){
                                                       if (all_hidden)
                                                           pa.parent().hide();
                                                       else{
-                                                          if(!papa.data('fltr_hidden'))
+                                                          if(!papa.data('brand_hidden'))
                                                               papa.show();
                                                       }
                                                   });
