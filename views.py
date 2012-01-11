@@ -677,6 +677,7 @@ class Index(PCView):
 
 class VideoCards(PCView):
     title=u'Лучшие видеокарты GeForce и Radeon для апгрейда'
+        
     def renderChips(self, res):
         chips = {}
         vendors = set()
@@ -686,23 +687,25 @@ class VideoCards(PCView):
             else:
                 chips[row['key']] = [row['value']]
         container = self.template.middle.xpath('//div[@id="models"]')[0]
-        for chip in chips:
-            ch = deepcopy(self.template.root().find('chip'))
+
+        for chipname in chips:
+            viewlet = deepcopy(self.template.root().find('chip'))
             chip_div = etree.Element('div')
             chip_div.set('class', 'chip')
-            chip_name = ch.xpath('//div[@class="chipname"]')[0]
-            chip_name.text = u'Видеокарта '
-            br = etree.Element('br')
-            br.tail = chip
-            chip_name.append(br)            
 
-            chip_vendors = ch.xpath('//ul[@class="chipVendors"]')[0]
+            chip_name_div = viewlet.xpath('//div[@class="chipname"]')[0]
+            chip_name_div.text = u'Видеокарта '
+            br = etree.Element('br')
+            br.tail = chipname
+            chip_name_div.append(br)
+
+            chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
 
             from pc.models import gChoices_flatten as choices
             price_is_good = True
             image_was_set = False
             rate_was_set = False
-            for _id in chips[chip]:
+            for _id in chips[chipname]:
                 if _id not in choices:
                     continue
                 doc = choices[_id]
@@ -710,15 +713,15 @@ class VideoCards(PCView):
 
                 if not video_card.goodPrice():
                     price_is_good = False
-                    continue                
+                    continue
                 if not image_was_set:
                     icon = video_card.getComponentIcon(default=None)
                     if icon is not None:
-                        image = ch.xpath('//img')[0]
+                        image = viewlet.xpath('//img')[0]
                         image.set('src', icon)
                         image_was_set = True
                 if not rate_was_set:
-                    video_img = ch.xpath('//div[@class="modelicon videoicon"]')[0]
+                    video_img = viewlet.xpath('//div[@class="modelicon videoicon"]')[0]
                     rate = video_card.rate
                     while rate>0:
                         d = etree.Element('div')
@@ -726,21 +729,21 @@ class VideoCards(PCView):
                         video_img.append(d)
                         rate-=1
                     rate_was_set = True
-                
+
                 if not video_card.vendor in vendors:
                     vendors.add(video_card.vendor)
 
-                ch.xpath('//td[@class="vcores"]')[0].text = unicode(video_card.cores)
-                ch.xpath('//td[@class="power"]')[0].text = unicode(video_card.power) + u' Вт'
-                ch.xpath('//td[@class="year"]')[0].text = unicode(video_card.year)
-                ch.xpath('//td[@class="memory"]')[0].text = unicode(video_card.memory)
-                ch.xpath('//td[@class="memory_ammo"]')[0].text = unicode(video_card.memory_ammo)
+                viewlet.xpath('//td[@class="vcores"]')[0].text = unicode(video_card.cores)
+                viewlet.xpath('//td[@class="power"]')[0].text = unicode(video_card.power) + u' Вт'
+                viewlet.xpath('//td[@class="year"]')[0].text = unicode(video_card.year)
+                viewlet.xpath('//td[@class="memory"]')[0].text = unicode(video_card.memory)
+                viewlet.xpath('//td[@class="memory_ammo"]')[0].text = unicode(video_card.memory_ammo)
                 ve = etree.Element('li')
                 ve.set('id', video_card._id)
                 link = etree.Element('a')
                 span = etree.Element('span')
                 strong = etree.Element('strong')
-                span.text = video_card.vendor                
+                span.text = video_card.vendor
                 strong.text = unicode(video_card.makePrice())
                 strong.tail = u' р'
                 link.text = u'На страницу товара'
@@ -749,12 +752,12 @@ class VideoCards(PCView):
                 ve.append(strong)
                 ve.append(link)
                 chip_vendors.append(ve)
-            if price_is_good:
-                for el in ch:
+            if price_is_good and len(chip_vendors)>0:
+                for el in viewlet:
                     chip_div.append(el)
                 container.append(chip_div)
         self.template.middle.find('script').text = 'var vendors='+simplejson.dumps(list(vendors))+';'
-        vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]        
+        vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]
         row = etree.Element('tr')
         vendors_boxes.append(row)
         vendor_td = self.template.root().find('vendor_td').find('td')
@@ -800,18 +803,18 @@ class VideocardView(PCView):
         videoimage = self.template.middle.xpath('//div[@id="videoimage"]')[0].find('img')
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())
-        
+
         price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
         rows = price_table.findall('tr')
         for r in rows:
             r[-1].text = unicode(card.makePrice())+ u' р.'
             first = r[0]
             if first.text != u'Итого':
-                first.text = card.description.get('name', card.text)            
+                first.text = card.description.get('name', card.text)
         # self.middle.find('script').text = 'var _id='+card._id+';'
 
     def preRender(self):
-        """ here the name is articul. or doc['_id'] with replaced _new replaced by _ 
+        """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
         d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(self.name), stale=False)
         d.addCallback(self.renderCard)
@@ -831,7 +834,7 @@ class MarketForVideo(Resource):
                 for el in tu[1]:
                     request.write(etree.tostring(el))
         request.finish()
-                                  
+
 
     def getMarketComments(self, res, request):
         if len(res['rows'])==0:
