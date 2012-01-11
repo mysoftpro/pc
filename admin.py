@@ -112,10 +112,13 @@ class AdminGate(Resource):
 	self.putChild('store_wit_new_map',StoreWitNewMap())
 	self.putChild('delete_wit_new_map',DeleteWitNewMap())
 
-	# self.putChild('new_description',NewDescription())
 	self.putChild('get_new_descriptions',GetNewDescriptions())
         self.putChild('get_desc_from_new',GetDescFromNew())
         self.putChild('store_new_desc',StoreNewDesc())
+
+        self.putChild('psus', Psus())
+	self.putChild('store_psu', StorePsu())
+
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render(request)
@@ -918,7 +921,11 @@ class GetNewDescriptions(Resource):
 
     @MIMETypeJSON
     def render_GET(self, request):
-        d = couch.openView(designID, 'new_unique_components', include_docs=True)
+        key = request.args.get('key',[None])[0]        
+        if key is None:
+            d = couch.openView(designID, 'new_unique_components', include_docs=True)
+        else:            
+            d = couch.openView(designID, 'new_unique_components', include_docs=True, key=key)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
@@ -973,3 +980,33 @@ class StoreNewDesc(Resource):
         d = couch.openDoc(_id)
         d.addCallback(self.finish, desc, name, img, warranty, articul, catalogs)
         return "ok"
+
+
+
+class Psus(Resource):
+    def finish(self, result, request):	
+	request.write(simplejson.dumps(result))
+	request.finish()
+    @MIMETypeJSON
+    def render_GET(self, request):
+	defer.DeferredList([
+		couch.openView(designID,
+			       'catalogs',
+			       include_docs=True, key=["7363","7416","7464"], stale=False),
+		]).addCallback(self.finish, request)
+	return NOT_DONE_YET
+
+
+class StorePsu(Resource):
+    def finish(self, doc, request):
+	request.write(str(doc['rev']))
+	request.finish()
+
+    @MIMETypeJSON
+    def render_POST(self, request):
+	psu = request.args.get('psu')[0]
+	jpsu = simplejson.loads(psu)
+	d = couch.saveDoc(jpsu)
+	d.addCallback(self.finish, request)
+	return NOT_DONE_YET
+

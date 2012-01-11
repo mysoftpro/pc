@@ -87,8 +87,12 @@ function fill(data){
 		     });
 }
 function fillDescriptions(){
+    var key = '';
+    var splitted = document.location.href.split('?');
+    if (splitted.length>1)
+	key=splitted[1];
     $.ajax({
-	       url:'get_new_descriptions',
+	       url:'get_new_descriptions'+'?'+key,
 	       success:fill
 	   });
 }

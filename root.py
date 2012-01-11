@@ -1033,8 +1033,12 @@ class Component(Resource):
     @MIMETypeJSON
     def render_GET(self, request):
         _id = request.args.get('id', [None])[0]
-        if _id is None: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
-        if 'no' in _id: return simplejson.dumps({'name':'','comments':'','img':[],'imgs':[]})
+        default = {'name':'','comments':'','img':[],'imgs':[]}
+        if _id is None: return simplejson.dumps(default)
+        if 'no' in _id: return simplejson.dumps(default)
+        from pc import models
+        if _id in models.gChoices_flatten and 'description' in models.gChoices_flatten[_id]:
+            return simplejson.dumps(models.gChoices_flatten[_id]['description'])             
         d = couch.openDoc(_id)
         d.addCallback(self.writeComponent, request)
         return NOT_DONE_YET

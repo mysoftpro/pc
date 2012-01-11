@@ -101,12 +101,14 @@ class XmlGetter(Resource):
                     component_changed = True
                     doc[k] = item[k]
         if component_changed:
-            d = couch.addAttachments(doc, raw_doc, version=True)
-            # TODO! drop some later attachments!
-            # if updates are every hour - store just 8 of them, for example
-            d.addCallback(lambda _doc:couch.saveDoc(_doc))
-            d.addErrback(self.pr)
-            return d
+            # do not store version attachments
+            couch.saveDoc(doc)
+            # d = couch.addAttachments(doc, raw_doc, version=True)
+            # # TODO! drop some later attachments!
+            # # if updates are every hour - store just 8 of them, for example
+            # d.addCallback(lambda _doc:couch.saveDoc(_doc))
+            # d.addErrback(self.pr)
+            # return d
 
     def cleanDocs(self, _all_docs, codes):
         """ if no doc in codes (the component is disapeared from wit db) -> put 0 to its stock1"""
@@ -357,7 +359,8 @@ class WitNewMap(Resource):
         'http://www.newsystem.ru/goods-and-services/catalog/108/9422/':'simple_cases',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9463/':'sata_disks',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
-        'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft'
+        'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9413/':'psu'
         }
     def goForNew(self, headers, request):
         first = request.args.get('first', [None])[0]
