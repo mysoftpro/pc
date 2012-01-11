@@ -804,13 +804,24 @@ class VideocardView(PCView):
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())
 
+        
+        videocons = self.template.middle.xpath('//span[@id="videocons"]')[0]
+        videocons.text = card.power +u' Вт'
+        
+        peak = int(card.power)+350
+        rest = peak%50
+        peak = peak-rest+50
+        
+        videopeak = self.template.middle.xpath('//span[@id="videopeak"]')[0]
+        videopeak.text = unicode(peak) +u' Вт'
+
         price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
         rows = price_table.findall('tr')
         for r in rows:
             r[-1].text = unicode(card.makePrice())+ u' р.'
             first = r[0]
             if first.text != u'Итого':
-                first.text = card.description.get('name', card.text)
+                first.find('div').text = card.description.get('name', card.text)
         # self.middle.find('script').text = 'var _id='+card._id+';'
 
     def preRender(self):

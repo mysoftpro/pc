@@ -2617,3 +2617,8 @@ h1.bold.left{
 .b-grade{
     margin-bottom:30px;
 }
+#videoname{
+    max-width:700px;
+    max-height:20px;
+    overflow:hidden;
+}

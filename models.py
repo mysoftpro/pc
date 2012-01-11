@@ -1244,7 +1244,7 @@ class VideoCard(Component):
 
     @property
     def power(self):
-        return self.get('power', '-')
+        return self.get('power', u'-')
 
 
     @property
