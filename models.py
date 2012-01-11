@@ -89,7 +89,8 @@ audio_51 = [perifery,audio, "7462"]
 soft = "7369"
 microsoft = "14570"
 windows = [soft,microsoft,"14571"]
-power = [components,"7416","7464"]
+psu = "7416"
+power = [components,psu,"7464"]
 
 
 
@@ -383,6 +384,10 @@ def fillChoices():
                                                    'catalogs',include_docs=True, key=audio_51, stale=False)
                                     .addCallback(lambda res: (u"Аудио системы 5.1",res))])
                 .addCallback(lambda res: {audio:res}))
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, key=power, stale=False)
+                                    .addCallback(lambda res: (u"Блоки питания",res))])
+                .addCallback(lambda res: {psu:res}))
     def makeDict(res):
         new_res = {}
         for el in res:

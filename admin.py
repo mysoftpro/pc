@@ -989,10 +989,11 @@ class Psus(Resource):
 	request.finish()
     @MIMETypeJSON
     def render_GET(self, request):
+        from pc import models
 	defer.DeferredList([
 		couch.openView(designID,
 			       'catalogs',
-			       include_docs=True, key=["7363","7416","7464"], stale=False),
+			       include_docs=True, key=models.power, stale=False),
 		]).addCallback(self.finish, request)
 	return NOT_DONE_YET
 
