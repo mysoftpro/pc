@@ -87,126 +87,134 @@ function showArrows(){
     }
 }
 
+function init(){
+    _(notebooks)
+	.chain()
+	.keys()
+	.each(function(key){		  
+		  var note = notebooks[key];
+		  note.text = note.text.replace(/<blink[^<]*<\/blink>/g, '')
+		      .replace(/<font[^<]*<\/font>/g, '');
+	      });
+    _($('div.nname a').toArray()).chain()
+	.map(function(el){return $(el);})
+	.each(function(el){
+		  el.text(el.text().replace(/<blink[^<]*<\/blink>/g, '')
+		      .replace(/<font[^<]*<\/font>/g, ''));
+	      });
+    sortByClick($('#s_performance'), function(doc1,doc2){
+		    if (doc1['performance'] && doc2['performance'])
+			return doc1.performance-doc2.performance;
+		    else
+			return doc1.price-doc2.price;
+		});
 
-head.ready(function(){
+    sortByClick($('#s_price'), function(doc1,doc2){
+		    return doc1.price-doc2.price;});
+    sortByClick($('#s_size'), function(doc1,doc2){
+		    if (doc1['size'] && doc2['size'])
+			return doc1.size-doc2.size;
+		    else
+			return doc1.price-doc2.price;
+		});
+    $('.asc').click();	       
+    var note_description = $('#note_dscription');
+    var left_pane = $('#left_pane');
+    var right_pane = $('#right_pane');
+    var notebook_to_cart = $('#notebook_to_cart');
+    $('.note').click(function(e){
+			 e.preventDefault();
+			 if (notes_active)
+			     notes_active.attr('class',
+					       notes_active
+					       .attr('class')
+					       .replace(' nactive', ''));
+			 var target = $(e.target);
+			 if (target[0].tagName.toLowerCase()=='a')
+			     target = target.parent();
+			 while (!target.attr('class').match('note')){
+			     target = target.parent();
+			 }
+			 var klass = getNoteClass(target);
+			 notes_active = $('.'+klass);
+			 notes_active.attr('class',notes_active.attr('class')+' nactive');
+			 var doc = notebooks[klass];
+			 var descr = doc['description'];
+			 note_description.animate({'opacity':'0.0'}, 300);
+			 note_description.jScrollPaneRemove();
+			 var descr_name = '';
+			 if (descr && descr['name'])
+			     descr_name = descr['name'];
+			 var name = '<strong id="ndname">'+descr_name+'</strong>';
+			 $('#notebookfullname').text(descr_name);
+			 var descr_comments = '';
+			 if (descr && descr['comments'])
+			     descr_comments = descr['comments'];
+			 note_description
+			     .html(name+'<br/>'+descr_comments);
+			 note_description.jScrollPane();
+			 note_description.animate({'opacity':'1.0'}, 300);
 
+			 left_pane.html('');
+			 right_pane.html('');
+			 var i=0;
+			 for (var a in doc._attachments){
+			     if (doc._attachments[a]['content_type']=="image/jpeg"){
+				 var app = function(pane){
+				     pane
+					 .append('<img width="140" src="/image/' +
+						 doc['_id']+'/'+a+'"/>');
+				 };
+				 if (i>3 && i<10)
+				     app(right_pane);
+				 else if (i<=3 && i<10)
+				 app(left_pane);
+				 if (i==7)break;
+				 i+=1;
 
+			     }
 
-	       sortByClick($('#s_performance'), function(doc1,doc2){
-			       if (doc1['performance'] && doc2['performance'])
-				   return doc1.performance-doc2.performance;
-			       else
-				   return doc1.price-doc2.price;
-			   });
+			 }
+			 notebook_to_cart.find('h2').remove();
+			 var dos = '';
+			 if (doc['text'].toLowerCase().match('/dos'))
+			     dos = '<span>ВНИМАНИЕ! НЕТ ОПЕРАЦИОННОЙ СИСТЕМЫ!</span>';
+			 var _header = doc['text'];
+			 _header = _header.replace('Ноутбук Asus','');
+			 _header = _header.replace('Ноутбук ASUS','');
+			 var _price = '<strong>'+doc['price']+'р.</strong>';
+			 notebook_to_cart.append('<h2>' + _header+_price
+						 +dos+'</h2>');
+			 showArrows();
+		     });
+    $('#tocart').click(function(e){
+			   $.ajax({
+				      url:'savenote',
+				      data:{id:getNoteClass(notes_active)},
+				      success:function(data){
+					  if (data =='fail'){
+					      alert('Что-то пошло не так :(');
+					      return;
+					  }
 
-	       sortByClick($('#s_price'), function(doc1,doc2){
-			       return doc1.price-doc2.price;});
-	       sortByClick($('#s_size'), function(doc1,doc2){
-			       if (doc1['size'] && doc2['size'])
-				   return doc1.size-doc2.size;
-			       else
-				   return doc1.price-doc2.price;
-			   });
-	       $('.asc').click();	       
-	       var note_description = $('#note_dscription');
-	       var left_pane = $('#left_pane');
-	       var right_pane = $('#right_pane');
-	       var notebook_to_cart = $('#notebook_to_cart');
-	       $('.note').click(function(e){
-				    e.preventDefault();
-				    if (notes_active)
-					notes_active.attr('class',
-							  notes_active
-							  .attr('class')
-							  .replace(' nactive', ''));
-				    var target = $(e.target);
-				    if (target[0].tagName.toLowerCase()=='a')
-					target = target.parent();
-				    while (!target.attr('class').match('note')){
-					target = target.parent();
-				    }
-				    var klass = getNoteClass(target);
-				    notes_active = $('.'+klass);
-				    notes_active.attr('class',notes_active.attr('class')+' nactive');
-				    var doc = notebooks[klass];
-				    var descr = doc['description'];
-				    note_description.animate({'opacity':'0.0'}, 300);
-				    note_description.jScrollPaneRemove();
-				    var name = '<strong id="ndname">'+descr['name']+'</strong>';
-				    $('#notebookfullname').text(descr['name']);
-				    note_description
-					.html(name+'<br/>'+descr['comments']);
-				    note_description.jScrollPane();
-				    note_description.animate({'opacity':'1.0'}, 300);
-
-				    left_pane.html('');
-				    right_pane.html('');
-				    var i=0;
-				    for (var a in doc._attachments){
-					if (doc._attachments[a]['content_type']=="image/jpeg"){
-					    var app = function(pane){
-						pane
-						.append('<img width="140" src="/image/' +
-							doc['_id']+'/'+a+'"/>');
-					    };
-					    if (i>3 && i<10)
-						app(right_pane);
-					    else if (i<=3 && i<10)
-						app(left_pane);
-					    if (i==7)break;
-					    i+=1;
-
-					}
-
-				    }
-				    notebook_to_cart.find('h2').remove();
-				    var dos = '';
-				    if (doc['text'].toLowerCase().match('/dos'))
-					dos = '<span>ВНИМАНИЕ! НЕТ ОПЕРАЦИОННОЙ СИСТЕМЫ!</span>';
-				    var _header = doc['text'];
-				    _header = _header.replace('Ноутбук Asus','');
-				    _header = _header.replace('Ноутбук ASUS','');
-				    var _price = '<strong>'+doc['price']+'р.</strong>';
-				    notebook_to_cart.append('<h2>' + _header+_price
-							    +dos+'</h2>');
-				    showArrows();
-				});
-	       $('#tocart').click(function(e){
-				       $.ajax({
-						  url:'savenote',
-						  data:{id:getNoteClass(notes_active)},
-						  success:function(data){
-						      if (data =='fail'){
-							  alert('Что-то пошло не так :(');
-							  return;
-						      }
-
-						      var cart_el = $('#cart');
-						      if (cart_el.length>0){
-							  cart_el.text('Корзина('+
-								       $.cookie('pc_cart')
-								       +')');
-						      }
-						      else{
-							  $('#main_menu')
-							      .append(_.
-								      template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
-									       {
-												cart:$.cookie('pc_user')
-											    }));
-						      }
-						      alert('Получилось!');
-						  }
-					      });
-				   });
-	       $('.nname').first().click();
-	       // var pop = $('.popup');
-	       // pop.find('h3').text('Мастер выбора ноутбуков');
-	       // pop.find('p').text('В каждом из трех столбцов находятся названия моделей ноутбуков,'+
-	       // 			  ' занимая соответсвующую позицию. Можно менять порядок сортировки.'+
-	       // 			  ' Кликайте название в любом столбце, чтобы посмотреть описание и'+
-	       // 			  ' картинки.');
-	       // pop.css('top',-pop.outerHeight());
-	       // $('.popup').show();
-	       // $('.popup').animate({top:"0",left:"0"}, 500);
-	   });
+					  var cart_el = $('#cart');
+					  if (cart_el.length>0){
+					      cart_el.text('Корзина('+
+							   $.cookie('pc_cart')
+							   +')');
+					  }
+					  else{
+					      $('#main_menu')
+						  .append(_.
+							  template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+								   {
+								       cart:$.cookie('pc_user')
+								   }));
+					  }
+					  alert('Получилось!');
+				      }
+				  });
+		       });
+    $('.nname').first().click();	       
+}
+init();
