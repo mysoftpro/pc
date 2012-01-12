@@ -1286,3 +1286,9 @@ class VideoCard(Component):
 
     def has(self, field):
         return self.get(field,default='-1')!='-1'
+
+
+class Psu(Component):
+    @property
+    def power(self):
+        return self.get('power',0)

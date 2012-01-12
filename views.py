@@ -3,7 +3,7 @@ from pc.couch import couch, designID
 from twisted.internet import defer
 from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
-    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard
+    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
@@ -784,6 +784,34 @@ class VideocardView(PCView):
 
     title=u'Видеокарта'
 
+    def installPSUS(self, peak_power):
+        from pc import models
+        psus = models.gChoices[models.psu][0][1][1]
+        appr_psus = []
+        for row in psus['rows']:
+            doc = row['doc']
+            if 'power' not in doc:continue
+            if doc['power']>=peak_power:
+                psu = Psu(doc)                
+                appr_psus.append(psu)
+        
+        psu_list = self.template.middle.xpath('//ul')[0]
+        for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
+            li = etree.Element('li')
+            li.text = psu.text.replace(u'Блок питания', '')
+            li.set('id', psu._id)
+            strong = etree.Element('strong')
+            strong.text = unicode(psu.makePrice())+u' р.'
+
+            span = etree.Element('span')
+            span.set('class','videoadd')
+            span.text = u'добавить к заказу'
+            li.append(strong)
+            li.append(span)
+            psu_list.append(li)
+        
+
+
     def renderCard(self, res):
 
         if len(res['rows'])==0:
@@ -812,6 +840,8 @@ class VideocardView(PCView):
         rest = peak%50
         peak = peak-rest+50
         
+        self.installPSUS(peak)
+
         videopeak = self.template.middle.xpath('//span[@id="videopeak"]')[0]
         videopeak.text = unicode(peak) +u' Вт'
 
@@ -873,15 +903,12 @@ class SpecsForVideo(Resource):
         return ""
 
     def getSpecs(self, res, request):
-        print 1
         if len(res['rows'])==0:
             return self.fail(request)
         row = res['rows'][0]
-        print 2
         if not 'doc' in row:
             return self.fail(request)
         card = VideoCard(row['doc'])
-        print card
         request.write(card.marketParams.encode('utf-8'))
         request.finish()
 

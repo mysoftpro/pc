@@ -2493,11 +2493,13 @@ h1.bold.left{
     background-image:url('/static/build_icons.png');
     background-position:0px -385px;   
     height:16px;
+    overflow:hidden;
     background-repeat:no-repeat;
     padding-left:18px;
     list-style-type:none;
     cursor:pointer;
     margin-bottom:6px;
+    line-height: 16px;
 }
 
 .chipVendors strong{
@@ -2622,3 +2624,14 @@ h1.bold.left{
     max-height:20px;
     overflow:hidden;
 }
+/* #psu_list{ */
+/*     margin:0;padding:0; */
+/* } */
+/* #psu_list li{ */
+/*     list-style-type: none; */
+/*     cursor:pointer; */
+/*     margin-bottom:5px; */
+/* } */
+/* #psu_list li strong{ */
+/*     margin-left:10px; */
+/* } */
