@@ -10,6 +10,8 @@ function init(){
                    url:url,
                    data:{'art':articule},
                    success:function(html){
+		       if (html=='')
+			   html = 'нет отзывов';
                        container.html(html);
                        active.css('background-position', '0px 1px');
                        inactive.css('background-position', '0px -91px');

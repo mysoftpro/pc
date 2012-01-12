@@ -24,7 +24,6 @@ function setHashe(ob){
 
 function hide(el, brand, token){
     if (brand){
-        //el.hide();
         el.fadeOut(300);
 	el.data('filtered', true);
         return;
@@ -32,13 +31,11 @@ function hide(el, brand, token){
     var ul = el.parent();
     var div = ul.parent();
     el.hide();
-    //el.fadeOut(300);
     el.data(token, true);
     if (_(ul.children().toArray())
         .every(function(el){
                    return $(el).css('display')=='none';
                })){
-        //div.hide();
 	div.fadeOut(300);
     }
 };
@@ -46,8 +43,8 @@ function hide(el, brand, token){
 
 function show(el, brand, token){
     if (brand){
-        el.show();
-        //el.fadeIn(300);
+	if (_(el.find('li').toArray()).any(function(el){return $(el).css('display')!=='none';}))
+            el.show();
 	el.data('filtered', false);
         return;
     }
@@ -56,10 +53,8 @@ function show(el, brand, token){
     el.data(token, false);
     if(_(['price','vendor']).every(function(key){return !el.data(key);})){	    
         el.show();
-	//el.fadeIn(300);
         if (!div.data('filtered') && el.css('display')!=='none')
 	    div.fadeIn(300);
-            //div.show();
     }
 }
 

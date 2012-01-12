@@ -13,6 +13,8 @@ from twisted.internet.task import deferLater
 
 
 
+
+
 def parseMarket(f, url='url', remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
@@ -32,7 +34,10 @@ def parseMarket(f, url='url', remaining=None, parser=None):
             root = parser.close()
             all_divs = []
             for i in xrange(3):
-                divs = root.xpath('//div[@class="b-grade comment left'+str(i)+'"]')
+                klass = 'comment left'+str(i)
+                if not 'forums' in url:
+                    klass = "b-grade " + klass
+                divs = root.xpath('//div[@class="'+klass+'"]')
                 for d in divs:
                     td = d.xpath('//td[@class="b-grade__feedback grade-opinion-actions"]')
                     for t in td:
@@ -42,7 +47,7 @@ def parseMarket(f, url='url', remaining=None, parser=None):
                         i.getparent().remove(i)
 
                 all_divs+=divs
-            globals()['gMarket_Cached'][url] = all_divs            
+            globals()['gMarket_Cached'][url] = all_divs
             return all_divs
         else:
             rd = f.read(spoon)
@@ -50,7 +55,7 @@ def parseMarket(f, url='url', remaining=None, parser=None):
             remaining -= spoon
             d = deferLater(reactor, 0, parseMarket, f, url, remaining, parser)
             return d
-     
+
 
 
 gMarket_Cached = {}
@@ -63,7 +68,7 @@ def getMarket(card):
         d1.callback(None)
         d2 = defer.Deferred()
         d2.addCallback(lambda x: cached[card.marketReviews])
-        d2.callback(None)        
+        d2.callback(None)
         return defer.DeferredList((d1,d2))
 
     agent = Agent(reactor)
@@ -73,7 +78,7 @@ def getMarket(card):
             headers.update({'User-Agent':[standard_user_agents[randint(0,len(standard_user_agents)-1)]]})
         else:
             headers.update({k:v})
-    
+
     c = defer.Deferred()
     c.addCallback(parseMarket, url=card.marketComments)
     r = defer.Deferred()
