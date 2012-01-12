@@ -423,8 +423,7 @@ class Skin(Template):
     def render(self):
         if self.selected_skin is not None:
             logo = self.tree.getroot().find('body').xpath('//img[@id="logoImage"]')[0]
-
-            logo.set('src', '/static/logo3_n.png')
+            logo.set('src', '/static/logo3.png')
 	return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
