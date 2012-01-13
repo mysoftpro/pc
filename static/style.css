@@ -2634,7 +2634,7 @@ h1.bold.left{
 }
 #videodesc:before{
     left:-2px;
-    top:10px;
+    top:15px;
 }
 #videodesc{
     cursor:pointer;

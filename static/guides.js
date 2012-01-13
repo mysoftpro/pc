@@ -48,7 +48,7 @@ function showDescription(_id){
     return _show;
 }
 function showComponent(e){
-    e.preventDefault();    
+    e.preventDefault();
     var _id = e.target.id.replace('new_', 'new|').split('_')[1].replace('new|','new_');
     $.ajax({
                url:'/component?id='+_id,

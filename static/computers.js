@@ -589,8 +589,8 @@ var init = function(){
 	var ul = $(document.createElement('ul'));
 	ul.append(data_ul.html());
 	ul.find('li').click(function(e){
-				e.preventDefault();
-				var _id = e.target.id.split('_')[1];
+				e.preventDefault();				
+				var _id = e.target.id.replace('new_', 'new|').split('_')[1].replace('new|','new_');
 				$.ajax({
 					   url:'/component?id='+_id,
 					   success:showDescription(_id)

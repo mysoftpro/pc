@@ -860,7 +860,7 @@ class VideocardView(PCView):
             first = r[0]
             if first.text != u'Итого':
                 first.find('div').text = card.description.get('name', card.text)
-        self.script.text += 'var _id="'+card._id+'";'
+        self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
 
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _

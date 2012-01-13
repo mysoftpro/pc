@@ -56,31 +56,37 @@ function init(){
                                  power_div.text(psu.name);
                                  power_div.parent().next().next().text(psu.price+' р.');
                              }
-			     power_div.data('_id',psu._id);
-			     recalculate();
+                             power_div.data('_id',psu._id);
+                             recalculate();
                          });
     function ascend(e){
-	var target = $(e.target);
-	var pa = target.parent();
-	target.unbind('click');
-	target.remove();
-	pa.html('<span id="videodesc" class="desc desca"></span>2 шт');
-	pa.find('span').click(descend);
+        var target = $(e.target);
+        var pa = target.parent();
+        target.unbind('click');
+        target.remove();
+        pa.html('<span id="videodesc" class="desc desca"></span>2 шт');	
+        pa.find('span').click(descend);
+        $('#videoname').data('pcs', 2);
+	pa.next().text(price*2*0.95+' р.');
+	recalculate();
     }
     function descend(e){
-	var target = $(e.target);
-	var pa = target.parent();
-	target.unbind('click');
-	target.remove();
-	pa.html('<span id="videoasc" class="asc asca"></span>1 шт');
-	pa.find('span').click(ascend);
-    }    
+        var target = $(e.target);
+        var pa = target.parent();
+        target.unbind('click');
+        target.remove();
+        pa.html('<span id="videoasc" class="asc asca"></span>1 шт');
+        pa.find('span').click(ascend);
+        $('#videoname').data('pcs', 1);
+	pa.next().text(price+' р.');
+	recalculate();
+    }
     $('#videoasc').click(ascend);
 }
 
 function recalculate(){
 
-    var tottal = _($('#videoprice tr').toArray())
+    _($('#videoprice tr').toArray())
         .chain()
         .map(function(el){return $(el);})
         .reduce(function(memo, el, i){
@@ -88,11 +94,11 @@ function recalculate(){
                     var td = el.find('td').last();
                     if(el.next().length==0){
                         td.text(memo+' р.');
-			return memo;
+                        return memo;
                     }
-                    return parseInt(td.text().split(' ')[0])+memo;
-              }, 0)
-    .value();
+		    var value = parseInt(td.text().split(' ')[0]);
+                    return value+memo;
+              }, 0);
 
 }
 
