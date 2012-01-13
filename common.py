@@ -39,3 +39,20 @@ def MIMETypeJSON(f):
 	request.setHeader("Cache-Control", "max-age=0,no-cache,no-store")
         return f(self, request)
     return render
+
+
+def pcCartTotal(request, user):
+    in_cart = 0
+    if 'models' in user:
+        in_cart += len(user['models'])
+    if 'notebooks' in user:
+        in_cart+=len(user['notebooks'].keys())
+    if 'sets' in user:
+        for s in user['sets']:
+            for v in s.values():
+                pcs = 1
+                if 'pcs' in v:
+                    pcs = v['pcs']
+            in_cart+=pcs
+    if in_cart>0:
+        addCookies(request, {'pc_cart':str(in_cart)})

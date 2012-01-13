@@ -31,7 +31,7 @@ from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
 import sys
 from pc.auth import OAuth, OpenId
-from pc.common import addCookies, MIMETypeJSON
+from pc.common import addCookies, MIMETypeJSON, pcCartTotal
 
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
@@ -1048,10 +1048,7 @@ class Component(Resource):
 class Save(Resource):
     def finish(self, user_model, request, user_doc):
         if user_model[0][0] and user_model[1][0]:
-            in_cart = len(user_doc['models'])
-            if 'notebooks' in user_doc:
-                in_cart+=len(user_doc['notebooks'].keys())
-            addCookies(request, {'pc_cart':str(in_cart)})
+            pcCartTotal(request,user_doc)
             request.write(simplejson.dumps(user_model[1][1]))
         else:
             request.write(simplejson.dumps({}))
@@ -1178,8 +1175,7 @@ class SaveNote(Resource):
             user_doc['notebooks'].update({note_id:(_id)})
         else:
             user_doc['notebooks'] = {note_id:(_id)}
-        in_cart = len(user_doc['models']) + len(user_doc['notebooks'].keys())
-        addCookies(request, {'pc_cart':str(in_cart)})
+        pcCartTotal(request, user_doc)
         couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
         return note_id
 
@@ -1216,6 +1212,10 @@ def get_uuid():
     d.callback(None)
     return d
 
+
+
+
+
 class Delete(Resource):
     def render_GET(self, request):
         uuid = request.args.get('uuid', [None])[0]
@@ -1237,10 +1237,7 @@ class Delete(Resource):
             if same_author and not_processing:
                 couch.deleteDoc(uuid,_model['_rev'])
                 _user['models'] = [m for m in _user['models'] if m != _model['_id']]
-                in_cart = len(_user['models'])
-                if 'notebooks' in _user:
-                    in_cart+=len(_user['notebooks'].keys())
-                addCookies(request, {'pc_cart':str(in_cart)})
+                pcCartTotal(request, _user)
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
@@ -1261,10 +1258,7 @@ class DeleteNote(Resource):
                     and 'notebooks' in _user\
                     and uuid in _user['notebooks']:
                 _user['notebooks'].pop(uuid)
-                in_cart = len(_user['models'])
-                if 'notebooks' in _user:
-                    in_cart+=len(_user['notebooks'].keys())
-                addCookies(request, {'pc_cart':str(in_cart)})
+                pcCartTotal(request, _user)
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
@@ -1357,6 +1351,7 @@ class SaveSet(Resource):
             user_doc['sets'] = []
         user_doc['sets'].append(data)
         couch.saveDoc(user_doc)
+        pcCartTotal(request, user_doc)
         request.write("ok")
         request.finish()
         

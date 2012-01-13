@@ -12,7 +12,7 @@ from twisted.internet import reactor, defer
 from twisted.web.server import NOT_DONE_YET
 from pc import base36
 from datetime import datetime
-from pc.common import addCookies
+from pc.common import addCookies, pcCartTotal
 import hashlib
 from pc.secure import mail_app_id,mail_secret_key, vk_app_id, vk_secret_key, goog_client_id, goog_secret,odnoklassniki_app_id, odnoklassniki_secret_key,odnoklassniki_pulic_key
 from twisted.internet.defer import succeed
@@ -134,16 +134,9 @@ class OAuth(Resource):
 
 
     def installPreviousUser(self, soc_user_doc, request):
-        print "oooooooooooooooooooooooooooooooooooooooooooooo"        
         addCookies(request, {'pc_user':soc_user_doc['_id'],
                              'pc_key':soc_user_doc['pc_key']})
-        in_cart = 0
-        if 'models' in soc_user_doc:
-            in_cart +=len(soc_user_doc['models'])
-	if 'notebooks' in soc_user_doc:
-	    in_cart+=len(soc_user_doc['notebooks'].keys())
-        if in_cart>0:
-            addCookies(request, {'pc_cart':str(in_cart)})
+        pcCartTotal(request, soc_user_doc)
 	d = couch.listDoc(keys=soc_user_doc['models'], include_docs=True)
 	d.addCallback(self.updateModelsAuthor, soc_user_doc)
 
