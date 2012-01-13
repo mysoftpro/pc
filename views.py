@@ -3,7 +3,7 @@ from pc.couch import couch, designID
 from twisted.internet import defer
 from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
-    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu
+    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond
@@ -861,7 +861,8 @@ class VideocardView(PCView):
             if first.text != u'Итого':
                 first.find('div').text = card.description.get('name', card.text)
         self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
-
+        self.script.text += 'var video_catalog='+video_catalog+';var power_catalog='+power_catalog+';'
+    
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""

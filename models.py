@@ -1159,6 +1159,7 @@ class User(object):
                 self.notebooks.append(note)
         self.user = results['user']
 
+    
     def isValid(self, request):
         return  self.user['_id'] == request.getCookie('pc_user') and \
                 self.user['pc_key'] == request.getCookie('pc_key')

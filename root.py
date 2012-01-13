@@ -14,7 +14,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import makeNotePrice,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, upgrade_set, Model
+    NamesFor, ParamsFor, promotion, upgrade_set, Model, video, psu
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
    MarketForVideo,SpecsForVideo
 from pc.catalog import XmlGetter, WitNewMap
@@ -688,6 +688,7 @@ class Root(Resource):
         self.putChild('marketFor',MarketFor())
         self.putChild('videoComments', MarketForVideo())
         self.putChild('videoSpecs', SpecsForVideo())
+        self.putChild('saveset', SaveSet())
 
     def getChild(self, name, request):
         # self.checkCookie(request)
@@ -1344,19 +1345,30 @@ class Rss(Resource):
     def render_GET(self, request):
         return self.proxy.render(request)
 
-# class SelectHelpsProxy(Resource):
-#     def __init__(self, *args, **kwargs):
-#       Resource.__init__(self, *args, **kwargs)
-#       self.proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc', reactor=reactor)
 
-#     def getChild(self, path, request):
-#       last = request.uri.split('/')[-1]
 
-#       # safety to not show couch internals
-#       # just check that it endswith image extension and no parameters in it
-#       if '?' in last or '&' in last:
-#           return NoResource()
-#       _help = 'how_' in last
-#       if not _help:
-#           return NoResource()
-#       return self.proxy.getChild(last, request)
+class SaveSet(Resource):
+
+    def save(self, user_doc, data, request):
+        if request.getCookie('pc_key')!=user_doc['pc_key']:
+            request.write('fail')
+            request.finish()
+        if not 'sets' in user_doc:
+            user_doc['sets'] = []
+        user_doc['sets'].append(data)
+        couch.saveDoc(user_doc)
+        request.write("ok")
+        request.finish()
+        
+    def render_GET(self, request):
+        data = request.args.get('data',[None])[0]
+        if data is None:
+            return "fail"
+        jdata = simplejson.loads(data)
+        if video not in jdata or psu not in jdata:
+            return "fail"
+        d = couch.openDoc(request.getCookie('pc_user'))
+        d.addCallback(self.save,jdata,request)
+        return NOT_DONE_YET
+                          
+
