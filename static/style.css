@@ -2473,7 +2473,7 @@ h1.bold.left{
 }
 .chip{
     float:left;    
-    min-height:350px;
+    min-height:330px;
     margin-left:15px;
 }
 .chipname{
@@ -2528,6 +2528,7 @@ h1.bold.left{
     height:32px;
     background-position:0px -263px;
     float:left;
+    margin-top:-5px;
 }
 .video_filter{
     background-image:url('video_filter.png');
@@ -2563,14 +2564,11 @@ h1.bold.left{
     max-width:400px;
 }
 #maparams {
-    max-width:600px;
+    width:50%;
 }
 #maparams .b-properties__title {
     padding: .8em 0 .6em;
     font-size: 140%;
-}
-#maparams table{
-    width:600px;
 }
 
 #maparams th, td {
@@ -2588,7 +2586,7 @@ h1.bold.left{
     text-align:right;
 }
 .videofeatures{
-    width:360px;
+    min-width:360px;
     max-height:360px;
 }
 .videoadd{
