@@ -1039,7 +1039,8 @@ class Component(object):
         self.component_doc = component_doc
         # ???
         self._cat_name = cat_name
-    
+        self._price = None
+
     @property
     def cat_name(self):
         if self._cat_name is not None:
@@ -1085,7 +1086,9 @@ class Component(object):
         return self.get('cache', '')
 
     def makePrice(self):
-        return Model.makePrice(self.component_doc)
+        if self._price is  None:
+            self._price = Model.makePrice(self.component_doc) 
+        return self._price
 
 
 

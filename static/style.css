@@ -2622,14 +2622,20 @@ h1.bold.left{
     max-height:20px;
     overflow:hidden;
 }
-/* #psu_list{ */
-/*     margin:0;padding:0; */
-/* } */
-/* #psu_list li{ */
-/*     list-style-type: none; */
-/*     cursor:pointer; */
-/*     margin-bottom:5px; */
-/* } */
-/* #psu_list li strong{ */
-/*     margin-left:10px; */
-/* } */
+#video_top{
+    height:100px;
+}
+#videoasc:before{
+    left:-2px;
+    top:-10px;
+}
+#videoasc{
+    cursor:pointer;
+}
+#videodesc:before{
+    left:-2px;
+    top:10px;
+}
+#videodesc{
+    cursor:pointer;
+}

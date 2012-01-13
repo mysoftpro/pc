@@ -783,8 +783,14 @@ class VideoCards(PCView):
 class VideocardView(PCView):
 
     title=u'Видеокарта'
+    
+    def __init__(self, *args, **kwargs):
+        super(VideocardView, self).__init__(*args, **kwargs)
+        self.script = self.template.middle.find('script')
+        self.script.text = ''
 
     def installPSUS(self, peak_power):
+        json_psus = {}
         from pc import models
         psus = models.gChoices[models.psu][0][1][1]
         appr_psus = []
@@ -797,6 +803,7 @@ class VideocardView(PCView):
         
         psu_list = self.template.middle.xpath('//ul')[0]
         for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
+            json_psus[psu._id] = {'_id':psu._id,'name':psu.text,'price':psu.makePrice()}
             li = etree.Element('li')
             li.text = psu.text.replace(u'Блок питания', '')
             li.set('id', psu._id)
@@ -809,6 +816,7 @@ class VideocardView(PCView):
             li.append(strong)
             li.append(span)
             psu_list.append(li)
+        self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
         
 
 
@@ -852,7 +860,7 @@ class VideocardView(PCView):
             first = r[0]
             if first.text != u'Итого':
                 first.find('div').text = card.description.get('name', card.text)
-        # self.middle.find('script').text = 'var _id='+card._id+';'
+        self.script.text += 'var _id="'+card._id+'";'
 
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
