@@ -228,6 +228,16 @@ class NotebookInCart(object):
         price_span.text = unicode(price) + u' р.'
 
 
+    def fillExtra(self):
+        if self.author:
+            extra = deepcopy(self.tree.find('cart_extra'))
+            for el in extra:
+                if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+                    el.set('href', '/bill.pdf?id='+self.model._id)
+                self.description_div.append(el)
+
+
+
     def render(self):
         note_name = self.note.xpath('//div[@class="cnname"]')[0]
         note_name.text = self.notebook.text
@@ -235,6 +245,7 @@ class NotebookInCart(object):
 
         self.setModelLink()
         self.setIcon()
+        self.fillExtra()
         self.note.insert(0,self.icon)
         self.container.append(self.note)
 
@@ -368,7 +379,7 @@ class Cart(PCView):
         for n in user.getUserNotebooks():
             note_view = NotebookInCart(n,deepcopy(note_div),
                                             deepcopy(icon),
-                                            models_div)
+                                            models_div, user.isValid(self.request) and n.isAuthor(user))
             note_view.render()
         return user
 

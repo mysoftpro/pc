@@ -1111,7 +1111,7 @@ def userFactory(name):
         return doc
 
     def getFields(some, name, orders=False, keys=False):
-        """ {'models':[3afs123, 3b456a], 'notebooks':{'3afs456':171515}} """
+        """ {'models':[3afs123, 3b456a], 'notebooks':{'3afs456':171515}}, 'sets':[3afs123, 3b456a] """
         defs = []
         if name in results['user']:
             for _id in results['user'][name]:
@@ -1208,6 +1208,10 @@ class User(object):
 
 
 class Notebook(Component):
+
+    def __init__(self, component_doc, note_ob):
+        super(Notebook, self).__init__(component_doc)
+        self.note_ob = note_ob
 
     @property
     def key(self):
