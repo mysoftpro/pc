@@ -148,7 +148,6 @@ class ModelInCart(object):
 
 
     def fillComponentsList(self):
-        self.description_div.set('class','cart_description')
         ul = etree.Element('ul')
         ul.set('class','description')
 
