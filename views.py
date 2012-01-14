@@ -19,7 +19,7 @@ from pc.market import getMarket
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
         self.author = author
-        self.tree = tree        
+        self.tree = tree
         self.request = request
         self.model = model
         self.icon = deepcopy(self.tree.find('model_icon').find('a'))
@@ -52,7 +52,7 @@ class ModelInCart(object):
     def fillInfo(self):
         info = self.model_div.xpath('//div[@class="info"]')[0]
         if self.model.checkRequired:
-            if self.model.checkPerformed:                
+            if self.model.checkPerformed:
                 info.set('class', info.get('class')+ ' confirm_info')
                 info.set('title',u'Проверено!')
             else:
@@ -226,7 +226,7 @@ class NotebookInCart(object):
         price = self.notebook.makePrice()
         price_span = self.note.xpath('//span[@class="modelprice"]')[0]
         price_span.text = unicode(price) + u' р.'
-        
+
 
     def render(self):
         note_name = self.note.xpath('//div[@class="cnname"]')[0]
@@ -241,7 +241,7 @@ class NotebookInCart(object):
     #will be overriden by subclasses
     def setIcon(self):
         self.icon.find('img').set('src',self.notebook.getComponentIcon())
-        
+
 
 class SetInCart(ModelInCart):
 
@@ -260,15 +260,15 @@ class SetInCart(ModelInCart):
         self.description_div = divs[1]
 
     def setModelLink(self, link):
-        
+
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
         strong.text = self.model._id[-3:]
         link.append(strong)
-        
+
         #TODO may be other sets will have another link!
-        link.set('href', 
+        link.set('href',
                  '/videocard/'+\
                      quote_plus(self.model.components[0].get('articul','').replace('\t','')))
 
@@ -321,12 +321,17 @@ class PCView(object):
 
 class Cart(PCView):
     title = u'Корзина'
+
+    def fixCookies(self, user):        
+        if user.isValid(self.request):
+            pcCartTotal(self.request, user.user)
+
     def preRender(self):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
         user_d.addCallback(self.renderNotes)
         user_d.addCallback(self.renderSets)
-        user_d.addCallback(lambda user:pcCartTotal(self.request, user.user))        
+        user_d.addCallback(self.fixCookies)
         return user_d
 
 
@@ -731,7 +736,7 @@ class Index(PCView):
 
 class VideoCards(PCView):
     title=u'Лучшие видеокарты GeForce и Radeon для апгрейда'
-        
+
     def renderChips(self, res):
         chips = {}
         vendors = set()
@@ -837,7 +842,7 @@ class VideoCards(PCView):
 class VideocardView(PCView):
 
     title=u'Видеокарта'
-    
+
     def __init__(self, *args, **kwargs):
         super(VideocardView, self).__init__(*args, **kwargs)
         self.script = self.template.middle.find('script')
@@ -852,9 +857,9 @@ class VideocardView(PCView):
             doc = row['doc']
             if 'power' not in doc:continue
             if doc['power']>=peak_power:
-                psu = Psu(doc)                
+                psu = Psu(doc)
                 appr_psus.append(psu)
-        
+
         psu_list = self.template.middle.xpath('//ul')[0]
         for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
             json_psus[psu._id] = {'_id':psu._id,'name':psu.text,'price':psu.makePrice()}
@@ -871,7 +876,7 @@ class VideocardView(PCView):
             li.append(span)
             psu_list.append(li)
         self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
-        
+
 
 
     def renderCard(self, res):
@@ -894,14 +899,14 @@ class VideocardView(PCView):
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())
 
-        
+
         videocons = self.template.middle.xpath('//span[@id="videocons"]')[0]
         videocons.text = card.power +u' Вт'
-        
+
         peak = int(card.power)+350
         rest = peak%50
         peak = peak-rest+50
-        
+
         self.installPSUS(peak)
 
         videopeak = self.template.middle.xpath('//span[@id="videopeak"]')[0]
@@ -916,7 +921,7 @@ class VideocardView(PCView):
                 first.find('div').text = card.description.get('name', card.text)
         self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
         self.script.text += 'var video_catalog='+video_catalog+';var power_catalog='+power_catalog+';'
-    
+
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
@@ -982,4 +987,3 @@ class SpecsForVideo(Resource):
         d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getSpecs, request)
         return NOT_DONE_YET
-
