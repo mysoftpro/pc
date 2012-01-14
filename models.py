@@ -545,7 +545,7 @@ class ZipConponents(Resource):
 
         mothers_mapping = {}
         for m in mothers:
-            if len(m)==0:continue            
+            if len(m)==0:continue
             cats = Model.getCatalogsKey(m[0]['doc'])
             mothers_mapping.update({tuple(cats):m})
         proc_mapping = {}
@@ -872,7 +872,7 @@ class Model(object):
             splitted = retval.split('/preview')
             retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
         return retval
-            
+
 
     @classmethod
     def makePrice(cls, doc):
@@ -886,7 +886,7 @@ class Model(object):
             course = 1
         our_price = float(doc['price'])*Margin*course
         return int(round(our_price/10))*10
-    
+
 
     @property
     def ours(self):
@@ -1041,13 +1041,17 @@ class Component(object):
         self._cat_name = cat_name
         self._price = None
 
+
+    def getComponentIcon(self, default = "/static/icon.png"):
+        return Model.getComponentIcon(self.component_doc, default = default)
+
     @property
     def cat_name(self):
         if self._cat_name is not None:
             return self._cat_name
         else:
             return self.getCatalogsKey()[1]
-                
+
 
     def get(self, field, default=None):
         return self.component_doc.get(field, default)
@@ -1072,7 +1076,7 @@ class Component(object):
         return self.get('description', False)
 
 
-    def getCatalogsKey(self):        
+    def getCatalogsKey(self):
         return Model.getCatalogsKey(self.component_doc)
 
     @property
@@ -1087,7 +1091,7 @@ class Component(object):
 
     def makePrice(self):
         if self._price is  None:
-            self._price = Model.makePrice(self.component_doc) 
+            self._price = Model.makePrice(self.component_doc)
         return self._price
 
 
@@ -1135,8 +1139,13 @@ def userFactory(name):
 
     user.addCallback(getFields, 'models')
     user.addCallback(getFields, 'notebooks', keys=True)
+
     user.addCallback(getFields, 'models', orders=True)
     user.addCallback(getFields, 'notebooks', orders=True, keys = True)
+
+    user.addCallback(getFields, 'sets')
+    user.addCallback(getFields, 'sets', orders=True)
+
     user.addCallback(lambda some: User(results))
     return user
 
@@ -1157,9 +1166,17 @@ class User(object):
         for res,note in results['notebooks']:
             if res and note['_id'] not in orders_notebooks_ids:
                 self.notebooks.append(note)
+
+
+        orders_sets = [tu[1] for tu in results['orders_sets'] if tu[1] is not None]
+        self.sets = orders_sets
+        orders_sets_ids = [o['_id'] for o in orders_sets]
+        for res,note in results['sets']:
+            if res and note['_id'] not in orders_sets_ids:
+                self.sets.append(note)
         self.user = results['user']
 
-    
+
     def isValid(self, request):
         return  self.user['_id'] == request.getCookie('pc_user') and \
                 self.user['pc_key'] == request.getCookie('pc_key')
@@ -1176,7 +1193,14 @@ class User(object):
 
     def getUserNotebooks(self):
         for n in self.notebooks:
-            yield Notebook(n, None)
+            yield Notebook(n)
+
+
+    def getUserSets(self):
+        for s in self.sets:
+            print s
+            yield Set(s)
+
 
 
     def get(self, field, default=None):
@@ -1185,7 +1209,6 @@ class User(object):
     @property
     def _id(self):
         return self.get('_id')
-
 
 
 
@@ -1231,7 +1254,7 @@ class Comment(object):
 class VideoCard(Component):
 
 
-    def goodPrice(self):        
+    def goodPrice(self):
         return self.makePrice()>=4000
 
     @property
@@ -1259,8 +1282,6 @@ class VideoCard(Component):
     def memory_ammo(self):
         return self.get('memory_ammo', '-')
 
-    def getComponentIcon(self, default = "/static/icon.png"):
-        return Model.getComponentIcon(self.component_doc, default = default)
 
     @property
     def vendor(self):
@@ -1296,3 +1317,7 @@ class Psu(Component):
     @property
     def power(self):
         return self.get('power',0)
+
+
+class Set(Model):
+    pass

@@ -6,7 +6,7 @@ from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,vide
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog
 from copy import deepcopy
 from lxml import etree, html
-from pc.common import forceCond
+from pc.common import forceCond, pcCartTotal
 from urllib import unquote_plus, quote_plus
 import simplejson
 import re
@@ -31,16 +31,16 @@ class ModelInCart(object):
 
 
     # TODO! use Model.getNotebookIcon !!!!!!!!!!!!!
-    def getCaseIcon(self):
-        retval = "/static/icon.png"
-        if self.model.case.description and'imgs' in self.model.case.description:
-            retval = ''.join(("/image/",self.model.case._id,"/",
-                              self.model.case.description['imgs'][0],'.jpg'))
-        if '/preview' in retval:
-            splitted = retval.split('/preview')
-            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+    # def getCaseIcon(self):
+    #     retval = "/static/icon.png"
+    #     if self.model.case.description and'imgs' in self.model.case.description:
+    #         retval = ''.join(("/image/",self.model.case._id,"/",
+    #                           self.model.case.description['imgs'][0],'.jpg'))
+    #     if '/preview' in retval:
+    #         splitted = retval.split('/preview')
+    #         retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
 
-        return retval
+    #     return retval
 
 
     def setModelLink(self, link):
@@ -94,10 +94,13 @@ class ModelInCart(object):
                 price_span.text = unicode(self.model.ourPrice)+u' р.'
             else:
                 price_span.text = u'24900 р.'
-        self.icon.find('img').set('src',self.getCaseIcon())
+        # self.icon.find('img').set('src',self.getCaseIcon())
+        self.setIcon()
         self.model_div.insert(0,self.icon)
         self.container.append(self.model_div)
 
+    def setIcon(self):
+        self.icon.find('img').set('src',Model.getComponentIcon(self.model.case))
 
     def renderComponent(self, component):
         li = etree.Element('li')
@@ -244,6 +247,14 @@ class NotebookInCart(object):
         self.container.append(self.note)
 
 
+
+class SetInCart(ModelInCart):
+
+    def setIcon(self):
+        self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
+
+
+
 class PCView(object):
     title = u'Компьютерный магазин Билд'
 
@@ -288,6 +299,8 @@ class Cart(PCView):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
         user_d.addCallback(self.renderNotes)
+        user_d.addCallback(self.renderSets)
+        user_d.addCallback(lambda user:pcCartTotal(self.request, user.user))        
         return user_d
 
 
@@ -309,6 +322,10 @@ class Cart(PCView):
     def getNotesDiv(self):
         return self.tree.find('notebook').find('div')
 
+    def getSetDiv(self):
+        return self.tree.find('set').find('div')
+
+
 
     def renderNotes(self, user):
         models_div = self.getModelsDiv()
@@ -322,6 +339,17 @@ class Cart(PCView):
                                             deepcopy(icon),
                                             models_div)
             note_view.render()
+        return user
+
+
+    def renderSets(self, user):
+        models_div = self.getModelsDiv()
+        for m in user.getUserSets():
+            view = SetInCart(self.request, m, self.tree,
+                               models_div, user.isValid(self.request) and m.isAuthor(user))
+            view.render()
+        return user
+
 
 
 class ModelOnModels(ModelInCart):
@@ -928,3 +956,4 @@ class SpecsForVideo(Resource):
         d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getSpecs, request)
         return NOT_DONE_YET
+

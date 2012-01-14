@@ -47,12 +47,15 @@ def pcCartTotal(request, user):
         in_cart += len(user['models'])
     if 'notebooks' in user:
         in_cart+=len(user['notebooks'].keys())
+    #TODO! may be 1 set is just 1 set,  not video+power?
     if 'sets' in user:
-        for s in user['sets']:
-            for v in s.values():
-                pcs = 1
-                if 'pcs' in v:
-                    pcs = v['pcs']
-            in_cart+=pcs
+        in_cart += len(user['sets'])
+    # if 'sets' in user:
+    #     for s in user['sets']:             
+    #         for v in s.values():
+    #             pcs = 1
+    #             if 'pcs' in v:
+    #                 pcs = v['pcs']
+    #         in_cart+=pcs
     if in_cart>0:
         addCookies(request, {'pc_cart':str(in_cart)})

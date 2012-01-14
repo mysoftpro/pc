@@ -1176,7 +1176,9 @@ class SaveNote(Resource):
         else:
             user_doc['notebooks'] = {note_id:(_id)}
         pcCartTotal(request, user_doc)
-        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False})
+        _date = str(date.today()).split('-')
+        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False, 'date':_date})
+        user_doc['date'] = _date
         return note_id
 
 
@@ -1349,7 +1351,25 @@ class SaveSet(Resource):
             request.finish()
         if not 'sets' in user_doc:
             user_doc['sets'] = []
-        user_doc['sets'].append(data)
+        _date = str(date.today()).split('-')
+        user_doc['date'] = _date
+        _set = {'_id':base36.gen_id(),'author':user_doc['_id'],
+                'building':False,'installing':False,'dvd':False,'items':{}, 'date':_date}
+        # make lists for multiple items
+        for k,v in data.items():
+            if not '_id' in v:
+                continue
+            code = v['_id']
+            if 'pcs' in v:
+                v['pcs']-=1
+                if v['pcs']>1:
+                    code = [v['_id']]
+                    while v['pcs']>0:
+                        code.append(v['_id'])
+                        v['pcs']-=1
+            _set['items'].update({k:code})            
+        couch.saveDoc(_set)
+        user_doc['sets'].append(_set['_id'])
         couch.saveDoc(user_doc)
         pcCartTotal(request, user_doc)
         request.write("ok")
