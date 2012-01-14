@@ -861,20 +861,6 @@ class Model(object):
 
 
     @classmethod
-    def getComponentIcon(cls, component_doc, default = "/static/icon.png"):
-        retval = default
-        if 'description' in component_doc and'imgs' in component_doc['description']:
-            imgs = component_doc['description']['imgs']
-            if len(imgs)>0:
-                retval = ''.join(("/image/",component_doc['_id'],"/",
-                                  imgs[0],'.jpg'))
-        if retval is not None and '/preview' in retval:
-            splitted = retval.split('/preview')
-            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
-        return retval
-
-
-    @classmethod
     def makePrice(cls, doc):
         #orders! they prices are fixed
         if 'ourprice' in doc:
@@ -1043,7 +1029,16 @@ class Component(object):
 
 
     def getComponentIcon(self, default = "/static/icon.png"):
-        return Model.getComponentIcon(self.component_doc, default = default)
+        retval = default
+        if self.description and 'imgs' in self.description:
+            imgs = self.description['imgs']
+            if len(imgs)>0:
+                retval = ''.join(("/image/",self._id,"/",
+                                  imgs[0],'.jpg'))
+        if retval is not None and '/preview' in retval:
+            splitted = retval.split('/preview')
+            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
+        return retval
 
     @property
     def cat_name(self):

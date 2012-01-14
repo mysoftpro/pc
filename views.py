@@ -99,8 +99,9 @@ class ModelInCart(object):
         self.model_div.insert(0,self.icon)
         self.container.append(self.model_div)
 
+    #will be overriden by subclasses
     def setIcon(self):
-        self.icon.find('img').set('src',Model.getComponentIcon(self.model.case))
+        self.icon.find('img').set('src',self.model.case.getComponentIcon())
 
     def renderComponent(self, component):
         li = etree.Element('li')
@@ -215,19 +216,6 @@ class NotebookInCart(object):
         self.container = container
 
 
-    #TODO! use Model.getComponentIcon !!!!!!!!!!!!!!!!!!
-    def getNotebookIcon(self):
-        retval = "/static/icon.png"
-        if self.notebook.description and'imgs' in self.notebook.description:
-            retval = ''.join(("/image/",self.notebook._id,"/",
-                              self.notebook.description['imgs'][0],'.jpg'))
-        if '/preview' in retval:
-            splitted = retval.split('/preview')
-            retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
-
-        return retval
-
-
     def render(self):
         note_name = self.note.xpath('//div[@class="cnname"]')[0]
         note_name.text = self.notebook.text
@@ -242,11 +230,15 @@ class NotebookInCart(object):
 
         self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
 
-        self.icon.find('img').set('src',self.getNotebookIcon())
+        # self.icon.find('img').set('src',self.getNotebookIcon())
+        self.setIcon()
         self.note.insert(0,self.icon)
         self.container.append(self.note)
 
-
+    #will be overriden by subclasses
+    def setIcon(self):
+        self.icon.find('img').set('src',self.notebook.getComponentIcon())
+        
 
 class SetInCart(ModelInCart):
 
