@@ -2639,13 +2639,8 @@ h1.bold.left{
 #videodesc{
     cursor:pointer;
 }
-.note_in_cart{
-    margin-bottom:40px;
-}
+
 .computeritem h2.wide_section{
-    margin-top: 10px;
-    width: 260px;
-}
-.computeritem h2.set{
     margin-top: -20px;
+    width: 260px;
 }

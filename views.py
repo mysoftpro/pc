@@ -33,8 +33,14 @@ class ModelInCart(object):
         self.description_div = divs[1]
 
 
-    def setModelLink(self, link):
+    def setModelLink(self):
+        
+        if not self.model.isPromo:
+            self.icon.set('href','/computer/'+self.model._id)
+        else:            
+            self.icon.set('href','/promotion/'+self.model.parent)
 
+        link = self.model_div.find('.//a')
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
@@ -68,24 +74,18 @@ class ModelInCart(object):
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
 
-        link = self.model_div.find('.//a')
-
-        self.setModelLink(link)
+        
 
         self.fillInfo()
+        self.setModelLink()
 
         price_span = self.model_div.find('.//span')
         price_span.set('id',self.model._id)
-        price_span.text = unicode(self.model.total) + u' р'
-
-        if not self.model.isPromo:
-            self.icon.set('href','/computer/'+self.model._id)
-        else:
-            self.icon.set('href','/promotion/'+self.model.parent)
-            if self.model.ourPrice:
-                price_span.text = unicode(self.model.ourPrice)+u' р.'
-            else:
-                price_span.text = u'24900 р.'
+        total = self.model.total
+        if self.model.ourPrice:
+            total = self.model.ourPrice
+        price_span.text = unicode(total) + u' р'            
+            
         # self.icon.find('img').set('src',self.getCaseIcon())
         self.setIcon()
         self.model_div.insert(0,self.icon)
@@ -172,15 +172,10 @@ class ModelInCart(object):
         self.fillComponentsList()
 
         h3 = self.description_div.find('h3')
+
         self.fillHeader(h3)
 
         self.fillExtra()
-        # if self.author and not self.model.processing:
-        #     extra = deepcopy(self.tree.find('cart_extra'))
-        #     for el in extra:
-        #         if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
-        #             el.set('href', '/bill.pdf?id='+self.model._id)
-        #         self.description_div.append(el)
 
         comments_len = len(self.model.comments)
         if comments_len>0:
@@ -207,53 +202,6 @@ class ModelInCart(object):
         self.fillDescriptionDiv()
 
 
-
-class NotebookInCart(object):
-
-    def __init__(self,notebook, note, icon, container):
-        self.icon = icon
-        self.notebook = notebook
-        self.note = note
-        self.container = container
-
-
-    def setModelLink(self):
-        link = self.note.xpath('//strong[@class="modellink"]')[0]
-        link.text = self.notebook.key[:-3]
-        strong = etree.Element('strong')
-        strong.text = self.notebook.key[-3:]
-        link.append(strong)
-        price = self.notebook.makePrice()
-        price_span = self.note.xpath('//span[@class="modelprice"]')[0]
-        price_span.text = unicode(price) + u' р.'
-
-
-    def fillExtra(self):
-        if self.author:
-            extra = deepcopy(self.tree.find('cart_extra'))
-            for el in extra:
-                if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
-                    el.set('href', '/bill.pdf?id='+self.model._id)
-                self.description_div.append(el)
-
-
-
-    def render(self):
-        note_name = self.note.xpath('//div[@class="cnname"]')[0]
-        note_name.text = self.notebook.text
-        note_name.set('id',self.notebook.key+'_'+self.notebook._id)
-
-        self.setModelLink()
-        self.setIcon()
-        self.fillExtra()
-        self.note.insert(0,self.icon)
-        self.container.append(self.note)
-
-    #will be overriden by subclasses
-    def setIcon(self):
-        self.icon.find('img').set('src',self.notebook.getComponentIcon())
-
-
 class SetInCart(ModelInCart):
 
     def fillExtra(self):
@@ -262,6 +210,7 @@ class SetInCart(ModelInCart):
             for el in extra:
                 if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
                     el.set('href', '/bill.pdf?id='+self.model._id)
+                if el.text!=u'Проверить':
                     self.description_div.append(el)
 
     def getSnippetDivs(self):
@@ -270,8 +219,14 @@ class SetInCart(ModelInCart):
         self.model_div = divs[0]
         self.description_div = divs[1]
 
-    def setModelLink(self, link):
+    def setModelLink(self):
+                
+        url = '/videocard/'+\
+                     quote_plus(self.model.components[0].get('articul','').replace('\t',''))
 
+        self.icon.set('href',url)
+
+        link = self.model_div.find('.//a')
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
@@ -279,18 +234,31 @@ class SetInCart(ModelInCart):
         link.append(strong)
 
         #TODO may be other sets will have another link!
-        link.set('href',
-                 '/videocard/'+\
-                     quote_plus(self.model.components[0].get('articul','').replace('\t','')))
+        link.set('href',url)
 
 
     def setIcon(self):
         self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
 
 
-    def fillHeader(self, h3):
-        h3.text = '.'.join(reversed(self.model.date))
-        h3.set('style','margin-top:20px;')
+
+class NotebookInCart(SetInCart):
+
+    def setModelLink(self):
+        url = '/notebook'
+        self.icon.set('href',url)
+
+        link = self.model_div.find('.//a')
+        link.text = self.model._id[:-3]
+        strong= etree.Element('strong')
+
+        strong.text = self.model._id[-3:]
+        link.append(strong)
+
+        #TODO may be other sets will have another link!
+        link.set('href',url)
+
+
 
 class PCView(object):
     title = u'Компьютерный магазин Билд'
@@ -371,16 +339,10 @@ class Cart(PCView):
 
     def renderNotes(self, user):
         models_div = self.getModelsDiv()
-        clear_div = etree.Element('div')
-        clear_div.set('style','clear:both')
-        models_div.append(clear_div)
-        note_div = self.getNotesDiv()
-        icon = self.tree.find('model_icon').find('a')
-        for n in user.getUserNotebooks():
-            note_view = NotebookInCart(n,deepcopy(note_div),
-                                            deepcopy(icon),
-                                            models_div, user.isValid(self.request) and n.isAuthor(user))
-            note_view.render()
+        for m in user.getUserNotebooks():
+            view = NotebookInCart(self.request, m, self.tree,
+                               models_div, user.isValid(self.request) and m.isAuthor(user))
+            view.render()
         return user
 
 

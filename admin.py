@@ -14,7 +14,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, Model
+    NamesFor, ParamsFor, promotion, Model, notes
 from pc.catalog import XmlGetter, WitNewMap, getNewImage, getNewDescription
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -118,7 +118,7 @@ class AdminGate(Resource):
 
         self.putChild('psus', Psus())
 	self.putChild('store_psu', StorePsu())
-
+        self.putChild('evolve', Evolve())
 
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render(request)
@@ -1011,3 +1011,26 @@ class StorePsu(Resource):
 	d.addCallback(self.finish, request)
 	return NOT_DONE_YET
 
+
+class Evolve(Resource):
+
+    def fillNote(self, note_ob, code, date):
+        note_ob['items'] = {notes:code}
+        note_ob['date'] = date
+        couch.saveDoc(note_ob)
+
+    def evolve(self, res, request):
+        tot = 0
+        for r in res['rows']:
+            if 'doc' not in r:continue
+            if not 'notebooks' in r['doc']:continue            
+            for k,v in r['doc']['notebooks'].items():
+                d = couch.openDoc(k)
+                d.addCallback(self.fillNote, v, r['doc']['date'])
+        request.write(str(tot))
+        request.finish()
+
+    def render_GET(self, request):
+        d = couch.openView(designID, 'carts', stale=False, include_docs=True)
+        d.addCallback(self.evolve, request)
+        return NOT_DONE_YET

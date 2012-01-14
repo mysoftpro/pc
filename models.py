@@ -92,7 +92,12 @@ windows = [soft,microsoft,"14571"]
 psu = "7416"
 power = [components,psu,"7464"]
 
-
+notes_and_descktops = "7362"
+notes = "7404"
+asus_12 = [notes_and_descktops,notes,"7586"]
+asus_14 = [notes_and_descktops,notes,"7495"]
+asus_15 = [notes_and_descktops,notes,"7468"]
+asus_17 = [notes_and_descktops,notes,"7704"]
 
 mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_1156,proc_1156),
@@ -388,6 +393,12 @@ def fillChoices():
                                                    'catalogs',include_docs=True, key=power, stale=False)
                                     .addCallback(lambda res: (u"Блоки питания",res))])
                 .addCallback(lambda res: {psu:res}))
+
+    defs.append(defer.DeferredList([couch.openView(designID,
+                                                   'catalogs',include_docs=True, keys=[asus_12,asus_14,asus_15,asus_17], stale=False)
+                                    .addCallback(lambda res: (u"Ноутбуки Asus",res))])
+                .addCallback(lambda res: {notes:res}))
+    #zzz
     def makeDict(res):
         new_res = {}
         for el in res:
@@ -515,10 +526,7 @@ def notebooks(template, skin, request):
         skin.top = template.top
         skin.middle = template.middle
         return skin.render()
-    asus_12 = ["7362","7404","7586"]
-    asus_14 = ["7362","7404","7495"]
-    asus_15 = ["7362","7404","7468"]
-    asus_17 = ["7362","7404","7704"]
+
     d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
                        keys = [asus_12,asus_14,asus_15,asus_17])
     d.addCallback(render)
@@ -1110,20 +1118,16 @@ def userFactory(name):
             doc['key'] = key
         return doc
 
-    def getFields(some, name, orders=False, keys=False):
-        """ {'models':[3afs123, 3b456a], 'notebooks':{'3afs456':171515}}, 'sets':[3afs123, 3b456a] """
+    def getFields(some, name, orders=False):
+        """ {'models':[3afs123, 3b456a], 'notebooks':['3afs456'... """
         defs = []
         if name in results['user']:
             for _id in results['user'][name]:
                 uid = _id
-                if keys:
-                    uid = results['user'][name][uid]
                 if orders:
                     uid = 'order_'+uid
                 d = couch.openDoc(uid)
                 d.addErrback(fail)
-                if keys:
-                    d.addCallback(installKey, _id)
                 defs.append(d)
         li = defer.DeferredList(defs)
         res_name = name
@@ -1133,10 +1137,10 @@ def userFactory(name):
         return li
 
     user.addCallback(getFields, 'models')
-    user.addCallback(getFields, 'notebooks', keys=True)
+    user.addCallback(getFields, 'notebooks')
 
     user.addCallback(getFields, 'models', orders=True)
-    user.addCallback(getFields, 'notebooks', orders=True, keys = True)
+    user.addCallback(getFields, 'notebooks', orders=True)
 
     user.addCallback(getFields, 'sets')
     user.addCallback(getFields, 'sets', orders=True)
@@ -1152,6 +1156,7 @@ class User(object):
         self.models = orders_models
         orders_models_ids = [o['_id'].replace('order_','') for o in orders_models]
         for res,model in results['models']:
+            if model is None:continue
             if res and model['_id'] not in orders_models_ids:
                 self.models.append(model)
 
@@ -1159,6 +1164,7 @@ class User(object):
         self.notebooks = orders_notebooks
         orders_notebooks_ids = [o['_id'] for o in orders_notebooks]
         for res,note in results['notebooks']:
+            if note is None: continue
             if res and note['_id'] not in orders_notebooks_ids:
                 self.notebooks.append(note)
 
@@ -1166,9 +1172,10 @@ class User(object):
         orders_sets = [tu[1] for tu in results['orders_sets'] if tu[1] is not None]
         self.sets = orders_sets
         orders_sets_ids = [o['_id'] for o in orders_sets]
-        for res,note in results['sets']:
-            if res and note['_id'] not in orders_sets_ids:
-                self.sets.append(note)
+        for res,_set in results['sets']:
+            if _set is None:continue
+            if res and _set['_id'] not in orders_sets_ids:
+                self.sets.append(_set)
         self.user = results['user']
 
 
@@ -1206,21 +1213,6 @@ class User(object):
         return self.get('_id')
 
 
-
-class Notebook(Component):
-
-    def __init__(self, component_doc, note_ob):
-        super(Notebook, self).__init__(component_doc)
-        self.note_ob = note_ob
-
-    @property
-    def key(self):
-        return self.get('key')
-
-
-    def makePrice(self):
-        our_price = self.component_doc['price']*Course+NOTE_MARGIN
-        return int(round(our_price/10))*10
 
 
 class Comment(object):
@@ -1318,5 +1310,17 @@ class Psu(Component):
         return self.get('power',0)
 
 
+
+
+class Notebook(Model):
+
+    @property
+    def name(self):
+        return u'Ноутбук'
+
+
 class Set(Model):
-    pass
+    @property
+    def name(self):
+        return u'Компьюткрные комплектующие'
+

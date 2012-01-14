@@ -14,7 +14,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import makeNotePrice,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, upgrade_set, Model, video, psu
+    NamesFor, ParamsFor, promotion, upgrade_set, Model, video, psu, notes
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
    MarketForVideo,SpecsForVideo
 from pc.catalog import XmlGetter, WitNewMap
@@ -1160,9 +1160,11 @@ class ModelSave(Save):
 
 
 class SaveNote(Resource):
+
     def finish(self, res, note_id, request):
         request.write(note_id)
         request.finish()
+
     def fail(self, fail, request):
         request.write('fail')
         request.finish()
@@ -1172,13 +1174,16 @@ class SaveNote(Resource):
         user_doc['date'] = _date
         note_id = base36.gen_id()
         if 'notebooks' in user_doc:
-            user_doc['notebooks'].update({note_id:(_id)})
+            # legacy
+            if type(user_doc['notebooks']) is dict:
+                user_doc['notebooks'] = [k for k in user_doc['notebooks'].keys()]            
         else:
-            user_doc['notebooks'] = {note_id:(_id)}
+            user_doc['notebooks'] = []
+        user_doc['notebooks'].append(note_id)
+        user_doc['date'] = _date
         pcCartTotal(request, user_doc)
         _date = str(date.today()).split('-')
-        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False, 'date':_date})
-        user_doc['date'] = _date
+        couch.saveDoc({'_id':note_id, 'author':user_doc['_id'], 'building':False,'dvd':False,'installing':False, 'date':_date, 'items':{notes:_id}})
         return note_id
 
 
@@ -1239,6 +1244,8 @@ class Delete(Resource):
             if same_author and not_processing:
                 couch.deleteDoc(uuid,_model['_rev'])
                 _user['models'] = [m for m in _user['models'] if m != _model['_id']]
+                _user['notebooks'] = [m for m in _user['notebooks'] if m != _model['_id']]
+                _user['sets'] = [m for m in _user['sets'] if m != _model['_id']]
                 pcCartTotal(request, _user)
                 couch.saveDoc(_user)
                 request.write('ok')
@@ -1346,9 +1353,6 @@ class Rss(Resource):
 class SaveSet(Resource):
 
     def save(self, user_doc, data, request):
-        if request.getCookie('pc_key')!=user_doc['pc_key']:
-            request.write('fail')
-            request.finish()
         if not 'sets' in user_doc:
             user_doc['sets'] = []
         _date = str(date.today()).split('-')
@@ -1374,16 +1378,30 @@ class SaveSet(Resource):
         pcCartTotal(request, user_doc)
         request.write("ok")
         request.finish()
-        
+                                  
+
+
+    def oldUser(self, user_doc, jdata, request):
+        self.save(user_doc, jdata, request)
+
+    def newUser(self, fail, user_id, jdata, request):
+        user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+        addCookies(request, {'pc_key':user_doc['pc_key']})
+        self.save(user_doc, jdata, request)
+
     def render_GET(self, request):
         data = request.args.get('data',[None])[0]
         if data is None:
-            return "fail"
+            return "fail data"
         jdata = simplejson.loads(data)
+        # TODO what about other types of set????
         if video not in jdata or psu not in jdata:
-            return "fail"
-        d = couch.openDoc(request.getCookie('pc_user'))
-        d.addCallback(self.save,jdata,request)
-        return NOT_DONE_YET
-                          
+            return "fail video"
 
+        user_id = request.getCookie('pc_user')
+        d = couch.openDoc(user_id)
+        # d.addCallback(self.save,jdata,request)
+
+        d.addCallback(self.oldUser, jdata, request)
+        d.addErrback(self.newUser, user_id, jdata, request)
+        return NOT_DONE_YET
