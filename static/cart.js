@@ -44,9 +44,13 @@ var init = function(){
 			       var guiders_anchors = target.find('a.showOldComponent').toArray();
 			       _(guiders_anchors)
 				   .each(function(el){
-					     guider.
-				   		 _guiderById('replaced_'+el.id).elem.remove();
-
+					     try{
+						 guider.
+				   		     _guiderById('replaced_'+el.id).elem.remove();
+						 
+					     } catch (x) {
+						 
+					     }
 				   	 });
 			       target.prev().remove();
 			       target.remove();

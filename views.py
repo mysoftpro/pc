@@ -158,19 +158,29 @@ class ModelInCart(object):
         self.description_div.append(ul)
 
 
-    def fillDescriptionDiv(self):
-        self.fillComponentsList()
-
-        h3 = self.description_div.find('h3')
-        self.fillHeader(h3)
-
-
+    def fillExtra(self):
         if self.author and not self.model.processing:
             extra = deepcopy(self.tree.find('cart_extra'))
             for el in extra:
                 if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
                     el.set('href', '/bill.pdf?id='+self.model._id)
                 self.description_div.append(el)
+
+
+
+    def fillDescriptionDiv(self):
+        self.fillComponentsList()
+
+        h3 = self.description_div.find('h3')
+        self.fillHeader(h3)
+
+        self.fillExtra()
+        # if self.author and not self.model.processing:
+        #     extra = deepcopy(self.tree.find('cart_extra'))
+        #     for el in extra:
+        #         if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+        #             el.set('href', '/bill.pdf?id='+self.model._id)
+        #         self.description_div.append(el)
 
         comments_len = len(self.model.comments)
         if comments_len>0:
@@ -234,6 +244,14 @@ class NotebookInCart(object):
         
 
 class SetInCart(ModelInCart):
+
+    def fillExtra(self):
+        if self.author and not self.model.processing:
+            extra = deepcopy(self.tree.find('cart_extra'))
+            for el in extra:
+                if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+                    el.set('href', '/bill.pdf?id='+self.model._id)
+                    self.description_div.append(el)
 
     def getSnippetDivs(self):
         self.model_snippet = deepcopy(self.tree.find('set'))
