@@ -751,7 +751,7 @@ class Model(object):
 
     @property
     def checkPerformed(self):
-        return self.get('checkModel', False)
+        return self.model_doc.get('checkModel', False)
 
     @property
     def name(self):
