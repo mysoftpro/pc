@@ -443,7 +443,7 @@ h3 {
     cursor: pointer;
     display: block;
     font-size: 18px;
-    height: 50px;
+    height: 49px;
     line-height:48px;
     text-align: center;
     min-width: 160px;
@@ -1240,7 +1240,7 @@ h1.bold.left{
     color:#B00606;
 }
 
-a.modelicon{
+.modelicon{
     position:relative;
     display:block;
     height:150px;
@@ -1257,7 +1257,7 @@ a.modelicon{
     -webkit-border-top-left-radius:15px;
     -webkit-border-top-right-radius:15px;
 }
-a.modelicon .gallery-shadow{
+.modelicon .gallery-shadow{
     display:block;
     position:absolute;
     top:0%;
@@ -1267,9 +1267,9 @@ a.modelicon .gallery-shadow{
     background-repeat:no-repeat;
 }
 
-a.modelicon img{
+.modelicon img{
     max-height:150px;
-    max-width:130px;
+    max-width:128px;
 }
 
 
@@ -2509,4 +2509,187 @@ a.modelicon img{
     height:150px;
     margin-top:20px;
     margin-bottom:100px;
+}
+.chip{
+    float:left;    
+    min-height:330px;
+    margin-left:15px;
+}
+.chipname{
+    margin-right: 10px;
+    font-weight: bold;
+    border: 1px solid #777;
+    padding: 5px;
+    width: 120px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px 1px #222;
+    margin-bottom:10px;
+}
+.chipVendors{
+    padding-left:5px;
+}
+
+.chipVendors li {
+    background-image:url('/static/build_icons.png');
+    background-position:0px -385px;   
+    height:16px;
+    overflow:hidden;
+    background-repeat:no-repeat;
+    padding-left:18px;
+    list-style-type:none;
+    cursor:pointer;
+    margin-bottom:6px;
+    line-height: 16px;
+}
+
+.chipVendors strong{
+    margin-left:5px;
+}
+.chipVendors a{
+    margin-left:5px;
+}
+
+.chip table{
+    max-width:150px;
+}
+.chip tr{
+    line-height:18px;
+}
+.video_image{
+    height:180px;    
+    max-width:148px !important;
+}
+.videoicon{
+    float:right;
+    margin-left:10px; 
+    width:150px;
+}
+.video_rate{
+    background-image:url('bui_thumbs.png');
+    width:30px;
+    height:32px;
+    background-position:0px -263px;
+    float:left;
+    margin-top:-5px;
+}
+.video_filter{
+    background-image:url('video_filter.png');
+    background-repeat:no-repeat;
+    float:left;
+    height:160px;
+    width:190px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:10px;
+}
+.nvidia_active{
+    background-position:-379px 0px;
+}
+.nvidia_inactive{
+    background-position:-566px 0px;
+}
+.radeon_active{
+    background-position:0px 0px;
+}
+.radeon_inactive{
+    background-position:-190px 0px;
+}
+#video_vendor{
+    margin-top:30px;
+    margin-left:15px;
+}
+#maparams{
+    float:left;
+}
+#videoimage{
+    float:right;
+    max-width:400px;
+}
+#maparams {
+    width:50%;
+}
+#maparams .b-properties__title {
+    padding: .8em 0 .6em;
+    font-size: 140%;
+}
+
+#maparams th, td {
+    padding: 0;
+    text-align: left;
+    vertical-align: top;
+    border-collapse: collapse;
+}
+#videoprice{
+    float:left;
+    font-size:14px;
+}
+#videoprice td{
+    padding-right: 5px;
+    text-align:right;
+}
+.videofeatures{
+    min-width:360px;
+    max-height:360px;
+}
+.videoadd{
+    font-size:12px;
+    margin-left:5px;
+    text-decoration:underline;
+    color:white;
+    cursor:pointer;
+}
+#videopower{
+    background-image: url('bui_thumbs.png');
+    background-position: 0px -302px;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    margin-top: -26px;
+    margin-left: 330px;
+}
+#videoparallel{
+    background-image: url('bui_thumbs.png');
+    background-position: 0px -341px;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    margin-top: -26px;
+    margin-left: 330px;
+}
+.b-grade{
+    margin-bottom:30px;
+}
+#videoname{
+    max-width:700px;
+    max-height:20px;
+    overflow:hidden;
+}
+#video_top{
+    height:100px;
+}
+#videoasc:before{
+    left:-2px;
+    top:-10px;
+}
+#videoasc{
+    cursor:pointer;
+}
+#videodesc:before{
+    left:-2px;
+    top:15px;
+}
+#videodesc{
+    cursor:pointer;
+}
+
+.computeritem h2.wide_section{
+    margin-top: -20px;
+    width: 260px;
+}
+
+.set_description{
+    padding-top:35px;
+}
+#video_specs{
+    background-position: 0px 2px;
 }

@@ -2521,6 +2521,7 @@ h1.bold.left{
 .videoicon{
     float:right;
     margin-left:10px; 
+    width:150px;
 }
 .video_rate{
     background-image:url('bui_thumbs.png');

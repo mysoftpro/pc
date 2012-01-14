@@ -371,8 +371,10 @@ class ModelOnModels(ModelInCart):
         for el in html.fragments_fromstring(self.model.description):
             self.description_div.append(el)
 
-    def setModelLink(self, link):
+    def setModelLink(self):
+        link = self.model_div.find('.//a')
         link.text = self.model.name
+        link.set('href','/computer/'+self.model._id)
 
 
     def postRender(self):
