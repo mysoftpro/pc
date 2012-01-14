@@ -2643,6 +2643,9 @@ h1.bold.left{
     margin-bottom:40px;
 }
 .computeritem h2.wide_section{
-    margin-top: 0px;
+    margin-top: 10px;
     width: 260px;
+}
+.computeritem h2.set{
+    margin-top: -20px;
 }
