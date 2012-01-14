@@ -52,12 +52,12 @@ class ModelInCart(object):
     def fillInfo(self):
         info = self.model_div.xpath('//div[@class="info"]')[0]
         if self.model.checkRequired:
-            if self.model.checkPerformed:
-                info.set('class', info.get('class')+ ' ask_info')
-                info.set('title',u'Ожидает проверки специалистом')
-            else:
+            if self.model.checkPerformed:                
                 info.set('class', info.get('class')+ ' confirm_info')
                 info.set('title',u'Проверено!')
+            else:
+                info.set('class', info.get('class')+ ' ask_info')
+                info.set('title',u'Ожидает проверки специалистом')
         else:
             info.set('class', info.get('class')+ ' empty_info')
 
