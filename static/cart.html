@@ -14,17 +14,17 @@
     </p>
     <table style="float:left;">
       <tr>
-	<td>
-	  <strong class="red">Сссылка на эту корзину:</strong>
-	</td>
-	<td colspan="2">
-	  <input id="cartlink" width="20" type="text"/>
-	</td>
+        <td>
+          <strong class="red">Сссылка на эту корзину:</strong>
+        </td>
+        <td colspan="2">
+          <input id="cartlink" width="20" type="text"/>
+        </td>
       </tr>
       <tr>
-	<td><span id="ya_share_cart"></span></td>
-	<td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
-	<td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
+        <td><span id="ya_share_cart"></span></td>
+        <td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
+        <td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
       </tr>
     </table>
     <div id="cartcall">
@@ -50,7 +50,7 @@
     var _next = ['/static/cart.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <div id="toppopup">   
+  <div id="toppopup">
   </div>
 </middle>
 
@@ -69,7 +69,6 @@
 
 <div class="computers_description">
   <h3></h3>
-
 </div>
 </model>
 
@@ -78,7 +77,7 @@
 
 
 <top_cart>
-  
+
 
 
 </top_cart>
@@ -88,12 +87,14 @@
   <span class="gallery-shadow"></span>
   <img src="/static/sample.jpg"></a>
 </model_icon>
+
 <notebook>
   <div class="note_in_cart">
     <div class="computeritem">
-      <h2 class="section" style="margin-top: 0px; width: 260px;">
-	<strong class="modellink"></strong>
-	<span class="modelprice">15570 р</span>
+      <h2 class="section wide_section">
+        <strong class="modellink"></strong>
+        <span class="modelprice">15570 р</span>
+        <a class="edit_links">удалить</a>
       </h2>
     </div>
     <div class="cnname"></div>
@@ -103,23 +104,27 @@
 
 
 <set>
-<div class="computeritem">
-  <div class="info"></div>
-  <h2 class="section">
-    <a class="modellink" href="/computer/name">
-      Пинг
-    </a>
-    <span class="modelprice">
-      12000 р.
-    </span>
-  </h2>
-</div>
+  <div class="computeritem">
+    <div class="info"></div>
+    <h2 class="section wide_section">
+      <a class="modellink" href="/computer/name">
+	Пинг
+      </a>
+      <span class="modelprice">
+	12000 р.
+      </span>
+      <a class="edit_links">удалить</a>
+    </h2>
+  </div>
+  <div class="computers_description">
+    <h3></h3>
+  </div>
 </set>
 
 
 
 <cart_extra>
-  
+
   <div class="small_square_button small_cart">Проверить</div>
   <div class="small_square_button small_reset">Удалить</div>
   <a target="_blank" class="pdf_link">счет на оплату по безналу</a>

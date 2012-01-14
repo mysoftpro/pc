@@ -19,12 +19,15 @@ from pc.market import getMarket
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
         self.author = author
-        self.tree = tree
-        self.model_snippet = deepcopy(self.tree.find('model'))
+        self.tree = tree        
         self.request = request
         self.model = model
         self.icon = deepcopy(self.tree.find('model_icon').find('a'))
         self.container = container
+        self.getSnippetDivs()
+
+    def getSnippetDivs(self):
+        self.model_snippet = deepcopy(self.tree.find('model'))
         divs = self.model_snippet.findall('div')
         self.model_div = divs[0]
         self.description_div = divs[1]
@@ -114,7 +117,6 @@ class ModelInCart(object):
 
 
     def fillHeader(self, h3):
-
         if self.model.name:
             span = etree.Element('span')
             span.set('class', 'customName')
@@ -205,21 +207,23 @@ class NotebookInCart(object):
         self.container = container
 
 
-    def render(self):
-        note_name = self.note.xpath('//div[@class="cnname"]')[0]
-        note_name.text = self.notebook.text
-        note_name.set('id',self.notebook.key+'_'+self.notebook._id)
-
+    def setModelLink(self):
         link = self.note.xpath('//strong[@class="modellink"]')[0]
         link.text = self.notebook.key[:-3]
         strong = etree.Element('strong')
         strong.text = self.notebook.key[-3:]
         link.append(strong)
         price = self.notebook.makePrice()
+        price_span = self.note.xpath('//span[@class="modelprice"]')[0]
+        price_span.text = unicode(price) + u' р.'
+        
 
-        self.note.xpath('//span[@class="modelprice"]')[0].text = unicode(price) + u' р.'
+    def render(self):
+        note_name = self.note.xpath('//div[@class="cnname"]')[0]
+        note_name.text = self.notebook.text
+        note_name.set('id',self.notebook.key+'_'+self.notebook._id)
 
-        # self.icon.find('img').set('src',self.getNotebookIcon())
+        self.setModelLink()
         self.setIcon()
         self.note.insert(0,self.icon)
         self.container.append(self.note)
@@ -231,8 +235,14 @@ class NotebookInCart(object):
 
 class SetInCart(ModelInCart):
 
-    def setModelLink(self, link):
+    def getSnippetDivs(self):
+        self.model_snippet = deepcopy(self.tree.find('set'))
+        divs = self.model_snippet.findall('div')
+        self.model_div = divs[0]
+        self.description_div = divs[1]
 
+    def setModelLink(self, link):
+        
         link.text = self.model._id[:-3]
         strong= etree.Element('strong')
 
@@ -243,6 +253,7 @@ class SetInCart(ModelInCart):
         link.set('href', 
                  '/videocard/'+\
                      quote_plus(self.model.components[0].get('articul','').replace('\t','')))
+
 
     def setIcon(self):
         self.icon.find('img').set('src',self.model.components[0].getComponentIcon())

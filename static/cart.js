@@ -129,8 +129,6 @@ var init = function(){
     var note_links = $('strong.modellink');
     for (var i=0;i<note_links.length;i++){
 	var nlink = $(note_links.get(i));
-	nlink.parent().css('width','260px');
-	nlink.next().after('<a class="edit_links">удалить</a>');
 	nlink.next().next().click(deleteNote(nlink.parent().parent().next()));
     }
     prepareCart();
