@@ -30,19 +30,6 @@ class ModelInCart(object):
         self.description_div = divs[1]
 
 
-    # TODO! use Model.getNotebookIcon !!!!!!!!!!!!!
-    # def getCaseIcon(self):
-    #     retval = "/static/icon.png"
-    #     if self.model.case.description and'imgs' in self.model.case.description:
-    #         retval = ''.join(("/image/",self.model.case._id,"/",
-    #                           self.model.case.description['imgs'][0],'.jpg'))
-    #     if '/preview' in retval:
-    #         splitted = retval.split('/preview')
-    #         retval = splitted[0]+quote_plus('/preview'+splitted[1]).replace('.jpg', '')
-
-    #     return retval
-
-
     def setModelLink(self, link):
 
         link.text = self.model._id[:-3]
@@ -50,6 +37,13 @@ class ModelInCart(object):
 
         strong.text = self.model._id[-3:]
         link.append(strong)
+
+        if not self.model.isPromo:
+            link.set('href','/computer/%s' % self.model._id)
+        else:
+            link.set('href','/promotion/%s' % self.model.parent)
+
+
 
 
     def fillInfo(self):
@@ -74,11 +68,6 @@ class ModelInCart(object):
         link = self.model_div.find('.//a')
 
         self.setModelLink(link)
-
-        if not self.model.isPromo:
-            link.set('href','/computer/%s' % self.model._id)
-        else:
-            link.set('href','/promotion/%s' % self.model.parent)
 
         self.fillInfo()
 
@@ -242,10 +231,26 @@ class NotebookInCart(object):
 
 class SetInCart(ModelInCart):
 
+    def setModelLink(self, link):
+
+        link.text = self.model._id[:-3]
+        strong= etree.Element('strong')
+
+        strong.text = self.model._id[-3:]
+        link.append(strong)
+        
+        #TODO may be other sets will have another link!
+        link.set('href', 
+                 '/videocard/'+\
+                     quote_plus(self.model.components[0].get('articul','').replace('\t','')))
+
     def setIcon(self):
         self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
 
 
+    def fillHeader(self, h3):
+        h3.text = '.'.join(reversed(self.model.date))
+        h3.set('style','margin-top:20px;')
 
 class PCView(object):
     title = u'Компьютерный магазин Билд'
