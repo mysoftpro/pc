@@ -424,13 +424,13 @@ class Skin(Template):
         if self.selected_skin is not None:
             logo = self.tree.getroot().find('body').xpath('//img[@id="logoImage"]')[0]
             logo.set('src', '/static/logo3.png')
-	return etree.tostring(self.tree, encoding='utf-8', method="html")
+        return etree.tostring(self.tree, encoding='utf-8', method="html")
 
 
 
 
 def checkCookie(f):
-    def check(self, request):        
+    def check(self, request):
         user_cookie = request.getCookie('pc_user')
         if  user_cookie is None:
             addCookies(request, {'pc_user':base36.gen_id()})
@@ -531,8 +531,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -600,19 +600,19 @@ class Root(Resource):
         self.static.indexNames = [index_page]
         self.putChild('static',self.static)
 
-        self.putChild('cart', 
+        self.putChild('cart',
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=None,
                                                         childs=HandlerAndName(Cart,
                                                                               'cart.html'))))
-        self.putChild('computer', 
+        self.putChild('computer',
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=HandlerAndName(Computers,
                                                                             'computers.html'),
                                                         childs=HandlerAndName(Computer,
                                                                               'computer.html'))))
 
-        self.putChild('videocard', 
+        self.putChild('videocard',
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=HandlerAndName(VideoCards,
                                                                             'videocards.html'),
@@ -715,15 +715,15 @@ class MarketFor(Resource):
         request.finish()
 
 
-        
+
     @MIMETypeJSON
     def render_GET(self, request):
-        d = couch.openView(designID, 'articul', 
+        d = couch.openView(designID, 'articul',
                            key=request.args.get('articul', ['no articule'])[0],
                            include_docs=True)
         d.addCallback(self.checkMarketParams, request)
         return  NOT_DONE_YET
-    
+
 
 class PdfBill(Resource):
     def done(self, data, request):
@@ -1038,7 +1038,10 @@ class Component(Resource):
         if 'no' in _id: return simplejson.dumps(default)
         from pc import models
         if _id in models.gChoices_flatten and 'description' in models.gChoices_flatten[_id]:
-            return simplejson.dumps(models.gChoices_flatten[_id]['description'])             
+            doc = models.gChoices_flatten[_id]
+            descr = doc['description']
+            descr['price'] = Model.makePrice(doc)
+            return simplejson.dumps(descr)
         d = couch.openDoc(_id)
         d.addCallback(self.writeComponent, request)
         return NOT_DONE_YET
@@ -1176,7 +1179,7 @@ class SaveNote(Resource):
         if 'notebooks' in user_doc:
             # legacy
             if type(user_doc['notebooks']) is dict:
-                user_doc['notebooks'] = [k for k in user_doc['notebooks'].keys()]            
+                user_doc['notebooks'] = [k for k in user_doc['notebooks'].keys()]
         else:
             user_doc['notebooks'] = []
         user_doc['notebooks'].append(note_id)
@@ -1371,14 +1374,14 @@ class SaveSet(Resource):
                     while v['pcs']>0:
                         code.append(v['_id'])
                         v['pcs']-=1
-            _set['items'].update({k:code})            
+            _set['items'].update({k:code})
         couch.saveDoc(_set)
         user_doc['sets'].append(_set['_id'])
         couch.saveDoc(user_doc)
         pcCartTotal(request, user_doc)
         request.write("ok")
         request.finish()
-                                  
+
 
 
     def oldUser(self, user_doc, jdata, request):

@@ -375,7 +375,7 @@ class ModelOnModels(ModelInCart):
         link = self.model_div.find('.//a')
         link.text = self.model.name
         link.set('href','/computer/'+self.model._id)
-
+        self.icon.set('href','/computer/'+self.model._id)
 
     def postRender(self):
         self.model_div.set('id','m'+self.model._id)
