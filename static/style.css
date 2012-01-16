@@ -2546,7 +2546,7 @@ h1.bold.left{
     height:32px;
     background-position:0px -263px;
     float:left;
-    margin-top:-5px;
+    /* margin-top:-5px;*/
 }
 .video_filter{
     background-image:url('video_filter.png');
