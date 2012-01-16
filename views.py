@@ -976,3 +976,6 @@ class SpecsForVideo(Resource):
         d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getSpecs, request)
         return NOT_DONE_YET
+
+# $('#models_container')
+# 	.append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');

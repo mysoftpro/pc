@@ -101,8 +101,7 @@ var init = function(){
 	span.parent().parent().next().find('.small_reset').click(deleteUUID(_id));
 	span.parent().parent().next().find('.small_cart').click(checkUUID(_id));
     }
-    $('#models_container')
-	.append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
+    
     $('#deleteall').click(function(e){
 			      e.preventDefault();
 			      $.ajax({
