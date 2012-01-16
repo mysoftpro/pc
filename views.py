@@ -221,7 +221,7 @@ class SetInCart(ModelInCart):
     def setModelLink(self):
                 
         url = '/videocard/'+\
-                     quote_plus(self.model.components[0].get('articul','').replace('\t',''))
+                     quote_plus(self.model.components[0].get('video_articul','').replace('\t',''))
 
         self.icon.set('href',url)
 
@@ -528,9 +528,6 @@ class Computer(PCView):
             manu.set('class','manu')
             manu.text = ''
 
-            # our = etree.Element('div')
-            # our.set('class','our')
-            # our.text = u'нет рекоммендаций'
 
             clear = etree.Element('div')
             clear.set('style','clear:both;')
@@ -709,17 +706,13 @@ class Index(PCView):
 
 
 class VideoCards(PCView):
-    title=u'Лучшие видеокарты GeForce и Radeon для апгрейда'
+    title=u'Лучшие видеокарты NVidia GeForce и ATI Radeon для апгрейда'
 
-    def renderChips(self, res):
-        chips = {}
-        vendors = set()
-        for row in res['rows']:
-            if row['key'] in chips:
-                chips[row['key']].append(row['value'])
-            else:
-                chips[row['key']] = [row['value']]
+    def renderChips(self, chips):
+        
         container = self.template.middle.xpath('//div[@id="models"]')[0]
+
+        vendors = set()
 
         for chipname in chips:
             viewlet = deepcopy(self.template.root().find('chip'))
@@ -735,7 +728,7 @@ class VideoCards(PCView):
             chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
 
             from pc.models import gChoices_flatten as choices
-            price_is_good = True
+
             image_was_set = False
             rate_was_set = False
             for _id in chips[chipname]:
@@ -744,9 +737,6 @@ class VideoCards(PCView):
                 doc = choices[_id]
                 video_card = VideoCard(doc, video)
 
-                if not video_card.goodPrice():
-                    price_is_good = False
-                    continue
                 if not image_was_set:
                     icon = video_card.getComponentIcon(default=None)
                     if icon is not None:
@@ -785,7 +775,7 @@ class VideoCards(PCView):
                 ve.append(strong)
                 ve.append(link)
                 chip_vendors.append(ve)
-            if price_is_good and len(chip_vendors)>0:
+            if len(chip_vendors)>0:
                 for el in viewlet:
                     chip_div.append(el)
                 container.append(chip_div)
@@ -807,20 +797,33 @@ class VideoCards(PCView):
             label.text = v
             row.append(td)
             i+=1
+ 
+    def groupChips(self, res):
+        chips = {}
+        for row in res['rows']:
+            _id = row['id']
+            chip = row['value']
+            if chip in chips:
+                chips[chip].append(_id)
+            else:
+                chips[chip] = [_id]
+        return chips
+
     def preRender(self):
-        d = couch.openView(designID,'video_chips',stale=False)
+        d = couch.openView(designID,'video_articul',stale=False)
+        d.addCallback(self.groupChips)
         d.addCallback(self.renderChips)
         return d
 
 
 class VideocardView(PCView):
 
-    title=u'Видеокарта'
 
     def __init__(self, *args, **kwargs):
         super(VideocardView, self).__init__(*args, **kwargs)
         self.script = self.template.middle.find('script')
         self.script.text = ''
+        self.title = u'Видеокарта'
 
     def installPSUS(self, peak_power):
         json_psus = {}
@@ -838,19 +841,25 @@ class VideocardView(PCView):
         for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
             json_psus[psu._id] = {'_id':psu._id,'name':psu.text,'price':psu.makePrice()}
             li = etree.Element('li')
-            li.text = psu.text.replace(u'Блок питания', '')
             li.set('id', psu._id)
+
+            em = etree.Element('em')
+            em.text = psu.text.replace(u'Блок питания', '')
+
             strong = etree.Element('strong')
             strong.text = unicode(psu.makePrice())+u' р.'
+            
 
             span = etree.Element('span')
             span.set('class','videoadd')
             span.text = u'добавить к заказу'
+
+            li.append(em)
             li.append(strong)
             li.append(span)
+            
             psu_list.append(li)
         self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
-
 
 
     def renderCard(self, res):
@@ -865,9 +874,14 @@ class VideocardView(PCView):
             return
 
         card = VideoCard(res['doc'])
+        self.title = card.text
+
         self.template.top.find('h1').text = card.text
         maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
+        print card.marketParams
+        
         for el in html.fragments_fromstring(card.marketParams):
+            if type(el) is str or type(el) is unicode: break
             maparams.append(el)
         videoimage = self.template.middle.xpath('//div[@id="videoimage"]')[0].find('img')
         videoimage.set('alt', card.description.get('name', ''))
@@ -875,7 +889,7 @@ class VideocardView(PCView):
 
 
         videocons = self.template.middle.xpath('//span[@id="videocons"]')[0]
-        videocons.text = card.power +u' Вт'
+        videocons.text = str(card.power) +u' Вт'
 
         peak = int(card.power)+350
         rest = peak%50
@@ -899,7 +913,7 @@ class VideocardView(PCView):
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
-        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(self.name), stale=False)
+        d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(self.name), stale=False)
         d.addCallback(self.renderCard)
         return d
 
@@ -934,7 +948,8 @@ class MarketForVideo(Resource):
         art = request.args.get('art', [None])[0]
         if art is None:
             return self.fail(request)
-        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
+        d = couch.openView(designID, 'video_articul',
+                           include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getMarketComments, request)
         return NOT_DONE_YET
 
@@ -958,6 +973,6 @@ class SpecsForVideo(Resource):
         art = request.args.get('art', [None])[0]
         if art is None:
             return self.fail(request)
-        d = couch.openView(designID, 'articul', include_docs=True, key=unquote_plus(art), stale=False)
+        d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(art), stale=False)
         d.addCallback(self.getSpecs, request)
         return NOT_DONE_YET

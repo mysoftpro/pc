@@ -57,8 +57,7 @@ function init(){
                                  power_div.text(psu.name);
                                  power_div.parent().next().next().text(psu.price+' р.');
                              }
-                             power_div.data('_id',psu._id);
-			     console.log(power_div.data());
+                             power_div.data('_id',psu._id);			     
                              recalculate();
                          });
     function ascend(e){
@@ -69,7 +68,7 @@ function init(){
         pa.html('<span id="videodesc" class="desc desca"></span>2 шт');
         pa.find('span').click(descend);
         $('#videoname').data('pcs', 2);
-        pa.next().text(price*2*0.95+' р.');
+        pa.next().text(price*2*1+' р.');//0.95
         recalculate();
     }
     function descend(e){
@@ -92,9 +91,13 @@ function init(){
                            var powername = $('#powername');
                            if (powername.length>0)
                                power = powername.data();
-                           set[video_catalog] = card;
-                           set[power_catalog] = power;
-                           $.ajax({
+			   if (card['pcs'] && card['pcs']==2)
+                               set[video_catalog] = [card['_id'],card['_id']];
+			   else
+			       set[video_catalog] = card['_id'];
+			   if (power['_id'])
+                               set[power_catalog] = power['_id'];
+			   $.ajax({
 				      url:'/saveset',
 				      data:{data:JSON.stringify(set)},
 				      success:function(data){					  

@@ -32,6 +32,7 @@ from pc.di import Di
 import sys
 from pc.auth import OAuth, OpenId
 from pc.common import addCookies, MIMETypeJSON, pcCartTotal
+from urllib import unquote_plus, quote_plus
 
 simple_titles = {
     '/howtochoose':u' Как выбирать компьютер',
@@ -85,8 +86,6 @@ def renderPartPage(doc, header, template, skin):
     title.text = header
     skin.top = template.top
     skin.middle = template.middle
-    # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 230px;')
-    # skin.root().xpath('//div[@id="middle"]')[0].set('style','margin-top: -90px;')
     return skin
 
 def partPage(template, skin, request):
@@ -153,25 +152,23 @@ class SiteMap(Resource):
 
     def siteMap(self, res, request):
         models = res[0][1]['rows']
+        videocards = res[3][1]['rows']
         posts = res[1][1]['rows']
-        faqs = res[2][1]['rows']
+        faqs = res[2][1]['rows'] 
         request.setHeader('Content-Type', 'text/xml;charset=utf-8')
+
+
         root = etree.XML('<urlset></urlset>')
         root.set('xmlns',"http://www.sitemaps.org/schemas/sitemap/0.9")
         root.append(self.buildElement(''))
         root.append(self.buildElement('computer'))
+
         for model in models:
             root.append(self.buildElement('computer/'+model['key'], freq='daily'))
-        for p in posts:
-            if p['key'][1] != 'z': continue
-            gd = lambda i: int(p['value'][i])
-            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))
-            root.append(self.buildElement('blog?key='+p['key'][0], freq='monthly', today=n))
-        for p in faqs:
-            if p['key'][1] != 'z': continue
-            gd = lambda i: int(p['value'][i])
-            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))
-            root.append(self.buildElement('faq?key='+p['key'][0], freq='monthly', today=n))
+        for videocard in videocards:
+            root.append(self.buildElement('videocard/'+quote_plus(videocard['key'].encode('utf-8')), freq='weekly'))
+        
+
         root.append(self.buildElement('blog'))
         root.append(self.buildElement('faq'))
         root.append(self.buildElement('about'))
@@ -194,6 +191,18 @@ class SiteMap(Resource):
 
         root.append(self.buildElement('/promotion/ajax'))
 
+        for p in posts:
+            if p['key'][1] != 'z': continue
+            gd = lambda i: int(p['value'][i])
+            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))
+            root.append(self.buildElement('blog?key='+p['key'][0], freq='monthly', today=n))
+        for p in faqs:
+            if p['key'][1] != 'z': continue
+            gd = lambda i: int(p['value'][i])
+            n = datetime.today().replace(year=gd(0), month=gd(1),day=gd(2))
+            root.append(self.buildElement('faq?key='+p['key'][0], freq='monthly', today=n))
+
+
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
 
@@ -201,7 +210,8 @@ class SiteMap(Resource):
         d = couch.openView(designID, 'models')
         d1 = couch.openView(designID, 'blog')
         d2 = couch.openView(designID, 'faq')
-        li = defer.DeferredList([d,d1,d2])
+        d3 = couch.openView(designID, 'articul')
+        li = defer.DeferredList([d,d1,d2, d3])
         li.addCallback(self.siteMap, request)
         return NOT_DONE_YET
 
@@ -1234,14 +1244,14 @@ class Delete(Resource):
         user = couch.openDoc(user_id)
         def delete(user_model):
             if not user_model[0][0] or not user_model[1][0]:
-                request.write('fail')
                 request.finish()
                 return
             _user = user_model[0][1]
             _model = user_model[1][1]
-            same_author = _model['author'] == _user['_id'] and \
-                'pc_key' in _user and\
-                request.getCookie('pc_key') == _user['pc_key']
+            same_author = (_model['author'] == _user['_id'] \
+                          or ('merged_docs' in _user and _model['author'] in _user['merged_docs']))\
+                          and 'pc_key' in _user and\
+                          request.getCookie('pc_key') == _user['pc_key']
             not_processing = not 'processing' in _model \
                     or not _model['processing']
             if same_author and not_processing:
@@ -1253,7 +1263,7 @@ class Delete(Resource):
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
-            request.write('fail')
+            request.write('fail same author and processing')
             request.finish()
         defer.DeferredList([user,model]).addCallback(delete)
         return NOT_DONE_YET
@@ -1274,7 +1284,7 @@ class DeleteNote(Resource):
                 couch.saveDoc(_user)
                 request.write('ok')
                 request.finish()
-            request.write('fail')
+            request.write('fail pc_key')
             request.finish()
         user.addCallback(delete)
         return NOT_DONE_YET
@@ -1361,20 +1371,7 @@ class SaveSet(Resource):
         _date = str(date.today()).split('-')
         user_doc['date'] = _date
         _set = {'_id':base36.gen_id(),'author':user_doc['_id'],
-                'building':False,'installing':False,'dvd':False,'items':{}, 'date':_date}
-        # make lists for multiple items
-        for k,v in data.items():
-            if not '_id' in v:
-                continue
-            code = v['_id']
-            if 'pcs' in v:
-                v['pcs']-=1
-                if v['pcs']>1:
-                    code = [v['_id']]
-                    while v['pcs']>0:
-                        code.append(v['_id'])
-                        v['pcs']-=1
-            _set['items'].update({k:code})
+                'building':False,'installing':False,'dvd':False,'items':data, 'date':_date}
         couch.saveDoc(_set)
         user_doc['sets'].append(_set['_id'])
         couch.saveDoc(user_doc)

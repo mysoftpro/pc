@@ -1,32 +1,16 @@
 # -*- coding: utf-8 -*-
-from cStringIO import StringIO
-import gzip
-from twisted.web.resource import Resource, ForbiddenResource
-from twisted.web.static import File, getTypeAndEncoding
 from twisted.internet import reactor, defer
-from pc.jsmin import jsmin
-from pc import base36
 from twisted.web.server import NOT_DONE_YET
 import os
-from twisted.web.http import CACHED
 from pc.couch import couch, designID
 import simplejson
-from datetime import datetime, date
+from datetime import date
 from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks,ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, Model, notes
-from pc.catalog import XmlGetter, WitNewMap, getNewImage, getNewDescription
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,\
+    Model, notes
+from pc.catalog import getNewImage, getNewDescription
 from twisted.web import proxy
-from twisted.web.error import NoResource
-from twisted.python.failure import Failure
-from lxml import etree, html
-from copy import deepcopy
-from pc.mail import Sender, send_email
-from pc.faq import faq, StoreFaq
-from twisted.internet.task import deferLater
-from pc.game import gamePage
-from pc.payments import DOValidateUser,DONotifyPayment
-from pc.di import Di
+from lxml import etree
 from pc.root import parts_aliases, CachedStatic, static_dir, HandlerAndName, Computer
 
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
@@ -35,8 +19,9 @@ from twisted.cred.portal import IRealm, Portal
 from zope.interface import implements
 from twisted.web.resource import IResource
 from pc.common import MIMETypeJSON
-
-
+from twisted.web.static import File
+from twisted.web.resource import Resource
+from copy import deepcopy
 
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
 
@@ -282,21 +267,20 @@ class FindOrder(Resource):
 	request.write(simplejson.dumps(result))
 	request.finish()
 
-    def notebook(self, model_user, notebook_id):
-	code = model_user[1][1]['notebooks'][notebook_id]
-	def makeNotebook(note_doc):
-	    note_doc[0][1]['count'] = 1
-	    note_doc[0][1]['ourprice'] = makeNotePrice(note_doc[0][1])
-	    return (model_user,note_doc)
-	d = couch.openDoc(code)
-	li = defer.DeferredList([d])
-	li.addCallback(makeNotebook)
-	return li
+    # def notebook(self, model_user, notebook_id):
+    #     code = model_user[1][1]['notebooks'][notebook_id]
+    #     def makeNotebook(note_doc):
+    #         note_doc[0][1]['count'] = 1
+    #         note_doc[0][1]['ourprice'] = makeNotePrice(note_doc[0][1])
+    #         return (model_user,note_doc)
+    #     d = couch.openDoc(code)
+    #     li = defer.DeferredList([d])
+    #     li.addCallback(makeNotebook)
+    #     return li
 
     def addComponents(self, model_user, _id):
 	defs = []
-	if not 'items' in model_user[0][1]:
-	    return self.notebook(model_user, _id)
+
 	def addCount(count):
 	    def add(doc):
 		doc['count'] = count
@@ -362,27 +346,29 @@ class FindOrder(Resource):
 	    return cheapeast
 	from pc import models
 
+        _model = Model(model_user[0][1])
 	for k,v in model_user[0][1]['items'].items():
-	    print k,v
-	    component = None
-	    if v is not None:
-		try:
-		    if type(v) is list:
-			# component = couch.openDoc(v[0])
-			# TODO! what if no component in choices?????????
-			component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
-			component.addCallback(addCount(len(v)))
-		    else:
-			if not v.startswith('no'):
-			    # component = couch.openDoc(v)
-			    component = wrap(deepcopy(models.gChoices_flatten[v]))
-			    component.addCallback(addCount(1))
-			else:
-			    component = wrap(noComponentFactory({}, k))
-		except KeyError:
-		    component = wrap(noComponentFactory({}, k))
-	    else:
-		component = wrap(noComponentFactory({}, k))
+            component = wrap(_model.findComponent(k))
+	    # component = None
+	    # if v is not None:
+	    #     try:
+	    #         if type(v) is list:
+	    #     	# component = couch.openDoc(v[0])
+	    #     	# TODO! what if no component in choices?????????
+	    #     	component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
+	    #     	component.addCallback(addCount(len(v)))
+	    #         else:
+	    #     	if not v.startswith('no'):
+	    #     	    # component = couch.openDoc(v)
+	    #     	    component = wrap(deepcopy(models.gChoices_flatten[v]))
+	    #     	    component.addCallback(addCount(1))
+	    #     	else:
+	    #     	    component = wrap(noComponentFactory({}, k))
+	    #     except KeyError:
+            #         print "aheheheheheh"
+	    #         component = wrap(noComponentFactory({'_id':v}, k))
+	    # else:
+	    #     component = wrap(noComponentFactory({}, k))
 	    component.addCallback(addPrice())
 	    component.addCallback(popDesc())
 	    component.addCallback(addName(parts_names[k]))
@@ -428,7 +414,7 @@ class FindOrder(Resource):
 
     def getModel(self, error, _id, request):
 	d = couch.openDoc(_id)
-	def getUser(model):
+        def getUser(model):
 	    d1 = couch.openDoc(model['author'])
 	    mock = defer.Deferred()
 	    mock.addCallback(lambda x: model)
@@ -455,21 +441,13 @@ class FindOrder(Resource):
 	li.addCallback(self.finish, request)
 	return li
 
-	# d = defer.Deferred()
-	# d.addCallback(lambda x:model)
-	# d.callback(None)
-	# d1 = couch.openDoc(user_id)
-	# li = defer.DeferredList([d,d1])
-	# li.addCallback(self.addComponents, model['_id'])
-	# li.addCallback(self.finish, request)
-	# return li
     @MIMETypeJSON
     def render_GET(self, request):
 	_id = request.args.get('id')[0]
 	if len(_id)>3:
 	    order_d = couch.openDoc('order_'+_id)
-	    order_d.addCallback(self.finish, request)
-	    # if no order -> get model
+            order_d.addCallback(self.finish, request)
+	    # if no order -> get model            
 	    order_d.addErrback(self.getModel, _id, request)
 	    # if problem with the order -> finish any way
 	    order_d.addErrback(self.graceFull, request)
@@ -953,7 +931,7 @@ class StoreNewDesc(Resource):
         if len(warranty)>0:
             doc['warranty_type'] = warranty
         if len(articul)>0:
-            doc['articul'] = articul
+            doc['articul'] = articul.replace('\t','')
         if len(catalogs)>0:
             doc['catalogs'] = simplejson.loads(catalogs)
             doc['price'] = doc['us_price']

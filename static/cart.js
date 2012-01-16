@@ -38,8 +38,11 @@ var init = function(){
 			       var cart = $.cookie('pc_cart');
 			       $('#cart').text('Корзина(' + $.cookie('pc_cart') + ')');
 			       var target = $(e.target);
-			       while (target.attr('class')!='cart_description'){
+			       var guard = 10;
+			       while (!target.attr('class').match('cart_description')){
 				   target = target.parent();
+				   guard-=1;
+				   if (guard==0)break;
 			       }
 			       var guiders_anchors = target.find('a.showOldComponent').toArray();
 			       _(guiders_anchors)

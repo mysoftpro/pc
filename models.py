@@ -139,7 +139,7 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
          case:50, displ:90,
          audio:100, soft:110,
-         kbrd:120, mouse:130, audio:140}
+         kbrd:120, mouse:130, audio:140, psu:150, notes:160}
 
 parts_names = {proc:u'Процессор', ram:u'Память',
                video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
@@ -147,7 +147,7 @@ parts_names = {proc:u'Процессор', ram:u'Память',
                network:u'Сетевая карта',
                mother:u'Материнская плата',displ:u'Монитор',
                audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
-               soft:u'ОС'}
+               soft:u'ОС', psu:u'Блок питания', notes:u'Ноутбуки'}
 
 
 parts_aliases = {
@@ -163,7 +163,9 @@ parts_aliases = {
     'displ':displ,
     'network':network,
     'soft':soft,
-    'case':case
+    'case':case,
+    'psu':psu,
+    'notes':notes
     }
 
 def noComponentFactory(_doc, name):
@@ -1076,7 +1078,14 @@ class Component(object):
 
     @property
     def description(self):
-        return self.get('description', False)
+        descr = self.get('description', False)
+        if not descr:
+            choices = globals()['gChoices_flatten']
+            if self._id in choices:
+                cached = choices[self._id]
+                if 'description' in cached:
+                    descr = cached['description']
+        return descr
 
 
     def getCatalogsKey(self):
@@ -1200,7 +1209,6 @@ class User(object):
 
     def getUserSets(self):
         for s in self.sets:
-            print s
             yield Set(s)
 
 
@@ -1245,29 +1253,26 @@ class Comment(object):
 class VideoCard(Component):
 
 
-    def goodPrice(self):
-        return self.makePrice()>=4000
-
     @property
     def rate(self):
-        return int(self.get('rate', 5))
+        return int(self.get('rate', 4))
 
     @property
     def cores(self):
-        return self.get('cores', '-')
+        return self.get('cores', '384')
 
     @property
     def year(self):
-        return self.get('year', '-')
+        return self.get('year', '01.2010')
 
     @property
     def power(self):
-        return self.get('power', u'-')
+        return self.get('power', 200)
 
 
     @property
     def memory(self):
-        return self.get('memory', '-')
+        return self.get('memory', '1024')
 
     @property
     def memory_ammo(self):

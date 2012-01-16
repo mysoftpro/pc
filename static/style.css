@@ -64,6 +64,7 @@ h2 {
 #greetings{
     float:left;
     height:240px;
+    margin-top:-10px;
     text-shadow: 0 2px 3px black;
 }
 #greeting_banner{
@@ -109,15 +110,24 @@ p {
 }
 
 #second{
-
     font-size:18px;
     color:#858585;
     max-width:400px;
+    background-image:url('/static/jazz.png');
+    height:150px;
+    background-repeat:no-repeat;
+    background-position: 100px 0px;
+    width:360px;
 }
 #third{
     font-size:18px;
     color:#898989;
     max-width:400px;
+    background-image:url('/static/The_Cable_Guy_1.png');
+    background-repeat:no-repeat;
+    background-position:-6px 0px;
+    height:78px;
+    padding-left:90px;
 }
 
 #fourth{
@@ -2293,10 +2303,10 @@ h1.bold.left{
 }
 
 #motherlock{
-    top:262px;
+    top:280px;
 }
 #proclock{
-    top:296px;
+    top:310px;
 }
 .pciex{
     position:absolute;
@@ -2488,20 +2498,27 @@ h1.bold.left{
 .chipVendors{
     padding-left:5px;
 }
-
-.chipVendors li {
+.chip .chipVendors li{
     background-image:url('/static/build_icons.png');
-    background-position:0px -385px;   
-    height:16px;
-    overflow:hidden;
+    background-position:0px -385px;
     background-repeat:no-repeat;
     padding-left:18px;
+}
+.chipVendors li {
+    overflow:hidden;
     list-style-type:none;
     cursor:pointer;
     margin-bottom:6px;
     line-height: 16px;
 }
 
+.chipVendors em{
+    background-image:url('/static/build_icons.png');
+    background-position:0px -385px;
+    background-repeat:no-repeat;
+    padding-left:18px;
+    font-style: normal;
+}
 .chipVendors strong{
     margin-left:5px;
 }
@@ -2619,7 +2636,7 @@ h1.bold.left{
     margin-bottom:30px;
 }
 #videoname{
-    max-width:700px;
+    max-width:695px;
     max-height:20px;
     overflow:hidden;
 }
@@ -2648,4 +2665,10 @@ h1.bold.left{
 
 .set_description{
     padding-top:35px;
+}
+#videoheader{
+    line-height:30px;
+    font-size:20px;
+    max-height:30px;
+    overflow:hidden;
 }

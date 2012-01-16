@@ -110,7 +110,7 @@ var expands = {'howtochose':{'urls':[
                               },
                'more':{'urls':[
                            {url:'/promotion/ajax',title:'Спец предложение'},
-                           // {url:'/notebook',title:'Ноутбуки Asus'},
+                           {url:'/notebook',title:'Ноутбуки Asus'},
                            {url:'/warranty',title:'Гарантии'},
                            {url:'/support',title:'Поддержка'},
                            {url:'/blog',title:'Блог'},
