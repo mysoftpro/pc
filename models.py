@@ -1327,5 +1327,5 @@ class Notebook(Model):
 class Set(Model):
     @property
     def name(self):
-        return u'Компьюткрные комплектующие'
+        return u'Компьютерные компоненты'
 
