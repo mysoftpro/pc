@@ -152,7 +152,7 @@ function init(){
                        x:pos/steps,
                        steps:steps,
                        callback:function(x){
-                           var max_price = (this.stepRatios).indexOf(x)*100;
+                           var max_price = _(this.stepRatios).indexOf(x)*100;
                            price.text(max_price);
                            setHashe({prc:max_price});
                            _(chipvendors.toArray())
