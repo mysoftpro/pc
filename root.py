@@ -1395,8 +1395,6 @@ class SaveSet(Resource):
             return "fail data"
         jdata = simplejson.loads(data)
         # TODO what about other types of set????
-        if video not in jdata or psu not in jdata:
-            return "fail video"
 
         user_id = request.getCookie('pc_user')
         d = couch.openDoc(user_id)
