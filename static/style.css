@@ -2497,6 +2497,7 @@ h1.bold.left{
 }
 .chipVendors{
     padding-left:5px;
+    padding-top:5px;
 }
 .chip .chipVendors li{
     background-image:url('/static/build_icons.png');
