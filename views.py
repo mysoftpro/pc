@@ -719,11 +719,18 @@ class VideoCards(PCView):
             chip_div = etree.Element('div')
             chip_div.set('class', 'chip')
 
-            chip_name_div = viewlet.xpath('//div[@class="chipname"]')[0]
-            chip_name_div.text = u'Видеокарта '
+            chip_title = viewlet.xpath('//h2[@class="chipname"]')[0]
+            chip_title.text = u'Видеокарта '
             br = etree.Element('br')
-            br.tail = chipname
-            chip_name_div.append(br)
+            _name = chipname
+            if 'HD' in _name:
+                _name = 'Radeon '+_name
+            else:
+                _name = 'GeForce '+_name
+            br.tail = _name
+            chip_title.append(br)
+            chip_image = viewlet.xpath('//img[@class="video_image"]')[0]
+            chip_image.set('alt', _name)
 
             chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
 

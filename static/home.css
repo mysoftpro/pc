@@ -2522,8 +2522,8 @@ h1.bold.left{
     margin-left:15px;
 }
 .chipname{
+    font-size: 15px;;
     margin-right: 10px;
-    font-weight: bold;
     border: 1px solid #777;
     padding: 5px;
     width: 120px;
