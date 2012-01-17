@@ -105,6 +105,9 @@ class AdminGate(Resource):
 	self.putChild('store_psu', StorePsu())
         self.putChild('evolve', Evolve())
 
+        self.putChild('store_description', StoreDescription())
+
+
     def render_GET(self, request):
 	return self.static.getChild('index.html', request).render(request)
 
@@ -114,6 +117,35 @@ class AdminGate(Resource):
 	return self
 
 
+
+class StoreDescription(Resource):
+    def fail(self, fail, msg, request):
+        request.write(str(fail))
+        request.write(str(msg))
+        request.finish()
+
+    def finish(self, res, request):
+        request.write(str(res['rev']))
+        request.finish()
+
+    def store(self, doc, description, request):
+        if 'description' in doc:
+            doc['description']['comments'] = description
+        else:
+            doc['description'] = {'comments':description,'imgs':[]}
+        d = couch.saveDoc(doc)
+        d.addErrback(self.fail, 'fail in store', request)
+        d.addCallback(self.finish, request)
+
+    def render_POST(self, request):
+        _id = request.args.get('_id', [None])[0]
+        description = request.args.get('descr', [None])[0]
+        if _id is None or description is None:
+            return 'fail params'
+        d = couch.openDoc(_id)
+        d.addCallback(self.store, description, request)
+        d.addErrback(self.fail, 'fail in open', request)
+        return NOT_DONE_YET
 
 class Promo(Resource):
 
@@ -534,11 +566,12 @@ class StoreVideo(Resource):
 
 class StoreProc(Resource):
 
-    @MIMETypeJSON
+    
     def finish(self, doc, request):
 	request.write(str(doc['rev']))
 	request.finish()
-
+    
+    @MIMETypeJSON
     def render_POST(self, request):
 	proc = request.args.get('proc')[0]
 	jproc = simplejson.loads(proc)

@@ -1,3 +1,31 @@
+function makeDescriptionForm(td){
+    var text = td.html();
+    td.show();
+    td.append('<textarea></textarea><button>Сохранить</button>');
+    var area = td.find('textarea');
+    area.val(text)
+	.next()
+	.click(function (){
+		   var doc_holder = td.parent().prev();
+		   var doc = doc_holder.data('doc');
+		   console.log('before');
+		   console.log(doc['_rev']);
+		   $.ajax({
+			      url:'store_description',
+			      data:{'_id':doc._id,
+				    'descr':area.val()},
+			      type:'POST',			      
+			      success:function(data){
+				  doc['_rev'] = data;
+				  alert('Получилось');
+			      },
+			      error:function(data){
+				  alert('Что-то пошло не так :(');
+			      }
+			  });
+	       });
+}
+
 function saveDoc(e){
     var tr = $(e.target).parent();
     var doc = tr.data('doc');
@@ -75,7 +103,8 @@ function fillMothers(data){
 
 	    function showdesc(e){
 		var target = $(e.target);
-		target.parent().next().find('td').show();
+		var td = target.parent().next().find('td');
+		makeDescriptionForm(td);
 		target.text('спрятать описание');
 		target.unbind('click').click(hidedesc);		
 	    }
@@ -93,8 +122,9 @@ function fillMothers(data){
                 .text('сохранить');
             tr.append(name).append(video).append(ramslots).append(maxram)
 	    .append(crossfire).append(sli)
-                .append(open).append(save);
+                .append(open).append(save);	    
 	    tr.data('doc',doc);
+	    //console.log(tr.data('doc')._id);
             tr1.append(description);
             table.append(tr);
             table.append(tr1);
