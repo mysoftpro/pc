@@ -3,13 +3,27 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-function checkPower(new_component){
-    // if (!new_component['power'] || new_component['power']==-1)return;
-    // console.log(new_component);
-    // var tottal_power = 350+new_component['power'];
-    // var psu_power = new_model[code('psu')]['power'];
-    // if (!psu_power || psu_power<tottal_power)
-    // 	console.log('chaaaaaaaaaaaaaaaaaange');
+function checkPsuForVideo(new_component){
+    if (!new_component['power'] || new_component['power']==-1)return;
+    var count = new_component['count'];
+    if (!count)
+	count=1;
+    var tottal_power = 350+parseInt(new_component['power'])*count;    
+    var psu_component = new_model[code('psu')];
+    var psu_power = psu_component['power'];
+    if (!psu_power || psu_power<tottal_power){
+	
+	var appr_components = getNearestComponent(psu_component.price,
+						  choices[psu_component._id].catalogs,
+						  1, false);
+	if (!appr_components[0])
+	    //TODO! warning. no more psu!!!!!!!!!!!!!
+	    return;	
+	var new_psu_component = appr_components[0];
+	var psu_body = jgetBody(jgetSelectByRow($('#' + parts['psu'])));
+	changeComponent(psu_body, new_psu_component, psu_component);
+	checkPsuForVideo(new_component);
+    }
 }
 
 
@@ -288,6 +302,8 @@ function checkAvailableSlots(name){
     var component = new_model[jgetSelectByRow($('#' + parts[name])).val()];
     var counters = possibleComponentCount(jgetBody(select), 'mock');
     var count = component['count'];
+    if (!count)
+	count=1;
     if (count>counters.max_count){
 	changeComponentCount(jgetBody(select),'down');
 	return checkAvailableSlots(name);
@@ -360,7 +376,7 @@ function componentChanged(maybe_event){
 	    installCounters();
 	}
 	else if (isVideo(body)){
-	    checkPower(new_component);
+	    checkPsuForVideo(new_component);
 	}
     } catch (x) {
 	console.log(x);
@@ -1230,6 +1246,8 @@ function changeComponentCount(body, direction){
     var counters = possibleComponentCount(body, direction);
     var component = new_model[select.val()];
     component['count'] = counters.new_count;
+    if (isVideo(body))
+	checkPsuForVideo(component);
     setPriceAndPin(body,component);
     recalculate();
     installCountButtons(body);
