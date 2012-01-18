@@ -118,7 +118,8 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
     to_clean = ['id', '_attachments','flags','inCart',
                      'ordered','reserved','stock1', '_rev', 'warranty_type',
                 'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
-                'new_stock', 'new_link', 'new_catalogs']
+                'new_stock', 'new_link', 'new_catalogs', "marketComments","marketParams",
+                "marketReviews", "description"]
     if clean_text:
         to_clean.append('text')
     if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc and 'stock1' in doc) and \
@@ -902,7 +903,7 @@ class Model(object):
         mock_component['_id'] = code
         flatten.append(mock_component)
         flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
-        
+
         keys = [doc['_id'] for doc in flatten]
         _length = len(keys)
         ind = keys.index(code)

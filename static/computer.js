@@ -3,20 +3,15 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var catalogsForVendors = {
-    mothers:{
-	'vamd':[['7363','7388','7699'],['7363','7388','19238']],
-	'vintel':[['7363','7388','17961'],['7363','7388','12854'],['7363','7388','18029'],['7363','7388','7449']]
-    },
-    procs:{
-	'vamd':[['7363','7399','7700'],['7363','7399','19257']],
-	'vintel':[['7363','7399','18027'],['7363','7399','18028'],['7363','7399','9422'],['7363','7399','7451']]
-    },
-    videos:{
-	'vnvidia':[['7363','7396','7607']],
-	'vati':[['7363','7396','7613']]
-    }
-};
+function checkPower(new_component){
+    // if (!new_component['power'] || new_component['power']==-1)return;
+    // console.log(new_component);
+    // var tottal_power = 350+new_component['power'];
+    // var psu_power = new_model[code('psu')]['power'];
+    // if (!psu_power || psu_power<tottal_power)
+    // 	console.log('chaaaaaaaaaaaaaaaaaange');
+}
+
 
 function getPartName(_id){
     var cats = getCatalogs(choices[_id]);
@@ -360,10 +355,12 @@ function componentChanged(maybe_event){
 	setPerifery(old_id, true);
 
 	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
-
 	if (isMother(body)){
 	    switchNoVideo(new_component);
 	    installCounters();
+	}
+	else if (isVideo(body)){
+	    checkPower(new_component);
 	}
     } catch (x) {
 	console.log(x);
