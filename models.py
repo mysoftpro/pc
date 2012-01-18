@@ -110,7 +110,7 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
 
 
 Margin=1.15
-Course = 32
+Course = 31.8
 
 #refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
@@ -174,7 +174,6 @@ def noComponentFactory(_doc, name, text=u' нет'):
     no_doc = deepcopy(_doc)
     no_doc['_id'] = no_name
     no_doc['price'] = 0
-    # zzz
     if name == psu:
         no_doc['text']=u'Блок питания встроенный в корпус'
     else:

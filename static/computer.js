@@ -7,14 +7,22 @@ var exclusive_case = "10837";
 function checkPsuForCase(old_component, new_component){
     if (old_component.catalogs[2]!=exclusive_case && new_component.catalogs[2]==exclusive_case){
         var video_component = new_model[code('video')];
-	checkPsuForVideo(video_component, 'forced');
+        checkPsuForVideo(video_component, 'forced');
     }
-
+    var psu_select = jgetSelectByRow($('#' + parts['video']));
+    if (new_component.catalogs[2]==exclusive_case){        
+	psu_select.find('option').first().prop('disabled', true);
+	psu_select.trigger("liszt:updated");
+    }
+    else{
+	psu_select.find('option').first().prop('disabled', false);
+	psu_select.trigger("liszt:updated");
+    }
 }
 function checkPsuForVideo(new_component, forced){
     if ((!new_component['power'] || new_component['power']==-1)
-	&& !forced)
-	return;
+        && !forced)
+        return;
     var count = new_component['count'];
     if (!count)
         count=1;
@@ -22,7 +30,7 @@ function checkPsuForVideo(new_component, forced){
     var psu_component = new_model[code('psu')];
     var psu_power = psu_component['power'];
     if (!psu_power || psu_power<tottal_power){
-	var appr_components = getNearestComponent(psu_component.price,
+        var appr_components = getNearestComponent(psu_component.price,
                                                   choices[psu_component._id].catalogs,
                                                   1, false);
         if (!appr_components[0])

@@ -504,9 +504,11 @@ class Computer(PCView):
             if globals()['no_component_added']:return
             if name not in [mouse,kbrd,displ,soft,audio, network,video,power_catalog]: return
             no_doc = noComponentFactory(component_doc, name)
-            if name == power_catalog:
-                no_doc['text']=u'Блок питания встроенный в корпус'
-            rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
+            if len(rows)==0:            
+                rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
+            else:
+                if rows[0]['id']!=no_doc['_id']:
+                    rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
         def addComponent(_options, _row, current_id):
             _price= Model.makePrice(_row['doc'])
