@@ -914,6 +914,13 @@ class VideocardView(PCView):
             first = r[0]
             if first.text != u'Итого':
                 first.find('div').text = card.description.get('name', card.text)
+        try:
+            dual = "SLI"
+            if 'HD' in card.chip:
+               dual="Crossfire" 
+            self.template.middle.xpath('.//span[@id="mvideodual"]')[0].text=dual
+        except:
+            pass
         self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
         self.script.text += 'var video_catalog='+video_catalog+';var power_catalog='+power_catalog+';'
 

@@ -1252,7 +1252,6 @@ class Comment(object):
 
 class VideoCard(Component):
 
-
     @property
     def rate(self):
         return int(self.get('rate', 4))
