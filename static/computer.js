@@ -29,7 +29,9 @@ function checkPsuForVideo(new_component, forced){
         count=1;
     var tottal_power = 350+parseInt(new_component['power'])*count;
     var psu_component = new_model[code('psu')];
-    var psu_power = psu_component['power'];
+    var psu_power = psu_component['power'];    
+    if (!psu_power)
+	psu_power = 500;//default psu embedded in case
     if (!psu_power || psu_power<tottal_power){
         var appr_components = getNearestComponent(psu_component.price,
                                                   choices[psu_component._id].catalogs,
