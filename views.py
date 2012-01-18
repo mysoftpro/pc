@@ -887,11 +887,12 @@ class VideocardView(PCView):
             return
         res = res['rows'][0]
 
-        if 'doc' not in res:
+
+        from pc import models
+        if not res['id'] in models.gChoices_flatten:
             self.force_no_resource = True
             return
-
-        card = VideoCard(res['doc'])
+        card = VideoCard(models.gChoices_flatten[res['id']])
         self.title = card.text
 
         self.template.top.find('h1').text = card.text
@@ -938,7 +939,7 @@ class VideocardView(PCView):
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
-        d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(self.name), stale=False)
+        d = couch.openView(designID, 'video_articul', key=unquote_plus(self.name), stale=False)
         d.addCallback(self.renderCard)
         return d
 
