@@ -378,6 +378,10 @@ function componentChanged(maybe_event){
 	else if (isVideo(body)){
 	    checkPsuForVideo(new_component);
 	}
+	else if (isPsu(body)){
+	    var video_component = new_model[jgetSelectByRow($('#' + parts['video'])).val()];
+	    checkPsuForVideo(video_component);
+	}
     } catch (x) {
 	console.log(x);
     }
@@ -825,6 +829,10 @@ function _isVideo(body){
 }
 var isVideo = _.memoize(_isVideo, function(body){return body.attr('id');});
 
+function _isPsu(body){
+    return body.parent().attr('id') == parts['psu'];
+}
+var isPsu = _.memoize(_isPsu, function(body){return body.attr('id');});
 
 function _isHdd(body){
     return body.parent().attr('id') == parts['hdd'];
