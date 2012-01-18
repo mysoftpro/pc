@@ -852,6 +852,7 @@ label:hover{
 .cart_description ul{
     line-height:12px;
     font-size:12px;
+    margin-top: 0;
 }
 .cart_description h3{
     margin: 0 0 0 18px;

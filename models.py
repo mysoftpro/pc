@@ -168,12 +168,16 @@ parts_aliases = {
     'notes':notes
     }
 
-def noComponentFactory(_doc, name):
+def noComponentFactory(_doc, name, text=u' нет'):
     no_name = 'no' + name
     no_doc = deepcopy(_doc)
     no_doc['_id'] = no_name
     no_doc['price'] = 0
-    no_doc['text'] = parts_names[name] + u': нет'
+    # zzz
+    if name == psu:
+        no_doc['text']=u'Блок питания встроенный в корпус'
+    else:
+        no_doc['text'] = parts_names[name]+text
     return no_doc
 
 
@@ -225,27 +229,6 @@ def flatChoices(res):
             for ch in choices['rows']:
                 cleanFlattenChoice(ch['doc'])
                 globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
-
-
-
-def equipCases(result):
-    exclusive_rows = power = power_index = None
-    i=0
-    for r in result:
-        if r[1][0] == u"Эксклюзивные корпусы":
-            exclusive_rows = r[1][1]['rows']
-        elif r[1][0] == u"БП":
-            power = r[1][1]
-            power_index = i
-        i+=1
-    chipest_power = sorted([row['doc'] for row in power['rows']],lambda x,y:int(x['price']-y['price']))[0]
-    for r in exclusive_rows:
-        r['doc']['price'] += chipest_power['price']
-        r['doc']['text'] = r['doc']['text'].replace(u'без БП', '')
-    result.pop(power_index)
-    return result
-
-
 
 
 def fillChoices():
@@ -341,7 +324,6 @@ def fillChoices():
                                    couch.openView(designID,
                                                   'catalogs',include_docs=True, key=case_exclusive, stale=False)
                                     .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
-                .addCallback(equipCases)
                 .addCallback(lambda res: {case:res}))
 
     defs.append(defer.DeferredList([couch.openView(designID,
@@ -920,6 +902,7 @@ class Model(object):
         mock_component['_id'] = code
         flatten.append(mock_component)
         flatten = sorted(flatten,lambda x,y: int(x['price'] - y['price']))
+        
         keys = [doc['_id'] for doc in flatten]
         _length = len(keys)
         ind = keys.index(code)
@@ -955,7 +938,7 @@ class Model(object):
 
     @property
     def promoComponents(self):
-        return [{u"_id": u"18225",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7383",u"name": u"Корпусы"},{u"id": u"10837",u"name": u"Exclusive Case"}],u"text": u"Корпус Silverstone SST-PS05B Precision Midi-Tower - black",u"price": 62},{u"_id": u"20156",u"text": u"Монитор LED Philips 226V3LSB 21.5'' DVI Black",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7384",u"name": u"Мониторы"},{u"id": u"13209",u"name": u"LCD 22-27\""}],u"price": 135   },{u"_id": u"17398",u"catalogs": [{u"id": u"7369",u"name": u"Программное обеспечение"},{u"id": u"14570",u"name": u"ПО Microsoft (цены в рублях)"},{u"id": u"14571",u"name": u"Microsoft Windows (цены в рублях)"}],u"text": u"ПО Microsoft Win 7 Home Basic 64-bit Rus CIS SP1",u"price": 2230},{u"_id": u"19992",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7388",u"name": u"Материнские платы"},{u"id": u"19238",u"name": u"SOCKET FM1"}],u"price": 68,u"text": u"Материнская плата GIGABYTE GA-A55M-S2V FM1 AMD A75 2DDR3 RAID mATX"},{u"_id": u"20017",u"text": u"Процессор AMD A4 X2 3300 2,5 ГГц Socket FM1 Box cashe 1Mb, TDP 65W (AWAD3300OJGXBOX)",u"price": 72,   u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7399",u"name": u"Процессоры"},{u"id": u"19257",u"name": u"SOCKET FM1"}]},{u"_id": u"19470",u"text": u"Видеокарта HD6450 XFX 1GB DDR3 DVI+VGA+HDMI BOX  HD-645X-ZNH2",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7396",u"name": u"Видеокарты"},{u"id": u"7613",u"name": u"RADEON PCI-E"}],   u"price": 52.59      },{u"_id": u"15318",u"text": u"Жесткий диск 1000GB WD GreenPower Sata2  64mb WD10EARS",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7406",u"name": u"Жесткие диски"},{u"id": u"7673",u"name": u"SATA II&III"}],u"price": 119},{u"_id": u"19575",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7394",u"name": u"Оперативная память"},{u"id": u"11576",u"name": u"DDRIII Лучшие цены"}],   u"text": u"ОЗУ DDR3 4096MB Crucial Rendition CL9 1333 PC3-10600",u"price": 19   },{u"_id": u"18692",u"catalogs": [{u"id": u"7365",u"name": u"Устройства ввода-вывода"},{u"id": u"7389",u"name": u"Акустические системы"},{u"id": u"7448",u"name": u"2.1 системы"}],u"text": u"Акустическая система Genius SW-M2.1 350, 11W black",u"price": 16.6},{u"_id": u"18932",u"text": u"Дисковод  Samsung SH-222AB/BEBE 22x SATA BLACK",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7392",u"name": u"Дисководы DVD RW, FDD"},{u"id": u"7538",u"name": u"DVD-RW"}],   u"price": 25}]
+        return [{u"_id": u"18225",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7383",u"name": u"Корпусы"},{u"id": u"10837",u"name": u"Exclusive Case"}],u"text": u"Корпус Silverstone SST-PS05B Precision Midi-Tower - black",u"price": 62},{u"_id": u"20156",u"text": u"Монитор LED Philips 226V3LSB 21.5'' DVI Black",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7384",u"name": u"Мониторы"},{u"id": u"13209",u"name": u"LCD 22-27\""}],u"price": 135   },{u"_id": u"17398",u"catalogs": [{u"id": u"7369",u"name": u"Программное обеспечение"},{u"id": u"14570",u"name": u"ПО Microsoft (цены в рублях)"},{u"id": u"14571",u"name": u"Microsoft Windows (цены в рублях)"}],u"text": u"ПО Microsoft Win 7 Home Basic 64-bit Rus CIS SP1",u"price": 2230},{u"_id": u"19992",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7388",u"name": u"Материнские платы"},{u"id": u"19238",u"name": u"SOCKET FM1"}],u"price": 68,u"text": u"Материнская плата GIGABYTE GA-A55M-S2V FM1 AMD A75 2DDR3 RAID mATX"},{u"_id": u"20017",u"text": u"Процессор AMD A4 X2 3300 2,5 ГГц Socket FM1 Box cashe 1Mb, TDP 65W (AWAD3300OJGXBOX)",u"price": 72,   u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7399",u"name": u"Процессоры"},{u"id": u"19257",u"name": u"SOCKET FM1"}]},{u"_id": u"19470",u"text": u"Видеокарта HD6450 XFX 1GB DDR3 DVI+VGA+HDMI BOX  HD-645X-ZNH2",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7396",u"name": u"Видеокарты"},{u"id": u"7613",u"name": u"RADEON PCI-E"}],   u"price": 52.59      },{u"_id": u"15318",u"text": u"Жесткий диск 1000GB WD GreenPower Sata2  64mb WD10EARS",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7406",u"name": u"Жесткие диски"},{u"id": u"7673",u"name": u"SATA II&III"}],u"price": 119},{u"_id": u"19575",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7394",u"name": u"Оперативная память"},{u"id": u"11576",u"name": u"DDRIII Лучшие цены"}],   u"text": u"ОЗУ DDR3 4096MB Crucial Rendition CL9 1333 PC3-10600",u"price": 19   },{u"_id": u"18692",u"catalogs": [{u"id": u"7365",u"name": u"Устройства ввода-вывода"},{u"id": u"7389",u"name": u"Акустические системы"},{u"id": u"7448",u"name": u"2.1 системы"}],u"text": u"Акустическая система Genius SW-M2.1 350, 11W black",u"price": 16.6},{u"_id": u"18932",u"text": u"Дисковод  Samsung SH-222AB/BEBE 22x SATA BLACK",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7392",u"name": u"Дисководы DVD RW, FDD"},{u"id": u"7538",u"name": u"DVD-RW"}],   u"price": 25},{u"_id": u"18244",u"catalogs": [{u"id": u"7363",u"name": u"Компьютерные компоненты"},{u"id": u"7416",u"name": u"Блоки питания"},{u"id": u"7464",u"name": u"500+W"}],u"reserved": 0,u"power": 500,u"text": u"Блок питания  500W Deluxe ATX SECC",u"price": 20,u"warranty_type": u"6 месяцев",u"flags": u"0",u"inCart": 0,u"stock1": 339,u"ordered": 0,u"id": "18238"}]
 
     def findComponent(self, cat_name):
         def lookFor():
@@ -986,8 +969,12 @@ class Model(object):
             code = code[0]
         if code is None or code.startswith('no'):
             return noComponentFactory({},cat_name)
-
-        retval = look_for(code)
+        retval = None
+        # this try for those [0] in lambdas
+        try:
+            retval = look_for(code)
+        except:
+            pass
         if retval is None:
             retval = self.replaceComponent(code)
         ret = deepcopy(retval)
@@ -1327,4 +1314,3 @@ class Set(Model):
     @property
     def name(self):
         return u'Компьютерные компоненты'
-

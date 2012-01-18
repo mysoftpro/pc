@@ -347,7 +347,7 @@ function componentChanged(maybe_event){
 	fillOmitOptions(new_component,old_component);
 
 	recalculate();
-	if (new_component.count){
+	if (new_component.count){	    	    
 	    body.text(new_name.substring(0,60));
 	}
 	else{

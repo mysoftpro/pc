@@ -7,7 +7,7 @@ import simplejson
 from datetime import date
 from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,\
-    Model, notes
+    Model, notes, case,case_exclusive,noChoicesYet,fillChoices, psu as power_catalog
 from pc.catalog import getNewImage, getNewDescription
 from twisted.web import proxy
 from lxml import etree
@@ -18,7 +18,7 @@ from twisted.cred.checkers import FilePasswordDB
 from twisted.cred.portal import IRealm, Portal
 from zope.interface import implements
 from twisted.web.resource import IResource
-from pc.common import MIMETypeJSON
+from pc.common import MIMETypeJSON, forceCond
 from twisted.web.static import File
 from twisted.web.resource import Resource
 from copy import deepcopy
@@ -1030,18 +1030,33 @@ class Evolve(Resource):
         note_ob['date'] = date
         couch.saveDoc(note_ob)
 
-    def evolve(self, res, request):
-        tot = 0
+    def evolve(self, res):
+        import pc.models        
         for r in res['rows']:
-            if 'doc' not in r:continue
-            if not 'notebooks' in r['doc']:continue            
-            for k,v in r['doc']['notebooks'].items():
-                d = couch.openDoc(k)
-                d.addCallback(self.fillNote, v, r['doc']['date'])
-        request.write(str(tot))
-        request.finish()
+            if not 'doc' in r:continue
+            if r['doc'] is None:
+                continue
+            model = Model(r['doc'])            
+            # found_case = model.findComponent(case)
+            # if model.getCatalogsKey(found_case) == case_exclusive:
+            if model.case.getCatalogsKey() == case_exclusive:
+                if not model.isPromo:
+                    r['doc']['items'].update({power_catalog:"13559"})# 600w Deluxe
+                    if 'original_prices' in r['doc']:
+                        r['doc']['original_prices'].update({"13559":32})
+                else:
+                    r['doc']['items'].update({power_catalog:"18244"})# 500w Deluxe
+                    if 'original_prices' in r['doc']:
+                        r['doc']['original_prices'].update({"18244":20})
+            else:
+                r['doc']['items'].update({power_catalog:"no"+power_catalog})# psu is embeded in case
+            couch.saveDoc(r['doc'])
 
+    @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
-        d = couch.openView(designID, 'carts', stale=False, include_docs=True)
-        d.addCallback(self.evolve, request)
-        return NOT_DONE_YET
+        d = couch.openView(designID, 'models', stale=False, include_docs=True)
+        d.addCallback(self.evolve)
+        d1 = couch.openView(designID, 'user_models', stale=False, include_docs=True)
+        d1.addCallback(self.evolve)
+        return "ok"
+

@@ -34,10 +34,10 @@ class ModelInCart(object):
 
 
     def setModelLink(self):
-        
+
         if not self.model.isPromo:
             self.icon.set('href','/computer/'+self.model._id)
-        else:            
+        else:
             self.icon.set('href','/promotion/'+self.model.parent)
 
         link = self.model_div.find('.//a')
@@ -74,7 +74,7 @@ class ModelInCart(object):
             header = self.model_div.find('h2')
             header.set('class', header.get('class')+ ' processing')
 
-        
+
 
         self.fillInfo()
         self.setModelLink()
@@ -84,8 +84,8 @@ class ModelInCart(object):
         total = self.model.total
         if self.model.ourPrice:
             total = self.model.ourPrice
-        price_span.text = unicode(total) + u' р'            
-            
+        price_span.text = unicode(total) + u' р'
+
         # self.icon.find('img').set('src',self.getCaseIcon())
         self.setIcon()
         self.model_div.insert(0,self.icon)
@@ -97,10 +97,16 @@ class ModelInCart(object):
 
     def renderComponent(self, component):
         li = etree.Element('li')
-        if component.text:
-            li.text = component.text
-        else:
-            li.text=''
+        try:
+            if component.text:
+                li.text = component.text
+            else:
+                li.text=''
+        except:
+            print component._id
+            print component.text
+            li.text = u'ошибка'
+
         if not 'promo' in self.model:
             strong = etree.Element('strong')
             strong.text = unicode(self.model.getComponentPrice(component))+ u' р'
@@ -219,7 +225,7 @@ class SetInCart(ModelInCart):
         self.description_div = divs[1]
 
     def setModelLink(self):
-                
+
         url = '/videocard/'+\
                      quote_plus(self.model.components[0].get('video_articul','').replace('\t',''))
 
@@ -300,7 +306,7 @@ class PCView(object):
 class Cart(PCView):
     title = u'Корзина'
 
-    def fixCookies(self, user):        
+    def fixCookies(self, user):
         if user.isValid(self.request):
             pcCartTotal(self.request, user.user)
 
@@ -496,8 +502,10 @@ class Computer(PCView):
                 except:
                     pass
             if globals()['no_component_added']:return
-            if name not in [mouse,kbrd,displ,soft,audio, network,video]: return
+            if name not in [mouse,kbrd,displ,soft,audio, network,video,power_catalog]: return
             no_doc = noComponentFactory(component_doc, name)
+            if name == power_catalog:
+                no_doc['text']=u'Блок питания встроенный в корпус'
             rows.insert(0,{'id':no_doc['_id'], 'key':no_doc['_id'],'doc':no_doc})
 
         def addComponent(_options, _row, current_id):
@@ -519,7 +527,8 @@ class Computer(PCView):
             body = viewlet.xpath("//td[@class='body']")[0]
             body.set('id',_doc['_id'])
             body.text = re.sub('<font.*</font>', '',_doc['text'])
-
+            
+            #zzz
             descr = etree.Element('div')
             descr.set('class','description')
             descr.text = ''
@@ -709,7 +718,7 @@ class VideoCards(PCView):
     title=u'Лучшие видеокарты NVidia GeForce и ATI Radeon для апгрейда'
 
     def renderChips(self, chips):
-        
+
         container = self.template.middle.xpath('//div[@id="models"]')[0]
 
         vendors = set()
@@ -804,7 +813,7 @@ class VideoCards(PCView):
             label.text = v
             row.append(td)
             i+=1
- 
+
     def groupChips(self, res):
         chips = {}
         for row in res['rows']:
@@ -855,7 +864,7 @@ class VideocardView(PCView):
 
             strong = etree.Element('strong')
             strong.text = unicode(psu.makePrice())+u' р.'
-            
+
 
             span = etree.Element('span')
             span.set('class','videoadd')
@@ -864,7 +873,7 @@ class VideocardView(PCView):
             li.append(em)
             li.append(strong)
             li.append(span)
-            
+
             psu_list.append(li)
         self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
 
@@ -886,7 +895,7 @@ class VideocardView(PCView):
         self.template.top.find('h1').text = card.text
         maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
         print card.marketParams
-        
+
         for el in html.fragments_fromstring(card.marketParams):
             if type(el) is str or type(el) is unicode: break
             maparams.append(el)
@@ -917,7 +926,7 @@ class VideocardView(PCView):
         try:
             dual = "SLI"
             if 'HD' in card.chip:
-               dual="Crossfire" 
+               dual="Crossfire"
             self.template.middle.xpath('.//span[@id="mvideodual"]')[0].text=dual
         except:
             pass
@@ -992,4 +1001,4 @@ class SpecsForVideo(Resource):
         return NOT_DONE_YET
 
 # $('#models_container')
-# 	.append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
+#       .append('<div id="cartextra"><a id="deleteall" href="/">Удалить корзину и всю информацию обо мне</a></div>');
