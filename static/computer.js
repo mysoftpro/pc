@@ -9,14 +9,14 @@ function checkPsuForCase(old_component, new_component){
         var video_component = new_model[code('video')];
         checkPsuForVideo(video_component, 'forced');
     }
-    var psu_select = jgetSelectByRow($('#' + parts['video']));
-    if (new_component.catalogs[2]==exclusive_case){        
-	psu_select.find('option').first().prop('disabled', true);
-	psu_select.trigger("liszt:updated");
+    var psu_select = jgetSelectByRow($('#' + parts['psu']));
+    if (new_component.catalogs[2]==exclusive_case){
+        psu_select.find('option').first().prop('disabled', true);
+        psu_select.trigger("liszt:updated");
     }
     else{
-	psu_select.find('option').first().prop('disabled', false);
-	psu_select.trigger("liszt:updated");
+        psu_select.find('option').first().prop('disabled', false);
+        psu_select.trigger("liszt:updated");
     }
 }
 function checkPsuForVideo(new_component, forced){
