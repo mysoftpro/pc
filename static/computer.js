@@ -21,12 +21,14 @@ function checkPsuForCase(old_component, new_component){
 }
 function checkPsuForVideo(new_component, forced){
     if ((!new_component['power'] || new_component['power']==-1)
-        && !forced)
-        return;
+        && !forced){
+	return;
+    }        
     var count = new_component['count'];
     if (!count)
         count=1;
     var tottal_power = 350+parseInt(new_component['power'])*count;
+    console.log(tottal_power);
     var psu_component = new_model[code('psu')];
     var psu_power = psu_component['power'];
     if (!psu_power || psu_power<tottal_power){
