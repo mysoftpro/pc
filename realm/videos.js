@@ -43,6 +43,8 @@ function saveDoc(e){
     doc['marketComments'] = tr.find('input[name="marketComments"]').val();
     doc['marketReviews'] = tr.find('input[name="marketReviews"]').val();
 
+    doc['youtube'] = tr.find('input[name="youtube"]').val();
+
     // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
     // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
     // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
@@ -150,7 +152,8 @@ function fillVideos(data){
 	    var marketReviews = $(document.createElement('td'));
             marketReviews.append(addInput(doc,'marketReviews'));
 
-	    
+	    var youtube = $(document.createElement('td'));
+            youtube.append(addInput(doc,'youtube'));
 
 
             // var hdmi = $(document.createElement('td'));
@@ -194,6 +197,7 @@ function fillVideos(data){
             .append(crossfire).append(sli).append(chip).append(vendor).append(year).append(power)
                 .append(cores).append(memory).append(memory_ammo).append(rate).append(articul)
 		.append(marketParams).append(marketComments).append(marketReviews)
+		.append(youtube)
 		.append(stock)
                 .append(open).append(save);//.append(hdmi).append(dvi).append(dsub)
             tr.data('doc',doc);
@@ -225,7 +229,7 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>m_ammo</td><td>rate</td><td>articul</td><td>params</td><td>comments</td><td>reviews</td><td>stock</td></tr>');
+      table.html('<tr><td>name</td><td>crossfire</td><td>_s_l_i</td><td>chip</td><td>vendor</td>  <td>year</td><td>power</td><td>cores</td><td>memory</td><td>m_ammo</td><td>rate</td><td>articul</td><td>params</td><td>comments</td><td>reviews</td><td>youtube</td><td>stock</td></tr>');
       $.ajax({
                  url:'videos',
                  success:fillVideos

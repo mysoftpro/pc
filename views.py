@@ -897,11 +897,17 @@ class VideocardView(PCView):
 
         self.template.top.find('h1').text = card.text
         maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
-        print card.marketParams
-
+        
         for el in html.fragments_fromstring(card.marketParams):
             if type(el) is str or type(el) is unicode: break
             maparams.append(el)
+        if card.youtube:
+            d = etree.Element('div')
+            d.set('id','youtube')
+            for el in html.fragments_fromstring(card.youtube):
+                if type(el) is str or type(el) is unicode: break
+                d.append(el)
+            maparams.append(d)
         videoimage = self.template.middle.xpath('//div[@id="videoimage"]')[0].find('img')
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())

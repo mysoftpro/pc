@@ -1240,6 +1240,11 @@ class Comment(object):
 class VideoCard(Component):
 
     @property
+    def youtube(self):
+        return self.get('youtube', False)
+
+
+    @property
     def rate(self):
         return int(self.get('rate', 4))
 
