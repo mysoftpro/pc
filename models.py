@@ -318,9 +318,6 @@ def fillChoices():
     defs.append(defer.DeferredList([couch.openView(designID,
                                                    'catalogs',include_docs=True, key=case_400_650, stale=False)
                                     .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=power, stale=False)
-                                    .addCallback(lambda res: (u"БП",res)),
                                    couch.openView(designID,
                                                   'catalogs',include_docs=True, key=case_exclusive, stale=False)
                                     .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
