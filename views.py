@@ -147,10 +147,12 @@ class ModelInCart(object):
         span.text = ('.').join(_date)
         h3.append(span)
 
-        a = etree.Element('a')
-        a.text = u'переименовать'
-        a.set('href', '')
-        h3.append(a)
+        if self.author:
+            a = etree.Element('a')
+            a.text = u'переименовать'
+            a.set('href', '')
+            h3.append(a)
+        # zzz
 
 
     def fillComponentsList(self):
