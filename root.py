@@ -21,7 +21,7 @@ from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
 from twisted.python.failure import Failure
-from lxml import etree, html
+from lxml import etree
 from copy import deepcopy
 from pc.mail import Sender, send_email
 from pc.faq import faq, StoreFaq
@@ -33,74 +33,9 @@ import sys
 from pc.auth import OAuth, OpenId
 from pc.common import addCookies, MIMETypeJSON, pcCartTotal
 from urllib import unquote_plus, quote_plus
-
-simple_titles = {
-    '/howtochoose':u' Как выбирать компьютер',
-    '/howtouse':u'Как пользоваться сайтом',
-    '/howtobuy':u'Как покупать',
-    '/warranty':u'Гарантии',
-    '/support':u'Поддержка',
-    '/about':u'Про магазин',
-    '/whyauth':u'Зачем нужна авторизация',
-    '/upgrade_set':u'Наборы для апгрейда',
-}
-
-def simplePage(template, skin, request):
-    if request.path in simple_titles:
-        title = skin.root().xpath('//title')[0]
-        title.text = simple_titles[request.path]
-    skin.top = template.top
-    skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
-    d = defer.Deferred()
-    d.addCallback(lambda some:skin.render())
-    d.callback(None)
-    return d
-
-parts_aliases = {
-    'motherboard':('how_7388', u'Как выбирать материнскую плату'),
-    'processor':('how_7399', u'Как выбирать процессор'),
-    'video':('how_7396', u'Как выбирать видеокарту'),
-    'hdd':('how_7394', u'Как выбирать жесткий диск'),
-    'ram':('how_7369', u'Как выбирать память'),
-    'case':('how_7387', u'Как выбирать корпус'),
-    'display':('how_7390', u'Как выбирать монитор'),
-    'keyboard':('how_7389', u'Как выбирать клавиатуру'),
-    'mouse':('how_7383', u'Как выбирать мышь'),
-    'audio':('how_7406', u'Как выбирать аудиосистему'),
-}
-
-def renderPartPage(doc, header, template, skin):
-
-    container = template.middle.find('div')
-    # if doc['_id'] == 'how_7396':
-    #     pass
-    # try:
-    els = html.fragments_fromstring(doc['html'])
-    container.text = ''
-    for el in els:
-        if type(el) is unicode:
-            container.text +=el
-        else:
-            container.append(el)
-    template.top.find('h1').text = header
-    title = skin.root().xpath('//title')[0]
-    title.text = header
-    skin.top = template.top
-    skin.middle = template.middle
-    return skin
-
-def partPage(template, skin, request):
-    name = request.path.split('/')[-1]
-    d = couch.openDoc(parts_aliases[name][0])
-    d.addCallback(renderPartPage, parts_aliases[name][1], template, skin)
-    d.addCallback(lambda some:some.render())
-    return d
-
+from pc.simple_pages import simplePage, partPage
 
 static_hooks = {
-    # 'index.html':index,
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
     'howtouse.html':simplePage,

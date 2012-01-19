@@ -11,8 +11,8 @@ from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
 from pc.catalog import getNewImage, getNewDescription
 from twisted.web import proxy
 from lxml import etree
-from pc.root import parts_aliases, CachedStatic, static_dir, HandlerAndName, Computer
-
+from pc.root import CachedStatic, static_dir, HandlerAndName, Computer
+from pc.simple_pages import parts_aliases
 from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
 from twisted.cred.portal import IRealm, Portal
