@@ -162,6 +162,7 @@ function expandMenu(link){
 
 }
 function ask(e){
+    e.preventDefault();
     var target = $(e.target);
     var _id = target.attr('id').split('_')[0];
     var key = [_id,'z'];
