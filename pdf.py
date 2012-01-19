@@ -40,6 +40,9 @@ from pc import root, sum_to_word
 from reportlab.lib import colors
 
 
+def adjustPrice(json):
+    pass
+
 def main():        
     try:
         json = simplejson.loads(unicode(sys.stdin.read(), 'utf-8'))
@@ -139,8 +142,8 @@ def main():
             data.append([str(col),
                          item['text'].encode('utf-8'),
                          pcs,
-                         str(item['price']),
-                         str(item['price']*pcs),
+                         item['price'],
+                         item['price']*pcs,
                          ])
             summ += item['price']*pcs
             col+=1
@@ -149,30 +152,41 @@ def main():
         if 'dvd' in json and json['dvd']:
             data.append([str(col),
                          u'Дисковод Samsung SH-222AB/BEBE 22x SATA BLACK'.encode('utf-8'),
-                         '1',
-                         str(json['const_prices'][0]),
-                         str(json['const_prices'][0]),
+                         1,
+                         json['const_prices'][0],
+                         json['const_prices'][0],
                          ])
             summ += json['const_prices'][0]
             col+=1
         if 'building' in json and json['building']:
             data.append([str(col),
                          u'Услуги сборки'.encode('utf-8'),
-                         '1',
-                         str(json['const_prices'][1]),
-                         str(json['const_prices'][1]),
+                         1,
+                         json['const_prices'][1],
+                         json['const_prices'][1],
                          ])
             summ += json['const_prices'][1]
             col+=1
         if 'installing' in json and json['installing']:
             data.append([str(col),
                          u'Услуги установки программного обеспечения'.encode('utf-8'),
-                         '1',
-                         str(json['const_prices'][2]),
-                         str(json['const_prices'][2]),
+                         1,
+                         json['const_prices'][2],
+                         json['const_prices'][2],
                          ])
             summ += json['const_prices'][2]
             col+=1
+
+
+        if 'our_price' in json:
+            while summ>json['our_price']:
+                for element in data:
+                    if element[-1]!=element[-2]:continue
+                    element[-1]-=10
+                    element[-2]-=10
+                    summ-=10
+                    if summ <=json['our_price']:break
+
         data.insert(0,['#',
                      u'Наименование'.encode('utf-8'),
                      u'Кол-во'.encode('utf-8'),

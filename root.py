@@ -72,7 +72,10 @@ parts_aliases = {
 }
 
 def renderPartPage(doc, header, template, skin):
+
     container = template.middle.find('div')
+    # if doc['_id'] == 'how_7396':
+    #     pass
     # try:
     els = html.fragments_fromstring(doc['html'])
     container.text = ''

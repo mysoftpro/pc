@@ -110,7 +110,7 @@ function init(){
     
     $('body').append('<span style="display:none"><img src="/image/ajax/sst-ps05b_1.png" style="margin-top:-40px;"></span>');
 
-    var promo_html = '<div id="support"><img style="margin-top:-40px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 24900 рублей</div><div style="font-size:11px;line-height:14px;margin-top:-40px;">Все работает "из коробки". Установлены все обновления, антивирус Microsoft Security Essentials. Видеосистема проверена на Modern Warfare 3, WoW Cataclysm и Deus Ex с разрешениями 1920x1024. Гарантия 12 месяцев на все комплектующие. Бесплатная доставка по городу и области.</div></div>';
+    var promo_html = '<div id="support"><img style="margin-top:-40px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 23900 рублей</div><div style="font-size:11px;line-height:14px;margin-top:-40px;">Все работает "из коробки". Установлены все обновления, антивирус Microsoft Security Essentials. Видеосистема проверена на Modern Warfare 3, WoW Cataclysm и Deus Ex с разрешениями 1920x1024. Гарантия 12 месяцев на все комплектующие. Бесплатная доставка по городу и области.</div></div>';
 
     _.delay(function(){
 		banner.find('img').animate({'width':0,'height':0},

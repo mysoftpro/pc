@@ -261,8 +261,6 @@ class OAuth(Resource):
     def getVkontaktAccessToken(self, f, user_doc, request):
         src = f.read()
 	answer = simplejson.loads(src)
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print answer
 	f.close()
         url = 'https://api.vkontakte.ru/method/getProfiles?uid=%s&access_token=%s' %\
 	    (answer['user_id'],answer['access_token'])	
