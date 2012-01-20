@@ -45,6 +45,8 @@ def pcCartTotal(request, user):
     in_cart = 0
     if 'models' in user:
         in_cart += len(user['models'])
+    if 'promos' in user:
+        in_cart += len(user['promos'])
     if 'notebooks' in user:
         in_cart+=len(user['notebooks'])
     #TODO! may be 1 set is just 1 set,  not video+power?
