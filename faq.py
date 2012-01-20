@@ -47,9 +47,13 @@ class Faq(object):
         title.text = self.title
         faqs = self.template.middle.find('div')
         current_record = None
+        i = 0
+        title_from_blog = self.title
         for r in res['rows']:
+            i+=1
             faq_viewlet = deepcopy(self.template.root().find('faq').find('div'))
             if 'title' in r['doc']:
+                title_from_blog = r['doc']['title']
                 ti = faq_viewlet.xpath('//h3[@class="faqtitle"]')[0]
                 ti.text = r['doc']['title']
                 ti.set('style','display:block')
@@ -82,6 +86,8 @@ class Faq(object):
                 # this will remove the links from answers
                 faq_viewlet.remove(faq_viewlet.xpath('//div[@class="faqlinks"]')[0])
                 current_record.append(faq_viewlet)
+        if i==1:
+            title.text = title_from_blog
         self.skin.top = self.template.top
         self.skin.middle = self.template.middle
         return self.skin.render()
