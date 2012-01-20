@@ -315,6 +315,7 @@ class Cart(PCView):
     def preRender(self):
         user_d = userFactory(self.name)
         user_d.addCallback(self.renderModels)
+        user_d.addCallback(self.renderPromos)
         user_d.addCallback(self.renderNotes)
         user_d.addCallback(self.renderSets)
         user_d.addCallback(self.fixCookies)
@@ -334,6 +335,18 @@ class Cart(PCView):
         cart_form = deepcopy(self.tree.find('cart_comment_form'))
         models_div.append(cart_form.find('div'))
         return user
+
+    # TODO! it must be 1 method. and multiple classes for all types!!!!!!
+    # may be use adaptors?????????????
+    def renderPromos(self, user):
+        models_div = self.getModelsDiv()
+        for m in user.getUserPromos():
+            view = ModelInCart(self.request, m, self.tree,
+                               models_div, user.isValid(self.request) and m.isAuthor(user))
+            view.render()
+        return user
+
+
 
 
     def getNotesDiv(self):

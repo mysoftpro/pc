@@ -1130,10 +1130,13 @@ def userFactory(name):
         return li
 
     user.addCallback(getFields, 'models')
-    user.addCallback(getFields, 'notebooks')
-
     user.addCallback(getFields, 'models', orders=True)
+
+    user.addCallback(getFields, 'notebooks')
     user.addCallback(getFields, 'notebooks', orders=True)
+
+    user.addCallback(getFields, 'promos')
+    user.addCallback(getFields, 'promos', orders=True)
 
     user.addCallback(getFields, 'sets')
     user.addCallback(getFields, 'sets', orders=True)
@@ -1145,6 +1148,7 @@ def userFactory(name):
 class User(object):
     def __init__(self, results):
         """ if has orders - get orders instead appropriate models"""
+        # TODO! refactor this shit!~!!!!!!!!!!!!!
         orders_models = [tu[1] for tu in results['orders_models'] if tu[1] is not None]
         self.models = orders_models
         orders_models_ids = [o['_id'].replace('order_','') for o in orders_models]
@@ -1152,6 +1156,17 @@ class User(object):
             if model is None:continue
             if res and model['_id'] not in orders_models_ids:
                 self.models.append(model)
+
+
+        orders_promos = [tu[1] for tu in results['orders_promos'] if tu[1] is not None]
+        self.promos = orders_promos
+        orders_promos_ids = [o['_id'].replace('order_','') for o in orders_promos]
+        for res,model in results['promos']:
+            if model is None:continue
+            if res and model['_id'] not in orders_promos_ids:
+                self.promos.append(model)
+
+
 
         orders_notebooks = [tu[1] for tu in results['orders_notebooks'] if tu[1] is not None]
         self.notebooks = orders_notebooks
@@ -1182,9 +1197,19 @@ class User(object):
             return -1
         return 1
 
+
     def getUserModels(self):
         for m in sorted(self.models, self.modelsSort):
             yield Model(m)
+
+
+    def getUserPromos(self):
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print self.promos
+        for m in sorted(self.promos, self.modelsSort):
+            yield Model(m)
+
+
 
     def getUserNotebooks(self):
         for n in self.notebooks:
