@@ -1052,11 +1052,36 @@ class Evolve(Resource):
                 r['doc']['items'].update({power_catalog:"no"+power_catalog})# psu is embeded in case
             couch.saveDoc(r['doc'])
 
+    def movePromos(self, res, promos_ids):
+        to_save = {}
+        for r in res['rows']:
+            if 'doc' not in r or r['doc'] is None:continue
+            new_models = []
+            promos = []
+            for i in r['doc']['models']:
+                if i not in promos_ids:
+                    new_models.append(i)
+                else:
+                    promos.append(i)
+            r['doc']['models'] = new_models
+            r['doc']['promos'] = promos
+            if not r['doc']['_id'] in to_save:
+                to_save.update({r['doc']['_id']:r['doc']})
+        for v in to_save.values():
+            couch.saveDoc(v)
+        
+
+    def getUsers(self, res):
+        rows=  res['rows']
+        promos = [r['doc'] for r in rows if 'doc' in r and r['doc'] is not None\
+                      and 'promo' in r['doc'] and r['doc']['promo']]
+        d = couch.listDoc(keys=[doc['author'] for doc in promos], include_docs=True)
+        d.addCallback(self.movePromos, [doc['_id'] for doc in promos])
+        return d
+
+
     @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
-        d = couch.openView(designID, 'models', stale=False, include_docs=True)
-        d.addCallback(self.evolve)
-        d1 = couch.openView(designID, 'user_models', stale=False, include_docs=True)
-        d1.addCallback(self.evolve)
+        d = couch.openView(designID,'user_models', include_docs=True)
+        d.addCallback(self.getUsers)
         return "ok"
-
