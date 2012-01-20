@@ -882,7 +882,9 @@ class VideocardView(PCView):
         self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
 
 
-    def renderCard(self, res):
+    def renderCard(self, tuple_res):                
+        res = tuple_res[0]
+        user = tuple_res[1]
 
         if len(res['rows'])==0:
             self.force_no_resource = True
@@ -914,6 +916,20 @@ class VideocardView(PCView):
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())
 
+        ol = self.template.top.xpath('.//div[@id="cart_to_computer"]')[0].find('ol')
+        dump = simplejson.dumps({'video':card._id})
+        for li in ol:
+            a = li.find('a')
+            a.set('href',a.get('href')+dump)
+
+        if user is not None and 'models' in user:
+            for m in user['models']:
+                li = etree.Element('li')
+                a = etree.Element('a')
+                a.text = m
+                a.set('href','/computer/'+m+'?data='+dump)
+                li.append(a)
+                ol.append(li)                
 
         videocons = self.template.middle.xpath('//span[@id="videocons"]')[0]
         videocons.text = str(card.power) +u' Вт'
@@ -944,12 +960,27 @@ class VideocardView(PCView):
         self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
         self.script.text += 'var video_catalog='+video_catalog+';var power_catalog='+power_catalog+';'
 
+    def prepareCardsAndUser(self, lires):
+        cards = lires[0][1]
+        user = None
+        if lires[1][0]:
+            user = lires[1][1]
+        return (cards,user)
+
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
         d = couch.openView(designID, 'video_articul', key=unquote_plus(self.name), stale=False)
-        d.addCallback(self.renderCard)
-        return d
+        retval = d
+        if self.request.getCookie('pc_cart') is not None:
+            d1 = couch.openDoc(self.request.getCookie('pc_user'))
+            li = defer.DeferredList((d,d1))
+            li.addCallback(self.prepareCardsAndUser)
+            li.addCallback(self.renderCard)
+        else:
+            d.addCallback(lambda res:(res,None))
+            d.addCallback(self.renderCard)
+        return retval
 
 class MarketForVideo(Resource):
 
