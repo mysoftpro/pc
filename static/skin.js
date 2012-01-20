@@ -129,6 +129,7 @@ function expandMenu(link){
     div.attr('class','expanded');
 
     var expas = expands[link.attr('id')];
+    if (!expas)return;
     _(expas['urls'])
         .each(function(el){
                   div.append(etempate(el));
