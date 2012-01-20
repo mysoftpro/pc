@@ -1074,8 +1074,11 @@ class Save(Resource):
                 model_doc['original_prices'].update({code:0})
 
         model_doc['author'] = user_id
-        if model_doc['_id'] not in user_doc['models']:
-            user_doc['models'].append(model_doc['_id'])
+        where_to_save = 'models'
+        if 'promo' in model_doc:
+            where_to_save = 'promos'
+        if model_doc['_id'] not in user_doc[where_to_save]:
+            user_doc[where_to_save].append(model_doc['_id'])
         _date=str(date.today()).split('-')
         user_doc['date'] = _date
         model_doc['date'] = _date
