@@ -899,9 +899,6 @@ function jgetSocketOpositeBody(body){
     return [other_body, mapping];
 }
 
-var filtered_procs = [];
-var filtered_mothers = [];
-
 function getNearestComponent(price, catalogs, delta, same_socket){
     var other_components = _(filterByCatalogs(_(choices).values(),
                                                            catalogs, same_socket))

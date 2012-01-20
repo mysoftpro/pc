@@ -11,6 +11,8 @@ function setGlobalArray(garr, arr){
     }
 }
 
+
+
 var descr_img_template = '<img src="/image/{{id}}/{{name}}{{ext}}" align="right"/>';
 function showDescription(_id){
     function _show(data){
