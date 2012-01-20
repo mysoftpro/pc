@@ -1204,8 +1204,6 @@ class User(object):
 
 
     def getUserPromos(self):
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print self.promos
         for m in sorted(self.promos, self.modelsSort):
             yield Model(m)
 
