@@ -1834,6 +1834,7 @@ h1.bold.left{
     border:1px solid #999;
     background-color:#222;
     color:#ddd;
+    max-width:933px;
 }
 #rank{
     position:absolute;

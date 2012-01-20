@@ -1916,6 +1916,7 @@ h1.bold.left{
     -webkit-border-top-right-radius: 10px;
     -webkit-border-bottom-left-radius: 10px;
     -webkit-border-bottom-right-radius: 10px;
+    max-width:933px;
 }
 
 #rank{
