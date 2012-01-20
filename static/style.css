@@ -2313,6 +2313,8 @@ h1.bold.left{
     position:absolute;
     left:1182px;
     display:none;
+    color:white;
+    text-decoration:none;
 }
 .motherpciex{
     top:279px;
@@ -2321,7 +2323,7 @@ h1.bold.left{
     top:342px;
 }
 #mothercross{
-    padding-left:20px;
+    margin-left:20px;
 }
 .pdf_link{
     display:block;
@@ -2381,7 +2383,7 @@ h1.bold.left{
     height:28px;
     width:100px;
 }
-#avatar{   
+#avatar{
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
     -moz-border-left-colors: none;
@@ -2395,7 +2397,7 @@ h1.bold.left{
     -webkit-border-top-left-radius: 0px;
     -webkit-border-top-right-radius: 0px;
     -webkit-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;    
+    -webkit-border-bottom-right-radius: 4px;
     border-style: none solid solid;
     border-width: 0 1px 1px;
     cursor: pointer;
@@ -2458,7 +2460,7 @@ h1.bold.left{
     background-image:url('/static/motherboard.png');
     background-repeat:no-repeat;
     width:330px;
-    margin-bottom:20px;    
+    margin-bottom:20px;
     height:200px;
 }
 .uproc{
@@ -2472,7 +2474,7 @@ h1.bold.left{
 }
 .uproc .pproc{
     top:0px;left:0px;
-    float:left;    
+    float:left;
 }
 .cart_description li strong{
     margin-left:5px;
@@ -2483,7 +2485,7 @@ h1.bold.left{
     margin-bottom:100px;
 }
 .chip{
-    float:left;    
+    float:left;
     min-height:330px;
     margin-left:15px;
 }
@@ -2539,7 +2541,7 @@ h1.bold.left{
 }
 .videoicon{
     float:right;
-    margin-left:10px; 
+    margin-left:10px;
     width:150px;
 }
 .video_rate{
@@ -2689,7 +2691,7 @@ h1.bold.left{
     float:left;
     margin:10px 0px 0px 5px;
     padding:0px;
-    list-style-type:none;   
+    list-style-type:none;
     padding:0px 0px 10px 15px;
     z-index:999;
 }

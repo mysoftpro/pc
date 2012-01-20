@@ -1779,7 +1779,7 @@ function init(){
         replaced.push(code);
         delete model[code]['replaced'];
     }
-    $('.pciex').css('left', $('#7388').find('.reset').position().left+110);
+    $('.pciex').css('left', $('#'+parts['mother']).find('.reset').position().left+110);
     _(model).chain().values().each(function(el){
                                            showVideoOrCross(jgetBodyById(el._id),el);
                                        });
