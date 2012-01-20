@@ -2719,3 +2719,54 @@ h1.bold.left{
     max-height:30px;
     overflow:hidden;
 }
+
+#cart_to_computer{
+    float:left;
+    margin:5px 0px 0px 12px;
+    max-height:36px;
+    overflow:hidden;
+}
+
+#cart_to_computer div{
+    float:left;
+    margin-top:10px;
+}
+#cart_to_computer ol {
+    float:left;
+    margin:10px 0px 0px 5px;
+    padding:0px;
+    list-style-type:none;   
+    padding:0px 0px 10px 15px;
+    z-index:999;
+}
+#cart_to_computer ol{
+    padding-left:15px;
+    background-color:white;
+}
+#cart_to_computer span{
+    cursor:pointer;
+    margin-right:5px;
+}
+#cart_to_computer span.down:before{
+    position:relative;
+    top:10px;
+    left:-5px;
+    border-top: 6px solid #999999;
+    border-bottom:0px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    content: "";
+    cursor:pointer;
+}
+#cart_to_computer span.up:before{
+    position:relative;
+    top:-12px;
+    left:-4px;
+    border-bottom: 6px solid #999999;
+    border-top:0px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    content: "";
+    cursor:pointer;
+}
+
