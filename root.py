@@ -34,7 +34,7 @@ from pc.auth import OAuth, OpenId
 from pc.common import addCookies, MIMETypeJSON, pcCartTotal
 from urllib import unquote_plus, quote_plus
 from pc.simple_pages import simplePage, partPage
-
+from pc.market import PriceForMarket
 static_hooks = {
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
@@ -150,137 +150,6 @@ class SiteMap(Resource):
         d3 = couch.openView(designID, 'articul')
         li = defer.DeferredList([d,d1,d2, d3])
         li.addCallback(self.siteMap, request)
-        return NOT_DONE_YET
-
-
-class PriceForMarket(Resource):
-    def prices(self, result, request):
-        request.setHeader('Content-Type', 'text/xml;charset=utf-8')
-        xml = '<!DOCTYPE yml_catalog SYSTEM "shops.dtd"><yml_catalog></yml_catalog>'
-        tree = etree.parse(StringIO(xml))
-        root = tree.getroot()
-        # root = etree.XML('<yml_catalog></yml_catalog>')
-        # tree = root.getroottree()
-        # tree.docinfo.doctype = '<!DOCTYPE yml_catalog SYSTEM "shops.dtd">'
-        # tree.DocInfo
-        lut = Index.lastUpdateTime()
-        da,ta = lut.split(' ')
-        lida = da.split('.')
-        lida.reverse()
-        da = '-'.join(lida)
-        root.set('date', da+' '+ta)
-
-        shop = etree.Element('shop')
-
-        name = etree.Element('name')
-        name.text = 'buildpc.ru'
-        shop.append(name)
-
-        company = etree.Element('company')
-        company.text = u'ИП Ганжа А.Ю.'
-        shop.append(company)
-
-        url = etree.Element('url')
-        url.text = 'http://buildpc.ru'
-        shop.append(url)
-
-
-        currencies = etree.Element('currencies')
-        currency = etree.Element('currency')
-        currency.set('id','RUR')
-        currency.set('rate','1')
-        currency.set('plus','0')
-
-        currencies.append(currency)
-        shop.append(currencies)
-
-        categories = etree.Element('categories')
-        category  = etree.Element('category')
-        category.set('id','2')
-        category.text = u'Ноутбуки Asus'
-        categories.append(category)
-        shop.append(categories)
-        local_delivery_cost = etree.Element('local_delivery_cost')
-        local_delivery_cost.text ="0"
-        shop.append(local_delivery_cost)
-
-        offers = etree.Element('offers')
-        for r in result['rows']:
-            if 'doc' not in r: continue
-            doc = r['doc']
-            if doc is None: continue
-            offer = etree.Element('offer')
-            offer.set('id', doc['_id'])
-
-            offer.set('type',"vendor.model")
-            offer.set('available',"true")
-
-            url = etree.Element('url')
-            url.text = 'http://buildpc.ru/notebook'
-            offer.append(url)
-
-            price = etree.Element('price')
-            price.text = unicode(makeNotePrice(doc))
-            offer.append(price)
-
-            currencyId = etree.Element('currencyId')
-            currencyId.text = 'RUR'
-            offer.append(currencyId)
-
-            categoryId = etree.Element('categoryId')
-            categoryId.set('type','Own')
-            categoryId.text = "2"
-            offer.append(categoryId)
-
-            for a in doc['_attachments']:
-                if doc['_attachments'][a]['content_type']=="image/jpeg":
-                    picture = etree.Element('picture')
-                    picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+a
-                    offer.append(picture)
-                    break
-
-            delivery = etree.Element('delivery')
-            delivery.text = 'true'
-            offer.append(delivery)
-
-            _local_delivery_cost = etree.Element('local_delivery_cost')
-            _local_delivery_cost.text = '0'
-            offer.append(_local_delivery_cost)
-
-
-            typePrefix = etree.Element('typePrefix')
-            typePrefix.text = u'Ноутбук'
-            offer.append(typePrefix)
-
-            vendor = etree.Element('vendor')
-            vendor.text = 'Asus'
-            offer.append(vendor)
-
-            model = etree.Element('model')
-            model.text = doc['text']
-            offer.append(model)
-
-            available = etree.Element('available')
-            available.text = 'true'
-
-            manufacturer_warranty = etree.Element('manufacturer_warranty')
-            manufacturer_warranty.text = doc['warranty_type']
-            offer.append(manufacturer_warranty)
-            offers.append(offer)
-
-        shop.append(offers)
-        root.append(shop)
-        request.write(etree.tostring(tree, encoding='utf-8', xml_declaration=True))
-        request.finish()
-
-    def render_GET(self, request):
-        asus_12 = ["7362","7404","7586"]
-        asus_14 = ["7362","7404","7495"]
-        asus_15 = ["7362","7404","7468"]
-        asus_17 = ["7362","7404","7704"]
-        d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
-                           keys = [asus_12,asus_14,asus_15,asus_17])
-        d.addCallback(self.prices, request)
         return NOT_DONE_YET
 
 
@@ -478,8 +347,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        if _name is not None and "js" in _name and "min." not in _name:
-            _content = jsmin(_content)
+        # if _name is not None and "js" in _name and "min." not in _name:
+        #     _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
