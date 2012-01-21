@@ -5,7 +5,7 @@ import os
 from pc.couch import couch, designID
 import simplejson
 from datetime import date
-from pc.models import noComponentFactory,makeNotePrice,parts_names,parts,\
+from pc.models import noComponentFactory,parts_names,parts,\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,\
     Model, notes, case,case_exclusive,noChoicesYet,fillChoices, psu as power_catalog
 from pc.catalog import getNewImage, getNewDescription
@@ -299,16 +299,6 @@ class FindOrder(Resource):
 	request.write(simplejson.dumps(result))
 	request.finish()
 
-    # def notebook(self, model_user, notebook_id):
-    #     code = model_user[1][1]['notebooks'][notebook_id]
-    #     def makeNotebook(note_doc):
-    #         note_doc[0][1]['count'] = 1
-    #         note_doc[0][1]['ourprice'] = makeNotePrice(note_doc[0][1])
-    #         return (model_user,note_doc)
-    #     d = couch.openDoc(code)
-    #     li = defer.DeferredList([d])
-    #     li.addCallback(makeNotebook)
-    #     return li
 
     def addComponents(self, model_user, _id):
 	defs = []

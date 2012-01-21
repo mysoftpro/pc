@@ -12,11 +12,11 @@ from twisted.web.http import CACHED
 from pc.couch import couch, designID, sync as couch_sync
 import simplejson
 from datetime import datetime, date
-from pc.models import makeNotePrice,\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,notebooks, ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, upgrade_set, Model, video, psu, notes
+from pc.models import\
+    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
+    NamesFor, ParamsFor, promotion, upgrade_set, Model, notes
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo
+   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -43,7 +43,6 @@ static_hooks = {
     'warranty.html':simplePage,
     'support.html':simplePage,
     'part.html':partPage,
-    'notebook.html':notebooks,
     'faq.html':faq,
     'blog.html':faq,
     'game.html':gamePage,
@@ -568,8 +567,15 @@ class Root(Resource):
                                                                               'videocard.html'))))
 
 
+        self.putChild('notebook',
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=HandlerAndName(NoteBooks,
+                                                                            'notebook.html'),
+                                                        childs=None)))
+
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
-        self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
+        # self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
+
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
         self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
         self.putChild('howtobuy', TemplateRenderrer(self.static, 'howtobuy.html'))

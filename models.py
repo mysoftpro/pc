@@ -231,8 +231,20 @@ def flatChoices(res):
                 globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
 
 
+
+
+def openChoicesView(key,name=None):
+    d = None
+    if type(key[0]) is list:        
+        d = couch.openView(designID,'catalogs',include_docs=True, keys=key, stale=False)
+    else:
+        d = couch.openView(designID,'catalogs',include_docs=True, key=key, stale=False)
+    if name is not None:
+        d.addCallback(lambda res: (name,res))
+    return d
+        
+
 def fillChoices():
-    # docs = [r['doc'] for r in result['rows'] if r['key'] is not None]
     _gChoices = globals()['gChoices']
     if _gChoices is not None:
         d = defer.Deferred()
@@ -240,144 +252,59 @@ def fillChoices():
         d.callback(None)
         return d
     defs = []
-    defs.append(defer.DeferredList([
-                # couch.openView(designID,
-                #                                  'catalogs',
-                #                                  include_docs=True, key=mother_1366, stale=False)
-                #                   .addCallback(lambda res: ("LGA1366",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mother_1155, stale=False)
-                                    .addCallback(lambda res: ("LGA1155",res)),
-                                    # couch.openView(designID,
-                                    #                'catalogs',
-                                    #                include_docs=True, key=mother_1156, stale=False)
-                                    # .addCallback(lambda res: ("LGA1166",res)),
-                                    # couch.openView(designID,
-                                    #                'catalogs',
-                                    #                include_docs=True, key=mother_775, stale=False)
-                                    # .addCallback(lambda res: ("LGA775",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mother_am23, stale=False)
-                                    .addCallback(lambda res: ("AM2 3",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=mother_fm1, stale=False)
-                                    .addCallback(lambda res: ("FM1",res))
-                                    ])
+    # omit LGA 1366, LGA 775, LGA1156, LGA1166
+    defs.append(defer.DeferredList([openChoicesView(mother_1155,"LGA1155"),
+                                    openChoicesView(mother_am23,"AM2 3"),
+                                    openChoicesView(mother_fm1,"FM1")])
                 .addCallback(lambda res: {mother:res}))
 
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   "catalogs",
-                                                   include_docs=True,key=proc_1155, stale=False)
-                                    .addCallback(lambda res:('LGA1155',res)),
-                                    # couch.openView(designID,
-                                    #                'catalogs',
-                                    #                include_docs=True,key=proc_1156, stale=False)
-                                    #                .addCallback(lambda res:('LGA1156',res)),
-                                    # couch.openView(designID,
-                                    #              'catalogs',
-                                    #              include_docs=True,key=proc_1366, stale=False)
-                                    #              .addCallback(lambda res:('LGA1366',res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True,key=proc_am23, stale=False)
-                                    .addCallback(lambda res:('AM2 3',res)),
-                                    # couch.openView(designID,
-                                    #                'catalogs',
-                                    #                include_docs=True,key=proc_775, stale=False)
-                                    #                .addCallback(lambda res:('LGA755',res)),
-                                    couch.openView(designID,
-                                                   'catalogs',
-                                                   include_docs=True, key=proc_fm1, stale=False)
-                                    .addCallback(lambda res: ("FM1",res))
-                                    ])
-
+    defs.append(defer.DeferredList([openChoicesView(proc_1155,'LGA1155'),
+                                    openChoicesView(proc_am23,'AM2 3'),
+                                    openChoicesView(proc_fm1, "FM1")])
                 .addCallback(lambda res: {proc:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=geforce, stale=False)
-                                    .addCallback(lambda res: (u"GeForce",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=radeon, stale=False)
-                                    .addCallback(lambda res: (u"Radeon",res))])
+    defs.append(defer.DeferredList([openChoicesView(geforce,u"GeForce"),
+                                    openChoicesView(radeon,u"Radeon")])
                 .addCallback(lambda res: {video:res}))
 
-    defs.append(couch.openView(designID,
-                               'catalogs',include_docs=True, key=ddr3, stale=False)
+    defs.append(openChoicesView(ddr3)
                 .addCallback(lambda res: {ram:res}))
-    defs.append(couch.openView(designID,
-                               'catalogs',include_docs=True, key=satas, stale=False)
+    defs.append(openChoicesView(satas)
                 .addCallback(lambda res: {hdd:res}))
-    defs.append(couch.openView(designID,
-                               'catalogs',include_docs=True, key=windows, stale=False)
+    defs.append(openChoicesView(windows)
                 .addCallback(lambda res: {soft:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=case_400_650, stale=False)
-                                    .addCallback(lambda res: (u"Корпусы 400-650 Вт",res)),
-                                   couch.openView(designID,
-                                                  'catalogs',include_docs=True, key=case_exclusive, stale=False)
-                                    .addCallback(lambda res: (u"Эксклюзивные корпусы",res))])
+    defs.append(defer.DeferredList([openChoicesView(case_400_650,u"Корпусы 400-650 Вт"),
+                                    openChoicesView(case_exclusive, u"Эксклюзивные корпусы")])
                 .addCallback(lambda res: {case:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=displ_19_20, stale=False)
-                                    .addCallback(lambda res: (u"Мониторы 19-20 дюймов",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=displ_22_26, stale=False)
-                                    .addCallback(lambda res: (u"Мониторы 22-26 дюймов",res))])
+    defs.append(defer.DeferredList([openChoicesView(displ_19_20,u"Мониторы 19-20 дюймов"),
+                                    openChoicesView(displ_22_26,u"Мониторы 22-26 дюймов")])
                 .addCallback(lambda res: {displ:res}))
 
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=kbrd_a4, stale=False)
-                                    .addCallback(lambda res: (u"Клавиатуры A4Tech",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=kbrd_acme, stale=False)
-                                    .addCallback(lambda res: (u"Клавиатуры Acme",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=kbrd_chikony, stale=False)
-                                    .addCallback(lambda res: (u"Клавиатуры Chikony",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=kbrd_game, stale=False)
-                                    .addCallback(lambda res: (u"Игровые Клавиатуры",res)),])
+    defs.append(defer.DeferredList([openChoicesView(kbrd_a4, u"Клавиатуры A4Tech"),
+                                    openChoicesView(kbrd_acme,u"Клавиатуры Acme"),
+                                    openChoicesView(kbrd_chikony,u"Клавиатуры Chikony"),
+                                    openChoicesView(kbrd_game,u"Игровые Клавиатуры")])
                 .addCallback(lambda res: {kbrd:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=mouse_a4, stale=False)
-                                    .addCallback(lambda res: (u"Мыши A4Tech",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=mouse_game, stale=False)
-                                    .addCallback(lambda res: (u"Игровые Мыши",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=mouse_acme, stale=False)
-                                    .addCallback(lambda res: (u"Мыши Acme",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=mouse_genius, stale=False)
-                                    .addCallback(lambda res: (u"Мыши Genius",res))])
+    defs.append(defer.DeferredList([openChoicesView(mouse_a4, u"Мыши A4Tech"),
+                                    openChoicesView(mouse_game, u"Игровые Мыши"),
+                                    openChoicesView(mouse_acme, u"Мыши Acme"),
+                                    openChoicesView(mouse_genius, u"Мыши Genius")])
                 .addCallback(lambda res: {mouse:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=audio_20, stale=False)
-                                    .addCallback(lambda res: (u"Аудио системы 2.0",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=audio_21, stale=False)
-                                    .addCallback(lambda res: (u"Аудио системы 2.1",res)),
-                                    couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=audio_51, stale=False)
-                                    .addCallback(lambda res: (u"Аудио системы 5.1",res))])
+    defs.append(defer.DeferredList([openChoicesView(audio_20,u"Аудио системы 2.0"),
+                                    openChoicesView(audio_21,u"Аудио системы 2.1"),
+                                    openChoicesView(audio_51,u"Аудио системы 5.1")])
                 .addCallback(lambda res: {audio:res}))
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, key=power, stale=False)
-                                    .addCallback(lambda res: (u"Блоки питания",res))])
+
+    defs.append(defer.DeferredList([openChoicesView(power,u"Блоки питания")])
                 .addCallback(lambda res: {psu:res}))
 
-    defs.append(defer.DeferredList([couch.openView(designID,
-                                                   'catalogs',include_docs=True, keys=[asus_12,asus_14,asus_15,asus_17], stale=False)
-                                    .addCallback(lambda res: (u"Ноутбуки Asus",res))])
+    defs.append(openChoicesView([asus_12,asus_14,asus_15,asus_17])
                 .addCallback(lambda res: {notes:res}))
     #zzz
     def makeDict(res):
@@ -416,102 +343,102 @@ model_categories_titles = {'home':u'Домашние компьютеры',
                            'game':u'Игровые компьютеры'}
 
 
-def getNoteBookName(doc):
+# def getNoteBookName(doc):
 
-    if 'nname' in doc:
-        return doc['nname']
+#     if 'nname' in doc:
+#         return doc['nname']
 
-    found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
-    _text = None
-    if len(found)>0:
-        _text = found[0].strip()
-        # doc['nname'] =_text
-        # couch.saveDoc(doc)
-    else:
-        _text = doc['text'][0:doc['text'].index('"')]
-        _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
-    return _text
-
-
-def getNoteDispl(doc):
-    if 'ndispl' in doc:
-        return doc['ndispl']
-    retval = ''
-    found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
-    if len(found)>0:
-        retval = found[0]
-        # doc['ndispl'] =retval
-        # couch.saveDoc(doc)
-    return retval
-
-def getNotePerformance(doc):
-    if 'nperformance' in doc:
-        return doc['nperformance']
-    retval = ""
-    found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
-    if len(found)>0:
-        retval = found[0]
-        # doc['nperformance'] =retval
-        # couch.saveDoc(doc)
-    return retval
+#     found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
+#     _text = None
+#     if len(found)>0:
+#         _text = found[0].strip()
+#         # doc['nname'] =_text
+#         # couch.saveDoc(doc)
+#     else:
+#         _text = doc['text'][0:doc['text'].index('"')]
+#         _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
+#     return _text
 
 
-def makeNotePrice(doc):
-    our_price = doc['price']*Course+NOTE_MARGIN
-    return int(round(our_price/10))*10
+# def getNoteDispl(doc):
+#     if 'ndispl' in doc:
+#         return doc['ndispl']
+#     retval = ''
+#     found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
+#     if len(found)>0:
+#         retval = found[0]
+#         # doc['ndispl'] =retval
+#         # couch.saveDoc(doc)
+#     return retval
+
+# def getNotePerformance(doc):
+#     if 'nperformance' in doc:
+#         return doc['nperformance']
+#     retval = ""
+#     found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
+#     if len(found)>0:
+#         retval = found[0]
+#         # doc['nperformance'] =retval
+#         # couch.saveDoc(doc)
+#     return retval
 
 
-@forceCond(noChoicesYet, fillChoices)
-def notebooks(template, skin, request):
-    def render(result):
-        json_notebooks= {}
-        for r in result['rows']:
-
-            r['doc']['price'] = makeNotePrice(r['doc'])
-
-            note_div = deepcopy(template.root().find('notebook').find('div'))
-            note_div.set('class',r['doc']['_id']+' note')
+# def makeNotePrice(doc):
+#     our_price = doc['price']*Course+NOTE_MARGIN
+#     return int(round(our_price/10))*10
 
 
-            link = note_div.xpath("//div[@class='nname']")[0].find('a')
-            name = getNoteBookName(r['doc'])
-            link.text = name
-            if 'ourdescription' in r['doc']:
-                link.set('href','/notebook/'+name)
-            else:
-                link.set('name',name)
+# @forceCond(noChoicesYet, fillChoices)
+# def notebooks(template, skin, request):
+#     def render(result):
+#         json_notebooks= {}
+#         for r in result['rows']:
 
-            for d in template.middle.xpath("//div[@class='notebook_column']"):
-                clone = deepcopy(note_div)
-                sort_div = clone.xpath("//div[@class='nprice']")[0]
-                if d.get('id') == "s_price":
-                    sort_div.text = unicode(r['doc']['price'])+u' р.'
-                if d.get('id') == "s_size":
-                    sort_div.text = getNoteDispl(r['doc'])
-                if d.get('id') == "s_size":
-                    sort_div.text = getNoteDispl(r['doc'])
-                if d.get('id') == "s_performance":
-                    sort_div.text = getNotePerformance(r['doc'])
-                d.append(clone)
+#             r['doc']['price'] = makeNotePrice(r['doc'])
 
-            for token in ['id', 'flags','inCart',
-                          'ordered','reserved','stock1', '_rev', 'warranty_type']:
-                r['doc'].pop(token)
-            r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
-            #TODO save all this shit found from re
-            json_notebooks.update({r['doc']['_id']:r['doc']})
+#             note_div = deepcopy(template.root().find('notebook').find('div'))
+#             note_div.set('class',r['doc']['_id']+' note')
 
-        template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
-        title = skin.root().xpath('//title')[0]
-        title.text = u'Ноутбуки Asus'
-        skin.top = template.top
-        skin.middle = template.middle
-        return skin.render()
 
-    d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
-                       keys = [asus_12,asus_14,asus_15,asus_17])
-    d.addCallback(render)
-    return d
+#             link = note_div.xpath("//div[@class='nname']")[0].find('a')
+#             name = getNoteBookName(r['doc'])
+#             link.text = name
+#             if 'ourdescription' in r['doc']:
+#                 link.set('href','/notebook/'+name)
+#             else:
+#                 link.set('name',name)
+
+#             for d in template.middle.xpath("//div[@class='notebook_column']"):
+#                 clone = deepcopy(note_div)
+#                 sort_div = clone.xpath("//div[@class='nprice']")[0]
+#                 if d.get('id') == "s_price":
+#                     sort_div.text = unicode(r['doc']['price'])+u' р.'
+#                 if d.get('id') == "s_size":
+#                     sort_div.text = getNoteDispl(r['doc'])
+#                 if d.get('id') == "s_size":
+#                     sort_div.text = getNoteDispl(r['doc'])
+#                 if d.get('id') == "s_performance":
+#                     sort_div.text = getNotePerformance(r['doc'])
+#                 d.append(clone)
+
+#             for token in ['id', 'flags','inCart',
+#                           'ordered','reserved','stock1', '_rev', 'warranty_type']:
+#                 r['doc'].pop(token)
+#             r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
+#             #TODO save all this shit found from re
+#             json_notebooks.update({r['doc']['_id']:r['doc']})
+
+#         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
+#         title = skin.root().xpath('//title')[0]
+#         title.text = u'Ноутбуки Asus'
+#         skin.top = template.top
+#         skin.middle = template.middle
+#         return skin.render()
+
+#     d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
+#                        keys = [asus_12,asus_14,asus_15,asus_17])
+#     d.addCallback(render)
+#     return d
 
 class ZipConponents(Resource):
 
