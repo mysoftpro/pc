@@ -280,7 +280,9 @@
 		  Номер ранее выданного паспорта
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="identCardOld" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" class="validate_ok" maxlength="20">
+		  <input type="text" name="identCardOld" value="" 
+			 onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" 
+			 class="validate_ok" maxlength="20">
 		</td>
 	      </tr>
 	      <script type="text/javascript" language="Javascript1.1">
@@ -302,7 +304,14 @@
 		  Тип документа
 		</td>
 		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0" ><tbody><tr ><td ><select id="id_identType2" name="identType2" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" >
+		  <table cellspacing="0" cellpadding="0" >
+		    <tbody>
+		      <tr >
+			<td >
+			  <select id="id_identType2" 
+				  name="identType2" 
+				  onblur="handleOnBlur(this);" 
+				  onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" >
 			    <option value="">** выберите **</option>
 			    <option value="fpass">Загран. паспорт</option>
 			    <option value="drive">Водит. удост.</option>
@@ -334,20 +343,31 @@
 			    var currIdentCardFields = document.getElementById('id_identType2');
 			    document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
 			    document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
-			    document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Загран. паспорт","fpass"), new Option("Водит. удост.","drive"), new Option("Страх. свид.","ins"), new Option("Карта Клиента","hcc"), new Option("Карта Хоум кредит","cre"), new Option("Пенс. удост.","pens")];</script>
-		  </td></tr></tbody></table>
+			    document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Загран. паспорт","fpass"), new Option("Водит. удост.","drive"), new Option("Страх. свид.","ins"), new Option("Карта Клиента","hcc"), new Option("Карта Хоум кредит","cre"), new Option("Пенс. удост.","pens")];
+			  </script>
+			</td>
+		      </tr>
+		    </tbody>
+		  </table>
 		</td>
 		<td class="flabel" >
 	  	  Серия
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="identCard2Sn" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="10">
+		  <input type="text" name="identCard2Sn" value="" 
+			 onkeyup="handleOnKeyUp(this);" 
+			 onblur="handleOnBlur(this);" 
+			 class="validate_ok disabled" disabled="" maxlength="10">
 		</td>
 		<td class="flabel" >
 		  Номер
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="identCard2" value="" onkeyup="handleOnKeyUp(this);" onblur="if (handleOnBlur(this)) {  }" class="validate_ok disabled" disabled="" maxlength="16">
+		  <input type="text" name="identCard2" value="" 
+			 onkeyup="handleOnKeyUp(this);" 
+			 onblur="if (handleOnBlur(this)) {  }" 
+			 class="validate_ok disabled" disabled="" 
+			 maxlength="16">
 		</td>
 	      </tr>
 	      <tr>
@@ -355,13 +375,21 @@
 		  Дата выдачи
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="identCard2Date" value="" onkeyup="handleOnKeyUp(this);" onblur="if (handleOnBlur(this)) {  }" class="validate_ok disabled" disabled="" maxlength="10">
+		  <input type="text" name="identCard2Date" value="" 
+			 onkeyup="handleOnKeyUp(this);" 
+			 onblur="if (handleOnBlur(this)) {  }" 
+			 class="validate_ok disabled" disabled="" maxlength="10">
 		</td>
 		<td class="flabel" >
 		  Кем выдан
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="identCard2Who" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" style="width:200px" class="validate_ok disabled" disabled="" maxlength="100">
+		  <input type="text" name="identCard2Who" value="" 
+			 onkeyup="handleOnKeyUp(this);" 
+			 onblur="handleOnBlur(this);" 
+			 style="width:200px" 
+			 class="validate_ok disabled" 
+			 disabled="" maxlength="100">
 		</td>
 		<td class="flabel" >
 		</td>
@@ -376,19 +404,53 @@
 		  Жилищные условия
 		</td>
 		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0"><tbody><tr><td><select name="houseType" onblur="handleOnBlur(this);"><option value="">** выберите **</option><option value="5">Муницип. квартира</option><option value="6">Кооператив. квартира</option><option value="7">Служебная квартира</option><option value="3">Собственный дом/квартира</option><option value="1">Снимаю квартиру</option><option value="4">Проживаю у родителей</option></select></td></tr></tbody></table>
+		  <table cellspacing="0" cellpadding="0">
+		    <tbody>
+		      <tr>
+			<td>
+			  <select name="houseType" onblur="handleOnBlur(this);">
+			    <option value="">** выберите **</option>
+			    <option value="5">Муницип. квартира</option>
+			    <option value="6">Кооператив. квартира</option>
+			    <option value="7">Служебная квартира</option>
+			    <option value="3">Собственный дом/квартира</option>
+			    <option value="1">Снимаю квартиру</option>
+			    <option value="4">Проживаю у родителей</option>
+			  </select>
+			</td>
+		      </tr>
+		    </tbody>
+		  </table>
 		</td>
 		<td class="flabel" >
 		  Количество иждивенцев
 		</td>
 		<td class="nlabel" >
-		  <input type="text" name="childNum" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" class="validate_ok" maxlength="2">
+		  <input type="text" name="childNum" value="" 
+			 onkeyup="handleOnKeyUp(this);" 
+			 onblur="handleOnBlur(this);" 
+			 class="validate_ok" maxlength="2">
 		</td>
 		<td class="flabel" >
 		  Образование
 		</td>
 		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0"><tbody><tr><td><select name="education" onblur="handleOnBlur(this);"><option value="">** выберите **</option><option value="4">неполное среднее</option><option value="2">среднее/ среднее специальное</option><option value="5">неполное высшее</option><option value="3">высшее</option><option value="6">ученая степень</option></select></td></tr></tbody></table>
+		  <table cellspacing="0" cellpadding="0">
+		    <tbody>
+		      <tr>
+			<td>
+			  <select name="education" onblur="handleOnBlur(this);">
+			    <option value="">** выберите **</option>
+			    <option value="4">неполное среднее</option>
+			    <option value="2">среднее/ среднее специальное</option>
+			    <option value="5">неполное высшее</option>
+			    <option value="3">высшее</option>
+			    <option value="6">ученая степень</option>
+			  </select>
+			</td>
+		      </tr>
+		    </tbody>
+		  </table>
 		</td>
 	      </tr>
 	      <tr>
