@@ -1,7 +1,8 @@
 <top>
 </top>
 <middle>
-  <table >
+
+<table >
 <tbody><tr>
 <td>
 <table  class="yellowbox">
@@ -283,7 +284,7 @@
       Тип документа
   </td>
   <td class="nlabel" >
-      <table cellspacing="0" cellpadding="0" ><tbody><tr ><td ><select id="id_identType" name="identType" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);"  disabled="" class="disabled">
+      <table cellspacing="0" cellpadding="0" style=""><tbody><tr style=""><td style=""><select id="id_identType" name="identType" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);" style="" disabled="" class="disabled">
 <option value="">** выберите **</option>
 <option value="pass">Паспорт РФ</option>
 </select>
@@ -355,7 +356,17 @@ document.possibleValues[currIdentCardFields.name] = [new Option("** выбери
   </td>
   <td class="nlabel" >
     
-      <input type="text" name="identCardWho" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);"  onblur="handleOnBlur(this);" class="validate_ok" maxlength="7">
+      <input type="text" name="identCardWho" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" style="width:200px" class="validate_ok" maxlength="100">
+    
+  </td>
+  <td class="flabel" >
+    
+      Код подразделения (XXX-XXX)
+    
+  </td>
+  <td class="nlabel" >
+    
+      <input type="text" name="identCardSpec" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" class="validate_ok" maxlength="7">
     
   </td>
 </tr>
@@ -429,7 +440,7 @@ document.possibleValues[currIdentCardFields.name] = [new Option("** выбери
       Тип документа
   </td>
   <td class="nlabel" >
-      <table cellspacing="0" cellpadding="0" ><tbody><tr ><td ><select id="id_identType2" name="identType2" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" >
+      <table cellspacing="0" cellpadding="0" style=""><tbody><tr style=""><td style=""><select id="id_identType2" name="identType2" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" style="">
 <option value="">** выберите **</option>
 <option value="fpass">Загран. паспорт</option>
 <option value="drive">Водит. удост.</option>
@@ -511,7 +522,33 @@ document.possibleValues[currIdentCardFields.name] = [new Option("** выбери
   </td>
   <td class="nlabel" >
     
-      <input type="text" name="identCard2Who" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" ><option value="">** выберите **</option><option value="5">Муницип. квартира</option><option value="6">Кооператив. квартира</option><option value="7">Служебная квартира</option><option value="3">Собственный дом/квартира</option><option value="1">Снимаю квартиру</option><option value="4">Проживаю у родителей</option></select></td></tr></tbody></table>
+      <input type="text" name="identCard2Who" value="" onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);" style="width:200px" class="validate_ok disabled" disabled="" maxlength="100">
+    
+  </td>
+  <td class="flabel" >
+    
+  </td>
+  <td class="nlabel" >
+    
+  </td>
+</tr>
+
+
+
+
+  <tr>
+    <td height="10px"> </td>
+  </tr>
+
+  <tr>
+    <td class="flabel" >
+      
+        Жилищные условия
+      
+    </td>
+    <td class="nlabel" >
+      
+        <table cellspacing="0" cellpadding="0"><tbody><tr><td><select name="houseType" onblur="handleOnBlur(this);"><option value="">** выберите **</option><option value="5">Муницип. квартира</option><option value="6">Кооператив. квартира</option><option value="7">Служебная квартира</option><option value="3">Собственный дом/квартира</option><option value="1">Снимаю квартиру</option><option value="4">Проживаю у родителей</option></select></td></tr></tbody></table>
       
     </td>
     <td class="flabel" >
@@ -1953,7 +1990,13 @@ else if ("client" === "guar")
         Другие кредиты
     </td>
     <td class="nlabel" >
-      <table cellspacing="0" cellpadding="0"  onchange="condDisableFields(this.name);"  onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="7">
+      <table cellspacing="0" cellpadding="0" style="width: 130px"><tbody><tr style="width: 130px"><td style="width: 130px"><select name="isOtherLoan" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);" style="width: 130px"><option value="">** выберите **</option><option value="0">не имеет</option><option value="1">сейчас имеет</option><option value="2">имел</option></select></td></tr></tbody></table>
+    </td>
+    <td class="flabel" >
+        Ежемесячное погашение кредитов
+    </td>
+    <td class="nlabel" >
+        <input type="text" name="otherLoans" value="" onkeyup="handleOnKeyUp(this);" onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="7">
     </td>
     <td class="flabel" >
         Непогашенные кредиты
@@ -3315,7 +3358,13 @@ else if ("client" === "guar")
                     Информация о Банке
                 </td>
                 <td class="nlabel"  colspan="2">
-                    <table cellspacing="0" cellpadding="0"  onchange="condDisableFields(this.name);"  disabled="" class="disabled"><option value="">** выберите **</option><option value="21">В прессе (газеты, журналы)</option><option value="22">В интернете (на сайте Банка)</option><option value="23">На улице или внутри торговых центров (щит, перетяжка, стикеры)</option><option value="24">В транспорте (наземный транспорт или метро)</option><option value="25">В подъезде (плакат в лифте, на информационной доске, письмо или листовка в почтовом ящике)</option><option value="26">На телевидении или радио</option><option value="27">Получили листовку или подарок от промоутера</option></select></td></tr></tbody></table>
+                    <table cellspacing="0" cellpadding="0" style="width: 300px"><tbody><tr style="width: 300px"><td style="width: 300px"><select name="attractionMethod" onblur="handleOnBlur(this);" onchange="condDisableFields(this.name);" style="width: 300px"><option value="">** выберите **</option><option value="1">Вы видели рекламу банка Хоум Кредит</option><option value="2">Вам посоветовали друзья или знакомые</option><option value="3">Вы получили письмо от банка с предложением</option><option value="4">Вам позвонили сотрудники банка с предложением</option><option value="5">Вы сравнивали предложения разных банков и выбрали Хоум Кредит</option><option value="6">Вы уже брали кредит в нашем банке и Вас все устроило</option><option value="7">Отделение банка находится рядом с Вашим домом или работой</option><option value="8">В компании, где работаете Вы или Ваши знакомые, была проведена презентация продуктов Банка Хоум Кредит</option><option value="9">Вам порекомендовал кредитный Брокер</option><option value="10">Привлек рекламный агент</option></select></td></tr></tbody></table>
+                </td>
+                <td class="flabel" >
+                    Тип рекламной компании
+                </td>
+                <td class="nlabel" >
+                    <table cellspacing="0" cellpadding="0"><tbody><tr><td><select name="attractionCampaignType" onblur="handleOnBlur(this);" disabled="" class="disabled"><option value="">** выберите **</option><option value="21">В прессе (газеты, журналы)</option><option value="22">В интернете (на сайте Банка)</option><option value="23">На улице или внутри торговых центров (щит, перетяжка, стикеры)</option><option value="24">В транспорте (наземный транспорт или метро)</option><option value="25">В подъезде (плакат в лифте, на информационной доске, письмо или листовка в почтовом ящике)</option><option value="26">На телевидении или радио</option><option value="27">Получили листовку или подарок от промоутера</option></select></td></tr></tbody></table>
                 </td>
             </tr>
 
