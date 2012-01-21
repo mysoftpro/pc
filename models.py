@@ -290,8 +290,8 @@ def fillChoices():
                                     openChoicesView(kbrd_game,u"Игровые Клавиатуры")])
                 .addCallback(lambda res: {kbrd:res}))
 
-    defs.append(defer.DeferredList([openChoicesView(mouse_a4, u"Мыши A4Tech"),
-                                    openChoicesView(mouse_game, u"Игровые Мыши"),
+    # openChoicesView(mouse_a4, u"Мыши A4Tech"),                                    
+    defs.append(defer.DeferredList([openChoicesView(mouse_game, u"Игровые Мыши"),
                                     openChoicesView(mouse_acme, u"Мыши Acme"),
                                     openChoicesView(mouse_genius, u"Мыши Genius")])
                 .addCallback(lambda res: {mouse:res}))
