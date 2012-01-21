@@ -761,7 +761,7 @@ label:hover{
  margin-top:-35px !important;
 }
 #ogrnip{
-    display:none;
+    font-size:9px;
 }
 #model_description{
     max-height:100px;
