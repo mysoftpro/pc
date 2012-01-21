@@ -16,7 +16,7 @@ from pc.models import\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice
+   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -347,8 +347,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -443,6 +443,16 @@ class Root(Resource):
                                                         childs=None)))
 
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
+
+
+        self.putChild('credit_form',
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=HandlerAndName(CreditForm,
+                                                                              'credit.html'),
+                                                        childs=HandlerAndName(CreditForm,
+                                                                              'credit.html'))))
+
+
         # self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
 
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))

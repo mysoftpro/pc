@@ -2726,3 +2726,8 @@ h1.bold.left{
     content: "";
     cursor:pointer;
 }
+#credit_form_table{
+    margin-left:auto;
+    margin-right:auto;
+    width:1000px;
+}

@@ -1152,3 +1152,12 @@ class NoteBooks(PCView):
 	d.addCallback(self.renderNotebooks)
 	d.callback(None)
 	return d
+
+
+class CreditForm(PCView):
+    def preRender(self):
+	print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!!!"
+        print self.name
+        d = defer.Deferred()
+        d.callback(None)
+        return d

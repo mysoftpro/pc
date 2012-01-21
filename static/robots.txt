@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin
+Disallow: /admin*
 Disallow: *?skin
+Disallow: /credit_form*
 Sitemap: http://buildpc.ru/sitemap.xml
 Host: buildpc.ru
