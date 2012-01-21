@@ -138,6 +138,7 @@ var init = function(){
 	nlink.next().next().click(deleteNote(nlink.parent().parent().next()));
     }
     prepareCart();
+    $('#cartlink').val(document.location.href);
 };
 
 init();
