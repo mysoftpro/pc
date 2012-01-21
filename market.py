@@ -56,7 +56,7 @@ class PriceForMarket(Resource):
         categories = etree.Element('categories')
         category  = etree.Element('category')
         category.set('id','2')
-        category.text = u'Ноутбуки Asus'
+        category.text = u'Видеокарты'
         categories.append(category)
         shop.append(categories)
         local_delivery_cost = etree.Element('local_delivery_cost')
