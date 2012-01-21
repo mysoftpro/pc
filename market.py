@@ -13,6 +13,7 @@ from pc.couch import couch, designID
 from twisted.web.resource import Resource
 from cStringIO import StringIO
 from twisted.web.server import NOT_DONE_YET
+from pc.models import Model
 
 class PriceForMarket(Resource):
     def prices(self, result, request):
@@ -78,8 +79,7 @@ class PriceForMarket(Resource):
             offer.append(url)
 
             price = etree.Element('price')
-            from pc.views import makeNotePrice
-            price.text = unicode(makeNotePrice(doc))
+            price.text = unicode(Model.makePrice(doc))
             offer.append(price)
 
             currencyId = etree.Element('currencyId')
