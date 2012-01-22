@@ -1156,8 +1156,11 @@ class NoteBooks(PCView):
 
 class CreditForm(PCView):
     def preRender(self):
-	print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!!!"
-        print self.name
-        d = defer.Deferred()
-        d.callback(None)
+        if self.name is None:
+            d = defer.Deferred()
+            d.callback(None)
+            from pc.root import credit_rarifs
+            script = self.template.top.find('script')
+            script.text = 'var monthly='+simplejson.dumps(credit_rarifs)
+            script.text+='var order="";var summ="";var order_name=""'        
         return d

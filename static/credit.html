@@ -1,8 +1,9 @@
 <top>
+  <script type="text/javascript"></script>
   <div style="font-size:18px;line-height:28px;">
 	<h2>Кредитный калькулятор</h2>
-	<div>Стоимость заказа <span class="bright_blue">3f45ec8</span>: 
-	  <span id="total">43200</span> (сорок три тысячи двести рублей)</div>
+	<div>Стоимость заказа <span class="bright_blue"></span>: 
+	  <span id="total"></span></div>
 	<div>
 	  <label for="cache">Первоначальный взнос</label>
 	  <input id="cache" name="cache" value="0"/>
@@ -17,7 +18,8 @@
 	    <option value="24">24</option>
 	  </select>
 	  <input id="calc" name="calc" value="рассчитать" type="button"/>
-	  <span style="margin-left:5px;font-size:16px;display:none;">Ежемесячный платеж:<span id="monthly">руб.</span></span>
+	  <span style="margin-left:5px;font-size:16px;display:none;">Ежемесячный платеж:
+	    <span id="monthly">руб.</span></span>
 	</div>
       </div>
   <div style="background-image:url('/static/home_credit.gif');height:120px;padding-left:180px;background-repeat:no-repeat;margin-top:20px;font-size:16px;">
@@ -1816,29 +1818,29 @@
     		    </td>
 		  </tr>
 		  <!--  prodCode, prodsetAction, goodsNum -->
-		  <tr>
-		    <td class="flabel" >
-		      Тип кредита/рамки
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="prodCode" value="10Н2Д06"
-			      class="validate_ok disabled" disabled="">
-		    </td>
-		    <td class="flabel" >
-		      Признак пакета
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="prodsetAction" value=""
-			      class="validate_ok disabled" disabled="">
-		    </td>
-		    <td class="flabel">
-		      Количество штук товара
-		    </td>
-		    <td class="nlabel">
-		      <input type="text" name="goodsNum" value=""
-			      class="validate_ok" id="goodsNum" maxlength="2">
-		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Тип кредита/рамки -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="prodCode" value="10Н2Д06" -->
+		  <!-- 	      class="validate_ok disabled" disabled=""> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Признак пакета -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="prodsetAction" value="" -->
+		  <!-- 	      class="validate_ok disabled" disabled=""> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel"> -->
+		  <!--     Количество штук товара -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel"> -->
+		  <!--     <input type="text" name="goodsNum" value="" -->
+		  <!-- 	      class="validate_ok" id="goodsNum" maxlength="2"> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		  <tr>
 		    <td height="10px">
 		    </td>
@@ -1849,20 +1851,20 @@
 		      Первый взнос
 		    </td>
 		    <td class="nlabel">
-		      <input type="text" name="initPay" value="1000,00"
+		      <input type="text" name="initPay" value="0"
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		    <td class="flabel">
 		      Размер кредита
 		    </td>
 		    <td class="nlabel">
-		      <input type="text" name="creditAmount" value="9000,00" class="validate_ok disabled" disabled="">
+		      <input type="text" name="creditAmount" value="0" class="validate_ok disabled" disabled="">
 		    </td>
 		    <td class="flabel">
 		      Стоимость товара
 		    </td>
 		    <td class="nlabel">
-		      <input type="text" name="price" value="10000,00"
+		      <input type="text" name="price" value="0"
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		  </tr>
@@ -1871,27 +1873,27 @@
 		      Размер ежемесячного платежа
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="instalment" value="1835,10"
+		      <input type="text" name="instalment" value="0"
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		    <td class="flabel" >
 		      Количество платежей
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="numInstalment" value="6"
+		      <input type="text" name="numInstalment" value="0"
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		    <td class="flabel" >
-		      Посылать извещения по кредиту
+		      <!-- Посылать извещения по кредиту -->
 		    </td>
 		    <td class="nlabel" >
-		      <select name="sendStatement"
-			       class="validate_ok disabled" disabled="">
-			<option value="true">Да</option>
-	   		<option value="false" selected="selected">Нет</option>
-		      </select>
-		      <input type="text" name="vysuaFee" size="10" value=""
-			      class="validate_ok disabled" disabled="">
+		      <!-- <select name="sendStatement" -->
+		      <!-- 	       class="validate_ok disabled" disabled=""> -->
+		      <!-- 	<option value="true">Да</option> -->
+	   	      <!-- 	<option value="false" selected="selected">Нет</option> -->
+		      <!-- </select> -->
+		      <!-- <input type="text" name="vysuaFee" size="10" value="" -->
+		      <!-- 	      class="validate_ok disabled" disabled=""> -->
 		    </td>
 		  </tr>
 		  
@@ -1914,20 +1916,20 @@
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		    <td class="flabel" >
-		      Форма платежа
+		      <!-- Форма платежа -->
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="payType"
-				      >
-				<option value="">** выберите **</option>
-				<option value="E">Безнал. со счета работодателя</option>
-				<option value="B">Безналичный со  своего счета</option>
-				<option value="A">Наличный через банк</option>
-			      </select>
+			      <!-- <select name="payType" -->
+			      <!-- 	      > -->
+			      <!-- 	<option value="">** выберите **</option> -->
+			      <!-- 	<option value="E">Безнал. со счета работодателя</option> -->
+			      <!-- 	<option value="B">Безналичный со  своего счета</option> -->
+			      <!-- 	<option value="A">Наличный через банк</option> -->
+			      <!-- </select> -->
 			    </td>
 			  </tr>
 			</tbody>
