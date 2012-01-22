@@ -602,22 +602,21 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="locality" 
-				      >
-				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+			      <!-- <select name="locality"> -->
+			      <!-- 	<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
+			      <!-- </select> -->
 			      <input type="text" name="localityText" value=""
-				      class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+				     class="validate_ok disabled" maxlength="40"/>
 			    </td>
 			  </tr>
 			</tbody>
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Нестандартный адрес (не найден в КЛАДР)
+		      <!-- Нестандартный адрес (не найден в КЛАДР) -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="nonstandardAddress" value="on" >
+		      <!-- <input type="checkbox" name="nonstandardAddress" value="on" > -->
 		    </td>
 		    <td class="flabel" >
 		      Тип населенного пункта
@@ -775,31 +774,31 @@
 		    <td>
 		    </td>
 		    <td class="flabel" >
-		      Сохранить почтовый индекс
+		      <!-- Сохранить почтовый индекс -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="taxCodeFrozen" value="on" >
+		      <!-- <input type="checkbox" name="taxCodeFrozen" value="on" > -->
 		    </td>
 		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Индекс Почты РФ
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="zipCode" value="" class="validate_ok disabled" disabled="">
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		    <td class="flabel" >
-		      Дата регистрации
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="regPer" value=""
-			      class="validate_ok" maxlength="10">
-		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Индекс Почты РФ -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="zipCode" value="" class="validate_ok disabled"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Дата регистрации -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="regPer" value="" -->
+		  <!-- 	      class="validate_ok" maxlength="10"> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		  <tr>
 		    <td  colspan="2">
 		      <h2>Контактный адрес</h2>
@@ -841,10 +840,25 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="district1" 
-				      >
+			      <select name="district1">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				<option value="002">Багратионовский Район</option>
+				<option value="015">Балтийский Район</option>
+				<option value="003">Гвардейский Район</option>
+				<option value="004">Гурьевский Район</option>
+				<option value="005">Гусевский Район</option>
+				<option value="006">Зеленоградский Район</option>
+				<option value="007">Краснознаменский Район</option>
+				<option value="008">Неманский Район</option>
+				<option value="009">Нестеровский Район</option>
+				<option value="010">Озерский Район</option>
+				<option value="011">Полесский Район</option>
+				<option value="012">Правдинский Район</option>
+				<option value="016">Светлогорский Район</option>
+				<option value="013">Славский Район</option>
+				<option value="014">Черняховский Район</option>
 			      </select>
+			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -858,10 +872,18 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town1" 
-				      >
+			      <select name="town1" >
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				<option value="002">Балтийск Город*</option>
+				<option value="001">Калининград Город</option>
+				<option value="008">Ладушкин Город</option>
+				<option value="009">Мамоново Город</option>
+				<option value="003">Пионерский Город</option>
+				<option value="005">Светлогорск Город*</option>
+				<option value="006">Светлый Город</option>
+				<option value="007">Советск Город</option>
+				<option value="010">Янтарный Поселок городского типа</option>
+			      </select>			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -1049,29 +1071,28 @@
 		    <td>
 		    </td>
 		    <td class="flabel" >
-		      Сохранить почтовый индекс
+		      <!-- Сохранить почтовый индекс -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="taxCodeFrozen1" value="on"
-			     >
+		      <!-- <input type="checkbox" name="taxCodeFrozen1" value="on"> -->
 		    </td>
 		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Индекс Почты РФ
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="zipCode1" value="" class="validate_ok disabled" disabled="">
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Индекс Почты РФ -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="zipCode1" value="" class="validate_ok disabled" disabled=""> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		  <tr>
 		    <td height="10px"> </td>
 		  </tr>
@@ -1111,7 +1132,7 @@
 		      Телефонный номер родственника
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled">
 		      <input type="text" name="relatPhone" value=""
 			      class="validate_ok" maxlength="10">
 		    </td>
@@ -1123,8 +1144,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="relationshipToClient"
-				       disabled="" class="disabled">
+			      <select name="relationshipToClient" class="disabled">
 				<option value="">** выберите **</option>
 				<option value="7">Бабушка</option>
 				<option value="5">Брат</option>
@@ -1157,21 +1177,21 @@
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relatName2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		    <td class="flabel" >
 		      Имя
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relatName1" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		    <td class="flabel" >
 		      Отчество
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relatNameMid" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		  </tr>
 		  <tr>
@@ -1196,8 +1216,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="relationship2ToClient"
-				       disabled="" class="disabled">
+			      <select name="relationship2ToClient" class="disabled">
 				<option value="">** выберите **</option>
 				<option value="7">Бабушка</option>
 				<option value="5">Брат</option>
@@ -1230,21 +1249,21 @@
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relat2Name2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		    <td class="flabel" >
 		      Имя
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relat2Name1" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		    <td class="flabel" >
 		      Отчество
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="relat2NameMid" value=""
-			      class="validate_ok disabled" disabled="" maxlength="30">
+			      class="validate_ok disabled" maxlength="30">
 		    </td>
 		  </tr>
 		</tbody>
@@ -1294,35 +1313,29 @@
 			<tbody>
 			  <tr>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="1"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="1">
 			      Дом  &nbsp; &nbsp; &nbsp;
 			    </td>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="2"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="2">
 			      Квартира  &nbsp; &nbsp; &nbsp;
 			    </td>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="3"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="3">
 			      Дача  &nbsp; &nbsp; &nbsp;
 			    </td>
 			  </tr>
 			  <tr>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="4"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="4">
 			      Земельный участок  &nbsp; &nbsp; &nbsp;
 			    </td>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="5"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="5">
 			      Гараж  &nbsp; &nbsp; &nbsp;
 			    </td>
 			    <td class="nlabel">
-			      <input type="checkbox" name="realityTypes" value="6"
-				      disabled="disabled">
+			      <input type="checkbox" name="realityTypes" value="6">
 			      Другое  &nbsp; &nbsp; &nbsp;
 			    </td>
 			  </tr>
@@ -1837,22 +1850,22 @@
 		      <input type="checkbox" name="taxCodeFrozen2" value="on"  disabled="" class="disabled">
 		    </td>
 		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Индекс Почты РФ
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="zipCode2" value="" class="validate_ok disabled" disabled="">
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Индекс Почты РФ -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="zipCode2" value="" class="validate_ok disabled" disabled=""> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		  <tr>
 		    <td class="flabel" >
 		      Телефон работодателя(с кодом)
