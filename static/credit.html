@@ -528,10 +528,8 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="region" 
-				      >
-				<option value="" selected="selected">** выберите **</option>
-				<option value="39">Калининградская Область</option>
+			      <select name="region">
+				<option value="39" selected="selected">Калининградская Область</option>
 			      </select>
 			    </td>
 			  </tr>
@@ -548,7 +546,22 @@
 			    <td>
 			      <select name="district">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				<option value="002">Багратионовский Район</option>
+				<option value="015">Балтийский Район</option>
+				<option value="003">Гвардейский Район</option>
+				<option value="004">Гурьевский Район</option>
+				<option value="005">Гусевский Район</option>
+				<option value="006">Зеленоградский Район</option>
+				<option value="007">Краснознаменский Район</option>
+				<option value="008">Неманский Район</option>
+				<option value="009">Нестеровский Район</option>
+				<option value="010">Озерский Район</option>
+				<option value="011">Полесский Район</option>
+				<option value="012">Правдинский Район</option>
+				<option value="016">Светлогорский Район</option>
+				<option value="013">Славский Район</option>
+				<option value="014">Черняховский Район</option>
+			      </select>			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -562,9 +575,18 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town">
+			      <select name="town" >
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				<option value="002">Балтийск Город*</option>
+				<option value="001">Калининград Город</option>
+				<option value="008">Ладушкин Город</option>
+				<option value="009">Мамоново Город</option>
+				<option value="003">Пионерский Город</option>
+				<option value="005">Светлогорск Город*</option>
+				<option value="006">Светлый Город</option>
+				<option value="007">Советск Город</option>
+				<option value="010">Янтарный Поселок городского типа</option>
+			      </select>			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -692,12 +714,11 @@
 			  <tr>
 			    <td valign="middle">
 			      <input type="text"
-				     name="streetSearch" size="3" class="validate_ok"
-				     >
-			      <select name="street" 
-				      >
-				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				     name="streetSearch" class="validate_ok">
+			      <!-- <select name="street"  -->
+			      <!-- 	      > -->
+			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
+			      <!-- </select> -->
 			      <input type="text" name="streetText" value=""
 				      class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
 			    </td>
@@ -856,22 +877,21 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="locality1" 
-				      >
-				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+			      <!-- <select name="locality1"> -->
+			      <!-- 	<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
+			      <!-- </select> -->
 			      <input type="text" name="localityText1" value=""
-				      class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+				      class="validate_ok disabled" maxlength="40">
 			    </td>
 			  </tr>
 			</tbody>
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Нестандартный адрес (не найден в КЛАДР)
+		      <!-- Нестандартный адрес (не найден в КЛАДР) -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="nonstandardAddress1" value="on" >
+		      <!-- <input type="checkbox" name="nonstandardAddress1" value="on" > -->
 		    </td>
 		    <td class="flabel" >
 		      Тип населенного пункта
@@ -967,14 +987,13 @@
 			<tbody>
 			  <tr>
 			    <td valign="middle">
-			      <input type="text" name="streetSearch1" size="3" class="validate_ok"
-				     >
-			      <select name="street1" 
-				      >
-				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+			      <input type="text" name="streetSearch1" class="validate_ok">
+			      <!-- <select name="street1"  -->
+			      <!-- 	      > -->
+			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
+			      <!-- </select> -->
 			      <input type="text" name="streetText1" value=""
-				      class="validate_ok disabled"
+				     class="validate_ok disabled"
 				     disabled="" maxlength="40" style="display: none; ">
 			    </td>
 			  </tr>
