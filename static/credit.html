@@ -1,2633 +1,2484 @@
 <top>
+  <div>
+	<h2>Кредитный калькулятор</h2>
+	<div>Стоимость заказа 3f45ec8: 43 200 (сорок три тысячи двести рублей)</div>
+	<div>
+	  <label for="cache">Первоначальный взнос</label>
+	  <input id="cache" name="cache" value="0"/>
+	  <label style="margin-left:10px;" for="cache">Срок кредита в месяцах</label>
+	  <select id="monthes">
+	    <option value="6" selected="selected">6</option>
+	    <option value="8">8</option>
+	    <option value="10">10</option>
+	  </select>
+	  <input id="monthes" name="calc" value="рассчитать" type="button"/>
+	</div>
+      </div>
+  <div style="background-image:url('/static/home_credit.gif');height:120px;padding-left:180px;background-repeat:no-repeat;margin-top:20px;font-size:16px;">
+    <h2 style="color:#B00606;">Важная информация</h2>
+    Для получения кредита заполните анкету банка Home Credit and Finance.
+    Нажмите "Сохранить", чтобы зафиксировать данные, которые вы уже ввели.
+    Анкета с сохраненными данными будет доступна в Вашей корзине.
+    Никто кроме Вас не получит доступа к анкете.
+    Нажмите "Отправить" для пересылки анкеты в Банк.
+    Пересылайте анкету в рабочее время.
+  </div>
+  <div style="font-size:16px;">    
+    Ответ от банка будет получен в течение часа.
+    Получив положительный ответ от банка, мы стразу приступаем к сборке Вашего заказа.
+    Кредитный договор подписывается при доставке заказа на указанный Вами адрес.
+    Будьте готовы предоставить оригиналы документов, копии которых вы отправили вместе с анкетой.
+  </div>
 </top>
-<middle>
-  <table >
-    <tbody>
-      <tr>
-	<td>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td>
-		  <h1>Заемщик</h1>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <table class="greybox"  align="center">
-	    <script type="text/javascript" language="Javascript1.1">
-	      TX_WPA_SUBLOCK1FORM_FAMSTATE = 'Заемщик – Семейное положение';
-	      TX_WPA_SUBLOCK1FORM_SEX = 'Заемщик – Пол';
-	      TX_WPA_SUBLOCK1FORM_BIRTHPLACE = 'Заемщик – Место рождения';
-	    </script>
-	    <tbody>
-	      <tr>
-		<td  colspan="6">
-		  <h2>
-		  </h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  <label for="otherCarNum">Номер карты заёмщика</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="otherCardNum" maxlength="16" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { lookupCardIdent(); };"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok" id="otherCardNum">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  <label for="name2">Фамилия</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="name2" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok"
-			 id="name2" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  <label for="name1">Имя</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="name1" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" id="name1" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  <label for="nameMid">Отчество</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="nameMid" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok"
-			 id="nameMid"
-			 maxlength="30">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  <label for="nameBorn">Прежняя фамилия</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="nameBorn" value=""
-			 onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);"
-			 class="validate_ok" id="nameBorn" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  <label for="nameMother">Девичья фамилия матери</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="nameMother" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok" id="nameMother" maxlength="30">
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  <label for="birth">Дата рождения</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="birth" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) { validatePassportLastDay(this);
-				 if (fieldExistsAndNotEmpty(getDynaField('identCardDate'))) { handleOnBlur(getDynaField('identCardDate')); } }"
-			 class="validate_ok" id="birth" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  <label for="birthPlace">Место рождения</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="birthPlace" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" id="birthPlace" maxlength="120">
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  <label for="identId">Личный номер</label>
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="ident" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange=""
-			 onblur="copyField(this, getDynaField('identCard'));
-				 if (handleOnBlur(this) &amp;&amp; (!this.disabled &amp;&amp; !this.readOnly)) {lookupCardIdent();
-				 if (fieldExistsAndNotEmpty(getDynaField('identCardSpec'))) { handleOnBlur(getDynaField('identCardSpec')); } }" class="validate_ok" id="identId" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  <label for="sex">Пол</label>
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select id="sex" name="sex"
-				  onblur="handleOnBlur(this);">
-			    <option value="">** выберите **</option>
-			    <option value="m">муж</option>
-			    <option value="z">жен</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  <label for="famState">Семейное положение</label>
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select id="famState" name="famState"
-				  onblur="handleOnBlur(this); condDisableFields(this.name);">
-			    <option value="">** выберите **</option>
-			    <option value="1">холост/не замужем</option>
-			    <option value="2">женат/замужем</option>
-			    <option value="4">вдовец/вдова</option>
-			    <option value="3">разведен (а)</option>
-			    <option value="5">Гражданский брак</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <script type="text/javascript" language="Javascript1.1">
-		TX_WPA_SUBLOCK1FORM_IDENTCARD = 'Документ 1 - Номер';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDDATE = 'Документ 1 – Дата выдачи';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDOLD = 'Документ 1 - Номер ранее выданного паспорта';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDSN = 'Документ 1 - Серия';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDWHO = 'Документ 1 – Кем выдан';
-		TX_WPA_SUBLOCK1FORM_IDENTTYPE = 'Документ 1 - Тип';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC = 'Документ 1 - Код подразделения';
-	      </script>
-	      <tr>
-		<td  colspan="6">
-		  <h2>Документ 1</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Тип документа
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0" >
-		    <tbody>
-		      <tr >
-			<td >
-			  <select id="id_identType" name="identType"
-				  onblur="handleOnBlur(this);"
-				  onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);"
-				  disabled="" class="disabled">
-			    <option value="">** выберите **</option>
-			    <option value="pass">Паспорт РФ</option>
-			  </select>
-			  <script type="text/javascript">
-			    allCheckFields.push(new Array('SUBlock1Form','identType'));
-			    document.forms['SUBlock1Form']['identType'].validationFunction =    function() {
-			    copyStrutsValidations(this, 'SUBlock1Form','identType');
-			    this.b0=new Array("validateRequired",'Поле «Документ 1 - Тип» обязательно.',new Function("varName"," return this[varName];"));
-			    };
-			  </script>
-			  <script type="text/javascript">
-			    if (document.identCardFields1 == undefined)
-			    {
-			    document.identCardFields1 = new Array();
-			    }
-			    if (document.possibleValues == undefined)
-			    {
-			    document.possibleValues = new Array();
-			    }
-			    if (document.identCardFields == undefined)
-			    {
-			    document.identCardFields = new Array();
-			    }
-			    var currIdentCardFields = document.getElementById('id_identType');
-			    document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
-			    document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
-			    document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Паспорт РФ","pass")];</script>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Номер
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCard" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) { checkIdentCardIdent(); }"
-			 class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-	  	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		</td>
-		<td class="flabel" >
-	  	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Дата выдачи
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCardDate" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) { validatePassportLastDay(this); }"
-			 class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Кем выдан
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCardWho" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" style="width:200px"
-			 class="validate_ok" maxlength="100">
-		</td>
-		<td class="flabel" >
-		  Код подразделения (XXX-XXX)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCardSpec" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok" maxlength="7">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel"  colspan="5">
-		  Номер ранее выданного паспорта
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCardOld" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok" maxlength="20">
-		</td>
-	      </tr>
-	      <script type="text/javascript" language="Javascript1.1">
-		TX_WPA_SUBLOCK1FORM_IDENTCARD2 = 'Документ 2 - Номер';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDDATE2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDDATE2';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDOLD2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDOLD2';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDSN2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSN2';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDWHO2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDWHO2';
-		TX_WPA_SUBLOCK1FORM_IDENTTYPE2 = 'Документ 2 - Тип документа';
-		TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSPEC2';
-	      </script>
-	      <tr>
-		<td  colspan="6">
-		  <h2>Документ 2</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Тип документа
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0" >
-		    <tbody>
-		      <tr >
-			<td >
-			  <select id="id_identType2"
-				  name="identType2"
-				  onblur="handleOnBlur(this);"
-				  onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" >
-			    <option value="">** выберите **</option>
-			    <option value="fpass">Загран. паспорт</option>
-			    <option value="drive">Водит. удост.</option>
-			    <option value="ins">Страх. свид.</option>
-			    <option value="hcc">Карта Клиента</option>
-			    <option value="cre">Карта Хоум кредит</option>
-			    <option value="pens">Пенс. удост.</option>
-			  </select>
-			  <script type="text/javascript">
-			    allCheckFields.push(new Array('SUBlock1Form','identType2'));
-			    document.forms['SUBlock1Form']['identType2'].validationFunction =    function() {
-			    copyStrutsValidations(this, 'SUBlock1Form','identType2');
-			    this.b0=new Array("validateRequired",'Поле «Документ 2 - Тип документа» обязательно.',new Function("varName"," return this[varName];"));
-			    };
-			  </script>
-			  <script type="text/javascript">
-			    if (document.identCardFields1 == undefined)
-			    {
-			    document.identCardFields1 = new Array();
-			    }
-			    if (document.possibleValues == undefined)
-			    {
-			    document.possibleValues = new Array();
-			    }
-			    if (document.identCardFields == undefined)
-			    {
-			    document.identCardFields = new Array();
-			    }
-			    var currIdentCardFields = document.getElementById('id_identType2');
-			    document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
-			    document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
-			    document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Загран. паспорт","fpass"), new Option("Водит. удост.","drive"), new Option("Страх. свид.","ins"), new Option("Карта Клиента","hcc"), new Option("Карта Хоум кредит","cre"), new Option("Пенс. удост.","pens")];
-			  </script>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-	  	  Серия
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCard2Sn" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok disabled" disabled="" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Номер
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCard2" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) {  }"
-			 class="validate_ok disabled" disabled=""
-			 maxlength="16">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Дата выдачи
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCard2Date" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) {  }"
-			 class="validate_ok disabled" disabled="" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Кем выдан
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="identCard2Who" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 style="width:200px"
-			 class="validate_ok disabled"
-			 disabled="" maxlength="100">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td height="10px"> </td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Жилищные условия
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="houseType"
-				  onblur="handleOnBlur(this);">
-			    <option value="">** выберите **</option>
-			    <option value="5">Муницип. квартира</option>
-			    <option value="6">Кооператив. квартира</option>
-			    <option value="7">Служебная квартира</option>
-			    <option value="3">Собственный дом/квартира</option>
-			    <option value="1">Снимаю квартиру</option>
-			    <option value="4">Проживаю у родителей</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Количество иждивенцев
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="childNum" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);"
-			 class="validate_ok" maxlength="2">
-		</td>
-		<td class="flabel" >
-		  Образование
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="education"
-				  onblur="handleOnBlur(this);">
-			    <option value="">** выберите **</option>
-			    <option value="4">неполное среднее</option>
-			    <option value="2">среднее/ среднее специальное</option>
-			    <option value="5">неполное высшее</option>
-			    <option value="3">высшее</option>
-			    <option value="6">ученая степень</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="flabel" >
-		  Автомобиль в собственности
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <table cellspacing="0" cellpadding="0">
-			    <tbody>
-			      <tr>
-				<td>
-				  <select name="carOwner"
-					  onblur="handleOnBlur(this);"
-					  onchange="condDisableFields(this.name);">
-				    <option value="">** выберите **</option>
-				    <option value="1">да</option>
-				    <option value="0">нет</option>
-				  </select>
-				</td>
-			      </tr>
-			    </tbody>
-			  </table>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Год выпуска автомобиля
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="carDate" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="4">
-		</td>
-	      </tr>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Адрес постоянного проживания</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="nlabel" colspan="6">
-		  <span class="warning" style="display: none;" id="irregularAddress">
-		    Уточните адрес у клиента!
-		  </span>
-		  <span id="irregularAddressText">
-		  </span>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Субъект РФ
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="region" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, regionChanged, '', '');"
-				  onchange="if (this.hasChanged) {regionChanged(this, '', ''); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){regionChanged(this, '', '')}; handleOnBlur(this);"
-				  onfocus="this.initValue = this.value;">
-			    <option value="" selected="selected">** выберите **</option>
-			    <option value="39">Калининградская Область</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Район
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="district" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, districtChanged, '', '')"
-				  onchange="if (this.hasChanged) {districtChanged(this, '', ''); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){districtChanged(this, '', '')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Город
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="town" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, townChanged, '', '');"
-				  onchange="if (this.hasChanged) {townChanged(this, '', ''); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){townChanged(this, '', '')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Населенный пункт
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="locality" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, localityChanged, '', '');"
-				  onchange="if (this.hasChanged) {localityChanged(this, '', ''); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){localityChanged(this, '', '')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="localityText" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="localityTextChanged(this, '', '');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Нестандартный адрес (не найден в КЛАДР)
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="nonstandardAddress" value="on" onclick="nonstandardAddressChanged(this, '', ''); setCondRequiredFields();">
-		</td>
-		<td class="flabel" >
-		  Тип населенного пункта
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="typeLocality" onkeyup="handleOnKeyUp(this);"
-				  onchange="typeLocalityChanged(this, '', '');"
-				  onblur="handleOnBlur(this);" disabled="" class="disabled">
-			    <option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			    <option value="401">Аал</option>
-			    <option value="445">Автодорога</option>
-			    <option value="440">Арбан</option>
-			    <option value="402">Аул</option>
-			    <option value="100001">блокпост</option>
-			    <option value="100002">Военная часть</option>
-			    <option value="403">Волость</option>
-			    <option value="404">Выселки(ок)</option>
-			    <option value="405">Город</option>
-			    <option value="436">Городок</option>
-			    <option value="407">Дачный поселок</option>
-			    <option value="406">Деревня</option>
-			    <option value="410">ж/д останов. (обгонный) пункт</option>
-			    <option value="408">Железнодорожная будка</option>
-			    <option value="409">Железнодорожная казарма</option>
-			    <option value="438">Железнодорожная платформа</option>
-			    <option value="413">Железнодорожная станция</option>
-			    <option value="411">Железнодорожный пост</option>
-			    <option value="412">Железнодорожный разъезд</option>
-			    <option value="447">Жилая зона</option>
-			    <option value="446">Жилой район</option>
-			    <option value="414">Заимка</option>
-			    <option value="415">Казарма</option>
-			    <option value="439">Квартал</option>
-			    <option value="444">Кордон</option>
-			    <option value="416">Курортный поселок</option>
-			    <option value="442">Леспромхоз</option>
-			    <option value="448">Массив</option>
-			    <option value="417">Местечко</option>
-			    <option value="418">Микрорайон</option>
-			    <option value="419">Населенный пункт</option>
-			    <option value="420">Остров</option>
-			    <option value="422">Планировочный район</option>
-			    <option value="443">Погост</option>
-			    <option value="421">Поселок</option>
-			    <option value="424">Поселок городского типа</option>
-			    <option value="423">Поселок и(при) станция(и)</option>
-			    <option value="425">Починок</option>
-			    <option value="426">Почтовое отделение</option>
-			    <option value="427">Промышленная зона</option>
-			    <option value="429">Рабочий поселок</option>
-			    <option value="428">Разъезд</option>
-			    <option value="441">Садовое неком-е товарищество</option>
-			    <option value="430">Село</option>
-			    <option value="431">Слобода</option>
-			    <option value="433">Станица</option>
-			    <option value="432">Станция</option>
-			    <option value="437">Территория</option>
-			    <option value="434">Улус</option>
-			    <option value="435">Хутор</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td class="nlabel" colspan="6">
-		  <span class="flabel" style="
-					      display: none;" name="tooManyStreets" id="tooManyStreets">
-		    Изображены первых 50 записей
-		  </span>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Улица
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td valign="middle">
-			  <input type="text" name="streetSearch" size="3" class="validate_ok" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetSearchChanged(this, '', '');">
-			  <select name="street" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, streetChanged, '', '');"
-				  onchange="if (this.hasChanged) {streetChanged(this, '', ''); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="streetText" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetTextChanged(this, '', '');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Номер дома
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="streetNum" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', ''); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Корп.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="blockNum" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', ''); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Стр.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="buildingNum" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', ''); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<!-- for employer address there is different label for field apprtNum -->
-		<td class="flabel" >
-		  Кв.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="apprtNum" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', ''); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="taxCode" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', ''); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="6">
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Сохранить почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="taxCodeFrozen" value="on" onclick="taxCodeFrozenChanged(this, '', '');">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Индекс Почты РФ
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="zipCode" value="" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="flabel" >
-		  Дата регистрации
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="regPer" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
-		</td>
-	      </tr>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Контактный адрес</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="nlabel" colspan="6">
-		  <span class="warning" style="display: none;" id="irregularAddress1">
-		    Уточните адрес у клиента!
-		  </span>
-		  <span id="irregularAddressText1">
-		  </span>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Субъект РФ
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="region1" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, regionChanged, '', '1');"
-				  onchange="if (this.hasChanged) {regionChanged(this, '', '1'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){regionChanged(this, '', '1')}; handleOnBlur(this);"
-				  onfocus="this.initValue = this.value;">
-			    <option value="" selected="selected">** выберите **</option>
-			    <option value="01">Адыгея Республика</option>
-			    <option value="04">Алтай Республика</option>
-			    <option value="22">Алтайский Край</option>
-			    <option value="28">Амурская Область</option>
-			    <option value="29">Архангельская Область</option>
-			    <option value="30">Астраханская Область</option>
-			    <option value="99">Байконур Город</option>
-			    <option value="02">Башкортостан Республика</option>
-			    <option value="31">Белгородская Область</option>
-			    <option value="32">Брянская Область</option>
-			    <option value="03">Бурятия Республика</option>
-			    <option value="33">Владимирская Область</option>
-			    <option value="34">Волгоградская Область</option>
-			    <option value="35">Вологодская Область</option>
-			    <option value="36">Воронежская Область</option>
-			    <option value="05">Дагестан Республика</option>
-			    <option value="79">Еврейская Автономная область</option>
-			    <option value="75">Забайкальский Край</option>
-			    <option value="80">Забайкальский край Агинский Бурятский Округ*</option>
-			    <option value="37">Ивановская Область</option>
-			    <option value="06">Ингушетия Республика</option>
-			    <option value="38">Иркутская Область</option>
-			    <option value="85">Иркутская обл Усть-Ордынский Бурятский Округ*</option>
-			    <option value="07">Кабардино-Балкарская Республика</option>
-			    <option value="39">Калининградская Область</option>
-			    <option value="08">Калмыкия Республика</option>
-			    <option value="40">Калужская Область</option>
-			    <option value="41">Камчатский Край</option>
-			    <option value="09">Карачаево-Черкесская Республика</option>
-			    <option value="10">Карелия Республика</option>
-			    <option value="42">Кемеровская Область</option>
-			    <option value="43">Кировская Область</option>
-			    <option value="11">Коми Республика</option>
-			    <option value="81">Коми-Пермяцкий Автономный округ*</option>
-			    <option value="82">Корякский Автономный округ*</option>
-			    <option value="44">Костромская Область</option>
-			    <option value="23">Краснодарский Край</option>
-			    <option value="24">Красноярский Край</option>
-			    <option value="45">Курганская Область</option>
-			    <option value="46">Курская Область</option>
-			    <option value="47">Ленинградская Область</option>
-			    <option value="48">Липецкая Область</option>
-			    <option value="49">Магаданская Область</option>
-			    <option value="12">Марий Эл Республика</option>
-			    <option value="13">Мордовия Республика</option>
-			    <option value="77">Москва Город</option>
-			    <option value="50">Московская Область</option>
-			    <option value="51">Мурманская Область</option>
-			    <option value="83">Ненецкий Автономный округ</option>
-			    <option value="52">Нижегородская Область</option>
-			    <option value="53">Новгородская Область</option>
-			    <option value="54">Новосибирская Область</option>
-			    <option value="55">Омская Область</option>
-			    <option value="56">Оренбургская Область</option>
-			    <option value="57">Орловская Область</option>
-			    <option value="58">Пензенская Область</option>
-			    <option value="59">Пермский Край</option>
-			    <option value="25">Приморский Край</option>
-			    <option value="60">Псковская Область</option>
-			    <option value="61">Ростовская Область</option>
-			    <option value="62">Рязанская Область</option>
-			    <option value="63">Самарская Область</option>
-			    <option value="78">Санкт-Петербург Город</option>
-			    <option value="64">Саратовская Область</option>
-			    <option value="14">Саха /Якутия/ Республика</option>
-			    <option value="65">Сахалинская Область</option>
-			    <option value="66">Свердловская Область</option>
-			    <option value="15">Северная Осетия - Алания Республика</option>
-			    <option value="67">Смоленская Область</option>
-			    <option value="26">Ставропольский Край</option>
-			    <option value="84">Таймырский (Долгано-Ненецкий) Автономный округ*</option>
-			    <option value="68">Тамбовская Область</option>
-			    <option value="16">Татарстан Республика</option>
-			    <option value="69">Тверская Область</option>
-			    <option value="70">Томская Область</option>
-			    <option value="71">Тульская Область</option>
-			    <option value="17">Тыва Республика</option>
-			    <option value="72">Тюменская Область</option>
-			    <option value="18">Удмуртская Республика</option>
-			    <option value="73">Ульяновская Область</option>
-			    <option value="27">Хабаровский Край</option>
-			    <option value="19">Хакасия Республика</option>
-			    <option value="86">Ханты-Мансийский Автономный округ - Югра Автономный округ</option>
-			    <option value="74">Челябинская Область</option>
-			    <option value="20">Чеченская Республика</option>
-			    <option value="21">Чувашская Республика - Чувашия</option>
-			    <option value="87">Чукотский Автономный округ</option>
-			    <option value="88">Эвенкийский Автономный округ*</option>
-			    <option value="89">Ямало-Ненецкий Автономный округ</option>
-			    <option value="76">Ярославская Область</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Район
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="district1" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, districtChanged, '', '1')"
-				  onchange="if (this.hasChanged) {districtChanged(this, '', '1'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){districtChanged(this, '', '1')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Город
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="town1" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, townChanged, '', '1');"
-				  onchange="if (this.hasChanged) {townChanged(this, '', '1'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){townChanged(this, '', '1')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Населенный пункт
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="locality1" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, localityChanged, '', '1');"
-				  onchange="if (this.hasChanged) {localityChanged(this, '', '1'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){localityChanged(this, '', '1')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="localityText1" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="localityTextChanged(this, '', '1');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Нестандартный адрес (не найден в КЛАДР)
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="nonstandardAddress1" value="on" onclick="nonstandardAddressChanged(this, '', '1'); setCondRequiredFields();">
-		</td>
-		<td class="flabel" >
-		  Тип населенного пункта
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="typeLocality1" onkeyup="handleOnKeyUp(this);"
-				  onchange="typeLocalityChanged(this, '', '1');"
-				  onblur="handleOnBlur(this);" disabled="" class="disabled">
-			    <option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			    <option value="401">Аал</option>
-			    <option value="445">Автодорога</option>
-			    <option value="440">Арбан</option>
-			    <option value="402">Аул</option>
-			    <option value="100001">блокпост</option>
-			    <option value="100002">Военная часть</option>
-			    <option value="403">Волость</option>
-			    <option value="404">Выселки(ок)</option>
-			    <option value="405">Город</option>
-			    <option value="436">Городок</option>
-			    <option value="407">Дачный поселок</option>
-			    <option value="406">Деревня</option>
-			    <option value="410">ж/д останов. (обгонный) пункт</option>
-			    <option value="408">Железнодорожная будка</option>
-			    <option value="409">Железнодорожная казарма</option>
-			    <option value="438">Железнодорожная платформа</option>
-			    <option value="413">Железнодорожная станция</option>
-			    <option value="411">Железнодорожный пост</option>
-			    <option value="412">Железнодорожный разъезд</option>
-			    <option value="447">Жилая зона</option>
-			    <option value="446">Жилой район</option>
-			    <option value="414">Заимка</option>
-			    <option value="415">Казарма</option>
-			    <option value="439">Квартал</option>
-			    <option value="444">Кордон</option>
-			    <option value="416">Курортный поселок</option>
-			    <option value="442">Леспромхоз</option>
-			    <option value="448">Массив</option>
-			    <option value="417">Местечко</option>
-			    <option value="418">Микрорайон</option>
-			    <option value="419">Населенный пункт</option>
-			    <option value="420">Остров</option>
-			    <option value="422">Планировочный район</option>
-			    <option value="443">Погост</option>
-			    <option value="421">Поселок</option>
-			    <option value="424">Поселок городского типа</option>
-			    <option value="423">Поселок и(при) станция(и)</option>
-			    <option value="425">Починок</option>
-			    <option value="426">Почтовое отделение</option>
-			    <option value="427">Промышленная зона</option>
-			    <option value="429">Рабочий поселок</option>
-			    <option value="428">Разъезд</option>
-			    <option value="441">Садовое неком-е товарищество</option>
-			    <option value="430">Село</option>
-			    <option value="431">Слобода</option>
-			    <option value="433">Станица</option>
-			    <option value="432">Станция</option>
-			    <option value="437">Территория</option>
-			    <option value="434">Улус</option>
-			    <option value="435">Хутор</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td class="nlabel" colspan="6">
-		  <span class="flabel" style="
-					      display: none;" name="tooManyStreets1" id="tooManyStreets1">
-		    Изображены первых 50 записей
-		  </span>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Улица
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td valign="middle">
-			  <input type="text" name="streetSearch1" size="3" class="validate_ok" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetSearchChanged(this, '', '1');">
-			  <select name="street1" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, streetChanged, '', '1');"
-				  onchange="if (this.hasChanged) {streetChanged(this, '', '1'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '1')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;">
-			    <option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="streetText1" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetTextChanged(this, '', '1');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Номер дома
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="streetNum1" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', '1'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Корп.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="blockNum1" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', '1'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Стр.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="buildingNum1" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', '1'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<!-- for employer address there is different label for field apprtNum -->
-		<td class="flabel" >
-		  Кв.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="apprtNum1" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', '1'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="taxCode1" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', '1'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="6">
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Сохранить почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="taxCodeFrozen1" value="on" onclick="taxCodeFrozenChanged(this, '', '1');">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Индекс Почты РФ
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="zipCode1" value="" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td height="10px"> </td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Домашний телефон(с кодом)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="phoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		  <input type="text" name="phone" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Сотовый телефон(с кодом)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="mobilCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		  <input type="text" name="mobil" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  E-mail
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="email" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" maxlength="50">
-		</td>
-	      </tr>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Контактный телефон ближайших родственников</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Телефонный номер родственника
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		  <input type="text" name="relatPhone" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this); condDisableFields(this.name);
-				 if((this.value != '' &amp;&amp; !(this.disabled))){getDynaField('relationshipToClient').focus();}" class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Степень родства
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="relationshipToClient"
-				  onblur="handleOnBlur(this); condDisableFields(this.name);"
-				  onchange="condDisableFields(this.name);" disabled="" class="disabled">
-			    <option value="">** выберите **</option>
-			    <option value="7">Бабушка</option>
-			    <option value="5">Брат</option>
-			    <option value="8">Дедушка</option>
-			    <option value="4">Дочь</option>
-			    <option value="10">Друг, подруга</option>
-			    <option value="9">Другой родственник</option>
-			    <option value="itself">клиент</option>
-			    <option value="11">Коллега</option>
-			    <option value="1">Мать</option>
-			    <option value="15">Остальные</option>
-			    <option value="2">Отец</option>
-			    <option value="6">Сестра</option>
-			    <option value="12">Сосед</option>
-			    <option value="3">Сын</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Фамилия
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relatName2" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  Имя
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relatName1" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  Отчество
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relatNameMid" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-	      </tr>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Дополнительный/экстренный контактный телефон</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Телефонный номер родственника
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relat2PhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		  <input type="text" name="relat2Phone" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this); condDisableFields(this.name);
-				 if((this.value != '' &amp;&amp; !(this.disabled))){getDynaField('relationship2ToClient').focus();}" class="validate_ok" maxlength="10">
-		</td>
-		<td class="flabel" >
-		  Степень родства
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="relationship2ToClient"
-				  onblur="handleOnBlur(this); condDisableFields(this.name);"
-				  onchange="condDisableFields(this.name);" disabled="" class="disabled">
-			    <option value="">** выберите **</option>
-			    <option value="7">Бабушка</option>
-			    <option value="5">Брат</option>
-			    <option value="8">Дедушка</option>
-			    <option value="4">Дочь</option>
-			    <option value="10">Друг, подруга</option>
-			    <option value="9">Другой родственник</option>
-			    <option value="itself">клиент</option>
-			    <option value="11">Коллега</option>
-			    <option value="1">Мать</option>
-			    <option value="15">Остальные</option>
-			    <option value="2">Отец</option>
-			    <option value="6">Сестра</option>
-			    <option value="12">Сосед</option>
-			    <option value="3">Сын</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Фамилия
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relat2Name2" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  Имя
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relat2Name1" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-		<td class="flabel" >
-		  Отчество
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="relat2NameMid" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <br>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td  align="left">
-		  <h1>Недвижимость в собственности</h1>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <table class="greybox"  align="center">
-	    <tbody>
-	      <tr>
-		<td class="flabel" >
-		  Наличие недвижимости в собственности
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="realityOwner"
-				  onchange="condDisableFields(this.name); clientRealityTypesWrapper.realityOwnerChanged(this)"
-				  onblur="handleOnBlur(this)" class="validate_ok">
-			    <option value="" selected="selected">** выберите **</option>
-			    <option value="1">Да</option>
-			    <option value="0">Нет</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td colspan="5" class="nlabel" >
-		  <table cellpadding="10pt">
-		    <tbody>
-		      <tr>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="1"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Дом  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="2"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Квартира  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="3"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Дача  &nbsp; &nbsp; &nbsp;
-			</td>
-		      </tr>
-		      <tr>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="4"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Земельный участок  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="5"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Гараж  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="realityTypes" value="6"
-				 onblur="handleOnBlur(this)" disabled="disabled">
-			  Другое  &nbsp; &nbsp; &nbsp;
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		  <script language="JavaScript" type="text/javascript">
-		    var createRealityTypesWrapper = function(realityTypesElementsName) {
-		    if ( ! realityTypesElementsName)
-		    {
-		    window.alert("realityTypesElementsName must be defined!");
-		    return {};
-		    }
-		    var that = {}; // new object, that will be returned
-		    var checkedRealityTypes = "";
-		    var isSecondBlock = false;
-		    that.realityOwnerChanged = function(realityOwnerElement)
-		    {
-		    var elems = document.getElementsByName(realityTypesElementsName);
-		    var owner = realityOwnerElement.value == 1;
-		    for (i = 0;  i < elems.length;  i++)
-				     {
-				     var elem = elems[i];
-				     elem.disabled = !owner;
-				     if (!owner)
-				     {
-				     elem.checked = false;
-				     }
-				     }
-				     };
-				     that.shouldBeChecked = function(idRealityType)
-				     {
-				     return checkedRealityTypes.indexOf(idRealityType + "|") > -1;
-		      };
-		      that.enableAllRealities = function(realityElements)
-		      {
-		      for (i = 0;  i < realityElements.length;  i++)
-				       {
-				       var elem = realityElements[i];
-				       elem.disabled = false;
-				       }
-				       };
-				       that.setProperties = function()
-				       {
-				       var enableRealities = false;
-				       var elems = document.getElementsByName(realityTypesElementsName);
-				       for (i = 0;  i < elems.length;  i++)
-							{
-							var elem = elems[i];
-							if (this.shouldBeChecked(elem.value))
-							{
-							elem.checked = true;
-							}
-							if (elem.checked)
-							{
-							// uz je zaskrtnuty - jde napr. o pripad znovunacteni uz zadanych dat po chybe
-							enableRealities = true;
-							}
-							}
-							if ( (! readOnlyForm)  &&  ( ! isSecondBlock) && enableRealities)
-							{
-							this.enableAllRealities(elems);
-							}
-							};
-							return that;
-							};
-							if ("client" === "client")
-							{
-							// when client reality types are required, call this wrapper!!
-							var clientRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
-							clientRealityTypesWrapper.setProperties();
-							}
-							else if ("client" === "guar")
-							{
-							// when guar reality types are required, call this wrapper!!
-							var guarRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
-							guarRealityTypesWrapper.setProperties();
-							}
-							</script>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <br>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td  align="left">
-		  <h1>Платежи фамилии</h1>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <table class="greybox"  align="center">
-	    <tbody>
-	      <tr>
-		<td class="flabel" >
-		  Другие кредиты
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0" style="width: 130px">
-		    <tbody>
-		      <tr style="width: 130px">
-			<td style="width: 130px">
-			  <select name="isOtherLoan"
-				  onblur="handleOnBlur(this);"
-				  onchange="condDisableFields(this.name);" style="width: 130px">
-			    <option value="">** выберите **</option>
-			    <option value="0">не имеет</option>
-			    <option value="1">сейчас имеет</option>
-			    <option value="2">имел</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Ежемесячное погашение кредитов
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="otherLoans" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="7">
-		</td>
-		<td class="flabel" >
-		  Непогашенные кредиты
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="otherLoansAmount" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="13">
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <br>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td  align="left">
-		  <h1>Вид занятости</h1>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <table class="greybox"  align="center">
-	    <tbody>
-	      <tr>
-		<td class="flabel" >
-		  Вид занятости
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="incomeType"
-				  onblur="handleOnBlur(this);"
-				  onchange="condDisableFields(this.name);">
-			    <option value="">** выберите **</option>
-			    <option value="a">рабочий</option>
-			    <option value="b">гос. служащий</option>
-			    <option value="2">коммерч. сотрудник</option>
-			    <option value="3">предприниматель</option>
-			    <option value="c">пенсионер</option>
-			    <option value="5">безработный</option>
-			    <option value="6">декретный отпуск</option>
-			    <option value="7">Студент</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Рабочий телефон(с кодом)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="phoneEmpCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">&nbsp;<input type="text" name="phoneEmp" size="11" value="" onkeyup="handleOnKeyUp(this); condDisableFields('phoneExtensions');"
-																		       onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="10">&nbsp;/
-		  <input type="text" name="phoneEmpExtension" size="6" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="6">
-		</td>
-		<td class="flabel" >
-		  Наименование работодателя
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="empName" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="60">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  ИНН работодателя
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="empIdent" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="12">
-		</td>
-		<td class="flabel" >
-		  Должность
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="occupation" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="50">
-		</td>
-		<td class="flabel" >
-		  Отраслевая принадлежность
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="sector"
-				  onblur="handleOnBlur(this);" disabled="" class="disabled">
-			    <option value="">** выберите **</option>
-			    <option value="10">Банки, управляющие компании, финансы</option>
-			    <option value="25">Благотворительные и религиозные организации</option>
-			    <option value="23">ВПК</option>
-			    <option value="26">Государственная служба</option>
-			    <option value="9">Добывающая промышленность</option>
-			    <option value="8">Другое</option>
-			    <option value="14">Здравоохранение</option>
-			    <option value="24">Игорный бизнес</option>
-			    <option value="21">Информационные технологии</option>
-			    <option value="16">Наука, образование</option>
-			    <option value="20">Подбор персонала</option>
-			    <option value="5">Производство</option>
-			    <option value="18">Реклама, PR, маркетинг</option>
-			    <option value="15">Ресторанный бизнес</option>
-			    <option value="22">Сельское хозяйство</option>
-			    <option value="12">Страхование</option>
-			    <option value="17">Строительство, недвижимость</option>
-			    <option value="2">Торговля</option>
-			    <option value="11">Транспорт, логистика</option>
-			    <option value="13">Туризм, развлечения</option>
-			    <option value="19">Юридические услуги</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Адрес работодателя</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="nlabel" colspan="6">
-		  <span class="warning" style="display: none;" id="irregularAddress2">
-		    Уточните адрес у клиента!
-		  </span>
-		  <span id="irregularAddressText2">
-		  </span>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Субъект РФ
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="region2" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, regionChanged, '', '2');"
-				  onchange="if (this.hasChanged) {regionChanged(this, '', '2'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){regionChanged(this, '', '2')}; handleOnBlur(this);"
-				  onfocus="this.initValue = this.value;" disabled="" class="disabled">
-			    <option value="" selected="selected">** выберите **</option>
-			    <option value="01">Адыгея Республика</option>
-			    <option value="04">Алтай Республика</option>
-			    <option value="22">Алтайский Край</option>
-			    <option value="28">Амурская Область</option>
-			    <option value="29">Архангельская Область</option>
-			    <option value="30">Астраханская Область</option>
-			    <option value="99">Байконур Город</option>
-			    <option value="02">Башкортостан Республика</option>
-			    <option value="31">Белгородская Область</option>
-			    <option value="32">Брянская Область</option>
-			    <option value="03">Бурятия Республика</option>
-			    <option value="33">Владимирская Область</option>
-			    <option value="34">Волгоградская Область</option>
-			    <option value="35">Вологодская Область</option>
-			    <option value="36">Воронежская Область</option>
-			    <option value="05">Дагестан Республика</option>
-			    <option value="79">Еврейская Автономная область</option>
-			    <option value="75">Забайкальский Край</option>
-			    <option value="80">Забайкальский край Агинский Бурятский Округ*</option>
-			    <option value="37">Ивановская Область</option>
-			    <option value="06">Ингушетия Республика</option>
-			    <option value="38">Иркутская Область</option>
-			    <option value="85">Иркутская обл Усть-Ордынский Бурятский Округ*</option>
-			    <option value="07">Кабардино-Балкарская Республика</option>
-			    <option value="39">Калининградская Область</option>
-			    <option value="08">Калмыкия Республика</option>
-			    <option value="40">Калужская Область</option>
-			    <option value="41">Камчатский Край</option>
-			    <option value="09">Карачаево-Черкесская Республика</option>
-			    <option value="10">Карелия Республика</option>
-			    <option value="42">Кемеровская Область</option>
-			    <option value="43">Кировская Область</option>
-			    <option value="11">Коми Республика</option>
-			    <option value="81">Коми-Пермяцкий Автономный округ*</option>
-			    <option value="82">Корякский Автономный округ*</option>
-			    <option value="44">Костромская Область</option>
-			    <option value="23">Краснодарский Край</option>
-			    <option value="24">Красноярский Край</option>
-			    <option value="45">Курганская Область</option>
-			    <option value="46">Курская Область</option>
-			    <option value="47">Ленинградская Область</option>
-			    <option value="48">Липецкая Область</option>
-			    <option value="49">Магаданская Область</option>
-			    <option value="12">Марий Эл Республика</option>
-			    <option value="13">Мордовия Республика</option>
-			    <option value="77">Москва Город</option>
-			    <option value="50">Московская Область</option>
-			    <option value="51">Мурманская Область</option>
-			    <option value="83">Ненецкий Автономный округ</option>
-			    <option value="52">Нижегородская Область</option>
-			    <option value="53">Новгородская Область</option>
-			    <option value="54">Новосибирская Область</option>
-			    <option value="55">Омская Область</option>
-			    <option value="56">Оренбургская Область</option>
-			    <option value="57">Орловская Область</option>
-			    <option value="58">Пензенская Область</option>
-			    <option value="59">Пермский Край</option>
-			    <option value="25">Приморский Край</option>
-			    <option value="60">Псковская Область</option>
-			    <option value="61">Ростовская Область</option>
-			    <option value="62">Рязанская Область</option>
-			    <option value="63">Самарская Область</option>
-			    <option value="78">Санкт-Петербург Город</option>
-			    <option value="64">Саратовская Область</option>
-			    <option value="14">Саха /Якутия/ Республика</option>
-			    <option value="65">Сахалинская Область</option>
-			    <option value="66">Свердловская Область</option>
-			    <option value="15">Северная Осетия - Алания Республика</option>
-			    <option value="67">Смоленская Область</option>
-			    <option value="26">Ставропольский Край</option>
-			    <option value="84">Таймырский (Долгано-Ненецкий) Автономный округ*</option>
-			    <option value="68">Тамбовская Область</option>
-			    <option value="16">Татарстан Республика</option>
-			    <option value="69">Тверская Область</option>
-			    <option value="70">Томская Область</option>
-			    <option value="71">Тульская Область</option>
-			    <option value="17">Тыва Республика</option>
-			    <option value="72">Тюменская Область</option>
-			    <option value="18">Удмуртская Республика</option>
-			    <option value="73">Ульяновская Область</option>
-			    <option value="27">Хабаровский Край</option>
-			    <option value="19">Хакасия Республика</option>
-			    <option value="86">Ханты-Мансийский Автономный округ - Югра Автономный округ</option>
-			    <option value="74">Челябинская Область</option>
-			    <option value="20">Чеченская Республика</option>
-			    <option value="21">Чувашская Республика - Чувашия</option>
-			    <option value="87">Чукотский Автономный округ</option>
-			    <option value="88">Эвенкийский Автономный округ*</option>
-			    <option value="89">Ямало-Ненецкий Автономный округ</option>
-			    <option value="76">Ярославская Область</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Район
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="district2" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, districtChanged, '', '2')"
-				  onchange="if (this.hasChanged) {districtChanged(this, '', '2'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){districtChanged(this, '', '2')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;" disabled="" class="disabled">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Город
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="town2" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, townChanged, '', '2');"
-				  onchange="if (this.hasChanged) {townChanged(this, '', '2'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){townChanged(this, '', '2')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;" disabled="" class="disabled">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Населенный пункт
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="locality2" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, localityChanged, '', '2');"
-				  onchange="if (this.hasChanged) {localityChanged(this, '', '2'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value){localityChanged(this, '', '2')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;" disabled="" class="disabled">
-			    <option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="localityText2" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="localityTextChanged(this, '', '2');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Нестандартный адрес (не найден в КЛАДР)
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="nonstandardAddress2" value="on" onclick="nonstandardAddressChanged(this, '', '2'); setCondRequiredFields();" disabled="" class="disabled">
-		</td>
-		<td class="flabel" >
-		  Тип населенного пункта
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="typeLocality2" onkeyup="handleOnKeyUp(this);"
-				  onchange="typeLocalityChanged(this, '', '2');"
-				  onblur="handleOnBlur(this);" disabled="" class="disabled">
-			    <option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			    <option value="401">Аал</option>
-			    <option value="445">Автодорога</option>
-			    <option value="440">Арбан</option>
-			    <option value="402">Аул</option>
-			    <option value="100001">блокпост</option>
-			    <option value="100002">Военная часть</option>
-			    <option value="403">Волость</option>
-			    <option value="404">Выселки(ок)</option>
-			    <option value="405">Город</option>
-			    <option value="436">Городок</option>
-			    <option value="407">Дачный поселок</option>
-			    <option value="406">Деревня</option>
-			    <option value="410">ж/д останов. (обгонный) пункт</option>
-			    <option value="408">Железнодорожная будка</option>
-			    <option value="409">Железнодорожная казарма</option>
-			    <option value="438">Железнодорожная платформа</option>
-			    <option value="413">Железнодорожная станция</option>
-			    <option value="411">Железнодорожный пост</option>
-			    <option value="412">Железнодорожный разъезд</option>
-			    <option value="447">Жилая зона</option>
-			    <option value="446">Жилой район</option>
-			    <option value="414">Заимка</option>
-			    <option value="415">Казарма</option>
-			    <option value="439">Квартал</option>
-			    <option value="444">Кордон</option>
-			    <option value="416">Курортный поселок</option>
-			    <option value="442">Леспромхоз</option>
-			    <option value="448">Массив</option>
-			    <option value="417">Местечко</option>
-			    <option value="418">Микрорайон</option>
-			    <option value="419">Населенный пункт</option>
-			    <option value="420">Остров</option>
-			    <option value="422">Планировочный район</option>
-			    <option value="443">Погост</option>
-			    <option value="421">Поселок</option>
-			    <option value="424">Поселок городского типа</option>
-			    <option value="423">Поселок и(при) станция(и)</option>
-			    <option value="425">Починок</option>
-			    <option value="426">Почтовое отделение</option>
-			    <option value="427">Промышленная зона</option>
-			    <option value="429">Рабочий поселок</option>
-			    <option value="428">Разъезд</option>
-			    <option value="441">Садовое неком-е товарищество</option>
-			    <option value="430">Село</option>
-			    <option value="431">Слобода</option>
-			    <option value="433">Станица</option>
-			    <option value="432">Станция</option>
-			    <option value="437">Территория</option>
-			    <option value="434">Улус</option>
-			    <option value="435">Хутор</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td class="nlabel" colspan="6">
-		  <span class="flabel" style="
-					      display: none;" name="tooManyStreets2" id="tooManyStreets2">
-		    Изображены первых 50 записей
-		  </span>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Улица
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td valign="middle">
-			  <input type="text" name="streetSearch2" size="3" class="validate_ok disabled" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetSearchChanged(this, '', '2');" disabled="">
-			  <select name="street2" onclick="this.hasChanged = true;"
-				  onkeydown="addressDownListKeyed(event, this, streetChanged, '', '2');"
-				  onchange="if (this.hasChanged) {streetChanged(this, '', '2'); this.initValue = this.value;}"
-				  onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '2')}; handleOnBlur(this)"
-				  onfocus="this.initValue = this.value;" disabled="" class="disabled">
-			    <option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			  </select>
-			  <input type="text" name="streetText2" value="" onkeyup="handleOnKeyUp(this);"
-				 onchange="streetTextChanged(this, '', '2');"
-				 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Номер дома
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="streetNum2" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', '2'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Корп.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="blockNum2" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', '2'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Стр.
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="buildingNum2" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', '2'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
-		</td>
-		<!-- for employer address there is different label for field apprtNum -->
-		<td class="flabel" >
-		  Номер офиса
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="apprtNum2" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', '2'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
-		</td>
-		<td class="flabel" >
-		  Почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="taxCode2" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', '2'); }"
-			 onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="6">
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Сохранить почтовый индекс
-		</td>
-		<td class="nlabel" >
-		  <input type="checkbox" name="taxCodeFrozen2" value="on" onclick="taxCodeFrozenChanged(this, '', '2');" disabled="" class="disabled">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Индекс Почты РФ
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="zipCode2" value="" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Телефон работодателя(с кодом)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="empPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		  <input type="text" name="empPhone" size="11" value="" onkeyup="handleOnKeyUp(this); condDisableFields('phoneExtensions');"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="10">
-		  /
-		  <input type="text" name="empPhoneExtension" size="6" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="6">
-		</td>
-		<td class="flabel" >
-		  В данной организации с (мес./год)
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="employFrom" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="5">
-		</td>
-		<td class="flabel" >
-		  Стаж в отрасли
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="fieldExperienceYear" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="2">
-		</td>
-	      </tr>
-	      <tr>
-		<td height="10px"> </td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Среднемесячный доход
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="income" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="validateIncomeRange(this);"
-			 onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="14">
-		</td>
-		<td class="flabel" >
-		  Доход супруга/ги
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="incomePart" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="validateIncomeRange(this);"
-			 onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="14">
-		</td>
-		<td class="flabel" >
-		</td>
-		<td class="nlabel" >
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <br>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td  align="left">
-		  <h1>Кредит</h1>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <div id="tooltipLayer" class="tooltip" style="left: 433px; top: 414px; ">
-	  </div>
-	  <table class="greybox"  align="center">
-	    <script type="text/javascript" language="Javascript1.1">
-	      <!--
-		 // shows lost things fee from hidden field
-		 function showLostThingsFee(field)
-		 {
-		 var lostThingsFee = getDynaField('lostThingsFee');
-		 if (field.value == "true")
-		 {
-		 var lostThingsFeeHidden = getDynaField('lostThingsFeeHidden');
-		 if (lostThingsFee != null && lostThingsFeeHidden != null)
-		 {
-		 lostThingsFee.value = lostThingsFeeHidden.value;
-		 }
-		 }
-		 else
-		 {
-		 if (lostThingsFee != null)
-		 {
-		 lostThingsFee.value = "";
-		 }
-		 }
-		 }
-		-->
-	    </script>
-	    <tbody>
-	      <tr>
-		<td  colspan="2">
-		  <h2>Услуги по контракту</h2>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Подключить Интернет-банк
-		</td>
-		<td>
-		  <input type="checkbox" name="internetBankingRequest" value="Y" onclick="handleOnBlur(this)" id="internetBankingRequest">
-		</td>
-	      </tr>
- 	      <tr>
-    		<td  colspan="2">
-      		  <h2>Остальные детали договора</h2>
-    		</td>
-	      </tr>
-	      <!--  prodCode, prodsetAction, goodsNum -->
-	      <tr>
-		<td class="flabel" >
-		  Тип кредита/рамки
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="prodCode" value="10Н2Д06" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Признак пакета
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="prodsetAction" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel">
-		  Количество штук товара
-		</td>
-		<td class="nlabel">
-		  <input type="text" name="goodsNum" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok" id="goodsNum" maxlength="2">
-		</td>
-	      </tr>
-	      <tr>
-		<td height="10px">
-		</td>
-	      </tr>
-	      <!-- initPay, creditAmount, price -->
-	      <tr>
-		<td class="flabel">
-		  Первый взнос
-		</td>
-		<td class="nlabel">
-		  <input type="text" name="initPay" value="1000,00" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel">
-		  Размер кредита
-		</td>
-		<td class="nlabel">
-		  <input type="text" name="creditAmount" value="9000,00" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel">
-		  Стоимость товара
-		</td>
-		<td class="nlabel">
-		  <input type="text" name="price" value="10000,00" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Размер ежемесячного платежа
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="instalment" value="1835,10" onkeyup="handleOnKeyUp(this);"
-			 onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Количество платежей
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="numInstalment" value="6" onkeyup="handleOnKeyUp(this);"
-			 onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Посылать извещения по кредиту
-		</td>
-		<td class="nlabel" >
-		  <select name="sendStatement" onkeyup="handleOnKeyUp(this);"
-			  onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		    <option value="true">Да</option>
-	   	    <option value="false" selected="selected">Нет</option>
-		  </select>
-		  <input type="text" name="vysuaFee" size="10" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-	      </tr>
-	      <!-- insuranceForm.jsp -->
-	      <script language="Javascript1.1" src="calc/insurance.js?version=114.1.35">
-	      </script>
-	      <script type="text/javascript" language="Javascript1.1">
-		<!-- // insurance javascript block
-		     var ERR_WPA_INSURANCE_UNEMPL_VALIDATION = 'Параметры кредитной заявки не удовлетворяют условиям заключения договора страхования от потери работы';
-		     var insuranceCount = new Number('5');
-		     var insuranceIncomeTypes = [];
-		     var insurances;
-		     insuranceIncomeTypes['68'] = new Array();
-		     insuranceIncomeTypes['68'].push('b');
-		     insuranceIncomeTypes['68'].push('a');
-		     insuranceIncomeTypes['68'].push('2');
-		     insuranceIncomeTypes['42'] = new Array();
-		     insuranceIncomeTypes['42'].push('a');
-		     insuranceIncomeTypes['42'].push('b');
-		     insuranceIncomeTypes['42'].push('2');
-		     insuranceIncomeTypes['43'] = new Array();
-		     insuranceIncomeTypes['43'].push('a');
-		     insuranceIncomeTypes['43'].push('b');
-		     insuranceIncomeTypes['43'].push('2');
-		     insuranceIncomeTypes['69'] = new Array();
-		     insuranceIncomeTypes['69'].push('b');
-		     insuranceIncomeTypes['69'].push('a');
-		     insuranceIncomeTypes['69'].push('2');
-		     function getFormInsurances()
-		     {
-		     var insurances = new Array();
-		     var i = 0;
-		     while (getDynaField('insurances[' + i + '].id'))
-		     {
-		     var id = getDynaField('insurances[' + i + '].id');
-		     if (id && id.value.length > 0)
-		{
-		var insurance = new Insurance();
-		insurance.id = id.value;
-		insurance.groupCode = getDynaField('insurances[' + i + '].groupCode').value;
-		insurance.groupName = getDynaField('insurances[' + i + '].groupName').value;
-		insurance.code = getDynaField('insurances[' + i + '].code').value;
-		insurance.name = getDynaField('insurances[' + i + '].name').value;
-		insurance.premium = getDynaField('insurances[' + i + '].premium').value;
-		insurance.amount = getDynaField('insurances[' + i + '].amount').value;
-		insurance.rateType = getDynaField('insurances[' + i + '].rateType').value;
-		insurance.minTermOfCredit = getDynaField('insurances[' + i + '].minTermOfCredit').value;
-		insurance.payByOwnFunds = getDynaField('insurances[' + i + '].payByOwnFunds').value;
-		insurances.push(insurance);
-		}
-		i++;
-		}
-		return insurances;
-		}
-		function initInsurance()
-		{
-		var insurancePremiumCopy = getDynaField('insurancePremiumCopy');
-		if (insurancePremiumCopy)
-		{
-		var insurancePremiumSum = 0;
-		for (var i = 0; i < insuranceCount; i++)
-				    {
-				    var insurancePremium = getDynaField('insurances[' + i + '].premium');
-				    if (insurancePremium)
-				    {
-				    insurancePremiumSum = parseFloat(insurancePremium.value) + parseFloat(insurancePremiumSum);
-				    }
-				    }
-				    if (insurancePremiumSum > 0)
-		  {
-		  insurancePremiumSum = new Number(insurancePremiumSum).toFixed(2);
-		  insurancePremiumSum = insurancePremiumSum.replace('.',',');
-		  }
-		  insurancePremiumCopy.value = insurancePremiumSum;
-		  }
-		  // parametry pro vek klienta
-      		  //
-      		  insurances = getFormInsurances();
-		  }
-		  // -->
-	      </script>
-	      <!-- insuranceItem.jsp -->
-	      <!-- // insuranceItem.jsp -->
-	      <!-- insuranceItem.jsp -->
-	      <!-- // insuranceItem.jsp -->
-	      <!-- insuranceItem.jsp -->
-	      <!-- // insuranceItem.jsp -->
-	      <!-- // insuranceForm.jsp -->
-	      <tr>
-		<td height="10px"> </td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Дата первого Ежемесячного платежа
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="annuityDate" value="10.02.2012" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Дата уплаты платежа
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="annuityDay" value="10" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Форма платежа
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="payType"
-				  onblur="handleOnBlur(this);">
-			    <option value="">** выберите **</option>
-			    <option value="E">Безнал. со счета работодателя</option>
-			    <option value="B">Безналичный со  своего счета</option>
-			    <option value="A">Наличный через банк</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Договор заполнил
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="whoRatif" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Дата подписи
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="dateSign" value="" onkeyup="handleOnKeyUp(this);"
-			 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
-		</td>
-		<td class="flabel" >
-		  Согласие с коллективным страхованием
-		</td>
-		<td class="nlabel" >
-		  <table cellpadding="0" cellspacing="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="cardInsuranceApproval"
-				  onchange="condDisableFields(this.name);"
-				  onblur="handleOnBlur(this);" class="validate_ok">
-			    <option value="" selected="selected">** выберите **</option>
-			    <option value="1">Да</option>
-			    <option value="0">Нет</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td colspan="6">
-		  <hr >
-		</td>
-	      </tr>
-	      <tr>
-		<td class="flabel" >
-		  Список приложений
-		</td>
-		<td colspan="5" class="nlabel" >
-		  <table cellpadding="10pt">
-		    <tbody>
-		      <tr>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="7">
-			  Спецификация товара  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="1">
-			  Справка с места работы  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="5">
-			  Копия паспорта РФ  &nbsp; &nbsp; &nbsp;
-			</td>
-		      </tr>
-		      <tr>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="9">
-			  Копия Документа 2  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="8">
-			  Договор поручительства  &nbsp; &nbsp; &nbsp;
-			</td>
-			<td class="nlabel">
-			  <input type="checkbox" name="insCredit" value="2">
-			  Рекомендательное письмо  &nbsp; &nbsp; &nbsp;
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <script language="JavaScript" type="text/javascript" src="attraction.js">
-      </script>
-      <tr>
-	<td>
-	  <br>
-	  <table  class="yellowbox">
-	    <tbody>
-	      <tr>
-		<td  align="left">
-		  <h1>Способ привлечения</h1>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  <table class="greybox"  align="center">
-	    <tbody>
-	      <tr>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Информация о Банке
-		</td>
-		<td class="nlabel"  colspan="2">
-		  <table cellspacing="0" cellpadding="0" style="width: 300px">
-		    <tbody>
-		      <tr style="width: 300px">
-			<td style="width: 300px">
-			  <select name="attractionMethod"
-				  onblur="handleOnBlur(this);"
-				  onchange="condDisableFields(this.name);" style="width: 300px">
-			    <option value="">** выберите **</option>
-			    <option value="1">Вы видели рекламу банка Хоум Кредит</option>
-			    <option value="2">Вам посоветовали друзья или знакомые</option>
-			    <option value="3">Вы получили письмо от банка с предложением</option>
-			    <option value="4">Вам позвонили сотрудники банка с предложением</option>
-			    <option value="5">Вы сравнивали предложения разных банков и выбрали Хоум Кредит</option>
-			    <option value="6">Вы уже брали кредит в нашем банке и Вас все устроило</option>
-			    <option value="7">Отделение банка находится рядом с Вашим домом или работой</option>
-			    <option value="8">В компании, где работаете Вы или Ваши знакомые, была проведена презентация продуктов Банка Хоум Кредит</option>
-			    <option value="9">Вам порекомендовал кредитный Брокер</option>
-			    <option value="10">Привлек рекламный агент</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-		<td class="flabel" >
-		  Тип рекламной компании
-		</td>
-		<td class="nlabel" >
-		  <table cellspacing="0" cellpadding="0">
-		    <tbody>
-		      <tr>
-			<td>
-			  <select name="attractionCampaignType"
-				  onblur="handleOnBlur(this);" disabled="" class="disabled">
-			    <option value="">** выберите **</option>
-			    <option value="21">В прессе (газеты, журналы)</option>
-			    <option value="22">В интернете (на сайте Банка)</option>
-			    <option value="23">На улице или внутри торговых центров (щит, перетяжка, стикеры)</option>
-			    <option value="24">В транспорте (наземный транспорт или метро)</option>
-			    <option value="25">В подъезде (плакат в лифте, на информационной доске, письмо или листовка в почтовом ящике)</option>
-			    <option value="26">На телевидении или радио</option>
-			    <option value="27">Получили листовку или подарок от промоутера</option>
-			  </select>
-			</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Табельный номер
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="staffNumberSearchText" value=""
-			 onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this) &amp;&amp; (this.value)) { attraction.staffNumberSearchTextChanged(this) } else { attraction.clearAll() } "
-			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="8">
-		</td>
-		<td class="nlabel"  align="left">
-		  <select name="attractionAgentStaffNumber"
-			  onchange="attraction.attractionAgentStaffNumberChanged(this)"
-			  onblur="handleOnBlur(this)" class="validate_ok">
-		    <option value="" selected="selected">** выберите **</option>
-		  </select>
-		</td>
-		<td class="flabel" >
-		  ФИО рекламного агента
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="advertisingAgentFio" value="" class="validate_ok disabled" disabled="">
-		</td>
-	      </tr>
-	      <tr>
-		<td>
-		</td>
-		<td class="flabel" >
-		  Код cотрудника ТО
-		</td>
-		<td class="nlabel" >
-		  <input type="text" name="empWorkerToCode" value="" onkeyup="handleOnKeyUp(this);"
-			 onchange="if (handleOnBlur(this) &amp;&amp; (this.value)) { attraction.validateEmpWorkerToCode(this)} "
-			 onblur="handleOnBlur(this)" class="validate_ok" disabled="" maxlength="6">
-		  <script type="text/javascript">
-		    var empWorkerToCode = document.getElementsByName("empWorkerToCode");
-		    empWorkerToCode[0].disabled = true;
+<middle>  
+  <div id="models_container">
+    <div id="models">      
+      <h1>Анкета на получения кредита от банка Home Credit</h1>
+      <table >
+	<tbody>
+	  <tr>
+	    <td>
+	      <table  class="yellowbox">
+		<tbody>
+		  <tr>
+		    <td>
+		      <h1>Заемщик</h1>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <table class="greybox"  align="center">
+		<script type="text/javascript" language="Javascript1.1">
+		  TX_WPA_SUBLOCK1FORM_FAMSTATE = 'Заемщик – Семейное положение';
+		  TX_WPA_SUBLOCK1FORM_SEX = 'Заемщик – Пол';
+		  TX_WPA_SUBLOCK1FORM_BIRTHPLACE = 'Заемщик – Место рождения';
+		</script>
+		<tbody>
+		  <tr>
+		    <td  colspan="6">
+		      <h2>
+		      </h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      <label for="otherCarNum">Номер карты заёмщика</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="otherCardNum" maxlength="16" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { lookupCardIdent(); };"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok" id="otherCardNum">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      <label for="name2">Фамилия</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="name2" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok"
+			     id="name2" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      <label for="name1">Имя</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="name1" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" id="name1" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      <label for="nameMid">Отчество</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="nameMid" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok"
+			     id="nameMid"
+			     maxlength="30">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      <label for="nameBorn">Прежняя фамилия</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="nameBorn" value=""
+			     onkeyup="handleOnKeyUp(this);" onblur="handleOnBlur(this);"
+			     class="validate_ok" id="nameBorn" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      <label for="nameMother">Девичья фамилия матери</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="nameMother" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok" id="nameMother" maxlength="30">
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      <label for="birth">Дата рождения</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="birth" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) { validatePassportLastDay(this);
+				     if (fieldExistsAndNotEmpty(getDynaField('identCardDate'))) { handleOnBlur(getDynaField('identCardDate')); } }"
+			     class="validate_ok" id="birth" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      <label for="birthPlace">Место рождения</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="birthPlace" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" id="birthPlace" maxlength="120">
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      <label for="identId">Личный номер</label>
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="ident" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange=""
+			     onblur="copyField(this, getDynaField('identCard'));
+				     if (handleOnBlur(this) &amp;&amp; (!this.disabled &amp;&amp; !this.readOnly)) {lookupCardIdent();
+				     if (fieldExistsAndNotEmpty(getDynaField('identCardSpec'))) { handleOnBlur(getDynaField('identCardSpec')); } }" class="validate_ok" id="identId" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      <label for="sex">Пол</label>
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select id="sex" name="sex"
+				      onblur="handleOnBlur(this);">
+				<option value="">** выберите **</option>
+				<option value="m">муж</option>
+				<option value="z">жен</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      <label for="famState">Семейное положение</label>
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select id="famState" name="famState"
+				      onblur="handleOnBlur(this); condDisableFields(this.name);">
+				<option value="">** выберите **</option>
+				<option value="1">холост/не замужем</option>
+				<option value="2">женат/замужем</option>
+				<option value="4">вдовец/вдова</option>
+				<option value="3">разведен (а)</option>
+				<option value="5">Гражданский брак</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <script type="text/javascript" language="Javascript1.1">
+		    TX_WPA_SUBLOCK1FORM_IDENTCARD = 'Документ 1 - Номер';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDDATE = 'Документ 1 – Дата выдачи';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDOLD = 'Документ 1 - Номер ранее выданного паспорта';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDSN = 'Документ 1 - Серия';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDWHO = 'Документ 1 – Кем выдан';
+		    TX_WPA_SUBLOCK1FORM_IDENTTYPE = 'Документ 1 - Тип';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC = 'Документ 1 - Код подразделения';
 		  </script>
-		</td>
-		<input type="hidden" name="employerType" value="s">
-		<td>
-		</td>
-		<td>
-		</td>
-		<td>
-		</td>
-	      </tr>
-	    </tbody>
-	  </table>
-	</td>
-      </tr>
-    </tbody>
-  </table>
+		  <tr>
+		    <td  colspan="6">
+		      <h2>Документ 1</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Тип документа
+		    </td>
+		    <td class="nlabel" >
+		      <table   >
+			<tbody>
+			  <tr >
+			    <td >
+			      <select id="id_identType"
+				      name="identType"
+				      onblur="handleOnBlur(this);"
+				      onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);"
+				      disabled=""
+				      class="disabled">
+				<option value="">** выберите **</option>
+				<option selected="selected" value="pass">Паспорт РФ</option>
+			      </select>
+			      <script type="text/javascript">
+				allCheckFields.push(new Array('SUBlock1Form','identType'));
+				document.forms['SUBlock1Form']['identType'].validationFunction =    function() {
+				copyStrutsValidations(this, 'SUBlock1Form','identType');
+				this.b0=new Array("validateRequired",'Поле «Документ 1 - Тип» обязательно.',new Function("varName"," return this[varName];"));
+				};
+			      </script>
+			      <script type="text/javascript">
+				if (document.identCardFields1 == undefined)
+				{
+				document.identCardFields1 = new Array();
+				}
+				if (document.possibleValues == undefined)
+				{
+				document.possibleValues = new Array();
+				}
+				if (document.identCardFields == undefined)
+				{
+				document.identCardFields = new Array();
+				}
+				var currIdentCardFields = document.getElementById('id_identType');
+				document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
+				document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
+				document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Паспорт РФ","pass")];</script>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Номер
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCard" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) { checkIdentCardIdent(); }"
+			     class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+	  	      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    </td>
+		    <td class="flabel" >
+	  	      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Дата выдачи
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCardDate" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) { validatePassportLastDay(this); }"
+			     class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Кем выдан
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCardWho" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" style="width:200px"
+			     class="validate_ok" maxlength="100">
+		    </td>
+		    <td class="flabel" >
+		      Код подразделения (XXX-XXX)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCardSpec" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok" maxlength="7">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel"  colspan="5">
+		      Номер ранее выданного паспорта
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCardOld" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok" maxlength="20">
+		    </td>
+		  </tr>
+		  <script type="text/javascript" language="Javascript1.1">
+		    TX_WPA_SUBLOCK1FORM_IDENTCARD2 = 'Документ 2 - Номер';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDDATE2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDDATE2';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDOLD2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDOLD2';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDSN2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSN2';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDWHO2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDWHO2';
+		    TX_WPA_SUBLOCK1FORM_IDENTTYPE2 = 'Документ 2 - Тип документа';
+		    TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSPEC2';
+		  </script>
+		  <tr>
+		    <td  colspan="6">
+		      <h2>Документ 2</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Тип документа
+		    </td>
+		    <td class="nlabel" >
+		      <table   >
+			<tbody>
+			  <tr >
+			    <td >
+			      <select id="id_identType2"
+				      name="identType2"
+				      onblur="handleOnBlur(this);"
+				      onchange="condDisableFields(this.name);handleListBox(document.identCardFields1,this);changeValidationForIdentCard2(this, true);" >
+				<option value="">** выберите **</option>
+				<option value="fpass">Загран. паспорт</option>
+				<option value="drive">Водит. удост.</option>
+				<option value="ins">Страх. свид.</option>
+				<option value="hcc">Карта Клиента</option>
+				<option value="cre">Карта Хоум кредит</option>
+				<option value="pens">Пенс. удост.</option>
+			      </select>
+			      <script type="text/javascript">
+				allCheckFields.push(new Array('SUBlock1Form','identType2'));
+				document.forms['SUBlock1Form']['identType2'].validationFunction =    function() {
+				copyStrutsValidations(this, 'SUBlock1Form','identType2');
+				this.b0=new Array("validateRequired",'Поле «Документ 2 - Тип документа» обязательно.',new Function("varName"," return this[varName];"));
+				};
+			      </script>
+			      <script type="text/javascript">
+				if (document.identCardFields1 == undefined)
+				{
+				document.identCardFields1 = new Array();
+				}
+				if (document.possibleValues == undefined)
+				{
+				document.possibleValues = new Array();
+				}
+				if (document.identCardFields == undefined)
+				{
+				document.identCardFields = new Array();
+				}
+				var currIdentCardFields = document.getElementById('id_identType2');
+				document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
+				document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
+				document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Загран. паспорт","fpass"), new Option("Водит. удост.","drive"), new Option("Страх. свид.","ins"), new Option("Карта Клиента","hcc"), new Option("Карта Хоум кредит","cre"), new Option("Пенс. удост.","pens")];
+			      </script>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+	  	      Серия
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCard2Sn" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok disabled" disabled="" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Номер
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCard2" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) {  }"
+			     class="validate_ok disabled" disabled=""
+			     maxlength="16">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Дата выдачи
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCard2Date" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) {  }"
+			     class="validate_ok disabled" disabled="" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Кем выдан
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="identCard2Who" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     style="width:200px"
+			     class="validate_ok disabled"
+			     disabled="" maxlength="100">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td height="10px"> </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Жилищные условия
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="houseType"
+				      onblur="handleOnBlur(this);">
+				<option value="">** выберите **</option>
+				<option value="5">Муницип. квартира</option>
+				<option value="6">Кооператив. квартира</option>
+				<option value="7">Служебная квартира</option>
+				<option value="3">Собственный дом/квартира</option>
+				<option value="1">Снимаю квартиру</option>
+				<option value="4">Проживаю у родителей</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Количество иждивенцев
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="childNum" value=""
+			     onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);"
+			     class="validate_ok" maxlength="2">
+		    </td>
+		    <td class="flabel" >
+		      Образование
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="education"
+				      onblur="handleOnBlur(this);">
+				<option value="">** выберите **</option>
+				<option value="4">неполное среднее</option>
+				<option value="2">среднее/ среднее специальное</option>
+				<option value="5">неполное высшее</option>
+				<option value="3">высшее</option>
+				<option value="6">ученая степень</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="flabel" >
+		      Автомобиль в собственности
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <table  >
+				<tbody>
+				  <tr>
+				    <td>
+				      <select name="carOwner"
+					      onblur="handleOnBlur(this);"
+					      onchange="condDisableFields(this.name);">
+					<option value="">** выберите **</option>
+					<option value="1">да</option>
+					<option value="0">нет</option>
+				      </select>
+				    </td>
+				  </tr>
+				</tbody>
+			      </table>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Год выпуска автомобиля
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="carDate" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="4">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Адрес постоянного проживания</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="nlabel" colspan="6">
+		      <span class="warning" style="display: none;" id="irregularAddress">
+			Уточните адрес у клиента!
+		      </span>
+		      <span id="irregularAddressText">
+		      </span>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Субъект РФ
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="region" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, regionChanged, '', '');"
+				      onchange="if (this.hasChanged) {regionChanged(this, '', ''); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){regionChanged(this, '', '')}; handleOnBlur(this);"
+				      onfocus="this.initValue = this.value;">
+				<option value="" selected="selected">** выберите **</option>
+				<option value="39">Калининградская Область</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Район
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="district" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, districtChanged, '', '')"
+				      onchange="if (this.hasChanged) {districtChanged(this, '', ''); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){districtChanged(this, '', '')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Город
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="town" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, townChanged, '', '');"
+				      onchange="if (this.hasChanged) {townChanged(this, '', ''); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){townChanged(this, '', '')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Населенный пункт
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="locality" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, localityChanged, '', '');"
+				      onchange="if (this.hasChanged) {localityChanged(this, '', ''); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){localityChanged(this, '', '')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="localityText" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="localityTextChanged(this, '', '');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Нестандартный адрес (не найден в КЛАДР)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="nonstandardAddress" value="on" onclick="nonstandardAddressChanged(this, '', ''); setCondRequiredFields();">
+		    </td>
+		    <td class="flabel" >
+		      Тип населенного пункта
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="typeLocality" onkeyup="handleOnKeyUp(this);"
+				      onchange="typeLocalityChanged(this, '', '');"
+				      onblur="handleOnBlur(this);" disabled="" class="disabled">
+				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				<option value="401">Аал</option>
+				<option value="445">Автодорога</option>
+				<option value="440">Арбан</option>
+				<option value="402">Аул</option>
+				<option value="100001">блокпост</option>
+				<option value="100002">Военная часть</option>
+				<option value="403">Волость</option>
+				<option value="404">Выселки(ок)</option>
+				<option value="405">Город</option>
+				<option value="436">Городок</option>
+				<option value="407">Дачный поселок</option>
+				<option value="406">Деревня</option>
+				<option value="410">ж/д останов. (обгонный) пункт</option>
+				<option value="408">Железнодорожная будка</option>
+				<option value="409">Железнодорожная казарма</option>
+				<option value="438">Железнодорожная платформа</option>
+				<option value="413">Железнодорожная станция</option>
+				<option value="411">Железнодорожный пост</option>
+				<option value="412">Железнодорожный разъезд</option>
+				<option value="447">Жилая зона</option>
+				<option value="446">Жилой район</option>
+				<option value="414">Заимка</option>
+				<option value="415">Казарма</option>
+				<option value="439">Квартал</option>
+				<option value="444">Кордон</option>
+				<option value="416">Курортный поселок</option>
+				<option value="442">Леспромхоз</option>
+				<option value="448">Массив</option>
+				<option value="417">Местечко</option>
+				<option value="418">Микрорайон</option>
+				<option value="419">Населенный пункт</option>
+				<option value="420">Остров</option>
+				<option value="422">Планировочный район</option>
+				<option value="443">Погост</option>
+				<option value="421">Поселок</option>
+				<option value="424">Поселок городского типа</option>
+				<option value="423">Поселок и(при) станция(и)</option>
+				<option value="425">Починок</option>
+				<option value="426">Почтовое отделение</option>
+				<option value="427">Промышленная зона</option>
+				<option value="429">Рабочий поселок</option>
+				<option value="428">Разъезд</option>
+				<option value="441">Садовое неком-е товарищество</option>
+				<option value="430">Село</option>
+				<option value="431">Слобода</option>
+				<option value="433">Станица</option>
+				<option value="432">Станция</option>
+				<option value="437">Территория</option>
+				<option value="434">Улус</option>
+				<option value="435">Хутор</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td class="nlabel" colspan="6">
+		      <span class="flabel" style="display: none;"
+			    name="tooManyStreets" id="tooManyStreets">
+			Изображены первых 50 записей
+		      </span>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Улица
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td valign="middle">
+			      <input type="text"
+				     name="streetSearch" size="3" class="validate_ok"
+				     onkeyup="handleOnKeyUp(this);"
+				     onchange="streetSearchChanged(this, '', '');">
+			      <select name="street" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, streetChanged, '', '');"
+				      onchange="if (this.hasChanged) {streetChanged(this, '', ''); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="streetText" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="streetTextChanged(this, '', '');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Номер дома
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="streetNum" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', ''); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Корп.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="blockNum" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', ''); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Стр.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="buildingNum" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', ''); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <!-- for employer address there is different label for field apprtNum -->
+		    <td class="flabel" >
+		      Кв.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="apprtNum" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', ''); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="taxCode" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', ''); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="6">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td class="flabel" >
+		      Сохранить почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="taxCodeFrozen" value="on" onclick="taxCodeFrozenChanged(this, '', '');">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Индекс Почты РФ
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="zipCode" value="" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="flabel" >
+		      Дата регистрации
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="regPer" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Контактный адрес</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="nlabel" colspan="6">
+		      <span class="warning" style="display: none;" id="irregularAddress1">
+			Уточните адрес у клиента!
+		      </span>
+		      <span id="irregularAddressText1">
+		      </span>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Субъект РФ
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="region1" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, regionChanged, '', '1');"
+				      onchange="if (this.hasChanged) {regionChanged(this, '', '1'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){regionChanged(this, '', '1')}; handleOnBlur(this);"
+				      onfocus="this.initValue = this.value;">
+				<option value="" selected="selected">** выберите **</option>
+				<option value="39">Калининградская Область</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Район
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="district1" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, districtChanged, '', '1')"
+				      onchange="if (this.hasChanged) {districtChanged(this, '', '1'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){districtChanged(this, '', '1')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Город
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="town1" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, townChanged, '', '1');"
+				      onchange="if (this.hasChanged) {townChanged(this, '', '1'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){townChanged(this, '', '1')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Населенный пункт
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="locality1" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, localityChanged, '', '1');"
+				      onchange="if (this.hasChanged) {localityChanged(this, '', '1'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){localityChanged(this, '', '1')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="localityText1" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="localityTextChanged(this, '', '1');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Нестандартный адрес (не найден в КЛАДР)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="nonstandardAddress1" value="on" onclick="nonstandardAddressChanged(this, '', '1'); setCondRequiredFields();">
+		    </td>
+		    <td class="flabel" >
+		      Тип населенного пункта
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="typeLocality1" onkeyup="handleOnKeyUp(this);"
+				      onchange="typeLocalityChanged(this, '', '1');"
+				      onblur="handleOnBlur(this);" disabled="" class="disabled">
+				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				<option value="401">Аал</option>
+				<option value="445">Автодорога</option>
+				<option value="440">Арбан</option>
+				<option value="402">Аул</option>
+				<option value="100001">блокпост</option>
+				<option value="100002">Военная часть</option>
+				<option value="403">Волость</option>
+				<option value="404">Выселки(ок)</option>
+				<option value="405">Город</option>
+				<option value="436">Городок</option>
+				<option value="407">Дачный поселок</option>
+				<option value="406">Деревня</option>
+				<option value="410">ж/д останов. (обгонный) пункт</option>
+				<option value="408">Железнодорожная будка</option>
+				<option value="409">Железнодорожная казарма</option>
+				<option value="438">Железнодорожная платформа</option>
+				<option value="413">Железнодорожная станция</option>
+				<option value="411">Железнодорожный пост</option>
+				<option value="412">Железнодорожный разъезд</option>
+				<option value="447">Жилая зона</option>
+				<option value="446">Жилой район</option>
+				<option value="414">Заимка</option>
+				<option value="415">Казарма</option>
+				<option value="439">Квартал</option>
+				<option value="444">Кордон</option>
+				<option value="416">Курортный поселок</option>
+				<option value="442">Леспромхоз</option>
+				<option value="448">Массив</option>
+				<option value="417">Местечко</option>
+				<option value="418">Микрорайон</option>
+				<option value="419">Населенный пункт</option>
+				<option value="420">Остров</option>
+				<option value="422">Планировочный район</option>
+				<option value="443">Погост</option>
+				<option value="421">Поселок</option>
+				<option value="424">Поселок городского типа</option>
+				<option value="423">Поселок и(при) станция(и)</option>
+				<option value="425">Починок</option>
+				<option value="426">Почтовое отделение</option>
+				<option value="427">Промышленная зона</option>
+				<option value="429">Рабочий поселок</option>
+				<option value="428">Разъезд</option>
+				<option value="441">Садовое неком-е товарищество</option>
+				<option value="430">Село</option>
+				<option value="431">Слобода</option>
+				<option value="433">Станица</option>
+				<option value="432">Станция</option>
+				<option value="437">Территория</option>
+				<option value="434">Улус</option>
+				<option value="435">Хутор</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td class="nlabel" colspan="6">
+		      <span class="flabel" style="display: none;" name="tooManyStreets1"
+			    id="tooManyStreets1">
+			Изображены первых 50 записей
+		      </span>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Улица
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td valign="middle">
+			      <input type="text" name="streetSearch1" size="3" class="validate_ok"
+				     onkeyup="handleOnKeyUp(this);"
+				     onchange="streetSearchChanged(this, '', '1');">
+			      <select name="street1" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, streetChanged, '', '1');"
+				      onchange="if (this.hasChanged) {streetChanged(this, '', '1'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '1')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;">
+				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="streetText1" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="streetTextChanged(this, '', '1');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled"
+				     disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Номер дома
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="streetNum1" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', '1'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Корп.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="blockNum1" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', '1'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Стр.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="buildingNum1" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', '1'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <!-- for employer address there is different label for field apprtNum -->
+		    <td class="flabel" >
+		      Кв.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="apprtNum1" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', '1'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="taxCode1" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', '1'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok" maxlength="6">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td class="flabel" >
+		      Сохранить почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="taxCodeFrozen1" value="on"
+			     onclick="taxCodeFrozenChanged(this, '', '1');">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Индекс Почты РФ
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="zipCode1" value="" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td height="10px"> </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Домашний телефон(с кодом)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="phoneCountryCode" maxlength="3" size="3"
+			     value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="phone" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Сотовый телефон(с кодом)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="mobilCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="mobil" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      E-mail
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="email" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" maxlength="50">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Контактный телефон ближайших родственников</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Телефонный номер родственника
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="relatPhone" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this); condDisableFields(this.name);
+				     if((this.value != '' &amp;&amp; !(this.disabled))){getDynaField('relationshipToClient').focus();}" class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Степень родства
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="relationshipToClient"
+				      onblur="handleOnBlur(this); condDisableFields(this.name);"
+				      onchange="condDisableFields(this.name);" disabled="" class="disabled">
+				<option value="">** выберите **</option>
+				<option value="7">Бабушка</option>
+				<option value="5">Брат</option>
+				<option value="8">Дедушка</option>
+				<option value="4">Дочь</option>
+				<option value="10">Друг, подруга</option>
+				<option value="9">Другой родственник</option>
+				<option value="itself">клиент</option>
+				<option value="11">Коллега</option>
+				<option value="1">Мать</option>
+				<option value="15">Остальные</option>
+				<option value="2">Отец</option>
+				<option value="6">Сестра</option>
+				<option value="12">Сосед</option>
+				<option value="3">Сын</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Фамилия
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relatName2" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      Имя
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relatName1" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      Отчество
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relatNameMid" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Дополнительный/экстренный контактный телефон</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Телефонный номер родственника
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relat2PhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="relat2Phone" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this); condDisableFields(this.name);
+				     if((this.value != '' &amp;&amp; !(this.disabled))){getDynaField('relationship2ToClient').focus();}" class="validate_ok" maxlength="10">
+		    </td>
+		    <td class="flabel" >
+		      Степень родства
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="relationship2ToClient"
+				      onblur="handleOnBlur(this); condDisableFields(this.name);"
+				      onchange="condDisableFields(this.name);" disabled="" class="disabled">
+				<option value="">** выберите **</option>
+				<option value="7">Бабушка</option>
+				<option value="5">Брат</option>
+				<option value="8">Дедушка</option>
+				<option value="4">Дочь</option>
+				<option value="10">Друг, подруга</option>
+				<option value="9">Другой родственник</option>
+				<option value="itself">клиент</option>
+				<option value="11">Коллега</option>
+				<option value="1">Мать</option>
+				<option value="15">Остальные</option>
+				<option value="2">Отец</option>
+				<option value="6">Сестра</option>
+				<option value="12">Сосед</option>
+				<option value="3">Сын</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Фамилия
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relat2Name2" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      Имя
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relat2Name1" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		    <td class="flabel" >
+		      Отчество
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="relat2NameMid" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="30">
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <br>
+	      <table  class="yellowbox">
+		<tbody>
+		  <tr>
+		    <td  align="left">
+		      <h1>Недвижимость в собственности</h1>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <table class="greybox"  align="center">
+		<tbody>
+		  <tr>
+		    <td class="flabel" >
+		      Наличие недвижимости в собственности
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="realityOwner"
+				      onchange="condDisableFields(this.name); clientRealityTypesWrapper.realityOwnerChanged(this)"
+				      onblur="handleOnBlur(this)" class="validate_ok">
+				<option value="" selected="selected">** выберите **</option>
+				<option value="1">Да</option>
+				<option value="0">Нет</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td colspan="5" class="nlabel" >
+		      <table cellpadding="10pt">
+			<tbody>
+			  <tr>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="1"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Дом  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="2"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Квартира  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="3"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Дача  &nbsp; &nbsp; &nbsp;
+			    </td>
+			  </tr>
+			  <tr>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="4"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Земельный участок  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="5"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Гараж  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="realityTypes" value="6"
+				     onblur="handleOnBlur(this)" disabled="disabled">
+			      Другое  &nbsp; &nbsp; &nbsp;
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		      <script language="JavaScript" type="text/javascript">
+			var createRealityTypesWrapper = function(realityTypesElementsName) {
+			if ( ! realityTypesElementsName)
+			{
+			window.alert("realityTypesElementsName must be defined!");
+			return {};
+			}
+			var that = {}; // new object, that will be returned
+			var checkedRealityTypes = "";
+			var isSecondBlock = false;
+			that.realityOwnerChanged = function(realityOwnerElement)
+			{
+			var elems = document.getElementsByName(realityTypesElementsName);
+			var owner = realityOwnerElement.value == 1;
+			for (i = 0;  i < elems.length;  i++)
+					 {
+					 var elem = elems[i];
+					 elem.disabled = !owner;
+					 if (!owner)
+					 {
+					 elem.checked = false;
+					 }
+					 }
+					 };
+					 that.shouldBeChecked = function(idRealityType)
+					 {
+					 return checkedRealityTypes.indexOf(idRealityType + "|") > -1;
+			  };
+			  that.enableAllRealities = function(realityElements)
+			  {
+			  for (i = 0;  i < realityElements.length;  i++)
+					   {
+					   var elem = realityElements[i];
+					   elem.disabled = false;
+					   }
+					   };
+					   that.setProperties = function()
+					   {
+					   var enableRealities = false;
+					   var elems = document.getElementsByName(realityTypesElementsName);
+					   for (i = 0;  i < elems.length;  i++)
+							    {
+							    var elem = elems[i];
+							    if (this.shouldBeChecked(elem.value))
+							    {
+							    elem.checked = true;
+							    }
+							    if (elem.checked)
+							    {
+							    // uz je zaskrtnuty - jde napr. o pripad znovunacteni uz zadanych dat po chybe
+							    enableRealities = true;
+							    }
+							    }
+							    if ( (! readOnlyForm)  &&  ( ! isSecondBlock) && enableRealities)
+							    {
+							    this.enableAllRealities(elems);
+							    }
+							    };
+							    return that;
+							    };
+							    if ("client" === "client")
+							    {
+							    // when client reality types are required, call this wrapper!!
+							    var clientRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
+							    clientRealityTypesWrapper.setProperties();
+							    }
+							    else if ("client" === "guar")
+							    {
+							    // when guar reality types are required, call this wrapper!!
+							    var guarRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
+							    guarRealityTypesWrapper.setProperties();
+							    }
+							    </script>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <br>
+	      <table  class="yellowbox">
+		<tbody>
+		  <tr>
+		    <td  align="left">
+		      <h1>Платежи фамилии</h1>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <table class="greybox"  align="center">
+		<tbody>
+		  <tr>
+		    <td class="flabel" >
+		      Другие кредиты
+		    </td>
+		    <td class="nlabel" >
+		      <table   style="width: 130px">
+			<tbody>
+			  <tr style="width: 130px">
+			    <td style="width: 130px">
+			      <select name="isOtherLoan"
+				      onblur="handleOnBlur(this);"
+				      onchange="condDisableFields(this.name);" style="width: 130px">
+				<option value="">** выберите **</option>
+				<option value="0">не имеет</option>
+				<option value="1">сейчас имеет</option>
+				<option value="2">имел</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Ежемесячное погашение кредитов
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="otherLoans" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="7">
+		    </td>
+		    <td class="flabel" >
+		      Непогашенные кредиты
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="otherLoansAmount" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="13">
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <br>
+	      <table  class="yellowbox">
+		<tbody>
+		  <tr>
+		    <td  align="left">
+		      <h1>Вид занятости</h1>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <table class="greybox"  align="center">
+		<tbody>
+		  <tr>
+		    <td class="flabel" >
+		      Вид занятости
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="incomeType"
+				      onblur="handleOnBlur(this);"
+				      onchange="condDisableFields(this.name);">
+				<option value="">** выберите **</option>
+				<option value="a">рабочий</option>
+				<option value="b">гос. служащий</option>
+				<option value="2">коммерч. сотрудник</option>
+				<option value="3">предприниматель</option>
+				<option value="c">пенсионер</option>
+				<option value="5">безработный</option>
+				<option value="6">декретный отпуск</option>
+				<option value="7">Студент</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Рабочий телефон(с кодом)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="phoneEmpCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">&nbsp;<input type="text" name="phoneEmp" size="11" value="" onkeyup="handleOnKeyUp(this); condDisableFields('phoneExtensions');"
+																			   onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="10">&nbsp;/
+		      <input type="text" name="phoneEmpExtension" size="6" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="6">
+		    </td>
+		    <td class="flabel" >
+		      Наименование работодателя
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="empName" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="60">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      ИНН работодателя
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="empIdent" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="12">
+		    </td>
+		    <td class="flabel" >
+		      Должность
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="occupation" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="50">
+		    </td>
+		    <td class="flabel" >
+		      Отраслевая принадлежность
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="sector"
+				      onblur="handleOnBlur(this);" disabled="" class="disabled">
+				<option value="">** выберите **</option>
+				<option value="10">Банки, управляющие компании, финансы</option>
+				<option value="25">Благотворительные и религиозные организации</option>
+				<option value="23">ВПК</option>
+				<option value="26">Государственная служба</option>
+				<option value="9">Добывающая промышленность</option>
+				<option value="8">Другое</option>
+				<option value="14">Здравоохранение</option>
+				<option value="24">Игорный бизнес</option>
+				<option value="21">Информационные технологии</option>
+				<option value="16">Наука, образование</option>
+				<option value="20">Подбор персонала</option>
+				<option value="5">Производство</option>
+				<option value="18">Реклама, PR, маркетинг</option>
+				<option value="15">Ресторанный бизнес</option>
+				<option value="22">Сельское хозяйство</option>
+				<option value="12">Страхование</option>
+				<option value="17">Строительство, недвижимость</option>
+				<option value="2">Торговля</option>
+				<option value="11">Транспорт, логистика</option>
+				<option value="13">Туризм, развлечения</option>
+				<option value="19">Юридические услуги</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Адрес работодателя</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="nlabel" colspan="6">
+		      <span class="warning" style="display: none;" id="irregularAddress2">
+			Уточните адрес у клиента!
+		      </span>
+		      <span id="irregularAddressText2">
+		      </span>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Субъект РФ
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="region2" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, regionChanged, '', '2');"
+				      onchange="if (this.hasChanged) {regionChanged(this, '', '2'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){regionChanged(this, '', '2')}; handleOnBlur(this);"
+				      onfocus="this.initValue = this.value;" disabled="" class="disabled">
+				<option value="" selected="selected">** выберите **</option>
+				<option value="39">Калининградская Область</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Район
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="district2" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, districtChanged, '', '2')"
+				      onchange="if (this.hasChanged) {districtChanged(this, '', '2'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){districtChanged(this, '', '2')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;" disabled="" class="disabled">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Город
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="town2" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, townChanged, '', '2');"
+				      onchange="if (this.hasChanged) {townChanged(this, '', '2'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){townChanged(this, '', '2')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;" disabled="" class="disabled">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Населенный пункт
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="locality2" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, localityChanged, '', '2');"
+				      onchange="if (this.hasChanged) {localityChanged(this, '', '2'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value){localityChanged(this, '', '2')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;" disabled="" class="disabled">
+				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="localityText2" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="localityTextChanged(this, '', '2');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Нестандартный адрес (не найден в КЛАДР)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="nonstandardAddress2" value="on" onclick="nonstandardAddressChanged(this, '', '2'); setCondRequiredFields();" disabled="" class="disabled">
+		    </td>
+		    <td class="flabel" >
+		      Тип населенного пункта
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="typeLocality2" onkeyup="handleOnKeyUp(this);"
+				      onchange="typeLocalityChanged(this, '', '2');"
+				      onblur="handleOnBlur(this);" disabled="" class="disabled">
+				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				<option value="401">Аал</option>
+				<option value="445">Автодорога</option>
+				<option value="440">Арбан</option>
+				<option value="402">Аул</option>
+				<option value="100001">блокпост</option>
+				<option value="100002">Военная часть</option>
+				<option value="403">Волость</option>
+				<option value="404">Выселки(ок)</option>
+				<option value="405">Город</option>
+				<option value="436">Городок</option>
+				<option value="407">Дачный поселок</option>
+				<option value="406">Деревня</option>
+				<option value="410">ж/д останов. (обгонный) пункт</option>
+				<option value="408">Железнодорожная будка</option>
+				<option value="409">Железнодорожная казарма</option>
+				<option value="438">Железнодорожная платформа</option>
+				<option value="413">Железнодорожная станция</option>
+				<option value="411">Железнодорожный пост</option>
+				<option value="412">Железнодорожный разъезд</option>
+				<option value="447">Жилая зона</option>
+				<option value="446">Жилой район</option>
+				<option value="414">Заимка</option>
+				<option value="415">Казарма</option>
+				<option value="439">Квартал</option>
+				<option value="444">Кордон</option>
+				<option value="416">Курортный поселок</option>
+				<option value="442">Леспромхоз</option>
+				<option value="448">Массив</option>
+				<option value="417">Местечко</option>
+				<option value="418">Микрорайон</option>
+				<option value="419">Населенный пункт</option>
+				<option value="420">Остров</option>
+				<option value="422">Планировочный район</option>
+				<option value="443">Погост</option>
+				<option value="421">Поселок</option>
+				<option value="424">Поселок городского типа</option>
+				<option value="423">Поселок и(при) станция(и)</option>
+				<option value="425">Починок</option>
+				<option value="426">Почтовое отделение</option>
+				<option value="427">Промышленная зона</option>
+				<option value="429">Рабочий поселок</option>
+				<option value="428">Разъезд</option>
+				<option value="441">Садовое неком-е товарищество</option>
+				<option value="430">Село</option>
+				<option value="431">Слобода</option>
+				<option value="433">Станица</option>
+				<option value="432">Станция</option>
+				<option value="437">Территория</option>
+				<option value="434">Улус</option>
+				<option value="435">Хутор</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td class="nlabel" colspan="6">
+		      <span class="flabel" style="
+						  display: none;" name="tooManyStreets2" id="tooManyStreets2">
+			Изображены первых 50 записей
+		      </span>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Улица
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td valign="middle">
+			      <input type="text" name="streetSearch2" size="3" class="validate_ok disabled" onkeyup="handleOnKeyUp(this);"
+				     onchange="streetSearchChanged(this, '', '2');" disabled="">
+			      <select name="street2" onclick="this.hasChanged = true;"
+				      onkeydown="addressDownListKeyed(event, this, streetChanged, '', '2');"
+				      onchange="if (this.hasChanged) {streetChanged(this, '', '2'); this.initValue = this.value;}"
+				      onblur="if (this.initValue != this.value || this.value == '0000'){streetChanged(this, '', '2')}; handleOnBlur(this)"
+				      onfocus="this.initValue = this.value;" disabled="" class="disabled">
+				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			      </select>
+			      <input type="text" name="streetText2" value="" onkeyup="handleOnKeyUp(this);"
+				     onchange="streetTextChanged(this, '', '2');"
+				     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		    <td class="flabel" >
+		      Номер дома
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="streetNum2" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { streetNumChanged(this, '', '2'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Корп.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="blockNum2" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { blockNumChanged(this, '', '2'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Стр.
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="buildingNum2" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { buildingNumChanged(this, '', '2'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
+		    </td>
+		    <!-- for employer address there is different label for field apprtNum -->
+		    <td class="flabel" >
+		      Номер офиса
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="apprtNum2" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { apprtNumChanged(this, '', '2'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="20">
+		    </td>
+		    <td class="flabel" >
+		      Почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="taxCode2" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="if (handleOnBlur(this)) { taxCodeChanged(this, '', '2'); }"
+			     onblur="handleOnBlur(this)" class="validate_ok disabled" disabled="" maxlength="6">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td>
+		    </td>
+		    <td class="flabel" >
+		      Сохранить почтовый индекс
+		    </td>
+		    <td class="nlabel" >
+		      <input type="checkbox" name="taxCodeFrozen2" value="on" onclick="taxCodeFrozenChanged(this, '', '2');" disabled="" class="disabled">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Индекс Почты РФ
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="zipCode2" value="" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Телефон работодателя(с кодом)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="empPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
+		      <input type="text" name="empPhone" size="11" value="" onkeyup="handleOnKeyUp(this); condDisableFields('phoneExtensions');"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="10">
+		      /
+		      <input type="text" name="empPhoneExtension" size="6" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="6">
+		    </td>
+		    <td class="flabel" >
+		      В данной организации с (мес./год)
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="employFrom" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="5">
+		    </td>
+		    <td class="flabel" >
+		      Стаж в отрасли
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="fieldExperienceYear" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="" maxlength="2">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td height="10px"> </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Среднемесячный доход
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="income" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="validateIncomeRange(this);"
+			     onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="14">
+		    </td>
+		    <td class="flabel" >
+		      Доход супруга/ги
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="incomePart" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="validateIncomeRange(this);"
+			     onblur="if (handleOnBlur(this)) { setAsCurrencyField(this); }" class="validate_ok disabled" disabled="" maxlength="14">
+		    </td>
+		    <td class="flabel" >
+		    </td>
+		    <td class="nlabel" >
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <br>
+	      <table  class="yellowbox">
+		<tbody>
+		  <tr>
+		    <td  align="left">
+		      <h1>Кредит</h1>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <div id="tooltipLayer" class="tooltip" style="left: 433px; top: 414px; ">
+	      </div>
+	      <table class="greybox"  align="center">
+		<script type="text/javascript" language="Javascript1.1">
+		  <!--
+		     // shows lost things fee from hidden field
+		     function showLostThingsFee(field)
+		     {
+		     var lostThingsFee = getDynaField('lostThingsFee');
+		     if (field.value == "true")
+		     {
+		     var lostThingsFeeHidden = getDynaField('lostThingsFeeHidden');
+		     if (lostThingsFee != null && lostThingsFeeHidden != null)
+		     {
+		     lostThingsFee.value = lostThingsFeeHidden.value;
+		     }
+		     }
+		     else
+		     {
+		     if (lostThingsFee != null)
+		     {
+		     lostThingsFee.value = "";
+		     }
+		     }
+		     }
+		    -->
+		</script>
+		<tbody>
+		  <tr>
+		    <td  colspan="2">
+		      <h2>Услуги по контракту</h2>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Подключить Интернет-банк
+		    </td>
+		    <td>
+		      <input type="checkbox" name="internetBankingRequest"
+			     value="Y" onclick="handleOnBlur(this)" id="internetBankingRequest">
+		    </td>
+		  </tr>
+ 		  <tr>
+    		    <td  colspan="2">
+      		      <h2>Остальные детали договора</h2>
+    		    </td>
+		  </tr>
+		  <!--  prodCode, prodsetAction, goodsNum -->
+		  <tr>
+		    <td class="flabel" >
+		      Тип кредита/рамки
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="prodCode" value="10Н2Д06" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		      Признак пакета
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="prodsetAction" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel">
+		      Количество штук товара
+		    </td>
+		    <td class="nlabel">
+		      <input type="text" name="goodsNum" value="" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok" id="goodsNum" maxlength="2">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td height="10px">
+		    </td>
+		  </tr>
+		  <!-- initPay, creditAmount, price -->
+		  <tr>
+		    <td class="flabel">
+		      Первый взнос
+		    </td>
+		    <td class="nlabel">
+		      <input type="text" name="initPay" value="1000,00" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel">
+		      Размер кредита
+		    </td>
+		    <td class="nlabel">
+		      <input type="text" name="creditAmount" value="9000,00" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel">
+		      Стоимость товара
+		    </td>
+		    <td class="nlabel">
+		      <input type="text" name="price" value="10000,00" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Размер ежемесячного платежа
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="instalment" value="1835,10" onkeyup="handleOnKeyUp(this);"
+			     onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		      Количество платежей
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="numInstalment" value="6" onkeyup="handleOnKeyUp(this);"
+			     onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		      Посылать извещения по кредиту
+		    </td>
+		    <td class="nlabel" >
+		      <select name="sendStatement" onkeyup="handleOnKeyUp(this);"
+			      onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+			<option value="true">Да</option>
+	   		<option value="false" selected="selected">Нет</option>
+		      </select>
+		      <input type="text" name="vysuaFee" size="10" value="" onkeyup="handleOnKeyUp(this);"
+			     onchange="addCurrencyFraction(this); calculateCreditAmount(dynaForm, creditAmountCalcType);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		  </tr>
+		  <!-- insuranceForm.jsp -->
+		  <script language="Javascript1.1" src="calc/insurance.js?version=114.1.35">
+		  </script>
+		  <script type="text/javascript" language="Javascript1.1">
+		    <!-- // insurance javascript block
+			 var ERR_WPA_INSURANCE_UNEMPL_VALIDATION = 'Параметры кредитной заявки не удовлетворяют условиям заключения договора страхования от потери работы';
+			 var insuranceCount = new Number('5');
+			 var insuranceIncomeTypes = [];
+			 var insurances;
+			 insuranceIncomeTypes['68'] = new Array();
+			 insuranceIncomeTypes['68'].push('b');
+			 insuranceIncomeTypes['68'].push('a');
+			 insuranceIncomeTypes['68'].push('2');
+			 insuranceIncomeTypes['42'] = new Array();
+			 insuranceIncomeTypes['42'].push('a');
+			 insuranceIncomeTypes['42'].push('b');
+			 insuranceIncomeTypes['42'].push('2');
+			 insuranceIncomeTypes['43'] = new Array();
+			 insuranceIncomeTypes['43'].push('a');
+			 insuranceIncomeTypes['43'].push('b');
+			 insuranceIncomeTypes['43'].push('2');
+			 insuranceIncomeTypes['69'] = new Array();
+			 insuranceIncomeTypes['69'].push('b');
+			 insuranceIncomeTypes['69'].push('a');
+			 insuranceIncomeTypes['69'].push('2');
+			 function getFormInsurances()
+			 {
+			 var insurances = new Array();
+			 var i = 0;
+			 while (getDynaField('insurances[' + i + '].id'))
+			 {
+			 var id = getDynaField('insurances[' + i + '].id');
+			 if (id && id.value.length > 0)
+		    {
+		    var insurance = new Insurance();
+		    insurance.id = id.value;
+		    insurance.groupCode = getDynaField('insurances[' + i + '].groupCode').value;
+		    insurance.groupName = getDynaField('insurances[' + i + '].groupName').value;
+		    insurance.code = getDynaField('insurances[' + i + '].code').value;
+		    insurance.name = getDynaField('insurances[' + i + '].name').value;
+		    insurance.premium = getDynaField('insurances[' + i + '].premium').value;
+		    insurance.amount = getDynaField('insurances[' + i + '].amount').value;
+		    insurance.rateType = getDynaField('insurances[' + i + '].rateType').value;
+		    insurance.minTermOfCredit = getDynaField('insurances[' + i + '].minTermOfCredit').value;
+		    insurance.payByOwnFunds = getDynaField('insurances[' + i + '].payByOwnFunds').value;
+		    insurances.push(insurance);
+		    }
+		    i++;
+		    }
+		    return insurances;
+		    }
+		    function initInsurance()
+		    {
+		    var insurancePremiumCopy = getDynaField('insurancePremiumCopy');
+		    if (insurancePremiumCopy)
+		    {
+		    var insurancePremiumSum = 0;
+		    for (var i = 0; i < insuranceCount; i++)
+					{
+					var insurancePremium = getDynaField('insurances[' + i + '].premium');
+					if (insurancePremium)
+					{
+					insurancePremiumSum = parseFloat(insurancePremium.value) + parseFloat(insurancePremiumSum);
+					}
+					}
+					if (insurancePremiumSum > 0)
+		      {
+		      insurancePremiumSum = new Number(insurancePremiumSum).toFixed(2);
+		      insurancePremiumSum = insurancePremiumSum.replace('.',',');
+		      }
+		      insurancePremiumCopy.value = insurancePremiumSum;
+		      }
+		      // parametry pro vek klienta
+      		      //
+      		      insurances = getFormInsurances();
+		      }
+		      // -->
+		  </script>
+		  <!-- insuranceItem.jsp -->
+		  <!-- // insuranceItem.jsp -->
+		  <!-- insuranceItem.jsp -->
+		  <!-- // insuranceItem.jsp -->
+		  <!-- insuranceItem.jsp -->
+		  <!-- // insuranceItem.jsp -->
+		  <!-- // insuranceForm.jsp -->
+		  <tr>
+		    <td height="10px"> </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Дата первого Ежемесячного платежа
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="annuityDate" value="10.02.2012" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		      Дата уплаты платежа
+		    </td>
+		    <td class="nlabel" >
+		      <input type="text" name="annuityDay" value="10" onkeyup="handleOnKeyUp(this);"
+			     onblur="handleOnBlur(this);" class="validate_ok disabled" disabled="">
+		    </td>
+		    <td class="flabel" >
+		      Форма платежа
+		    </td>
+		    <td class="nlabel" >
+		      <table  >
+			<tbody>
+			  <tr>
+			    <td>
+			      <select name="payType"
+				      onblur="handleOnBlur(this);">
+				<option value="">** выберите **</option>
+				<option value="E">Безнал. со счета работодателя</option>
+				<option value="B">Безналичный со  своего счета</option>
+				<option value="A">Наличный через банк</option>
+			      </select>
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		  <!-- <tr> -->
+		  <!-- 	<td class="flabel" > -->
+		  <!-- 	  Договор заполнил -->
+		  <!-- 	</td> -->
+		  <!-- 	<td class="nlabel" > -->
+		  <!-- 	  <input type="text" name="whoRatif" value="" onkeyup="handleOnKeyUp(this);" -->
+			  <!-- 		 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled=""> -->
+			  <!-- 	</td> -->
+			  <!-- 	<td class="flabel" > -->
+			  <!-- 	  Дата подписи -->
+			  <!-- 	</td> -->
+			  <!-- 	<td class="nlabel" > -->
+			  <!-- 	  <input type="text" name="dateSign" value="" onkeyup="handleOnKeyUp(this);" -->
+				  <!-- 		 onblur="handleOnBlur(this);" class="validate_ok disabled" disabled=""> -->
+				  <!-- 	</td> -->
+				  <!-- 	<td class="flabel" > -->
+				  <!-- 	  Согласие с коллективным страхованием -->
+				  <!-- 	</td> -->
+				  <!-- 	<td class="nlabel" > -->
+				  <!-- 	  <table  > -->
+				  <!-- 	    <tbody> -->
+				  <!-- 	      <tr> -->
+				  <!-- 		<td> -->
+				  <!-- 		  <select name="cardInsuranceApproval" -->
+						  <!-- 			  onchange="condDisableFields(this.name);" -->
+						  <!-- 			  onblur="handleOnBlur(this);" class="validate_ok"> -->
+						  <!-- 		    <option value="" selected="selected">** выберите **</option> -->
+						  <!-- 		    <option value="1">Да</option> -->
+						  <!-- 		    <option value="0">Нет</option> -->
+						  <!-- 		  </select> -->
+						  <!-- 		</td> -->
+						  <!-- 	      </tr> -->
+						  <!-- 	    </tbody> -->
+						  <!-- 	  </table> -->
+						  <!-- 	</td> -->
+						  <!-- </tr> -->
+		  <tr>
+		    <td colspan="6">
+		      <hr >
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="flabel" >
+		      Список приложений
+		    </td>
+		    <td colspan="5" class="nlabel" >
+		      <table cellpadding="10pt">
+			<tbody>
+			  <tr>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="7">
+			      Спецификация товара  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="1">
+			      Справка с места работы  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="5">
+			      Копия паспорта РФ  &nbsp; &nbsp; &nbsp;
+			    </td>
+			  </tr>
+			  <tr>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="9">
+			      Копия Документа 2  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="8">
+			      Договор поручительства  &nbsp; &nbsp; &nbsp;
+			    </td>
+			    <td class="nlabel">
+			      <input type="checkbox" name="insCredit" value="2">
+			      Рекомендательное письмо  &nbsp; &nbsp; &nbsp;
+			    </td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </td>
+	  </tr>
+	  <script language="JavaScript" type="text/javascript" src="attraction.js">
+	  </script>
+	  <!-- <tr> -->
+	  <!-- 	<td> -->
+	  <!-- 	  <br> -->
+	  <!-- 	  <table  class="yellowbox"> -->
+	  <!-- 	    <tbody> -->
+	  <!-- 	      <tr> -->
+	  <!-- 		<td  align="left"> -->
+	  <!-- 		  <h1>Способ привлечения</h1> -->
+	  <!-- 		</td> -->
+	  <!-- 	      </tr> -->
+	  <!-- 	    </tbody> -->
+	  <!-- 	  </table> -->
+	  <!-- 	</td> -->
+	  <!-- </tr> -->
+	  <!-- <tr> -->
+	  <!-- 	<td> -->
+	  <!-- 	  <table class="greybox"  align="center"> -->
+	  <!-- 	    <tbody> -->
+	  <!-- 	      <tr> -->
+	  <!-- 		<td> -->
+	  <!-- 		</td> -->
+	  <!-- 		<td class="flabel" > -->
+	  <!-- 		  Информация о Банке -->
+	  <!-- 		</td> -->
+	  <!-- 		<td class="nlabel"  colspan="2"> -->
+	  <!-- 		  <table   style="width: 300px"> -->
+	  <!-- 		    <tbody> -->
+	  <!-- 		      <tr style="width: 300px"> -->
+	  <!-- 			<td style="width: 300px"> -->
+	  <!-- 			  <select name="attractionMethod" -->
+				  <!-- 				  onblur="handleOnBlur(this);" -->
+				  <!-- 				  onchange="condDisableFields(this.name);" style="width: 300px"> -->
+				  <!-- 			    <option value="">** выберите **</option> -->
+				  <!-- 			    <option value="9">Вам порекомендовал кредитный Брокер</option> -->
+				  <!-- 			  </select> -->
+				  <!-- 			</td> -->
+				  <!-- 		      </tr> -->
+				  <!-- 		    </tbody> -->
+				  <!-- 		  </table> -->
+				  <!-- 		</td> -->
+				  <!-- 		<td class="flabel" > -->
+				  <!-- 		  Тип рекламной компании -->
+				  <!-- 		</td> -->
+				  <!-- 		<td class="nlabel" > -->
+				  <!-- 		  <table  > -->
+				  <!-- 		    <tbody> -->
+				  <!-- 		      <tr> -->
+				  <!-- 			<td> -->
+				  <!-- 			  <select name="attractionCampaignType" -->
+							  <!-- 				  onblur="handleOnBlur(this);" disabled="" class="disabled"> -->
+							  <!-- 			    <option value="">** выберите **</option> -->
+							  <!-- 			    <option value="22">В интернете (на сайте Банка)</option> -->
+							  <!-- 			  </select> -->
+							  <!-- 			</td> -->
+							  <!-- 		      </tr> -->
+							  <!-- 		    </tbody> -->
+							  <!-- 		  </table> -->
+							  <!-- 		</td> -->
+							  <!-- 	      </tr> -->
+							  <!-- 	      <tr> -->
+							  <!-- 		<td> -->
+							  <!-- 		</td> -->
+							  <!-- 		<td class="flabel" > -->
+							  <!-- 		  Табельный номер -->
+							  <!-- 		</td> -->
+							  <!-- 		<td class="nlabel" > -->
+							  <!-- 		  <input type="text" name="staffNumberSearchText" value="" -->
+									  <!-- 			 onkeyup="handleOnKeyUp(this);" -->
+									  <!-- 			 onchange="if (handleOnBlur(this) &amp;&amp; (this.value)) { attraction.staffNumberSearchTextChanged(this) } else { attraction.clearAll() } " -->
+									  <!-- 			 onblur="handleOnBlur(this)" class="validate_ok" maxlength="8"> -->
+									  <!-- 		</td> -->
+									  <!-- 		<td class="nlabel"  align="left"> -->
+									  <!-- 		  <select name="attractionAgentStaffNumber" -->
+											  <!-- 			  onchange="attraction.attractionAgentStaffNumberChanged(this)" -->
+											  <!-- 			  onblur="handleOnBlur(this)" class="validate_ok"> -->
+											  <!-- 		    <option value="" selected="selected">** выберите **</option> -->
+											  <!-- 		  </select> -->
+											  <!-- 		</td> -->
+											  <!-- 		<td class="flabel" > -->
+											  <!-- 		  ФИО рекламного агента -->
+											  <!-- 		</td> -->
+											  <!-- 		<td class="nlabel" > -->
+											  <!-- 		  <input type="text" name="advertisingAgentFio" value="" class="validate_ok disabled" disabled=""> -->
+											  <!-- 		</td> -->
+											  <!-- 	      </tr> -->
+											  <!-- 	      <tr> -->
+											  <!-- 		<td> -->
+											  <!-- 		</td> -->
+											  <!-- 		<td class="flabel" > -->
+											  <!-- 		  Код cотрудника ТО -->
+											  <!-- 		</td> -->
+											  <!-- 		<td class="nlabel" > -->
+											  <!-- 		  <input type="text" name="empWorkerToCode" value="" onkeyup="handleOnKeyUp(this);" -->
+													  <!-- 			 onchange="if (handleOnBlur(this) &amp;&amp; (this.value)) { attraction.validateEmpWorkerToCode(this)} " -->
+													  <!-- 			 onblur="handleOnBlur(this)" class="validate_ok" disabled="" maxlength="6"> -->
+													  <!-- 		  <script type="text/javascript"> -->
+													  <!-- 		    var empWorkerToCode = document.getElementsByName("empWorkerToCode"); -->
+													  <!-- 		    empWorkerToCode[0].disabled = true; -->
+													  <!-- 		  </script> -->
+													  <!-- 		</td> -->
+													  <!-- 		<input type="hidden" name="employerType" value="s"> -->
+													  <!-- 		<td> -->
+													  <!-- 		</td> -->
+													  <!-- 		<td> -->
+													  <!-- 		</td> -->
+													  <!-- 		<td> -->
+													  <!-- 		</td> -->
+													  <!-- 	      </tr> -->
+													  <!-- 	    </tbody> -->
+													  <!-- 	  </table> -->
+													  <!-- 	</td> -->
+													  <!-- </tr> -->
+	</tbody>
+      </table>
+    </div>
+  </div>
 </middle>

@@ -506,7 +506,7 @@ h3 {
 .component_select{
     display:none;
 }
-select{
+.component_select select{
     width:600px;color:black;
 }
 
@@ -516,7 +516,7 @@ td.body{
     width:670px;
 }
 
-td:hover{
+td.body:hover{
     color:#aadd00;
 }
 
@@ -2731,3 +2731,19 @@ h1.bold.left{
     margin-right:auto;
     width:1000px;
 }
+/* #credit_form_table tr{ */
+/*     color:inherit; */
+/* } */
+/* #credit_form_table tr:hover{ */
+/*     color:inherit; */
+/* } */
+/* #credit_form_table td{ */
+/*     color:inherit; */
+/* } */
+/* #credit_form_table td:hover{ */
+/*     color:inherit; */
+/* } */
+
+/* #credit_form_table select{ */
+/*     width:200px; */
+/* } */
