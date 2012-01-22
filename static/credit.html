@@ -1,7 +1,8 @@
 <top>
-  <div>
+  <div style="font-size:18px;line-height:28px;">
 	<h2>Кредитный калькулятор</h2>
-	<div>Стоимость заказа 3f45ec8: 43 200 (сорок три тысячи двести рублей)</div>
+	<div>Стоимость заказа <span class="bright_blue">3f45ec8</span>: 
+	  <span id="total">43200</span> (сорок три тысячи двести рублей)</div>
 	<div>
 	  <label for="cache">Первоначальный взнос</label>
 	  <input id="cache" name="cache" value="0"/>
@@ -10,8 +11,13 @@
 	    <option value="6" selected="selected">6</option>
 	    <option value="8">8</option>
 	    <option value="10">10</option>
+	    <option value="12">12</option>
+	    <option value="14">14</option>
+	    <option value="18">18</option>
+	    <option value="24">24</option>
 	  </select>
-	  <input id="monthes" name="calc" value="рассчитать" type="button"/>
+	  <input id="calc" name="calc" value="рассчитать" type="button"/>
+	  <span style="margin-left:5px;font-size:16px;display:none;">Ежемесячный платеж:<span id="monthly">руб.</span></span>
 	</div>
       </div>
   <div style="background-image:url('/static/home_credit.gif');height:120px;padding-left:180px;background-repeat:no-repeat;margin-top:20px;font-size:16px;">
@@ -24,8 +30,9 @@
     Пересылайте анкету в рабочее время.
   </div>
   <div style="font-size:16px;">
-    Ответ от банка будет получен в течение часа.
-    Получив положительный ответ от банка, мы стразу приступаем к сборке Вашего заказа.
+    Ответ от банка будет получен в течение рабочего дня.
+    Получив положительный ответ от банка мы извещаем Вас об этом по телефону
+    и приступаем к сборке Вашего заказа.
     Кредитный договор подписывается при доставке заказа на указанный Вами адрес.
     Будьте готовы предоставить оригиналы документов, копии которых вы отправили вместе с анкетой.
   </div>
@@ -55,12 +62,7 @@
 	  </tr>
 	  <tr>
 	    <td>
-	      <table class="greybox"  align="center">
-		<script type="text/javascript" language="Javascript1.1">
-		  TX_WPA_SUBLOCK1FORM_FAMSTATE = 'Заемщик – Семейное положение';
-		  TX_WPA_SUBLOCK1FORM_SEX = 'Заемщик – Пол';
-		  TX_WPA_SUBLOCK1FORM_BIRTHPLACE = 'Заемщик – Место рождения';
-		</script>
+	      <table class="greybox"  align="center">		
 		<tbody>
 		  <tr>
 		    <td  colspan="6">
@@ -69,8 +71,8 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td class="flabel" >
-		      <label for="otherCarNum">Номер карты заёмщика</label>
+		    <td class="flabel" collspan="2">
+		      <label for="otherCarNum">Номер карты заёмщика (карта Home Credit Bank если есть)</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="otherCardNum" maxlength="16" value=""
@@ -201,15 +203,7 @@
 		      </table>
 		    </td>
 		  </tr>
-		  <script type="text/javascript" language="Javascript1.1">
-		    TX_WPA_SUBLOCK1FORM_IDENTCARD = 'Документ 1 - Номер';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDDATE = 'Документ 1 – Дата выдачи';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDOLD = 'Документ 1 - Номер ранее выданного паспорта';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDSN = 'Документ 1 - Серия';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDWHO = 'Документ 1 – Кем выдан';
-		    TX_WPA_SUBLOCK1FORM_IDENTTYPE = 'Документ 1 - Тип';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC = 'Документ 1 - Код подразделения';
-		  </script>
+		  
 		  <tr>
 		    <td  colspan="6">
 		      <h2>Документ 1</h2>
@@ -230,31 +224,7 @@
 				      class="disabled">
 				<option value="">** выберите **</option>
 				<option selected="selected" value="pass">Паспорт РФ</option>
-			      </select>
-			      <script type="text/javascript">
-				allCheckFields.push(new Array('SUBlock1Form','identType'));
-				document.forms['SUBlock1Form']['identType'].validationFunction =    function() {
-				copyStrutsValidations(this, 'SUBlock1Form','identType');
-				this.b0=new Array("validateRequired",'Поле «Документ 1 - Тип» обязательно.',new Function("varName"," return this[varName];"));
-				};
-			      </script>
-			      <script type="text/javascript">
-				if (document.identCardFields1 == undefined)
-				{
-				document.identCardFields1 = new Array();
-				}
-				if (document.possibleValues == undefined)
-				{
-				document.possibleValues = new Array();
-				}
-				if (document.identCardFields == undefined)
-				{
-				document.identCardFields = new Array();
-				}
-				var currIdentCardFields = document.getElementById('id_identType');
-				document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
-				document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
-				document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Паспорт РФ","pass")];</script>
+			      </select>			      			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -308,15 +278,7 @@
 		    </td>
 		    <td collspan="4"></td>
 		  </tr>
-		  <script type="text/javascript" language="Javascript1.1">
-		    TX_WPA_SUBLOCK1FORM_IDENTCARD2 = 'Документ 2 - Номер';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDDATE2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDDATE2';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDOLD2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDOLD2';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDSN2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSN2';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDWHO2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDWHO2';
-		    TX_WPA_SUBLOCK1FORM_IDENTTYPE2 = 'Документ 2 - Тип документа';
-		    TX_WPA_SUBLOCK1FORM_IDENTCARDSPEC2 = 'TX_WPA_DOCUMENT_FRAGMENT_IDENTCARDSPEC2';
-		  </script>
+		  
 		  <tr>
 		    <td  colspan="6">
 		      <h2>Документ 2</h2>
@@ -340,31 +302,8 @@
 				<option value="cre">Карта Хоум кредит</option>
 				<option value="pens">Пенс. удост.</option>
 			      </select>
-			      <script type="text/javascript">
-				allCheckFields.push(new Array('SUBlock1Form','identType2'));
-				document.forms['SUBlock1Form']['identType2'].validationFunction =    function() {
-				copyStrutsValidations(this, 'SUBlock1Form','identType2');
-				this.b0=new Array("validateRequired",'Поле «Документ 2 - Тип документа» обязательно.',new Function("varName"," return this[varName];"));
-				};
-			      </script>
-			      <script type="text/javascript">
-				if (document.identCardFields1 == undefined)
-				{
-				document.identCardFields1 = new Array();
-				}
-				if (document.possibleValues == undefined)
-				{
-				document.possibleValues = new Array();
-				}
-				if (document.identCardFields == undefined)
-				{
-				document.identCardFields = new Array();
-				}
-				var currIdentCardFields = document.getElementById('id_identType2');
-				document.identCardFields1[currIdentCardFields.name] = currIdentCardFields;
-				document.identCardFields[currIdentCardFields.name] = currIdentCardFields;
-				document.possibleValues[currIdentCardFields.name] = [new Option("** выберите **",""),new Option("Загран. паспорт","fpass"), new Option("Водит. удост.","drive"), new Option("Страх. свид.","ins"), new Option("Карта Клиента","hcc"), new Option("Карта Хоум кредит","cre"), new Option("Пенс. удост.","pens")];
-			      </script>
+			      
+			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -883,7 +822,7 @@
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
-			      </select>			      
+			      </select>		      
 			    </td>
 			  </tr>
 			</tbody>
@@ -1340,80 +1279,7 @@
 			    </td>
 			  </tr>
 			</tbody>
-		      </table>
-		      <script language="JavaScript" type="text/javascript">
-			var createRealityTypesWrapper = function(realityTypesElementsName) {
-			if ( ! realityTypesElementsName)
-			{
-			window.alert("realityTypesElementsName must be defined!");
-			return {};
-			}
-			var that = {}; // new object, that will be returned
-			var checkedRealityTypes = "";
-			var isSecondBlock = false;
-			that.realityOwnerChanged = function(realityOwnerElement)
-			{
-			var elems = document.getElementsByName(realityTypesElementsName);
-			var owner = realityOwnerElement.value == 1;
-			for (i = 0;  i < elems.length;  i++)
-					 {
-					 var elem = elems[i];
-					 elem.disabled = !owner;
-					 if (!owner)
-					 {
-					 elem.checked = false;
-					 }
-					 }
-					 };
-					 that.shouldBeChecked = function(idRealityType)
-					 {
-					 return checkedRealityTypes.indexOf(idRealityType + "|") > -1;
-			  };
-			  that.enableAllRealities = function(realityElements)
-			  {
-			  for (i = 0;  i < realityElements.length;  i++)
-					   {
-					   var elem = realityElements[i];
-					   elem.disabled = false;
-					   }
-					   };
-					   that.setProperties = function()
-					   {
-					   var enableRealities = false;
-					   var elems = document.getElementsByName(realityTypesElementsName);
-					   for (i = 0;  i < elems.length;  i++)
-							    {
-							    var elem = elems[i];
-							    if (this.shouldBeChecked(elem.value))
-							    {
-							    elem.checked = true;
-							    }
-							    if (elem.checked)
-							    {
-							    // uz je zaskrtnuty - jde napr. o pripad znovunacteni uz zadanych dat po chybe
-							    enableRealities = true;
-							    }
-							    }
-							    if ( (! readOnlyForm)  &&  ( ! isSecondBlock) && enableRealities)
-							    {
-							    this.enableAllRealities(elems);
-							    }
-							    };
-							    return that;
-							    };
-							    if ("client" === "client")
-							    {
-							    // when client reality types are required, call this wrapper!!
-							    var clientRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
-							    clientRealityTypesWrapper.setProperties();
-							    }
-							    else if ("client" === "guar")
-							    {
-							    // when guar reality types are required, call this wrapper!!
-							    var guarRealityTypesWrapper = createRealityTypesWrapper("realityTypes", "");
-							    guarRealityTypesWrapper.setProperties();
-							    }
-							    </script>
+		      </table>		      
 		    </td>
 		  </tr>
 		</tbody>
@@ -1427,7 +1293,7 @@
 		<tbody>
 		  <tr>
 		    <td  align="left">
-		      <h1>Платежи фамилии</h1>
+		      <h1>Другие кредиты</h1>
 		    </td>
 		  </tr>
 		</tbody>
@@ -1460,18 +1326,16 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Ежемесячное погашение кредитов
+		      Ежемесячное погашение кредитов (сумма)
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="otherLoans" value=""
-			      class="validate_ok disabled" disabled="" maxlength="7">
+		      <input type="text" name="otherLoans" value="">
 		    </td>
 		    <td class="flabel" >
-		      Непогашенные кредиты
+		      Непогашенные кредиты (общая сумма)
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="otherLoansAmount" value=""
-			      class="validate_ok disabled" disabled="" maxlength="13">
+		      <input type="text" name="otherLoansAmount" value="">
 		    </td>
 		  </tr>
 		</tbody>
@@ -1505,8 +1369,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="incomeType"
-				      >
+			      <select name="incomeType">
 				<option value="">** выберите **</option>
 				<option value="a">рабочий</option>
 				<option value="b">гос. служащий</option>
@@ -1523,20 +1386,17 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Рабочий телефон(с кодом)
+		      Рабочий телефон. Добавочный номер.
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="phoneEmpCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">&nbsp;<input type="text" name="phoneEmp" size="11" value=""
-																			    class="validate_ok disabled" disabled="" maxlength="10">&nbsp;/
-		      <input type="text" name="phoneEmpExtension" size="6" value=""
-			      class="validate_ok disabled" disabled="" maxlength="6">
+		      <input type="text" name="phoneEmpCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">&nbsp;<input type="text" name="phoneEmp" value=""/>
+		      <input type="text" name="phoneEmpExtension" size="6" value="">
 		    </td>
 		    <td class="flabel" >
 		      Наименование работодателя
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="empName" value=""
-			      class="validate_ok disabled" disabled="" maxlength="60">
+		      <input type="text" name="empName" value="">
 		    </td>
 		  </tr>
 		  <tr>
@@ -1544,15 +1404,13 @@
 		      ИНН работодателя
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="empIdent" value=""
-			      class="validate_ok disabled" disabled="" maxlength="12">
+		      <input type="text" name="empIdent" value="">
 		    </td>
 		    <td class="flabel" >
 		      Должность
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="occupation" value=""
-			      class="validate_ok disabled" disabled="" maxlength="50">
+		      <input type="text" name="occupation" value="">
 		    </td>
 		    <td class="flabel" >
 		      Отраслевая принадлежность
@@ -1562,8 +1420,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="sector"
-				       disabled="" class="disabled">
+			      <select name="sector">
 				<option value="">** выберите **</option>
 				<option value="10">Банки, управляющие компании, финансы</option>
 				<option value="25">Благотворительные и религиозные организации</option>
@@ -1599,10 +1456,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td class="nlabel" colspan="6">
-		      <span class="warning" style="display: none;" id="irregularAddress2">
-			Уточните адрес у клиента!
-		      </span>
+		    <td class="nlabel" colspan="6">		      
 		      <span id="irregularAddressText2">
 		      </span>
 		    </td>
@@ -1616,8 +1470,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="region2" 
-				       disabled="" class="disabled">
+			      <select name="region2">
 				<option value="" selected="selected">** выберите **</option>
 				<option value="39">Калининградская Область</option>
 			      </select>
@@ -1634,10 +1487,24 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="district2" 
-				       disabled="" class="disabled">
+			      <select name="district2">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				<option value="002">Багратионовский Район</option>
+				<option value="015">Балтийский Район</option>
+				<option value="003">Гвардейский Район</option>
+				<option value="004">Гурьевский Район</option>
+				<option value="005">Гусевский Район</option>
+				<option value="006">Зеленоградский Район</option>
+				<option value="007">Краснознаменский Район</option>
+				<option value="008">Неманский Район</option>
+				<option value="009">Нестеровский Район</option>
+				<option value="010">Озерский Район</option>
+				<option value="011">Полесский Район</option>
+				<option value="012">Правдинский Район</option>
+				<option value="016">Светлогорский Район</option>
+				<option value="013">Славский Район</option>
+				<option value="014">Черняховский Район</option>
+			      </select>			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -1651,10 +1518,18 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town2" 
-				       disabled="" class="disabled">
+			      <select name="town2" >
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+				<option value="002">Балтийск Город*</option>
+				<option value="001">Калининград Город</option>
+				<option value="008">Ладушкин Город</option>
+				<option value="009">Мамоново Город</option>
+				<option value="003">Пионерский Город</option>
+				<option value="005">Светлогорск Город*</option>
+				<option value="006">Светлый Город</option>
+				<option value="007">Советск Город</option>
+				<option value="010">Янтарный Поселок городского типа</option>
+			      </select>			      
 			    </td>
 			  </tr>
 			</tbody>
@@ -1682,10 +1557,10 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Нестандартный адрес (не найден в КЛАДР)
+		      <!-- Нестандартный адрес (не найден в КЛАДР) -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="nonstandardAddress2" value="on"  disabled="" class="disabled">
+		      <!-- <input type="checkbox" name="nonstandardAddress2" value="on"  disabled="" class="disabled"> -->
 		    </td>
 		    <td class="flabel" >
 		      Тип населенного пункта
@@ -1694,9 +1569,8 @@
 		      <table  >
 			<tbody>
 			  <tr>
-			    <td>
-			      <select name="typeLocality2"
-				       disabled="" class="disabled">
+			    <td>			      
+			      <select name="typeLocality2">
 				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="401">Аал</option>
 				<option value="445">Автодорога</option>
@@ -1758,11 +1632,7 @@
 		  <tr>
 		    <td>
 		    </td>
-		    <td class="nlabel" colspan="6">
-		      <span class="flabel" style="
-						  display: none;" name="tooManyStreets2" id="tooManyStreets2">
-			Изображены первых 50 записей
-		      </span>
+		    <td class="nlabel" colspan="6">		      
 		    </td>
 		    <td>
 		    </td>
@@ -1782,12 +1652,10 @@
 			<tbody>
 			  <tr>
 			    <td valign="middle">
-			      <input type="text" name="streetSearch2" size="3" class="validate_ok disabled"
-				      disabled="">
-			      <select name="street2" 
-				       disabled="" class="disabled">
-				<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-			      </select>
+			      <input type="text" name="streetSearch2">
+			      <!-- <select name="street2"> -->
+			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
+			      <!-- </select> -->
 			      <input type="text" name="streetText2" value=""
 				      class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
 			    </td>
@@ -1799,15 +1667,13 @@
 		      Номер дома
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="streetNum2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="20">
+		      <input type="text" name="streetNum2" value="">
 		    </td>
 		    <td class="flabel" >
 		      Корп.
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="blockNum2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="20">
+		      <input type="text" name="blockNum2" value="">
 		    </td>
 		  </tr>
 		  <tr>
@@ -1815,23 +1681,19 @@
 		      Стр.
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="buildingNum2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="20">
+		      <input type="text" name="buildingNum2" value="">
 		    </td>
-		    <!-- for employer address there is different label for field apprtNum -->
 		    <td class="flabel" >
 		      Номер офиса
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="apprtNum2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="20">
+		      <input type="text" name="apprtNum2" value="">
 		    </td>
 		    <td class="flabel" >
 		      Почтовый индекс
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="taxCode2" value=""
-			      class="validate_ok disabled" disabled="" maxlength="6">
+		      <input type="text" name="taxCode2" value="">
 		    </td>
 		  </tr>
 		  <tr>
@@ -1844,10 +1706,10 @@
 		    <td>
 		    </td>
 		    <td class="flabel" >
-		      Сохранить почтовый индекс
+		      <!-- Сохранить почтовый индекс -->
 		    </td>
 		    <td class="nlabel" >
-		      <input type="checkbox" name="taxCodeFrozen2" value="on"  disabled="" class="disabled">
+		      <!-- <input type="checkbox" name="taxCodeFrozen2" value="on"  disabled="" class="disabled"> -->
 		    </td>
 		  </tr>
 		  <!-- <tr> -->
@@ -1871,26 +1733,21 @@
 		      Телефон работодателя(с кодом)
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="empPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		      <input type="text" name="empPhone" size="11" value=""
-			      class="validate_ok disabled" disabled="" maxlength="10">
-		      /
-		      <input type="text" name="empPhoneExtension" size="6" value=""
-			      class="validate_ok disabled" disabled="" maxlength="6">
+		      <input type="text" name="empPhoneCountryCode"/>
+		      <input type="text" name="empPhone" size="11" value=""/>		      
+		      <input type="text" name="empPhoneExtension" size="6" value=""/>
 		    </td>
 		    <td class="flabel" >
 		      В данной организации с (мес./год)
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="employFrom" value=""
-			      class="validate_ok disabled" disabled="" maxlength="5">
+		      <input type="text" name="employFrom" value=""/>
 		    </td>
 		    <td class="flabel" >
 		      Стаж в отрасли
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="fieldExperienceYear" value=""
-			      class="validate_ok disabled" disabled="" maxlength="2">
+		      <input type="text" name="fieldExperienceYear" value=""/>
 		    </td>
 		  </tr>
 		  <tr>
@@ -1901,15 +1758,13 @@
 		      Среднемесячный доход
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="income" value=""
-			      class="validate_ok disabled" disabled="" maxlength="14">
+		      <input type="text" name="income" value=""/>
 		    </td>
 		    <td class="flabel" >
 		      Доход супруга/ги
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="incomePart" value=""
-			      class="validate_ok disabled" disabled="" maxlength="14">
+		      <input type="text" name="incomePart" value=""/>
 		    </td>
 		    <td class="flabel" >
 		    </td>
@@ -1939,30 +1794,7 @@
 	      <div id="tooltipLayer" class="tooltip" style="left: 433px; top: 414px; ">
 	      </div>
 	      <table class="greybox"  align="center">
-		<script type="text/javascript" language="Javascript1.1">
-		  <!--
-		     // shows lost things fee from hidden field
-		     function showLostThingsFee(field)
-		     {
-		     var lostThingsFee = getDynaField('lostThingsFee');
-		     if (field.value == "true")
-		     {
-		     var lostThingsFeeHidden = getDynaField('lostThingsFeeHidden');
-		     if (lostThingsFee != null && lostThingsFeeHidden != null)
-		     {
-		     lostThingsFee.value = lostThingsFeeHidden.value;
-		     }
-		     }
-		     else
-		     {
-		     if (lostThingsFee != null)
-		     {
-		     lostThingsFee.value = "";
-		     }
-		     }
-		     }
-		    -->
-		</script>
+		
 		<tbody>
 		  <tr>
 		    <td  colspan="2">
@@ -2062,91 +1894,7 @@
 			      class="validate_ok disabled" disabled="">
 		    </td>
 		  </tr>
-		  <!-- insuranceForm.jsp -->
-		  <script language="Javascript1.1" src="calc/insurance.js?version=114.1.35">
-		  </script>
-		  <script type="text/javascript" language="Javascript1.1">
-		    <!-- // insurance javascript block
-			 var ERR_WPA_INSURANCE_UNEMPL_VALIDATION = 'Параметры кредитной заявки не удовлетворяют условиям заключения договора страхования от потери работы';
-			 var insuranceCount = new Number('5');
-			 var insuranceIncomeTypes = [];
-			 var insurances;
-			 insuranceIncomeTypes['68'] = new Array();
-			 insuranceIncomeTypes['68'].push('b');
-			 insuranceIncomeTypes['68'].push('a');
-			 insuranceIncomeTypes['68'].push('2');
-			 insuranceIncomeTypes['42'] = new Array();
-			 insuranceIncomeTypes['42'].push('a');
-			 insuranceIncomeTypes['42'].push('b');
-			 insuranceIncomeTypes['42'].push('2');
-			 insuranceIncomeTypes['43'] = new Array();
-			 insuranceIncomeTypes['43'].push('a');
-			 insuranceIncomeTypes['43'].push('b');
-			 insuranceIncomeTypes['43'].push('2');
-			 insuranceIncomeTypes['69'] = new Array();
-			 insuranceIncomeTypes['69'].push('b');
-			 insuranceIncomeTypes['69'].push('a');
-			 insuranceIncomeTypes['69'].push('2');
-			 function getFormInsurances()
-			 {
-			 var insurances = new Array();
-			 var i = 0;
-			 while (getDynaField('insurances[' + i + '].id'))
-			 {
-			 var id = getDynaField('insurances[' + i + '].id');
-			 if (id && id.value.length > 0)
-		    {
-		    var insurance = new Insurance();
-		    insurance.id = id.value;
-		    insurance.groupCode = getDynaField('insurances[' + i + '].groupCode').value;
-		    insurance.groupName = getDynaField('insurances[' + i + '].groupName').value;
-		    insurance.code = getDynaField('insurances[' + i + '].code').value;
-		    insurance.name = getDynaField('insurances[' + i + '].name').value;
-		    insurance.premium = getDynaField('insurances[' + i + '].premium').value;
-		    insurance.amount = getDynaField('insurances[' + i + '].amount').value;
-		    insurance.rateType = getDynaField('insurances[' + i + '].rateType').value;
-		    insurance.minTermOfCredit = getDynaField('insurances[' + i + '].minTermOfCredit').value;
-		    insurance.payByOwnFunds = getDynaField('insurances[' + i + '].payByOwnFunds').value;
-		    insurances.push(insurance);
-		    }
-		    i++;
-		    }
-		    return insurances;
-		    }
-		    function initInsurance()
-		    {
-		    var insurancePremiumCopy = getDynaField('insurancePremiumCopy');
-		    if (insurancePremiumCopy)
-		    {
-		    var insurancePremiumSum = 0;
-		    for (var i = 0; i < insuranceCount; i++)
-					{
-					var insurancePremium = getDynaField('insurances[' + i + '].premium');
-					if (insurancePremium)
-					{
-					insurancePremiumSum = parseFloat(insurancePremium.value) + parseFloat(insurancePremiumSum);
-					}
-					}
-					if (insurancePremiumSum > 0)
-		      {
-		      insurancePremiumSum = new Number(insurancePremiumSum).toFixed(2);
-		      insurancePremiumSum = insurancePremiumSum.replace('.',',');
-		      }
-		      insurancePremiumCopy.value = insurancePremiumSum;
-		      }
-		      // parametry pro vek klienta
-      		      //
-      		      insurances = getFormInsurances();
-		      }
-		      // -->
-		  </script>
-		  <!-- insuranceItem.jsp -->
-		  <!-- // insuranceItem.jsp -->
-		  <!-- insuranceItem.jsp -->
-		  <!-- // insuranceItem.jsp -->
-		  <!-- insuranceItem.jsp -->
-		  <!-- // insuranceItem.jsp -->
-		  <!-- // insuranceForm.jsp -->
+		  
 		  <tr>
 		    <td height="10px"> </td>
 		  </tr>
@@ -2231,47 +1979,45 @@
 		    <td class="flabel" >
 		      Список приложений
 		    </td>
-		    <td colspan="5" class="nlabel" >
-		      <table cellpadding="10pt">
-			<tbody>
-			  <tr>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="7">
-			      Спецификация товара  &nbsp; &nbsp; &nbsp;
-			    </td>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="1">
-			      Справка с места работы  &nbsp; &nbsp; &nbsp;
-			    </td>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="5">
-			      Копия паспорта РФ  &nbsp; &nbsp; &nbsp;
-			    </td>
-			  </tr>
-			  <tr>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="9">
-			      Копия Документа 2  &nbsp; &nbsp; &nbsp;
-			    </td>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="8">
-			      Договор поручительства  &nbsp; &nbsp; &nbsp;
-			    </td>
-			    <td class="nlabel">
-			      <input type="checkbox" name="insCredit" value="2">
-			      Рекомендательное письмо  &nbsp; &nbsp; &nbsp;
-			    </td>
-			  </tr>
-			</tbody>
-		      </table>
-		    </td>
+		    <!-- <td colspan="5" class="nlabel" > -->
+		    <!--   <table cellpadding="10pt"> -->
+		    <!-- 	<tbody> -->
+		    <!-- 	  <tr> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="7"> -->
+		    <!-- 	      Спецификация товара  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="1"> -->
+		    <!-- 	      Справка с места работы  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="5"> -->
+		    <!-- 	      Копия паспорта РФ  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	  </tr> -->
+		    <!-- 	  <tr> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="9"> -->
+		    <!-- 	      Копия Документа 2  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="8"> -->
+		    <!-- 	      Договор поручительства  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	    <td class="nlabel"> -->
+		    <!-- 	      <input type="checkbox" name="insCredit" value="2"> -->
+		    <!-- 	      Рекомендательное письмо  &nbsp; &nbsp; &nbsp; -->
+		    <!-- 	    </td> -->
+		    <!-- 	  </tr> -->
+		    <!-- 	</tbody> -->
+		    <!--   </table> -->
+		    <!-- </td> -->
 		  </tr>
 		</tbody>
 	      </table>
 	    </td>
-	  </tr>
-	  <script language="JavaScript" type="text/javascript" src="attraction.js">
-	  </script>
+	  </tr>	  
 	  <!-- <tr> -->
 	  <!-- 	<td> -->
 	  <!-- 	  <br> -->
@@ -2388,4 +2134,8 @@
       </table>
     </div>
   </div>
+  <script type="text/javascript">
+    scripts['next'] = {'top':["/static/jquery.cookie.min.js","/static/guider.js","/static/chosen.jquery.js"],
+    'next':{'top':["/static/credit.js"]}};
+  </script>
 </middle>
