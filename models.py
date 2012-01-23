@@ -1275,7 +1275,7 @@ class UserForCredit(object):
 
 
     def get(self, field, default=None):
-	return self.component_doc.get(field, default)
+	return self.user_doc.get(field, default)
 
     def __iter__(self):
 	for k,v in self.user_doc.items():

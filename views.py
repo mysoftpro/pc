@@ -1160,51 +1160,55 @@ letter_pat = re.compile('[a-zA-Z_]*')
 class CreditForm(PCView):
 
     def fillUploadedAttachments(self, user, attachments):
-        """ 
-             i have passport in template. here i have passport, passport1 ...
-             it need to install all passport`s and icrement name in template for passportn
-        """        
-        keys = sorted(attachments.keys())
-        clean_keys = {}
-        all_keys = {}
-        for k in keys:
-            clean = re.match(letter_pat,k).group()
-            number = k[len(clean):]
-            if number == '':
-                number = 0
-            _int = int(number)    
-            if clean not in clean_keys:
-                clean_keys[clean] = _int
-            if _int>clean_keys[clean]:
-                clean_keys[clean] = _int
-            if clean not in all_keys:
-                all_keys[clean] = [k]
-            else:
-                all_keys[clean].append(k)
-        # now in clean keys i have all keys followed by the max numbers
-        # in all_keys i have a grouping of all keys
-        for k in all_keys.keys():
-            new_number = clean_keys[k]+1
-            field = self.template.middle.xpath('.//input[@name="'+k+'"]')[0]
-            field.set('name', k+str(new_number))
-            links = all_keys[k]
-            for l in links:
-                a = etree.Element('a')
-                a.set('href','/image/'+user._id+'/'+attachments[k])
-                a.set('target','_blank')
-                a.set('class', 'uploaded_file')
-                span = etree.Element('span')
-                span.set('text', u'удалить')
-                span.set('style', u'margin-left:5px;')
-                field.addPrevious(a)
-        # print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        # print all_keys
-        # print clean_keys                                    
+	"""
+	     i have passport in template. here i have passport, passport1 ...
+	     it need to install all passport`s and icrement name in template for passportn
+	"""
+	keys = sorted(attachments.keys())
+	clean_keys = {}
+	all_keys = {}
+	for k in keys:
+	    clean = re.match(letter_pat,k).group()
+	    number = k[len(clean):]
+	    if number == '':
+		number = 0
+	    _int = int(number)
+	    if clean not in clean_keys:
+		clean_keys[clean] = _int
+	    if _int>clean_keys[clean]:
+		clean_keys[clean] = _int
+	    if clean not in all_keys:
+		all_keys[clean] = [k]
+	    else:
+		all_keys[clean].append(k)
+	# now in clean keys i have all keys followed by the max numbers
+	# in all_keys i have a grouping of all keys
+	for k in all_keys.keys():
+	    new_number = clean_keys[k]+1
+	    field = self.template.middle.xpath('.//input[@name="'+k+'"]')[0]
+	    field.set('name', k+str(new_number))
+	    links = all_keys[k]
+	    for l in links:
+		a = etree.Element('a')
+		a.set('href','/image/'+user._id+'/'+attachments[l])
+		a.set('target','_blank')
+		a.set('class', 'uploaded_file')
+		a.text = attachments[l]
+		span = etree.Element('span')
+		span.set('text', u'удалить')
+		span.set('style', u'margin-left:5px;')
+		a.append(span)
+		field.addprevious(a)
+		field.addprevious(etree.Element('br'))
+
+	# print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	# print all_keys
+	# print clean_keys
 
     def fillSavedForm(self, user):
 	for k,v in user._credits[self.name].items():
 	    if k=='attachments':
-		self.fillUploadedAttachments(user, v)                    
+		self.fillUploadedAttachments(user, v)
 	    value = unicode(v)
 	    field = self.template.middle.xpath('.//input[@name="'+k+'"]')
 	    if len(field)>0:
