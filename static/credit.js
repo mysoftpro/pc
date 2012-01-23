@@ -139,13 +139,21 @@ function init(){
     var it = 0;
     function addFile(e){
 	var target = $(e.target);
-	file_changed[target.attr('name')] = target.val();
-	var iit = it+1;
-	it+=1;
-	target.after('<input type="file" name="'+target.attr('name')+iit+'"/>');
+	var _name = target.attr('name');
+	file_changed[_name] = target.val();
+	var letters = _name.match(/[a-zA-Z_]*/g)[0];
+	var number = _name.substring(letters.length);
+	if (!number)
+	    number = 0;
+	var new_number = parseInt(number)+1;
+	target.after('<input type="file" name="'+letters+new_number+'"/>');
 	target.next().change(addFile);
     }
     $('input[type="file"]').change(addFile);
+    // _(.toArray())
+    // 	.each(function(_el){
+    // 		  $(_el).change();
+    // 	      });
     $('.save').click(save);
 
 }

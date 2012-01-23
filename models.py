@@ -1268,10 +1268,22 @@ class Set(Model):
 	return u'Компьютерные компоненты'
 
 
-
+# TODO! common class for couch docs
 class UserForCredit(object):
     def __init__(self, user_doc):
 	self.user_doc = user_doc
+
+
+    def get(self, field, default=None):
+	return self.component_doc.get(field, default)
+
+    def __iter__(self):
+	for k,v in self.user_doc.items():
+	    yield k,v
+
+    @property
+    def _id(self):
+	return self.get('_id')
 
     def get_credits(self):
 	if not 'credits' in self.user_doc:

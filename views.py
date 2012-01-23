@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model, notes
+from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model, notes,UserForCredit
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog, NOTE_MARGIN
 from copy import deepcopy
@@ -15,7 +15,7 @@ from twisted.web.error import NoResource
 from twisted.web.resource import Resource
 from twisted.web.server import NOT_DONE_YET
 from pc.market import getMarket
-
+import re
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -1155,10 +1155,79 @@ class NoteBooks(PCView):
 	return d
 
 
+letter_pat = re.compile('[a-zA-Z_]*')
+
 class CreditForm(PCView):
+
+    def fillUploadedAttachments(self, user, attachments):
+        """ 
+             i have passport in template. here i have passport, passport1 ...
+             it need to install all passport`s and icrement name in template for passportn
+        """        
+        keys = sorted(attachments.keys())
+        clean_keys = {}
+        all_keys = {}
+        for k in keys:
+            clean = re.match(letter_pat,k).group()
+            number = k[len(clean):]
+            if number == '':
+                number = 0
+            _int = int(number)    
+            if clean not in clean_keys:
+                clean_keys[clean] = _int
+            if _int>clean_keys[clean]:
+                clean_keys[clean] = _int
+            if clean not in all_keys:
+                all_keys[clean] = [k]
+            else:
+                all_keys[clean].append(k)
+        # now in clean keys i have all keys followed by the max numbers
+        # in all_keys i have a grouping of all keys
+        for k in all_keys.keys():
+            new_number = clean_keys[k]+1
+            field = self.template.middle.xpath('.//input[@name="'+k+'"]')[0]
+            field.set('name', k+str(new_number))
+            links = all_keys[k]
+            for l in links:
+                a = etree.Element('a')
+                a.set('href','/image/'+user._id+'/'+attachments[k])
+                a.set('target','_blank')
+                a.set('class', 'uploaded_file')
+                span = etree.Element('span')
+                span.set('text', u'удалить')
+                span.set('style', u'margin-left:5px;')
+                field.addPrevious(a)
+        # print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        # print all_keys
+        # print clean_keys                                    
+
+    def fillSavedForm(self, user):
+	for k,v in user._credits[self.name].items():
+	    if k=='attachments':
+		self.fillUploadedAttachments(user, v)                    
+	    value = unicode(v)
+	    field = self.template.middle.xpath('.//input[@name="'+k+'"]')
+	    if len(field)>0:
+		field[0].set('value',value)
+	    else:
+		field = self.template.middle.xpath('.//select[@name="'+k+'"]')
+		if len(field)>0:
+		    options = field[0].findall('option')
+		    for o in options:
+			if o.get('value') == value:
+			    o.set('selected','selected')
+			else:
+			    if 'selected' in o.attrib:
+				del o.attrib['selected']
+
+
     def renderCreditForm(self, user_doc):
 	if self.name is None:
 	    self.name = 'empty'
+	user = UserForCredit(user_doc)
+	if self.request.getCookie('pc_key') == user_doc['pc_key'] and\
+		self.name in user._credits:
+	    self.fillSavedForm(user)
 	from pc.root import credit_tarifs
 	script = self.template.top.find('script')
 	script.text = 'var monthly='+simplejson.dumps(credit_tarifs)+';'

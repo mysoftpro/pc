@@ -1307,8 +1307,6 @@ class CreditUploader(Resource):
 
 
     def newUser(self, fail, user_id, data, attachments, order_id, file_names, request):
-        print "neeeeeeeeeeeeeeeeeeeeeeeeeeeeew"
-        print fail
 	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
 	addCookies(request, {'pc_key':user_doc['pc_key']})        
 	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names, request)
@@ -1338,7 +1336,6 @@ class CreditUploader(Resource):
 	return NOT_DONE_YET
 
 class DeleteCreditAttachment(Resource):
-
 
     def delete(self, user_doc, field, order_id, request):
         user = UserForCredit(user_doc)
