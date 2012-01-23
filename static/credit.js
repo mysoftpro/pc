@@ -47,7 +47,7 @@ var file_changed = {};
 function save(e){
     $('iframe').remove();
     var names = JSON.stringify(_(file_changed).keys());
-    var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names={{_names}}" width="1000" height="1000" border="0"></iframe>',
+    var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names={{_names}}" width="1" height="1" style="position:absolute;left:-10px;" border="0"></iframe>',
     		       {_names:encodeURIComponent(names)});
     $('body').append(i);
     var data = {};
@@ -96,16 +96,18 @@ function updateSave(tries){
 function installUploadedFiles(){
     _(file_changed).chain().keys().each(function(key){
 					    var inp = $('input[name="'+key+'"]');
-					    console.log(file_changed[key]);
 					    var file_name = _(file_changed[key].split('/')).last();
 					    file_name= _(file_name.split('\\')).last();
 					    inp.before('<a target="_blank" href="/image/'+
 						       $.cookie('pc_user')+'/'+file_name+
-						       '">'+file_changed[key]+
-						       '<span style="margin-left:5px;">удалить</span></span></a>');
+						       '">'+file_name+
+						       '<span style="margin-left:5px;">удалить</span></a>');
 					    var span = inp.prev().find('span');
+					    inp.remove();
+					    span.after('<br/>');
 					    span
-						.click(function(el){
+						.click(function(e){
+							   e.preventDefault();
 							   $.ajax({
 								      url:'deleteCreditAttachment',
 								      data:{'field':key,
@@ -123,6 +125,7 @@ function installUploadedFiles(){
 								  });
 						       });
 					});
+    file_changed = {};
 }
 
 function init(){

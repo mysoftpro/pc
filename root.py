@@ -1291,22 +1291,6 @@ class CreditUploader(Resource):
 	return template.substitute(names=quote_plus(names), files=u''.join(file_names)).encode('utf-8')
 
 
-    def storeAttachments(self, scaled, doc, request):
-	attachments = {}
-	for success,value in scaled:
-	    if success:
-		for sc in value:
-		    attachments.update({sc[0]:sc[1].getvalue()})
-	    else:
-		print "fuuuuuuuuuuuuuuuuuuuuuuuuuuuck"
-		print value.getErrorMessage()
-	def save(_doc):
-	    couch.saveDoc(_doc)
-
-	d = couch.addAttachments(doc, attachments)
-	d.addCallback(save)
-	request.finish()
-
 
     def finish(self, res, request):
 	request.write("<html><body><div id=\"status\">ok</div></body></html>")
@@ -1362,8 +1346,6 @@ class CreditUploader(Resource):
 class DeleteCreditAttachment(Resource):
     def fail(self, request, reason="no reason"):
 	request.write("fail")
-	print "fffffffffffffffffffffffffffffffffffffff"
-	print reason
 	request.finish
 	return
 
@@ -1371,8 +1353,6 @@ class DeleteCreditAttachment(Resource):
 	pc_key = request.getCookie('pc_key')
 	if not 'pc_key' in user_doc or user_doc['pc_key'] != pc_key:
 	    return self.fail(request, 'pc_key')
-        print order_id
-        print user_doc['credits']
 	if not 'credits' in user_doc or order_id not in user_doc['credits']:
 	    return self.fail(request, 'credits')
 	if not 'attachments' in user_doc['credits'][order_id] or field not in  user_doc['credits'][order_id]['attachments']:
