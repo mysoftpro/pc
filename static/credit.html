@@ -2,7 +2,7 @@
   <script type="text/javascript"></script>
   <div style="font-size:18px;line-height:28px;">
 	<h2>Кредитный калькулятор</h2>
-	<div>Стоимость заказа <span class="bright_blue"></span>: 
+	<div>Стоимость заказа <span class="bright_blue" id="orderid"></span>:
 	  <span id="total"></span></div>
 	<div>
 	  <label for="cache">Первоначальный взнос</label>
@@ -43,6 +43,8 @@
   <div id="models_container">
     <div id="models">
       <h1>Анкета на получения кредита от банка Home Credit</h1>
+      <div class="square_button send" style="float:right;">Отправить</div>
+      <div class="square_button save" style="float:right;background-position:0px -44px;">Сохранить</div>
       <table >
 	<tbody>
 	  <tr>
@@ -64,7 +66,7 @@
 	  </tr>
 	  <tr>
 	    <td>
-	      <table class="greybox"  align="center">		
+	      <table class="greybox"  align="center">
 		<tbody>
 		  <tr>
 		    <td  colspan="6">
@@ -205,7 +207,7 @@
 		      </table>
 		    </td>
 		  </tr>
-		  
+
 		  <tr>
 		    <td  colspan="6">
 		      <h2>Документ 1</h2>
@@ -226,7 +228,7 @@
 				      class="disabled">
 				<option value="">** выберите **</option>
 				<option selected="selected" value="pass">Паспорт РФ</option>
-			      </select>			      			      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -280,7 +282,7 @@
 		    </td>
 		    <td collspan="4"></td>
 		  </tr>
-		  
+
 		  <tr>
 		    <td  colspan="6">
 		      <h2>Документ 2</h2>
@@ -304,8 +306,8 @@
 				<option value="cre">Карта Хоум кредит</option>
 				<option value="pens">Пенс. удост.</option>
 			      </select>
-			      
-			      
+
+
 			    </td>
 			  </tr>
 			</tbody>
@@ -502,7 +504,7 @@
 				<option value="016">Светлогорский Район</option>
 				<option value="013">Славский Район</option>
 				<option value="014">Черняховский Район</option>
-			      </select>			      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -527,7 +529,7 @@
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
-			      </select>			      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -763,7 +765,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="region1" 
+			      <select name="region1"
 				      >
 				<option value="" selected="selected">** выберите **</option>
 				<option value="39">Калининградская Область</option>
@@ -799,7 +801,7 @@
 				<option value="013">Славский Район</option>
 				<option value="014">Черняховский Район</option>
 			      </select>
-			      
+
 			    </td>
 			  </tr>
 			</tbody>
@@ -824,7 +826,7 @@
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
-			      </select>		      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -1281,7 +1283,7 @@
 			    </td>
 			  </tr>
 			</tbody>
-		      </table>		      
+		      </table>
 		    </td>
 		  </tr>
 		</tbody>
@@ -1458,7 +1460,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td class="nlabel" colspan="6">		      
+		    <td class="nlabel" colspan="6">
 		      <span id="irregularAddressText2">
 		      </span>
 		    </td>
@@ -1506,7 +1508,7 @@
 				<option value="016">Светлогорский Район</option>
 				<option value="013">Славский Район</option>
 				<option value="014">Черняховский Район</option>
-			      </select>			      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -1531,7 +1533,7 @@
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
-			      </select>			      
+			      </select>
 			    </td>
 			  </tr>
 			</tbody>
@@ -1547,7 +1549,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="locality2" 
+			      <select name="locality2"
 				       disabled="" class="disabled">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 			      </select>
@@ -1571,7 +1573,7 @@
 		      <table  >
 			<tbody>
 			  <tr>
-			    <td>			      
+			    <td>
 			      <select name="typeLocality2">
 				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="401">Аал</option>
@@ -1634,7 +1636,7 @@
 		  <tr>
 		    <td>
 		    </td>
-		    <td class="nlabel" colspan="6">		      
+		    <td class="nlabel" colspan="6">
 		    </td>
 		    <td>
 		    </td>
@@ -1736,7 +1738,7 @@
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="empPhoneCountryCode"/>
-		      <input type="text" name="empPhone" size="11" value=""/>		      
+		      <input type="text" name="empPhone" size="11" value=""/>
 		      <input type="text" name="empPhoneExtension" size="6" value=""/>
 		    </td>
 		    <td class="flabel" >
@@ -1796,7 +1798,7 @@
 	      <div id="tooltipLayer" class="tooltip" style="left: 433px; top: 414px; ">
 	      </div>
 	      <table class="greybox"  align="center">
-		
+
 		<tbody>
 		  <tr>
 		    <td  colspan="2">
@@ -1896,7 +1898,7 @@
 		      <!-- 	      class="validate_ok disabled" disabled=""> -->
 		    </td>
 		  </tr>
-		  
+
 		  <tr>
 		    <td height="10px"> </td>
 		  </tr>
@@ -1972,14 +1974,51 @@
 						  <!-- 	  </table> -->
 						  <!-- 	</td> -->
 						  <!-- </tr> -->
+
+		</tbody>
+	      </table>
+
+	      <form id="credit_uploader" name="credit_uploader" action="credit_uploader" target="credit_uploader" method="post" enctype="multipart/form-data" rel="nofollow">
+	      <table>	
+		<tbody>
 		  <tr>
 		    <td colspan="6">
 		      <hr >
 		    </td>
 		  </tr>
-		  <tr>
+		  
+		  <tr>		    
 		    <td class="flabel" >
 		      Список приложений
+		    </td>
+		    <td>
+		      Сканы всех страниц паспорта, на которых есть отметки (добавляйте по одной)
+		    </td>
+		    <td>
+		      <input type="file" name="passport"/>
+		    </td>
+		    <td>
+		      Фото		      
+		    </td>
+		    <td>
+		      <input type="file" name="photo"/>
+		    </td>
+		  </tr>
+
+		  <tr>
+		    <td></td>
+		    <td>
+		      Сканы второго документа		      
+		    </td>
+		    <td><input type="file" name="second_doc"/></td>
+		  </tr>
+		  <tr>		    
+		    <td>
+		      <input type="text" name="credit_data"  id="credit_data" value="" />
+		      <input type="text" name="file_names"  id="file_names" value="" />
+		      <input type="submit" name="credit_submit" value="credit_submit" 
+			     id="credit_submit"/>
+		      <input type="text" name="order_id"  id="order_id" value="" />
 		    </td>
 		    <!-- <td colspan="5" class="nlabel" > -->
 		    <!--   <table cellpadding="10pt"> -->
@@ -2018,8 +2057,9 @@
 		  </tr>
 		</tbody>
 	      </table>
+	      </form>
 	    </td>
-	  </tr>	  
+	  </tr>
 	  <!-- <tr> -->
 	  <!-- 	<td> -->
 	  <!-- 	  <br> -->
@@ -2134,6 +2174,8 @@
 													  <!-- </tr> -->
 	</tbody>
       </table>
+      <div class="square_button send" style="float:right;">Отправить</div>
+      <div class="square_button save" style="float:right;background-position:0px -44px;">Сохранить</div>
     </div>
   </div>
   <script type="text/javascript">

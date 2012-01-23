@@ -443,7 +443,7 @@ class Computers(Cart):
 no_component_added = False
 
 class Computer(PCView):
-    
+
     def __init__(self, *args, **kwargs):
 	super(Computer, self).__init__(*args, **kwargs)
 	# self.script = self.template.middle.find('script')
@@ -1156,11 +1156,11 @@ class NoteBooks(PCView):
 
 class CreditForm(PCView):
     def preRender(self):
-        if self.name is None:
-            d = defer.Deferred()
-            d.callback(None)
-            from pc.root import credit_rarifs
-            script = self.template.top.find('script')
-            script.text = 'var monthly='+simplejson.dumps(credit_rarifs)
-            script.text+='var order="";var summ="";var order_name=""'        
-        return d
+	if self.name is None:
+	    d = defer.Deferred()
+	    d.callback(None)
+	    from pc.root import credit_rarifs
+	    script = self.template.top.find('script')
+	    script.text = 'var monthly='+simplejson.dumps(credit_rarifs)+';'
+	    script.text+='var order="";var summ="";var order_name="";'
+	    return d
