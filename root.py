@@ -14,7 +14,7 @@ import simplejson
 from datetime import datetime, date
 from pc.models import\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, upgrade_set, Model, notes
+    NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
    MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm
 from pc.catalog import XmlGetter, WitNewMap
@@ -1234,7 +1234,7 @@ class SaveSet(Resource):
 	return NOT_DONE_YET
 
 
-credit_rarifs ={'20':{6:0.2012,
+credit_tarifs ={'20':{6:0.2012,
 		      8:0.1589,
 		      10:0.1337,
 		      12:0.1171,
@@ -1297,17 +1297,9 @@ class CreditUploader(Resource):
 	request.finish()
 
     def storeCreditInfo(self, user_doc, data, attachments, order_id, file_names, request):
-	if not 'credits' in user_doc:
-	    user_doc['credits'] = {}
-	_credits = user_doc['credits']
-	_credits[order_id] = data
-
-	if not 'attachments' in _credits[order_id]:
-	    _credits[order_id]['attachments'] = []
-	_credits[order_id]['attachments'] = file_names
-
-	d = couch.addAttachments(user_doc, attachments)
-	def save(_doc):
+        user = UserForCredit(user_doc)
+        d = user.updateCredits(order_id, data, file_names, attachments)
+        def save(_doc):            
 	    couch.saveDoc(_doc)
 	d.addCallback(save)
 	d.addCallback(self.finish, request)
@@ -1315,9 +1307,11 @@ class CreditUploader(Resource):
 
 
     def newUser(self, fail, user_id, data, attachments, order_id, file_names, request):
+        print "neeeeeeeeeeeeeeeeeeeeeeeeeeeeew"
+        print fail
 	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
-	addCookies(request, {'pc_key':user_doc['pc_key']})
-	self.storeCreditInfo(user_doc, data, attachments, order_id, request)
+	addCookies(request, {'pc_key':user_doc['pc_key']})        
+	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names, request)
 
 
 
@@ -1344,26 +1338,12 @@ class CreditUploader(Resource):
 	return NOT_DONE_YET
 
 class DeleteCreditAttachment(Resource):
-    def fail(self, request, reason="no reason"):
-	request.write("fail")
-	request.finish
-	return
+
 
     def delete(self, user_doc, field, order_id, request):
-	pc_key = request.getCookie('pc_key')
-	if not 'pc_key' in user_doc or user_doc['pc_key'] != pc_key:
-	    return self.fail(request, 'pc_key')
-	if not 'credits' in user_doc or order_id not in user_doc['credits']:
-	    return self.fail(request, 'credits')
-	if not 'attachments' in user_doc['credits'][order_id] or field not in  user_doc['credits'][order_id]['attachments']:
-	    return self.fail(request, 'attachments')
-	file_name = user_doc['credits'][order_id]['attachments'][field]
-	if file_name not in user_doc['_attachments']:
-	    return self.fail(request, 'file nam, not in att')
-	user_doc['_attachments'].pop(file_name)
-	couch.saveDoc(user_doc)
-	request.write('ok')
-	request.finish()
+        user = UserForCredit(user_doc)
+        request.write(user.deleteAttachment(field, order_id))
+        request.finish()
 
     def render_GET(self, request):
 	field = request.args.get('field', [None])[0]

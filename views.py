@@ -16,6 +16,7 @@ from twisted.web.resource import Resource
 from twisted.web.server import NOT_DONE_YET
 from pc.market import getMarket
 
+
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
 	self.author = author
@@ -1155,12 +1156,15 @@ class NoteBooks(PCView):
 
 
 class CreditForm(PCView):
-    def preRender(self):
+    def renderCreditForm(self, user_doc):
 	if self.name is None:
-	    d = defer.Deferred()
-	    d.callback(None)
-	    from pc.root import credit_rarifs
-	    script = self.template.top.find('script')
-	    script.text = 'var monthly='+simplejson.dumps(credit_rarifs)+';'
-	    script.text+='var order="";var summ="";var order_name="";'
-	    return d
+	    self.name = 'empty'
+	from pc.root import credit_tarifs
+	script = self.template.top.find('script')
+	script.text = 'var monthly='+simplejson.dumps(credit_tarifs)+';'
+	script.text+='var order="";var summ="";var order_name="";'
+
+    def preRender(self):
+	d = couch.openDoc(self.request.getCookie('pc_user'))
+	d.addCallback(self.renderCreditForm)
+	return d
