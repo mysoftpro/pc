@@ -1195,8 +1195,9 @@ class CreditForm(PCView):
 		a.set('class', 'uploaded_file')
 		a.text = attachments[l]
 		span = etree.Element('span')
-		span.set('text', u'удалить')
+		span.text= u'удалить'
 		span.set('style', u'margin-left:5px;')
+                span.set('id', l)
 		a.append(span)
 		field.addprevious(a)
 		field.addprevious(etree.Element('br'))

@@ -93,6 +93,34 @@ function updateSave(tries){
 	alert('что-то пошло не так :(');
 }
 
+function deleteFile(key){    
+    return function(e){
+	e.preventDefault();
+	var target = $(e.target);
+	// if (!key)
+	//     key = target.attr('id');
+	var field = key;
+	if (!field)
+	    field = target.attr('id');
+	$.ajax({
+		   url:'deleteCreditAttachment',
+		   data:{'field':field,
+			 'order':$('#orderid')
+			 .text()},
+		   success:function(data){
+		       if (data=="ok")
+			   $(e.target).parent().remove();
+		       else
+			   alert('что-то пошло не так');
+		   },
+		   error:function(data){
+		       alert('что-то пошло не так');
+		   }
+	       });
+    };
+}
+
+
 function installUploadedFiles(){
     _(file_changed).chain().keys().each(function(key){
 					    var inp = $('input[name="'+key+'"]');
@@ -105,25 +133,7 @@ function installUploadedFiles(){
 					    var span = inp.prev().find('span');
 					    inp.remove();
 					    span.after('<br/>');
-					    span
-						.click(function(e){
-							   e.preventDefault();
-							   $.ajax({
-								      url:'deleteCreditAttachment',
-								      data:{'field':key,
-									    'order':$('#orderid')
-									    .text()},
-								      success:function(data){
-									  if (data=="ok")
-									      span.parent().remove();
-									  else
-									      alert('что-то пошло не так');
-								      },
-								      error:function(data){
-									  alert('что-то пошло не так');
-								      }
-								  });
-						       });
+					    span.click(deleteFile(key));
 					});
     file_changed = {};
 }
@@ -150,11 +160,7 @@ function init(){
 	target.next().change(addFile);
     }
     $('input[type="file"]').change(addFile);
-    // _(.toArray())
-    // 	.each(function(_el){
-    // 		  $(_el).change();
-    // 	      });
     $('.save').click(save);
-
+    $('a.uploaded_file span').click(deleteFile());
 }
 init();
