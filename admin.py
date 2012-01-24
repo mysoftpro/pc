@@ -366,11 +366,12 @@ class FindOrder(Resource):
 		    if row['doc']['price'] < cheapeast['price']:
 			cheapeast = row['doc']
 	    return cheapeast
-	from pc import models
 
         _model = Model(model_user[0][1])
 	for k,v in model_user[0][1]['items'].items():
             component = wrap(_model.findComponent(k))
+            if type(v) is list:
+                component.addCallback(addCount(len(v)))
 	    # component = None
 	    # if v is not None:
 	    #     try:

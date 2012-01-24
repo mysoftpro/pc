@@ -82,6 +82,7 @@ function fillForm(_data){
         var count = 1;
         if (comp['count'])
             count = comp['count'];
+	console.log(comp);
         tr.append(_.template('<td>{{count}}</td>',
                                       {count:count}));
         tr.append(_.template('<td>{{stock}}</td>',

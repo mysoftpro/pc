@@ -345,8 +345,13 @@ function setPriceAndPin(body,component){
 	mult = component['count'];
     var pr = jgetPrice(body);
     pr.text(component.price*mult + ' р');
-    if (will_blink)
-	blink(pr, '#404040');
+    if (will_blink){
+	if ($.cookie('pc_skin') && $.cookie('pc_skin')=='home')
+	    blink(pr, 'white');
+	else
+	    blink(pr, '#404040');
+    }
+	
     var pin = calculatePin(component);
     if (pin != 8){
 	jgetPin(body).text(pin);
