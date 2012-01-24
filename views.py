@@ -68,6 +68,15 @@ class ModelInCart(object):
 	else:
 	    info.set('class', info.get('class')+ ' empty_info')
 
+    def set_price(self):
+    	price_span = self.model_div.find('.//span')
+	price_span.set('id',self.model._id)
+	total = self.model.total
+	if self.model.ourPrice:
+	    total = self.model.ourPrice
+	price_span.text = unicode(total) + u' р'
+
+
 
 
     def fillModelDiv(self):
@@ -80,12 +89,7 @@ class ModelInCart(object):
 	self.fillInfo()
 	self.setModelLink()
 
-	price_span = self.model_div.find('.//span')
-	price_span.set('id',self.model._id)
-	total = self.model.total
-	if self.model.ourPrice:
-	    total = self.model.ourPrice
-	price_span.text = unicode(total) + u' р'
+        self.set_price()
 
 	# self.icon.find('img').set('src',self.getCaseIcon())
 	self.setIcon()
@@ -249,6 +253,13 @@ class SetInCart(ModelInCart):
 
 
 class NotebookInCart(SetInCart):
+
+
+    def set_price(self):
+    	price_span = self.model_div.find('.//span')
+	price_span.set('id',self.model._id)	
+	price_span.text = unicode(makeNotePrice(self.model.components[0].component_doc)['price']) + u' р'
+
 
     def setModelLink(self):
 	url = '/notebook'
