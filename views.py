@@ -1139,7 +1139,8 @@ class NoteBooks(PCView):
 
 	    for token in ['id', 'flags','inCart',
 			  'ordered','reserved','stock1', '_rev', 'warranty_type']:
-		r['doc'].pop(token)
+                if token in r['doc']:
+                    r['doc'].pop(token)
 	    r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
 	    #TODO save all this shit found from re
 	    json_notebooks.update({r['doc']['_id']:r['doc']})
@@ -1204,7 +1205,7 @@ class CreditForm(PCView):
 		field.addprevious(etree.Element('br'))
 
 
-    def fillSavedForm(self, user_id, stored_credit):
+    def fillSavedForm(self, user_id, stored_credit, parent_name):
 	for k,v in stored_credit.items():
 	    if k=='attachments':
 		self.fillUploadedAttachments(user_id, v)
@@ -1222,15 +1223,17 @@ class CreditForm(PCView):
 			else:
 			    if 'selected' in o.attrib:
 				del o.attrib['selected']
+        if self.name != parent_name:
+            self.template.middle.xpath('.//input[@id="parent"]')[0].set('value',parent_name)
 
 
     def renderCreditFormForUser(self, user_doc):
 	if self.name is None:
 	    self.name = UserForCredit.idle_name
 	user = UserForCredit(user_doc)
-	stored = user.getStoredCredit(self.name, self.request.getCookie('pc_key'))
+	stored, name = user.getStoredCredit(self.name, self.request.getCookie('pc_key'))
 	if stored:
-	    self.fillSavedForm(user._id, stored)
+	    self.fillSavedForm(user._id, stored, name)
 	from pc.root import credit_tarifs
 	script = self.template.top.find('script')
 	script.text = 'var monthly='+simplejson.dumps(credit_tarifs)+';'

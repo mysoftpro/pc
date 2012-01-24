@@ -1340,7 +1340,7 @@ class DeleteCreditAttachment(Resource):
 
     def delete(self, user_doc, field, order_id, request):
 	user = UserForCredit(user_doc)
-	request.write(user.deleteAttachment(field, order_id))
+	request.write(user.deleteAttachment(field, order_id, request.getCookie('pc_key')))
 	request.finish()
 
     def render_GET(self, request):
@@ -1348,8 +1348,8 @@ class DeleteCreditAttachment(Resource):
 	if field is None:
 	    return "fail"
 	order = request.args.get('order', [UserForCredit.idle_name])[0]
-	if order == '':
-	    order = UserForCredit.idle_name
+	# if order == '':
+	#     order = UserForCredit.idle_name
 	d = couch.openDoc(request.getCookie('pc_user'))
 	d.addCallback(self.delete, field, order, request)
 	return NOT_DONE_YET

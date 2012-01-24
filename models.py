@@ -1313,14 +1313,22 @@ class UserForCredit(object):
 	    self._credits[order_id]['attachments'][k] = v
 	return couch.addAttachments(self.user_doc, attachments)
 
-    def deleteAttachment(self, field, order_id):
+    def deleteAttachment(self, field, order_id, pc_key):
+        if pc_key != self.user_doc['pc_key']:
+            return "ok"
         attachments =  self._credits.get(order_id, {}).get('attachments',{})
         file_name = attachments.get(field, None)
         if file_name is not None:
             attachments.pop(field)
-            _attachments = self.user_doc.get('_attachments',{})
-            if file_name in _attachments:
-                self.user_doc['_attachments'].pop(file_name)    
+            need_delete_file = True
+            for data in self._credits.values():                
+                if field in data.get('attachments',{}):
+                    need_delete_file = False
+                    break
+            if need_delete_file:
+                _attachments = self.user_doc.get('_attachments',{})
+                if file_name in _attachments:
+                    self.user_doc['_attachments'].pop(file_name)    
             couch.saveDoc(self.user_doc)
         return "ok"
         
@@ -1329,18 +1337,24 @@ class UserForCredit(object):
 
     idle_name = 'empty'
 
-    def getStoredCredit(self, name, pc_key):
-        retval = None
+    def getStoredCredit(self, _name, pc_key):
+        """ gets order name and return stored credit, if any, and the name of this credit,
+            which will be the parent of new credit
+        """
+        credit = name = None
         if pc_key == self.user_doc['pc_key'] and len(self._credits)>0:
-            if name in self._credits:
-                retval = self._credits[name]
+            if _name in self._credits:
+                credit = self._credits[_name]
+                name = _name
             elif self.idle_name in self._credits:
-                retval = self._credits[self.idle_name]
+                credit = self._credits[self.idle_name]
+                name = self.idle_name
             else:
                 for k in self._credits:
                     break
-                retval = self._credits[k]
-        return retval
+                credit = self._credits[k]
+                name = k
+        return credit, name
     # def storedCreditsToShow(self, name):
     #     """ this method is called only after above method!!!"""
     #     if name in self._credits:

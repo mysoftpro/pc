@@ -49,7 +49,7 @@ function save(e){
     var names = JSON.stringify(_(file_changed).keys());
     var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names={{_names}}" width="1" height="1" style="position:absolute;left:-10px;" border="0"></iframe>',
     		       {_names:encodeURIComponent(names)});
-    // 
+    //
     $('body').append(i);
     var data = {};
     _($('input').toArray().concat($('select').toArray())).
@@ -93,7 +93,7 @@ function updateSave(tries){
 	alert('что-то пошло не так :(');
 }
 
-function deleteFile(key){    
+function deleteFile(key){
     return function(e){
 	e.preventDefault();
 	var target = $(e.target);
@@ -103,13 +103,13 @@ function deleteFile(key){
 	if (!field)
 	    field = target.attr('id');
 	$.ajax({
-		   url:'deleteCreditAttachment',
+		   url:'/deleteCreditAttachment',
 		   data:{'field':field,
 			 'order':$('#orderid')
 			 .text()},
 		   success:function(data){
-		       if (data=="ok")
-			   $(e.target).parent().remove();
+		       if (data=="ok"){
+		       }
 		       else
 			   alert('что-то пошло не так');
 		   },
