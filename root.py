@@ -1263,9 +1263,9 @@ credit_tarifs ={'20':{6:0.2012,
 file_template = u"<input type='file' name='$name'/>"
 uploader_template = u"""
 		    <html><head></head><body>
-		    <form id="credit_uploader" name="credit_uploader" action="credit_uploader"
+		    <form id="credit_uploader" name="credit_uploader" action="/credit_uploader"
 			  method="POST" enctype="multipart/form-data">
-		      <input type="text" name="file_names"  id="file_names" value="$names" />
+		      <input type="text" name="file_names"  id="file_names" value="" />
 		      <input type="text" name="credit_data"  id="credit_data" value="" />
 		      <input type="text" name="order_id"  id="order_id" value="" />
 		      $files
@@ -1288,7 +1288,7 @@ class CreditUploader(Resource):
 	    template = StringTemplate(file_template)
 	    file_names.append(template.substitute(name=quoted))
 	template = StringTemplate(uploader_template)
-	return template.substitute(names=quote_plus(names), files=u''.join(file_names)).encode('utf-8')
+	return template.substitute(files=u''.join(file_names)).encode('utf-8')
 
 
 
@@ -1330,7 +1330,10 @@ class CreditUploader(Resource):
 	for field in dict_names:
 	    attachments.update({dict_names[field]: request.args.get(field)[0]})
 	user_id = request.getCookie('pc_user')
-	d = couch.openDoc(user_id)
+	print "______________________________!!"
+        print user_id
+        print len(data)
+        d = couch.openDoc(user_id)
 	d.addCallback(self.storeCreditInfo, data, attachments, order_id, dict_names, request)
 	d.addErrback(self.newUser, user_id, data, attachments, order_id, dict_names, request)
 	return NOT_DONE_YET

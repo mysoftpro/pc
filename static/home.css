@@ -521,7 +521,7 @@ h3 {
 .component_select{
     display:none;
 }
-select{
+.component_select select{
     width:600px;color:black;
 }
 
@@ -531,7 +531,7 @@ td.body{
     width:670px;
 }
 
-td:hover{
+td.body:hover{
     color:#0daae5;
 }
 
@@ -546,10 +546,10 @@ td {
     padding-right:3px;
 }
 
-label {
+#options label {
     cursor:pointer;
 }
-label:hover{
+#options label:hover{
     color: #7b9c0a;
 }
 

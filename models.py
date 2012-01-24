@@ -1324,3 +1324,21 @@ class UserForCredit(object):
             couch.saveDoc(self.user_doc)
         return "ok"
         
+    def summForForm(self):
+        pass
+
+    def hasStoredCredits(self, pc_key):
+        return pc_key == self.user_doc['pc_key'] and len(self._credits)>0
+
+    def storedCreditsToShow(self, name):
+        """ this method is called only after above method!!!"""
+        if name in self._credits:
+            return self._credits[name]
+        else:
+            # just get any of them
+            for k in self._credits:
+                break
+            print "olaolaola"
+            print k
+            return self._credits[k]
+            

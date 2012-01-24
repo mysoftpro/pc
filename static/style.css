@@ -531,10 +531,10 @@ td {
     padding-right:3px;
 }
 
-label {
+#options label {
     cursor:pointer;
 }
-label:hover{
+#options  label:hover{
     color: #7b9c0a;
 }
 

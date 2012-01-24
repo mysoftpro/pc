@@ -49,6 +49,7 @@ function save(e){
     var names = JSON.stringify(_(file_changed).keys());
     var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names={{_names}}" width="1" height="1" style="position:absolute;left:-10px;" border="0"></iframe>',
     		       {_names:encodeURIComponent(names)});
+    // 
     $('body').append(i);
     var data = {};
     _($('input').toArray().concat($('select').toArray())).
@@ -72,7 +73,6 @@ function updateSave(tries){
     }
     if (iframe == undefined){
 	_.delay(function(){updateSave(tries*2);},tries*100);
-	 console.log('cycle');
 	return;
     }
     var status;
@@ -145,6 +145,9 @@ function init(){
 	var pa = tot.parent();
 	tot.remove();
 	pa.append('<input style="margin-left:40px;" id="total" name="mock_total"/>');
+    }
+    else{
+	$('#calc').click();
     }
     var it = 0;
     function addFile(e){

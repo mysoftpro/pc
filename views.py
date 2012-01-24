@@ -868,12 +868,13 @@ class VideocardView(PCView):
 	from pc import models
 	psus = models.gChoices[models.psu][0][1][1]
 	appr_psus = []
-	for row in psus['rows']:
+	for row in psus['rows'][1:]:            
 	    doc = row['doc']
 	    if 'power' not in doc:continue
 	    if doc['power']>=peak_power:
 		psu = Psu(doc)
 		appr_psus.append(psu)
+
 
 	psu_list = self.template.middle.xpath('//ul')[0]
 	for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
@@ -1202,12 +1203,9 @@ class CreditForm(PCView):
 		field.addprevious(a)
 		field.addprevious(etree.Element('br'))
 
-	# print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-	# print all_keys
-	# print clean_keys
 
     def fillSavedForm(self, user):
-	for k,v in user._credits[self.name].items():
+	for k,v in user.storedCreditsToShow(self.name).items(): #_credits[self.name].items():
 	    if k=='attachments':
 		self.fillUploadedAttachments(user, v)
 	    value = unicode(v)
@@ -1226,19 +1224,32 @@ class CreditForm(PCView):
 				del o.attrib['selected']
 
 
-    def renderCreditForm(self, user_doc):
+    def renderCreditFormForUser(self, user_doc):
 	if self.name is None:
 	    self.name = 'empty'
 	user = UserForCredit(user_doc)
-	if self.request.getCookie('pc_key') == user_doc['pc_key'] and\
-		self.name in user._credits:
-	    self.fillSavedForm(user)
+        if user.hasStoredCredits(self.request.getCookie('pc_key')):
+	    self.fillSavedForm(user)            
 	from pc.root import credit_tarifs
 	script = self.template.top.find('script')
 	script.text = 'var monthly='+simplejson.dumps(credit_tarifs)+';'
 	script.text+='var order="";var summ="";var order_name="";'
 
+
+    def renderCreditFormForModel(self, model_doc):
+        model = Model(model_doc)
+        # print "eeeeeeeeeeeeeeeeeeeeeeha"
+        # print 
+        self.template.top.xpath('.//span[@id="orderid"]')[0].text = unicode(model._id)
+        self.template.top.xpath('.//span[@id="total"]')[0].text = unicode(model.total)
+
     def preRender(self):
 	d = couch.openDoc(self.request.getCookie('pc_user'))
-	d.addCallback(self.renderCreditForm)
-	return d
+        d.addCallback(self.renderCreditFormForUser)
+        if self.name is not None:
+            d1= couch.openDoc(self.name)
+            d1.addCallback(self.renderCreditFormForModel)
+        else:
+            d1 = defer.Deferred()
+            d1.callback(None)
+	return defer.DeferredList((d,d1))
