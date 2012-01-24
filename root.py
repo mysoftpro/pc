@@ -1268,6 +1268,7 @@ uploader_template = u"""
 		      <input type="text" name="file_names"  id="file_names" value="" />
 		      <input type="text" name="credit_data"  id="credit_data" value="" />
 		      <input type="text" name="order_id"  id="order_id" value="" />
+		      <input type="text" name="parent"  id="parent" value="" />
 		      $files
 		      <input type="submit" name="credit_submit" value="credit_submit" id="credit_submit"/>
 		     </form></body></html>"""
@@ -1297,9 +1298,9 @@ class CreditUploader(Resource):
 	request.finish()
 
     def storeCreditInfo(self, user_doc, data, attachments, order_id, file_names, request):
-        user = UserForCredit(user_doc)
-        d = user.updateCredits(order_id, data, file_names, attachments)
-        def save(_doc):            
+	user = UserForCredit(user_doc)
+	d = user.updateCredits(order_id, data, file_names, attachments)
+	def save(_doc):
 	    couch.saveDoc(_doc)
 	d.addCallback(save)
 	d.addCallback(self.finish, request)
@@ -1308,7 +1309,7 @@ class CreditUploader(Resource):
 
     def newUser(self, fail, user_id, data, attachments, order_id, file_names, request):
 	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
-	addCookies(request, {'pc_key':user_doc['pc_key']})        
+	addCookies(request, {'pc_key':user_doc['pc_key']})
 	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names, request)
 
 
@@ -1323,17 +1324,14 @@ class CreditUploader(Resource):
 	    dict_names[key] = value.split('/')[-1].split('\\')[-1]
 	order_id = request.args.get('order_id', [''])[0]
 	if order_id == '':
-	    order_id = 'empty'
+	    order_id = UserForCredit.idle_name
 	_data = request.args.get('credit_data', ['[]'])[0]
 	data = simplejson.loads(unquote_plus(_data))
 	attachments = {}
 	for field in dict_names:
 	    attachments.update({dict_names[field]: request.args.get(field)[0]})
 	user_id = request.getCookie('pc_user')
-	print "______________________________!!"
-        print user_id
-        print len(data)
-        d = couch.openDoc(user_id)
+	d = couch.openDoc(user_id)
 	d.addCallback(self.storeCreditInfo, data, attachments, order_id, dict_names, request)
 	d.addErrback(self.newUser, user_id, data, attachments, order_id, dict_names, request)
 	return NOT_DONE_YET
@@ -1341,17 +1339,17 @@ class CreditUploader(Resource):
 class DeleteCreditAttachment(Resource):
 
     def delete(self, user_doc, field, order_id, request):
-        user = UserForCredit(user_doc)
-        request.write(user.deleteAttachment(field, order_id))
-        request.finish()
+	user = UserForCredit(user_doc)
+	request.write(user.deleteAttachment(field, order_id))
+	request.finish()
 
     def render_GET(self, request):
 	field = request.args.get('field', [None])[0]
 	if field is None:
 	    return "fail"
-	order = request.args.get('order', ['empty'])[0]
-        if order == '':
-            order = 'empty'
+	order = request.args.get('order', [UserForCredit.idle_name])[0]
+	if order == '':
+	    order = UserForCredit.idle_name
 	d = couch.openDoc(request.getCookie('pc_user'))
 	d.addCallback(self.delete, field, order, request)
-        return NOT_DONE_YET
+	return NOT_DONE_YET

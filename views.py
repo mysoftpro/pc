@@ -868,7 +868,7 @@ class VideocardView(PCView):
 	from pc import models
 	psus = models.gChoices[models.psu][0][1][1]
 	appr_psus = []
-	for row in psus['rows'][1:]:            
+	for row in psus['rows'][1:]:
 	    doc = row['doc']
 	    if 'power' not in doc:continue
 	    if doc['power']>=peak_power:
@@ -1160,7 +1160,7 @@ letter_pat = re.compile('[a-zA-Z_]*')
 
 class CreditForm(PCView):
 
-    def fillUploadedAttachments(self, user, attachments):
+    def fillUploadedAttachments(self, user_id, attachments):
 	"""
 	     i have passport in template. here i have passport, passport1 ...
 	     it need to install all passport`s and icrement name in template for passportn
@@ -1191,23 +1191,23 @@ class CreditForm(PCView):
 	    links = all_keys[k]
 	    for l in links:
 		a = etree.Element('a')
-		a.set('href','/image/'+user._id+'/'+attachments[l])
+		a.set('href','/image/'+user_id+'/'+attachments[l])
 		a.set('target','_blank')
 		a.set('class', 'uploaded_file')
 		a.text = attachments[l]
 		span = etree.Element('span')
 		span.text= u'удалить'
 		span.set('style', u'margin-left:5px;')
-                span.set('id', l)
+		span.set('id', l)
 		a.append(span)
 		field.addprevious(a)
 		field.addprevious(etree.Element('br'))
 
 
-    def fillSavedForm(self, user):
-	for k,v in user.storedCreditsToShow(self.name).items(): #_credits[self.name].items():
+    def fillSavedForm(self, user_id, stored_credit):
+	for k,v in stored_credit.items():
 	    if k=='attachments':
-		self.fillUploadedAttachments(user, v)
+		self.fillUploadedAttachments(user_id, v)
 	    value = unicode(v)
 	    field = self.template.middle.xpath('.//input[@name="'+k+'"]')
 	    if len(field)>0:
@@ -1226,10 +1226,11 @@ class CreditForm(PCView):
 
     def renderCreditFormForUser(self, user_doc):
 	if self.name is None:
-	    self.name = 'empty'
+	    self.name = UserForCredit.idle_name
 	user = UserForCredit(user_doc)
-        if user.hasStoredCredits(self.request.getCookie('pc_key')):
-	    self.fillSavedForm(user)            
+	stored = user.getStoredCredit(self.name, self.request.getCookie('pc_key'))
+	if stored:
+	    self.fillSavedForm(user._id, stored)
 	from pc.root import credit_tarifs
 	script = self.template.top.find('script')
 	script.text = 'var monthly='+simplejson.dumps(credit_tarifs)+';'
@@ -1237,19 +1238,17 @@ class CreditForm(PCView):
 
 
     def renderCreditFormForModel(self, model_doc):
-        model = Model(model_doc)
-        # print "eeeeeeeeeeeeeeeeeeeeeeha"
-        # print 
-        self.template.top.xpath('.//span[@id="orderid"]')[0].text = unicode(model._id)
-        self.template.top.xpath('.//span[@id="total"]')[0].text = unicode(model.total)
+	model = Model(model_doc)
+	self.template.top.xpath('.//span[@id="orderid"]')[0].text = unicode(model._id)
+	self.template.top.xpath('.//span[@id="total"]')[0].text = unicode(model.total)
 
     def preRender(self):
 	d = couch.openDoc(self.request.getCookie('pc_user'))
-        d.addCallback(self.renderCreditFormForUser)
-        if self.name is not None:
-            d1= couch.openDoc(self.name)
-            d1.addCallback(self.renderCreditFormForModel)
-        else:
-            d1 = defer.Deferred()
-            d1.callback(None)
+	d.addCallback(self.renderCreditFormForUser)
+	if self.name is not None:
+	    d1= couch.openDoc(self.name)
+	    d1.addCallback(self.renderCreditFormForModel)
+	else:
+	    d1 = defer.Deferred()
+	    d1.callback(None)
 	return defer.DeferredList((d,d1))

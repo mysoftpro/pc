@@ -1327,18 +1327,29 @@ class UserForCredit(object):
     def summForForm(self):
         pass
 
-    def hasStoredCredits(self, pc_key):
-        return pc_key == self.user_doc['pc_key'] and len(self._credits)>0
+    idle_name = 'empty'
 
-    def storedCreditsToShow(self, name):
-        """ this method is called only after above method!!!"""
-        if name in self._credits:
-            return self._credits[name]
-        else:
-            # just get any of them
-            for k in self._credits:
-                break
-            print "olaolaola"
-            print k
-            return self._credits[k]
+    def getStoredCredit(self, name, pc_key):
+        retval = None
+        if pc_key == self.user_doc['pc_key'] and len(self._credits)>0:
+            if name in self._credits:
+                retval = self._credits[name]
+            elif self.idle_name in self._credits:
+                retval = self._credits[self.idle_name]
+            else:
+                for k in self._credits:
+                    break
+                retval = self._credits[k]
+        return retval
+    # def storedCreditsToShow(self, name):
+    #     """ this method is called only after above method!!!"""
+    #     if name in self._credits:
+    #         return self._credits[name]
+    #     else:
+    #         # just get any of them
+    #         for k in self._credits:
+    #             break
+    #         print "olaolaola"
+    #         print k
+    #         return self._credits[k]
             
