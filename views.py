@@ -1064,7 +1064,9 @@ class SpecsForVideo(Resource):
 
 def makeNotePrice(doc):
     our_price = doc['price']*Course+NOTE_MARGIN
-    return int(round(our_price/10))*10
+    copy = deepcopy(doc)
+    copy['price'] = int(round(our_price/10))*10
+    return copy
 
 def getNoteBookName(doc):
 
@@ -1110,16 +1112,16 @@ class NoteBooks(PCView):
     def renderNotebooks(self, result):
 	json_notebooks= {}
 	for r in result['rows']:
-	    r['doc']['price'] = makeNotePrice(r['doc'])
-
+	    doc = makeNotePrice(r['doc'])
+            
 	    note_div = deepcopy(self.template.root().find('notebook').find('div'))
-	    note_div.set('class',r['doc']['_id']+' note')
+	    note_div.set('class',doc['_id']+' note')
 
 
 	    link = note_div.xpath("//div[@class='nname']")[0].find('a')
-	    name = getNoteBookName(r['doc'])
+	    name = getNoteBookName(doc)
 	    link.text = name
-	    if 'ourdescription' in r['doc']:
+	    if 'ourdescription' in doc:
 		link.set('href','/notebook/'+name)
 	    else:
 		link.set('name',name)
@@ -1128,22 +1130,22 @@ class NoteBooks(PCView):
 		clone = deepcopy(note_div)
 		sort_div = clone.xpath("//div[@class='nprice']")[0]
 		if d.get('id') == "s_price":
-		    sort_div.text = unicode(r['doc']['price'])+u' р.'
+		    sort_div.text = unicode(doc['price'])+u' р.'
 		if d.get('id') == "s_size":
-		    sort_div.text = getNoteDispl(r['doc'])
+		    sort_div.text = getNoteDispl(doc)
 		if d.get('id') == "s_size":
-		    sort_div.text = getNoteDispl(r['doc'])
+		    sort_div.text = getNoteDispl(doc)
 		if d.get('id') == "s_performance":
-		    sort_div.text = getNotePerformance(r['doc'])
+		    sort_div.text = getNotePerformance(doc)
 		d.append(clone)
 
 	    for token in ['id', 'flags','inCart',
 			  'ordered','reserved','stock1', '_rev', 'warranty_type']:
-                if token in r['doc']:
-                    r['doc'].pop(token)
-	    r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
+                if token in doc:
+                    doc.pop(token)
+	    doc['catalogs'] = Model.getCatalogsKey(doc)
 	    #TODO save all this shit found from re
-	    json_notebooks.update({r['doc']['_id']:r['doc']})
+	    json_notebooks.update({doc['_id']:doc})
 
 	self.template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
 
