@@ -965,8 +965,8 @@ class Save(Resource):
 	where_to_save = 'models'
 	if 'promo' in model_doc:
 	    where_to_save = 'promos'
-	if model_doc['_id'] not in user_doc[where_to_save]:
-	    user_doc[where_to_save].append(model_doc['_id'])
+	if model_doc['_id'] not in user_doc.get(where_to_save,{}):
+	    user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
 	_date=str(date.today()).split('-')
 	user_doc['date'] = _date
 	model_doc['date'] = _date

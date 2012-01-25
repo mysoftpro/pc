@@ -43,14 +43,9 @@ def MIMETypeJSON(f):
 
 def pcCartTotal(request, user):
     in_cart = 0
-    if 'models' in user:
-        in_cart += len(user['models'])
-    if 'promos' in user:
-        in_cart += len(user['promos'])
-    if 'notebooks' in user:
-        in_cart+=len(user['notebooks'])
-    #TODO! may be 1 set is just 1 set,  not video+power?
-    if 'sets' in user:
-        in_cart += len(user['sets'])
+    in_cart+= len(user.get('models',[]))
+    in_cart+= len(user.get('promos',[]))
+    in_cart+= len(user.get('notebooks',[]))
+    in_cart+= len(user.get('sets',[]))                  
     if in_cart>0:
         addCookies(request, {'pc_cart':str(in_cart)})

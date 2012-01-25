@@ -306,7 +306,7 @@ def fillChoices():
 
     defs.append(openChoicesView([asus_12,asus_14,asus_15,asus_17])
 		.addCallback(lambda res: {notes:res}))
-    #zzz
+
     def makeDict(res):
 	new_res = {}
 	for el in res:
@@ -343,102 +343,6 @@ model_categories_titles = {'home':u'Домашние компьютеры',
 			   'game':u'Игровые компьютеры'}
 
 
-# def getNoteBookName(doc):
-
-#     if 'nname' in doc:
-#         return doc['nname']
-
-#     found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',doc['text'])
-#     _text = None
-#     if len(found)>0:
-#         _text = found[0].strip()
-#         # doc['nname'] =_text
-#         # couch.saveDoc(doc)
-#     else:
-#         _text = doc['text'][0:doc['text'].index('"')]
-#         _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
-#     return _text
-
-
-# def getNoteDispl(doc):
-#     if 'ndispl' in doc:
-#         return doc['ndispl']
-#     retval = ''
-#     found =re.findall('[sSuU]+[a-zA-Z0-9 ]+[ ]([0-9\,\.0-9"]+)[ ]',doc['text'])
-#     if len(found)>0:
-#         retval = found[0]
-#         # doc['ndispl'] =retval
-#         # couch.saveDoc(doc)
-#     return retval
-
-# def getNotePerformance(doc):
-#     if 'nperformance' in doc:
-#         return doc['nperformance']
-#     retval = ""
-#     found = re.findall('[0-9\,\.0-9"]+[ FHD, ]+([^/]*[/]+[^/]*)',doc['text'])
-#     if len(found)>0:
-#         retval = found[0]
-#         # doc['nperformance'] =retval
-#         # couch.saveDoc(doc)
-#     return retval
-
-
-# def makeNotePrice(doc):
-#     our_price = doc['price']*Course+NOTE_MARGIN
-#     return int(round(our_price/10))*10
-
-
-# @forceCond(noChoicesYet, fillChoices)
-# def notebooks(template, skin, request):
-#     def render(result):
-#         json_notebooks= {}
-#         for r in result['rows']:
-
-#             r['doc']['price'] = makeNotePrice(r['doc'])
-
-#             note_div = deepcopy(template.root().find('notebook').find('div'))
-#             note_div.set('class',r['doc']['_id']+' note')
-
-
-#             link = note_div.xpath("//div[@class='nname']")[0].find('a')
-#             name = getNoteBookName(r['doc'])
-#             link.text = name
-#             if 'ourdescription' in r['doc']:
-#                 link.set('href','/notebook/'+name)
-#             else:
-#                 link.set('name',name)
-
-#             for d in template.middle.xpath("//div[@class='notebook_column']"):
-#                 clone = deepcopy(note_div)
-#                 sort_div = clone.xpath("//div[@class='nprice']")[0]
-#                 if d.get('id') == "s_price":
-#                     sort_div.text = unicode(r['doc']['price'])+u' р.'
-#                 if d.get('id') == "s_size":
-#                     sort_div.text = getNoteDispl(r['doc'])
-#                 if d.get('id') == "s_size":
-#                     sort_div.text = getNoteDispl(r['doc'])
-#                 if d.get('id') == "s_performance":
-#                     sort_div.text = getNotePerformance(r['doc'])
-#                 d.append(clone)
-
-#             for token in ['id', 'flags','inCart',
-#                           'ordered','reserved','stock1', '_rev', 'warranty_type']:
-#                 r['doc'].pop(token)
-#             r['doc']['catalogs'] = Model.getCatalogsKey(r['doc'])
-#             #TODO save all this shit found from re
-#             json_notebooks.update({r['doc']['_id']:r['doc']})
-
-#         template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)
-#         title = skin.root().xpath('//title')[0]
-#         title.text = u'Ноутбуки Asus'
-#         skin.top = template.top
-#         skin.middle = template.middle
-#         return skin.render()
-
-#     d = couch.openView(designID,'catalogs',include_docs=True,stale=False,
-#                        keys = [asus_12,asus_14,asus_15,asus_17])
-#     d.addCallback(render)
-#     return d
 
 class ZipConponents(Resource):
 
@@ -1068,11 +972,11 @@ def userFactory(name):
     user.addCallback(getFields, 'sets')
     user.addCallback(getFields, 'sets', orders=True)
 
-    user.addCallback(lambda some: User(results))
+    user.addCallback(lambda some: UserForCart(results))
     return user
 
 
-class User(object):
+class UserForCart(object):
     def __init__(self, results):
 	""" if has orders - get orders instead appropriate models"""
 	# TODO! refactor this shit!~!!!!!!!!!!!!!
