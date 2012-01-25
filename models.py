@@ -1270,8 +1270,22 @@ class Set(Model):
 
 # TODO! common class for couch docs
 class UserForCredit(object):
+    
+    class CreditData(object):
+        def __init__(self, order_id, data, file_names, attachments,deleted_files, parent):
+            self.order_id = order_id
+            self.data = data
+            self.file_names = file_names
+            self.attachments = attachments
+            self.deleted_files = deleted_files
+            self.parent = parent
+            
+            
+
     def __init__(self, user_doc):
 	self.user_doc = user_doc
+        
+    
 
 
     def get(self, field, default=None):
@@ -1295,28 +1309,23 @@ class UserForCredit(object):
 
     _credits = property(get_credits, set_credits)
 
-    def updateCredits(self, order_id, data, file_names, attachments, deleted_files, parent):
+    def updateCredits(self, credit_data):
 	# copy old attachments
-	data['attachments'] = {}
-	for k,v in self._credits.get(order_id, {}).get('attachments',{}).items():
-	    data['attachments'][k] = v            
-	self._credits[order_id] = data        
-        return self.updateAttachments(order_id, file_names, attachments, deleted_files, parent)
-
-    # TODO! refactor this fucken huge amount of args (store em as fields!)
-    def updateAttachments(self, order_id, file_names, attachments, deleted_files, parent):
+	credit_data.data['attachments'] = {}
+	for k,v in self._credits.get(credit_data.order_id, {}).get('attachments',{}).items():
+	    credit_data.data['attachments'][k] = v            
+	self._credits[credit_data.order_id] = credit_data.data        
+        
         # first - store uploaded files
-	if not 'attachments' in self._credits[order_id]:
-	    self._credits[order_id]['attachments'] = {}
-
-	for k,v in file_names.items():
-	    self._credits[order_id]['attachments'][k] = v
-	d = couch.addAttachments(self.user_doc, attachments)
+	for k,v in credit_data.file_names.items():
+	    self._credits[credit_data.order_id]['attachments'][k] = v
+	d = couch.addAttachments(self.user_doc, credit_data.attachments)
         # than if has parent copy all attachments from parent except deleted!!!!!!!!!
-        if parent is not None and self._credits.get(parent, False):
-            for k,v in self._credits[parent].get('attachments',{}).items():
-                if k not in deleted_files:
-                    self._credits[order_id]['attachments'][k] = v
+        if credit_data.parent is not None and self._credits.get(credit_data.parent, False):
+            for k,v in self._credits[credit_data.parent].get('attachments',{}).items():
+                if k not in credit_data.deleted_files:
+                    self._credits[credit_data.order_id]['attachments'][k] = v
+        d.addCallback(couch.saveDoc)
         return d
 
     def deleteAttachment(self, field, order_id, pc_key):
@@ -1361,15 +1370,3 @@ class UserForCredit(object):
                 credit = self._credits[k]
                 name = k
         return credit, name
-    # def storedCreditsToShow(self, name):
-    #     """ this method is called only after above method!!!"""
-    #     if name in self._credits:
-    #         return self._credits[name]
-    #     else:
-    #         # just get any of them
-    #         for k in self._credits:
-    #             break
-    #         print "olaolaola"
-    #         print k
-    #         return self._credits[k]
-            

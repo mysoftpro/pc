@@ -1301,6 +1301,8 @@ uploader_template = u"""
 
 from string import Template as StringTemplate
 
+
+
 class CreditUploader(Resource):
     isLeaf = True
     allowedMethods = ('GET','POST')
@@ -1321,23 +1323,18 @@ class CreditUploader(Resource):
 	request.write("<html><body><div id=\"status\">ok</div></body></html>")
 	request.finish()
 
-    def storeCreditInfo(self, user_doc, data, attachments, order_id, file_names,
-			deleted_files, parent,request):
+    def storeCreditInfo(self, user_doc, credit_data, request):
 	user = UserForCredit(user_doc)
-	d = user.updateCredits(order_id, data, file_names, attachments,deleted_files, parent)
+        d = user.updateCredits(credit_data)
 	d.addCallback(couch.saveDoc)
 	d.addCallback(self.finish, request)
 	return d
 
 
-    def newUser(self, fail, user_id, data, attachments, order_id, file_names,
-		deleted_files, parent,request):
-	if type(fail.value) is Error and fail.value.status == 404:
-	    print "new user!!!!!!!!!!!!!!!!!!!!!!"
+    def newUser(self, fail, user_id, credit_data, request):
+	if type(fail.value) is Error and fail.value.status == 404:	    
 	    pass
 	else:
-	    print "_____________________________"
-	    print fail
 	    return
 	# may be it is an error some where! not just 'missing' from couch
 	# about user doc. do not destroy pc key if it has!
@@ -1346,8 +1343,7 @@ class CreditUploader(Resource):
 	    pc_key = base36.gen_id()
 	user_doc = {'_id':user_id, 'models':[], 'pc_key':pc_key}
 	addCookies(request, {'pc_key':user_doc['pc_key']})
-	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names,
-			     deleted_files, parent,request)
+	self.storeCreditInfo(user_doc, credit_data, request)
 
 
 
@@ -1376,10 +1372,10 @@ class CreditUploader(Resource):
 
 	user_id = request.getCookie('pc_user')
 	d = couch.openDoc(user_id)
-	d.addCallback(self.storeCreditInfo, data, attachments, order_id,
-		      uploaded_names, deleted_files, parent,request)
-	d.addErrback(self.newUser, user_id, data, attachments, order_id, uploaded_names,
-		     deleted_files, parent, request)
+        credit_data = UserForCredit.CreditData(order_id, data, uploaded_names, attachments,
+                                                 deleted_files, parent)
+	d.addCallback(self.storeCreditInfo, credit_data, request)
+	d.addErrback(self.newUser, user_id, credit_data, request)
 	return NOT_DONE_YET
 
 class DeleteCreditAttachment(Resource):
