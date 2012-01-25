@@ -639,6 +639,8 @@ class WarrantyFill(Resource):
 	    code = c['_id']
 	    if code.startswith('no'):
 		continue
+            if not 'count' in c:
+                c['count'] = 1
 	    record = {'name':c['text'],
 		      'price':c['ourprice'],
 		      'pcs':c['count']}

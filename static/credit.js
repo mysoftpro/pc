@@ -42,13 +42,13 @@ function recalculate(e){
     $('input[name="annuityDay"]').val(day);
 }
 
-var file_changed = {};
-
+var uploadedFiles = {};
+var deletedFiles = {};
 function save(e){
     $('iframe').remove();
-    var names = JSON.stringify(_(file_changed).keys());
-    var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names={{_names}}" width="1" height="1" style="position:absolute;left:-10px;" border="0"></iframe>',
-    		       {_names:encodeURIComponent(names)});
+    var names_for_upload = JSON.stringify(_(uploadedFiles).keys());
+    var i = _.template('<iframe id="credit_uploader" name="credit_uploader" src="/credit_uploader?file_names_for_upload={{_names_for_upload}}" width="1" height="1" style="position:absolute;left:-10px;" border="0"></iframe>',
+    		       {_names_for_upload:encodeURIComponent(names_for_upload)});
     //
     $('body').append(i);
     var data = {};
@@ -60,8 +60,9 @@ function save(e){
 		 data[el.attr('name')] = el.val();
 	     });
     $('#credit_data').val(encodeURIComponent(JSON.stringify(data)));
-    $('#file_names').val(encodeURIComponent(JSON.stringify(file_changed)));
+    $('#file_names').val(encodeURIComponent(JSON.stringify(uploadedFiles)));
     $('#order_id').val($('#orderid').text());
+    $('#deleted_files').val(encodeURIComponent(JSON.stringify(deletedFiles)));
     $('#credit_submit').click();
     updateSave(1);
 }
@@ -109,6 +110,8 @@ function deleteFile(key){
 			 .text()},
 		   success:function(data){
 		       if (data=="ok"){
+			   deletedFiles[field] = target.parent().text().replace(target.text(),'');
+			   target.parent().remove();
 		       }
 		       else
 			   alert('что-то пошло не так');
@@ -122,9 +125,9 @@ function deleteFile(key){
 
 
 function installUploadedFiles(){
-    _(file_changed).chain().keys().each(function(key){
+    _(uploadedFiles).chain().keys().each(function(key){
 					    var inp = $('input[name="'+key+'"]');
-					    var file_name = _(file_changed[key].split('/')).last();
+					    var file_name = _(uploadedFiles[key].split('/')).last();
 					    file_name= _(file_name.split('\\')).last();
 					    inp.before('<a target="_blank" href="/image/'+
 						       $.cookie('pc_user')+'/'+file_name+
@@ -135,7 +138,8 @@ function installUploadedFiles(){
 					    span.after('<br/>');
 					    span.click(deleteFile(key));
 					});
-    file_changed = {};
+    uploadedFiles = {};
+    deletedFiles = {};
 }
 
 function init(){
@@ -153,7 +157,7 @@ function init(){
     function addFile(e){
 	var target = $(e.target);
 	var _name = target.attr('name');
-	file_changed[_name] = target.val();
+	uploadedFiles[_name] = target.val();
 	var letters = _name.match(/[a-zA-Z_]*/g)[0];
 	var number = _name.substring(letters.length);
 	if (!number)

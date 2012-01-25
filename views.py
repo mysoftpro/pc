@@ -1237,8 +1237,10 @@ class CreditForm(PCView):
 			    if 'selected' in o.attrib:
 				del o.attrib['selected']
         if self.name != parent_name:
+            print "install paren!"
             self.template.middle.xpath('.//input[@id="parent"]')[0].set('value',parent_name)
-
+        else:
+            self.template.middle.xpath('.//input[@id="parent"]')[0].set('value','')
 
     def renderCreditFormForUser(self, user_doc):
 	if self.name is None:

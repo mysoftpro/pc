@@ -1295,23 +1295,29 @@ class UserForCredit(object):
 
     _credits = property(get_credits, set_credits)
 
-    def updateCredits(self, order_id, data, file_names, attachments):
+    def updateCredits(self, order_id, data, file_names, attachments, deleted_files, parent):
 	# copy old attachments
 	data['attachments'] = {}
 	for k,v in self._credits.get(order_id, {}).get('attachments',{}).items():
-	    data['attachments'][k] = v
-	self._credits[order_id] = data
-        return self.updateAttachments(order_id, file_names, attachments)
+	    data['attachments'][k] = v            
+	self._credits[order_id] = data        
+        return self.updateAttachments(order_id, file_names, attachments, deleted_files, parent)
 
-
-    def updateAttachments(self, order_id, file_names, attachments):
-
+    # TODO! refactor this fucken huge amount of args (store em as fields!)
+    def updateAttachments(self, order_id, file_names, attachments, deleted_files, parent):
+        # first - store uploaded files
 	if not 'attachments' in self._credits[order_id]:
 	    self._credits[order_id]['attachments'] = {}
 
 	for k,v in file_names.items():
 	    self._credits[order_id]['attachments'][k] = v
-	return couch.addAttachments(self.user_doc, attachments)
+	d = couch.addAttachments(self.user_doc, attachments)
+        # than if has parent copy all attachments from parent except deleted!!!!!!!!!
+        if parent is not None and self._credits.get(parent, False):
+            for k,v in self._credits[parent].get('attachments',{}).items():
+                if k not in deleted_files:
+                    self._credits[order_id]['attachments'][k] = v
+        return d
 
     def deleteAttachment(self, field, order_id, pc_key):
         if pc_key != self.user_doc['pc_key']:

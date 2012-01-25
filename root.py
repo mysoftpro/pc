@@ -35,6 +35,7 @@ from pc.common import addCookies, MIMETypeJSON, pcCartTotal
 from urllib import unquote_plus, quote_plus
 from pc.simple_pages import simplePage, partPage
 from pc.market import PriceForMarket
+from twisted.web.error import Error
 static_hooks = {
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
@@ -348,8 +349,8 @@ class CachedStatic(File):
 
     def _gzip(self, _content,_name, _time):
 
-	if _name is not None and "js" in _name and "min." not in _name:
-	    _content = jsmin(_content)
+	# if _name is not None and "js" in _name and "min." not in _name:
+	#     _content = jsmin(_content)
 	buff = StringIO()
 	f = gzip.GzipFile(_name,'wb',9, buff)
 	f.write(_content)
@@ -654,7 +655,6 @@ class StoreCartComment(Resource):
 	else:
 	    doc['comments'] = [comment]
 	couch.saveDoc(doc)
-	# zzz
 	send_email('inbox@buildpc.ru',
 		   u'Комментарий в корзине',
 		   'http://buildpc.ru/cart/'+doc['author']+' '+doc['_id'],
@@ -1036,8 +1036,21 @@ class SaveNote(Resource):
 	d.addErrback(self.fail, request)
 	return d
 
+
     def newUser(self, fail, user_id, _id, request):
-	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+	if type(fail.value) is Error and fail.value.status == 404:
+	    print "new user!!!!!!!!!!!!!!!!!!!!!!"
+	    pass
+	else:
+	    print "_____________________________"
+	    print fail
+	    return
+	# may be it is an error some where! not just 'missing' from couch
+	# about user doc. do not destroy pc key if it has!
+	pc_key = request.getCookie('pc_key')
+	if pc_key is None:
+	    pc_key = base36.gen_id()
+	user_doc = {'_id':user_id, 'models':[], 'pc_key':pc_key}
 	addCookies(request, {'pc_key':user_doc['pc_key']})
 	note_id = self.addNote(user_doc, _id, request)
 	d = couch.saveDoc(user_doc)
@@ -1214,7 +1227,19 @@ class SaveSet(Resource):
 	self.save(user_doc, jdata, request)
 
     def newUser(self, fail, user_id, jdata, request):
-	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+	if type(fail.value) is Error and fail.value.status == 404:
+	    print "new user!!!!!!!!!!!!!!!!!!!!!!"
+	    pass
+	else:
+	    print "_____________________________"
+	    print fail
+	    return
+	# may be it is an error some where! not just 'missing' from couch
+	# about user doc. do not destroy pc key if it has!
+	pc_key = request.getCookie('pc_key')
+	if pc_key is None:
+	    pc_key = base36.gen_id()
+	user_doc = {'_id':user_id, 'models':[], 'pc_key':pc_key}
 	addCookies(request, {'pc_key':user_doc['pc_key']})
 	self.save(user_doc, jdata, request)
 
@@ -1268,6 +1293,7 @@ uploader_template = u"""
 		      <input type="text" name="file_names"  id="file_names" value="" />
 		      <input type="text" name="credit_data"  id="credit_data" value="" />
 		      <input type="text" name="order_id"  id="order_id" value="" />
+		      <input type="text" name="deleted_files"  id="deleted_files" value=""/>
 		      <input type="text" name="parent"  id="parent" value="" />
 		      $files
 		      <input type="submit" name="credit_submit" value="credit_submit" id="credit_submit"/>
@@ -1280,11 +1306,9 @@ class CreditUploader(Resource):
     allowedMethods = ('GET','POST')
 
     def render_GET(self, request):
-	names = request.args.get('file_names', [None])[0]
-	# if names is None: return ""
-	files = simplejson.loads(names)
+	file_names_for_upload = simplejson.loads(unquote_plus(request.args.get('file_names_for_upload', '%5B%5D')[0]))
 	file_names = []
-	for f in files:
+	for f in file_names_for_upload:
 	    quoted = quote_plus(f.encode('utf-8'))
 	    template = StringTemplate(file_template)
 	    file_names.append(template.substitute(name=quoted))
@@ -1297,43 +1321,65 @@ class CreditUploader(Resource):
 	request.write("<html><body><div id=\"status\">ok</div></body></html>")
 	request.finish()
 
-    def storeCreditInfo(self, user_doc, data, attachments, order_id, file_names, request):
+    def storeCreditInfo(self, user_doc, data, attachments, order_id, file_names,
+			deleted_files, parent,request):
 	user = UserForCredit(user_doc)
-	d = user.updateCredits(order_id, data, file_names, attachments)
-	def save(_doc):
-	    couch.saveDoc(_doc)
-	d.addCallback(save)
+	d = user.updateCredits(order_id, data, file_names, attachments,deleted_files, parent)
+	d.addCallback(couch.saveDoc)
 	d.addCallback(self.finish, request)
 	return d
 
 
-    def newUser(self, fail, user_id, data, attachments, order_id, file_names, request):
-	user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
+    def newUser(self, fail, user_id, data, attachments, order_id, file_names,
+		deleted_files, parent,request):
+	if type(fail.value) is Error and fail.value.status == 404:
+	    print "new user!!!!!!!!!!!!!!!!!!!!!!"
+	    pass
+	else:
+	    print "_____________________________"
+	    print fail
+	    return
+	# may be it is an error some where! not just 'missing' from couch
+	# about user doc. do not destroy pc key if it has!
+	pc_key = request.getCookie('pc_key')
+	if pc_key is None:
+	    pc_key = base36.gen_id()
+	user_doc = {'_id':user_id, 'models':[], 'pc_key':pc_key}
 	addCookies(request, {'pc_key':user_doc['pc_key']})
-	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names, request)
+	self.storeCreditInfo(user_doc, data, attachments, order_id, file_names,
+			     deleted_files, parent,request)
 
 
 
     def render_POST(self, request):
 	# all filenames are stored in separate field
-	file_names = request.args.get('file_names', ['{}'])[0]
-	dict_names = simplejson.loads(unquote_plus(file_names))
-	if type(dict_names) is unicode:
-	    dict_names = simplejson.loads(dict_names)
-	for key,value in dict_names.items():
-	    dict_names[key] = value.split('/')[-1].split('\\')[-1]
+	uploaded_names = simplejson.loads(unquote_plus(request.args.get('file_names', ['%7B%7D'])[0]))
+	# what a fuck?
+	if type(uploaded_names) is unicode:
+	    uploaded_names = simplejson.loads(uploaded_names)
+
+	for key,value in uploaded_names.items():
+	    uploaded_names[key] = value.split('/')[-1].split('\\')[-1]
 	order_id = request.args.get('order_id', [''])[0]
 	if order_id == '':
 	    order_id = UserForCredit.idle_name
-	_data = request.args.get('credit_data', ['[]'])[0]
+	_data = request.args.get('credit_data', ['%7B%7D'])[0]
 	data = simplejson.loads(unquote_plus(_data))
 	attachments = {}
-	for field in dict_names:
-	    attachments.update({dict_names[field]: request.args.get(field)[0]})
+	for field in uploaded_names:
+	    attachments.update({uploaded_names[field]: request.args.get(field)[0]})
+
+
+	parent = request.args.get('parent', None)[0]
+	deleted_files = simplejson.loads(unquote_plus(request.args.get('deleted_files',
+								       ['%7B%7D'])[0]))
+
 	user_id = request.getCookie('pc_user')
 	d = couch.openDoc(user_id)
-	d.addCallback(self.storeCreditInfo, data, attachments, order_id, dict_names, request)
-	d.addErrback(self.newUser, user_id, data, attachments, order_id, dict_names, request)
+	d.addCallback(self.storeCreditInfo, data, attachments, order_id,
+		      uploaded_names, deleted_files, parent,request)
+	d.addErrback(self.newUser, user_id, data, attachments, order_id, uploaded_names,
+		     deleted_files, parent, request)
 	return NOT_DONE_YET
 
 class DeleteCreditAttachment(Resource):
@@ -1348,8 +1394,6 @@ class DeleteCreditAttachment(Resource):
 	if field is None:
 	    return "fail"
 	order = request.args.get('order', [UserForCredit.idle_name])[0]
-	# if order == '':
-	#     order = UserForCredit.idle_name
 	d = couch.openDoc(request.getCookie('pc_user'))
 	d.addCallback(self.delete, field, order, request)
 	return NOT_DONE_YET
