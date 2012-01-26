@@ -24,11 +24,21 @@ function recalculate(e){
     }
     var monthly_pay = parseInt((total-cache)*k*100+0.01)/100;
     $('#monthly').text(monthly_pay).parent().show();
-    $('input[name="initPay"]').val(cache);
-    $('input[name="creditAmount"]').val(total-cache);
-    $('input[name="price"]').val(total);
-    $('input[name="numInstalment"]').val(m);
-    $('input[name="instalment"]').val(monthly_pay);
+    if (total && m && monthly_pay){	    
+	$('input[name="initPay"]').val(cache);
+	$('input[name="creditAmount"]').val(total-cache);
+	$('input[name="price"]').val(total);
+	$('input[name="numInstalment"]').val(m);
+	$('input[name="instalment"]').val(monthly_pay);
+    }
+    else{	
+	$('input[name="initPay"]').val(0);
+	$('input[name="creditAmount"]').val(0);
+	$('input[name="price"]').val(0);
+	$('input[name="numInstalment"]').val(0);
+	$('input[name="instalment"]').val(0);
+    }
+
     var d = new Date();
     d.setDate(d.getDate()+20);
     var year = d.getFullYear();
@@ -87,7 +97,6 @@ function updateSave(tries){
 	return;
     }
     if ($(status).text()=="ok"){
-	console.log(sending);
 	if (!sending)
 	    alert('получилось');
 	else
@@ -186,6 +195,28 @@ function init(){
 		     });
 }
 function validate(){
+    var retval = true;
+    if (_($('.to_validate').toArray())
+	    .chain()
+	    .map(function(el){
+		     var jel = $(el);
+		     return [jel,jel.val()];
+		 })
+        .map(function(pair){
+		 if (pair[1]){
+			  pair[0].css('background-color','white');
+		 }
+		 else{
+		     pair[0].css('background-color','red');
+		 }
+		 return pair;
+	     })
+	.select(function(pair){return !pair[1];})
+	    .size()
+	    .value()>0){
+	alert('Не все элементы заполнены');
+	return false;
+    }
     
 }
 init();

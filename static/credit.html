@@ -503,7 +503,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town" >
+			      <select name="town" id="v_town">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="002">Балтийск Город</option>
 				<option value="001">Калининград Город</option>
@@ -533,8 +533,8 @@
 			      <!-- <select name="locality"> -->
 			      <!-- 	<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
 			      <!-- </select> -->
-			      <input type="text" name="localityText" value=""
-				     class="validate_ok disabled" maxlength="40"/>
+			      <input type="text" name="localityText" value="" id="v_locality"
+				     class="validate_ok" maxlength="40"/>
 			    </td>
 			  </tr>
 			</tbody>
@@ -554,7 +554,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="typeLocality">
+			      <select name="typeLocality" id="v_locality_type">
 				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="401">Аал</option>
 				<option value="445">Автодорога</option>
@@ -641,13 +641,13 @@
 			  <tr>
 			    <td valign="middle">
 			      <input type="text"
-				     name="streetSearch" class="validate_ok">
+				     name="streetSearch" class="validate_ok to_validate">
 			      <!-- <select name="street"  -->
 			      <!-- 	      > -->
 			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
 			      <!-- </select> -->
 			      <input type="text" name="streetText" value=""
-				      class="validate_ok disabled" disabled="" maxlength="40" style="display: none; ">
+				      class="validate_ok" disabled="" maxlength="40" style="display: none; ">
 			    </td>
 			  </tr>
 			</tbody>
@@ -658,7 +658,7 @@
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="streetNum" value=""
-			      class="validate_ok" maxlength="20">
+			      class="validate_ok to_validate" maxlength="20">
 		    </td>
 		    <td class="flabel" >
 		      Корп.
@@ -798,7 +798,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town1" >
+			      <select name="town1" id="v_town1">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="002">Балтийск Город*</option>
 				<option value="001">Калининград Город</option>
@@ -828,7 +828,7 @@
 			      <!-- <select name="locality1"> -->
 			      <!-- 	<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
 			      <!-- </select> -->
-			      <input type="text" name="localityText1" value=""
+			      <input type="text" name="localityText1" value="" id="v_locality1"
 				      class="validate_ok disabled" maxlength="40">
 			    </td>
 			  </tr>
@@ -849,7 +849,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="typeLocality1">
+			      <select name="typeLocality1" id="v_locality_type1">
 				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="401">Аал</option>
 				<option value="445">Автодорога</option>
@@ -935,7 +935,7 @@
 			<tbody>
 			  <tr>
 			    <td valign="middle">
-			      <input type="text" name="streetSearch1" class="validate_ok">
+			      <input type="text" name="streetSearch1" class="validate_ok to_validate">
 			      <!-- <select name="street1"  -->
 			      <!-- 	      > -->
 			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
@@ -953,7 +953,7 @@
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="streetNum1" value=""
-			      class="validate_ok" maxlength="20">
+			      class="validate_ok to_validate" maxlength="20">
 		    </td>
 		    <td class="flabel" >
 		      Корп.
@@ -1499,7 +1499,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="town2" >
+			      <select name="town2" id="v_town2">
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="002">Балтийск Город</option>
 				<option value="001">Калининград Город</option>
@@ -1530,8 +1530,8 @@
 			      <!-- 	       disabled="" class="disabled"> -->
 			      <!-- 	<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
 			      <!-- </select> -->
-			      <input type="text" name="localityText2" value=""
-				      class="validate_ok disabled" maxlength="40">
+			      <input type="text" name="localityText2" value="" id="v_locality2"
+				      class="validate_ok" maxlength="40">
 			    </td>
 			  </tr>
 			</tbody>
@@ -1551,7 +1551,7 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="typeLocality2">
+			      <select name="typeLocality2" id="v_locality_type2">
 				<option value="" selected="selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<option value="401">Аал</option>
 				<option value="445">Автодорога</option>
@@ -1633,7 +1633,7 @@
 			<tbody>
 			  <tr>
 			    <td valign="middle">
-			      <input type="text" name="streetSearch2">
+			      <input type="text" name="streetSearch2" class="to_validate">
 			      <!-- <select name="street2"> -->
 			      <!-- 	<option value="0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option> -->
 			      <!-- </select> -->
@@ -1648,7 +1648,7 @@
 		      Номер дома
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="streetNum2" value="">
+		      <input type="text" name="streetNum2" value="" class="to_validate">
 		    </td>
 		    <td class="flabel" >
 		      Корп.
@@ -1773,25 +1773,25 @@
 	      <table class="greybox"  align="center">
 
 		<tbody>
-		  <tr>
-		    <td  colspan="2">
-		      <h2>Услуги по контракту</h2>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Подключить Интернет-банк
-		    </td>
-		    <td>
-		      <input type="checkbox" name="internetBankingRequest"
-			     value="Y" >
-		    </td>
-		  </tr>
- 		  <tr>
-    		    <td  colspan="2">
-      		      <h2>Остальные детали договора</h2>
-    		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td  colspan="2"> -->
+		  <!--     <h2>Услуги по контракту</h2> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Подключить Интернет-банк -->
+		  <!--   </td> -->
+		  <!--   <td> -->
+		  <!--     <input type="checkbox" name="internetBankingRequest" value="Y" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+ 		  <!-- <tr> -->
+    		  <!--   <td  colspan="2"> -->
+      		  <!--     <h2>Остальные детали договора</h2> -->
+    		  <!--   </td> -->
+		  <!-- </tr> -->
+
 		  <!--  prodCode, prodsetAction, goodsNum -->
 		  <!-- <tr> -->
 		  <!--   <td class="flabel" > -->
