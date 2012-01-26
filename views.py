@@ -920,7 +920,6 @@ class VideocardView(PCView):
     def renderCard(self, tuple_res):
 	res = tuple_res[0]
 	user = tuple_res[1]
-
 	if len(res['rows'])==0:
 	    self.force_no_resource = True
 	    return
@@ -933,8 +932,7 @@ class VideocardView(PCView):
 	    return
 	card = VideoCard(models.gChoices_flatten[res['id']])
 	self.title = card.text
-
-	self.template.top.find('h1').text = card.text
+        self.template.top.find('h1').text = card.text
 	maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
 
 	for el in html.fragments_fromstring(card.marketParams):
@@ -1012,6 +1010,7 @@ class VideocardView(PCView):
 	    li = defer.DeferredList((d,d1))
 	    li.addCallback(self.prepareCardsAndUser)
 	    li.addCallback(self.renderCard)
+            retval = li
 	else:
 	    d.addCallback(lambda res:(res,None))
 	    d.addCallback(self.renderCard)
