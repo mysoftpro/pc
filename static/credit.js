@@ -24,14 +24,14 @@ function recalculate(e){
     }
     var monthly_pay = parseInt((total-cache)*k*100+0.01)/100;
     $('#monthly').text(monthly_pay).parent().show();
-    if (total && m && monthly_pay){	    
+    if (total && m && monthly_pay){
 	$('input[name="initPay"]').val(cache);
 	$('input[name="creditAmount"]').val(total-cache);
 	$('input[name="price"]').val(total);
 	$('input[name="numInstalment"]').val(m);
 	$('input[name="instalment"]').val(monthly_pay);
     }
-    else{	
+    else{
 	$('input[name="initPay"]').val(0);
 	$('input[name="creditAmount"]').val(0);
 	$('input[name="price"]').val(0);
@@ -186,23 +186,31 @@ function init(){
     $('.save').click(save);
     $('a.uploaded_file span').click(deleteFile());
     $('input').change(function(e){saved=false;});
-    $('.send').click(function(e){			 
+    $('.send').click(function(e){
 			 if (!saved){
 			     sending = true;
 			     save();
 			 }
-			 validate();
+			 if (validate()){
+			     $.ajax({
+					url:'/sendCreditApp',
+					success:function(data){
+					    if (data=="ok"){
+						alert('Получилось! Наш сотрудник свяжется с Вами в ближайшее время и сообщит о результатах рассмотрения банком Вашей заявки.');
+					    }
+					}
+				    });
+			 }
 		     });
 }
 function validate(){
-    var retval = true;
     if (_($('.to_validate').toArray())
 	    .chain()
 	    .map(function(el){
 		     var jel = $(el);
 		     return [jel,jel.val()];
 		 })
-        .map(function(pair){
+	.map(function(pair){
 		 if (pair[1]){
 			  pair[0].css('background-color','white');
 		 }
@@ -217,6 +225,42 @@ function validate(){
 	alert('Не все элементы заполнены');
 	return false;
     }
-    
+    var localities = ['v_town','v_locality', 'v_locality_type'];
+    var retval = true;
+    function checkLocalities(postfix){
+	var town = $('#v_town'+postfix);
+	var locality = $('#v_locality'+postfix);
+	var locality_type = $('#v_locality_type'+postfix);
+	if (!town.val() || town.val() == "000"){	    
+	    if (!locality.val()){
+		retval = false;
+		locality.css('background-color','red');
+	    }
+	    else{
+		locality.css('background-color','white');
+	    }
+	    if (!locality_type.val()){
+		retval = false;
+		locality_type.css('background-color','red');
+	    }
+	    else{
+		locality_type.css('background-color','white');
+	    }
+	    if (!locality_type.val() && !locality_type.val())
+		town.css('background-color','red');
+	    else
+		town.css('background-color','white');
+	}
+	else{
+	    town.css('background-color','white');
+	    locality.css('background-color','white');
+	    locality_type.css('background-color','white');
+	}
+    }
+    checkLocalities("");
+    checkLocalities("1");
+    checkLocalities("2");
+    if (!retval)
+	alert('Нужно заполнить Город или Тип населенного пункта и Населенный пункт');
 }
 init();
