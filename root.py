@@ -526,6 +526,8 @@ class Root(Resource):
 	self.putChild('saveset', SaveSet())
 	self.putChild('credit_uploader', CreditUploader())
 	self.putChild('deleteCreditAttachment', DeleteCreditAttachment())
+        self.putChild('sendCreditApp',SendCreditApp())
+
 
     def getChild(self, name, request):
 	# self.checkCookie(request)
@@ -1393,3 +1395,25 @@ class DeleteCreditAttachment(Resource):
 	d = couch.openDoc(request.getCookie('pc_user'))
 	d.addCallback(self.delete, field, order, request)
 	return NOT_DONE_YET
+
+
+class SendCreditApp(Resource):
+
+    def finish(self, some, request):
+        request.write("ok")
+        request.finish()
+
+    def fail(self, some, request):
+        request.write('Failure')
+        request.finish()
+        
+    def render_GET(self, request):
+        order_id = request.args.get('order_id',[UserForCredit.idle_name])[0]
+        d = send_email('inbox@buildpc.ru',
+		   u'Заявка на кредит',
+		   u'Пользоватеь:'+' http://buildpc.ru/admin/couch/_utils/document.html?pc/'+\
+                           request.getCookie('pc_user')+u' заказ: '+order_id,
+		   sender=u'Компьютерный магазин <admin@buildpc.ru>')
+        d.addCallback(self.finish, request)
+        d.addCallback(self.fail, request)
+        return NOT_DONE_YET

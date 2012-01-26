@@ -192,11 +192,16 @@ function init(){
 			     save();
 			 }
 			 if (validate()){
+			     console.log(1);
 			     $.ajax({
 					url:'/sendCreditApp',
+					data:{orderid:$('#orderid').val()},
 					success:function(data){
 					    if (data=="ok"){
 						alert('Получилось! Наш сотрудник свяжется с Вами в ближайшее время и сообщит о результатах рассмотрения банком Вашей заявки.');
+					    }
+					    else{
+						alert('Что-то пошло не так :( Пожалуйста позвоните нам чтобы уточнить причину ошибки.');
 					    }
 					}
 				    });
@@ -231,7 +236,7 @@ function validate(){
 	var town = $('#v_town'+postfix);
 	var locality = $('#v_locality'+postfix);
 	var locality_type = $('#v_locality_type'+postfix);
-	if (!town.val() || town.val() == "000"){	    
+	if (!town.val() || town.val() == "000"){
 	    if (!locality.val()){
 		retval = false;
 		locality.css('background-color','red');
@@ -262,5 +267,6 @@ function validate(){
     checkLocalities("2");
     if (!retval)
 	alert('Нужно заполнить Город или Тип населенного пункта и Населенный пункт');
+    return retval;
 }
 init();

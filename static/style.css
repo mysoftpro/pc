@@ -2326,17 +2326,7 @@ h1.bold.left{
 #mothercross{
     margin-left:20px;
 }
-.pdf_link{
-    display:block;
-    float:right;
-    height:32px;
-    background-image:url('bui_thumbs.png');
-    background-position:0px 3px;
-    background-repeat:no-repeat;
-    padding-left:36px;
-    padding-top:8px;
-    margin-right:10px;
-}
+
 #twitter{
     background-position:0px -458px;
 }
@@ -2731,19 +2721,19 @@ h1.bold.left{
     margin-right:auto;
     width:1000px;
 }
-/* #credit_form_table tr{ */
-/*     color:inherit; */
-/* } */
-/* #credit_form_table tr:hover{ */
-/*     color:inherit; */
-/* } */
-/* #credit_form_table td{ */
-/*     color:inherit; */
-/* } */
-/* #credit_form_table td:hover{ */
-/*     color:inherit; */
-/* } */
-
-/* #credit_form_table select{ */
-/*     width:200px; */
-/* } */
+.cart_extra_link{
+    display:block;
+    float:right;
+    height:32px;
+    background-image:url('bui_thumbs.png');
+    background-repeat:no-repeat;
+    padding-left:36px;
+    padding-top:8px;
+    margin-right:10px;
+}
+.pdf_link{
+    background-position:0px 3px;
+}
+.credit_link {
+    background-position: 0px -378px;
+}

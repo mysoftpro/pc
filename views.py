@@ -172,8 +172,10 @@ class ModelInCart(object):
 	if self.author and not self.model.processing:
 	    extra = deepcopy(self.tree.find('cart_extra'))
 	    for el in extra:
-		if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+		if el.tag == 'a' and 'class' in el.attrib and 'pdf_link' in el.attrib['class']:
 		    el.set('href', '/bill.pdf?id='+self.model._id)
+                if el.tag == 'a' and 'class' in el.attrib and 'credit_link' in el.attrib['class']:
+		    el.set('href', '/credit_form/'+self.model._id)
 		self.description_div.append(el)
 
 
@@ -218,8 +220,11 @@ class SetInCart(ModelInCart):
 	if self.author and not self.model.processing:
 	    extra = deepcopy(self.tree.find('cart_extra'))
 	    for el in extra:
-		if el.tag == 'a' and 'class' in el.attrib and el.attrib['class']=='pdf_link':
+		# TODO has the exactly same method allready. refacotor!
+                if el.tag == 'a' and 'class' in el.attrib and 'pdf_link' in el.attrib['class']:
 		    el.set('href', '/bill.pdf?id='+self.model._id)
+                if el.tag == 'a' and 'class' in el.attrib and 'credit_link' in el.attrib['class']:
+		    el.set('href', '/credit_form/'+self.model._id)
 		if el.text!=u'Проверить':
 		    self.description_div.append(el)
 
