@@ -110,7 +110,7 @@ mother_to_proc_mapping= [(mother_1155,proc_1155),
 
 
 Margin=1.15
-Course = 31.5
+Course = 30.7
 
 #refactor (just comment it and youl see
 def cleanDoc(doc, price, clean_text=True, clean_description=True):
