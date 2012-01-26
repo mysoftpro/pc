@@ -93,22 +93,22 @@
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      <label for="name2">Фамилия</label>
+		      <label for="name2">Фамилия*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="name2" value=""
-			      class="validate_ok"
+			      class="validate_ok to_validate"
 			     id="name2" maxlength="30">
 		    </td>
 		    <td class="flabel" >
-		      <label for="name1">Имя</label>
+		      <label for="name1">Имя*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="name1" value=""
 			      class="validate_ok" id="name1" maxlength="30">
 		    </td>
 		    <td class="flabel" >
-		      <label for="nameMid">Отчество</label>
+		      <label for="nameMid">Отчество*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="nameMid" value=""
@@ -117,40 +117,40 @@
 			     maxlength="30">
 		    </td>
 		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     <label for="nameBorn">Прежняя фамилия</label> -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="nameBorn" value="" -->
+		  <!-- 	     class="validate_ok" id="nameBorn" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     <label for="nameMother">Девичья фамилия матери</label> -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="nameMother" value="" -->
+		  <!-- 	     class="validate_ok" id="nameMother" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		  <tr>
 		    <td class="flabel" >
-		      <label for="nameBorn">Прежняя фамилия</label>
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="nameBorn" value=""
-			     class="validate_ok" id="nameBorn" maxlength="30">
-		    </td>
-		    <td class="flabel" >
-		      <label for="nameMother">Девичья фамилия матери</label>
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="nameMother" value=""
-			     class="validate_ok" id="nameMother" maxlength="30">
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      <label for="birth">Дата рождения</label>
+		      <label for="birth">Дата рождения*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="birth" value=""
-			     class="validate_ok" id="birth" maxlength="10">
+			     class="validate_ok to_validate" id="birth" maxlength="10">
 		    </td>
 		    <td class="flabel" >
-		      <label for="birthPlace">Место рождения</label>
+		      <label for="birthPlace">Место рождения*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="birthPlace" value=""
-			      class="validate_ok" id="birthPlace" maxlength="120">
+			      class="validate_ok to_validate" id="birthPlace" maxlength="120">
 		    </td>
 		    <td class="nlabel" >
 		    </td>
@@ -166,15 +166,14 @@
 			      class="validate_ok" id="identId" maxlength="10">
 		    </td>
 		    <td class="flabel" >
-		      <label for="sex">Пол</label>
+		      <label for="sex">Пол*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select id="sex" name="sex"
-				      >
+			      <select id="sex" name="sex" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="m">муж</option>
 				<option value="z">жен</option>
@@ -185,15 +184,14 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      <label for="famState">Семейное положение</label>
+		      <label for="famState">Семейное положение*</label>
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select id="famState" name="famState"
-				      >
+			      <select id="famState" name="famState" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="1">холост/не замужем</option>
 				<option value="2">женат/замужем</option>
@@ -235,11 +233,10 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Номер
+		      Номер(10 цифр без пробелов)*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="identCard" value=""
-			     class="validate_ok" maxlength="10">
+		      <input type="text" name="identCard" class="validate_ok to_validate" maxlength="10">
 		    </td>
 		    <td class="flabel" >
 	  	      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -250,26 +247,26 @@
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      Дата выдачи
+		      Дата выдачи*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCardDate" value=""
-			     class="validate_ok" maxlength="10">
+			     class="validate_ok to_validate" maxlength="10">
 		    </td>
 		    <td class="flabel" >
-		      Кем выдан
+		      Кем выдан*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCardWho" value=""
 			      style="width:200px"
-			     class="validate_ok" maxlength="100">
+			     class="validate_ok to_validate" maxlength="100">
 		    </td>
 		    <td class="flabel" >
-		      Код подразделения (XXX-XXX)
+		      Код подразделения (XXX-XXX)*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCardSpec" value=""
-			     class="validate_ok" maxlength="7">
+			     class="validate_ok to_validate" maxlength="7">
 		    </td>
 		  </tr>
 		  <tr>
@@ -290,14 +287,14 @@
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      Тип документа
+		      Тип документа*
 		    </td>
 		    <td class="nlabel" >
 		      <table   >
 			<tbody>
 			  <tr >
 			    <td >
-			      <select id="id_identType2" name="identType2">
+			      <select id="id_identType2" name="identType2" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="fpass">Загран. паспорт</option>
 				<option value="drive">Водит. удост.</option>
@@ -314,36 +311,36 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-	  	      Серия
+	  	      Серия*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCard2Sn" value=""
-			     class="validate_ok disabled" maxlength="10">
+			     class="validate_ok to_validate" maxlength="10">
 		    </td>
 		    <td class="flabel" >
-		      Номер
+		      Номер*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCard2" value=""
-			     class="validate_ok disabled"
+			     class="validate_ok to_validate"
 			     maxlength="16">
 		    </td>
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      Дата выдачи
+		      Дата выдачи*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCard2Date" value=""
-			     class="validate_ok disabled" maxlength="10">
+			     class="validate_ok to_validate" maxlength="10">
 		    </td>
 		    <td class="flabel" >
-		      Кем выдан
+		      Кем выдан*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="identCard2Who" value=""
 			     style="width:200px"
-			     class="validate_ok disabled"
+			     class="validate_ok to_validate"
 			     maxlength="100">
 		    </td>
 		    <td class="flabel" >
@@ -356,15 +353,14 @@
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      Жилищные условия
+		      Жилищные условия*
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="houseType"
-				      >
+			      <select name="houseType" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="5">Муницип. квартира</option>
 				<option value="6">Кооператив. квартира</option>
@@ -379,22 +375,21 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Количество иждивенцев
+		      Количество иждивенцев*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="childNum" value=""
-			     class="validate_ok" maxlength="2">
+			     class="validate_ok to_validate" maxlength="2">
 		    </td>
 		    <td class="flabel" >
-		      Образование
+		      Образование*
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="education"
-				      >
+			      <select name="education" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="4">неполное среднее</option>
 				<option value="2">среднее/ среднее специальное</option>
@@ -414,7 +409,7 @@
 		    <td class="nlabel" >
 		    </td>
 		    <td class="flabel" >
-		      Автомобиль в собственности
+		      Автомобиль в собственности*
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
@@ -425,8 +420,7 @@
 				<tbody>
 				  <tr>
 				    <td>
-				      <select name="carOwner"
-					      >
+				      <select name="carOwner" class="to_validate">
 					<option value="">** выберите **</option>
 					<option value="1">да</option>
 					<option value="0">нет</option>
@@ -452,16 +446,7 @@
 		    <td  colspan="2">
 		      <h2>Адрес постоянного проживания</h2>
 		    </td>
-		  </tr>
-		  <tr>
-		    <td class="nlabel" colspan="6">
-		      <span class="warning" style="display: none;" id="irregularAddress">
-			Уточните адрес у клиента!
-		      </span>
-		      <span id="irregularAddressText">
-		      </span>
-		    </td>
-		  </tr>
+		  </tr>		  
 		  <tr>
 		    <td class="flabel" >
 		      Субъект РФ
@@ -520,12 +505,12 @@
 			    <td>
 			      <select name="town" >
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-				<option value="002">Балтийск Город*</option>
+				<option value="002">Балтийск Город</option>
 				<option value="001">Калининград Город</option>
 				<option value="008">Ладушкин Город</option>
 				<option value="009">Мамоново Город</option>
 				<option value="003">Пионерский Город</option>
-				<option value="005">Светлогорск Город*</option>
+				<option value="005">Светлогорск Город</option>
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
@@ -765,10 +750,8 @@
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="region1"
-				      >
-				<option value="" selected="selected">** выберите **</option>
-				<option value="39">Калининградская Область</option>
+			      <select name="region1">
+				<option selected="selected" value="39">Калининградская Область</option>
 			      </select>
 			    </td>
 			  </tr>
@@ -1065,150 +1048,150 @@
 			      class="validate_ok" maxlength="50">
 		    </td>
 		  </tr>
-		  <tr>
-		    <td  colspan="2">
-		      <h2>Контактный телефон ближайших родственников</h2>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Телефонный номер родственника
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled">
-		      <input type="text" name="relatPhone" value=""
-			      class="validate_ok" maxlength="10">
-		    </td>
-		    <td class="flabel" >
-		      Степень родства
-		    </td>
-		    <td class="nlabel" >
-		      <table  >
-			<tbody>
-			  <tr>
-			    <td>
-			      <select name="relationshipToClient" class="disabled">
-				<option value="">** выберите **</option>
-				<option value="7">Бабушка</option>
-				<option value="5">Брат</option>
-				<option value="8">Дедушка</option>
-				<option value="4">Дочь</option>
-				<option value="10">Друг, подруга</option>
-				<option value="9">Другой родственник</option>
-				<option value="itself">клиент</option>
-				<option value="11">Коллега</option>
-				<option value="1">Мать</option>
-				<option value="15">Остальные</option>
-				<option value="2">Отец</option>
-				<option value="6">Сестра</option>
-				<option value="12">Сосед</option>
-				<option value="3">Сын</option>
-			      </select>
-			    </td>
-			  </tr>
-			</tbody>
-		      </table>
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Фамилия
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relatName2" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		    <td class="flabel" >
-		      Имя
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relatName1" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		    <td class="flabel" >
-		      Отчество
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relatNameMid" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		  </tr>
-		  <tr>
-		    <td  colspan="2">
-		      <h2>Дополнительный/экстренный контактный телефон</h2>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Телефонный номер родственника
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relat2PhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">
-		      <input type="text" name="relat2Phone" value=""
-			      class="validate_ok" maxlength="10">
-		    </td>
-		    <td class="flabel" >
-		      Степень родства
-		    </td>
-		    <td class="nlabel" >
-		      <table  >
-			<tbody>
-			  <tr>
-			    <td>
-			      <select name="relationship2ToClient" class="disabled">
-				<option value="">** выберите **</option>
-				<option value="7">Бабушка</option>
-				<option value="5">Брат</option>
-				<option value="8">Дедушка</option>
-				<option value="4">Дочь</option>
-				<option value="10">Друг, подруга</option>
-				<option value="9">Другой родственник</option>
-				<option value="itself">клиент</option>
-				<option value="11">Коллега</option>
-				<option value="1">Мать</option>
-				<option value="15">Остальные</option>
-				<option value="2">Отец</option>
-				<option value="6">Сестра</option>
-				<option value="12">Сосед</option>
-				<option value="3">Сын</option>
-			      </select>
-			    </td>
-			  </tr>
-			</tbody>
-		      </table>
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="flabel" >
-		      Фамилия
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relat2Name2" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		    <td class="flabel" >
-		      Имя
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relat2Name1" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		    <td class="flabel" >
-		      Отчество
-		    </td>
-		    <td class="nlabel" >
-		      <input type="text" name="relat2NameMid" value=""
-			      class="validate_ok disabled" maxlength="30">
-		    </td>
-		  </tr>
+		  <!-- <tr> -->
+		  <!--   <td  colspan="2"> -->
+		  <!--     <h2>Контактный телефон ближайших родственников</h2> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Телефонный номер родственника -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relatPhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled"> -->
+		  <!--     <input type="text" name="relatPhone" value="" -->
+		  <!-- 	      class="validate_ok" maxlength="10"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Степень родства -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <table  > -->
+		  <!-- 	<tbody> -->
+		  <!-- 	  <tr> -->
+		  <!-- 	    <td> -->
+		  <!-- 	      <select name="relationshipToClient" class="disabled"> -->
+		  <!-- 		<option value="">** выберите **</option> -->
+		  <!-- 		<option value="7">Бабушка</option> -->
+		  <!-- 		<option value="5">Брат</option> -->
+		  <!-- 		<option value="8">Дедушка</option> -->
+		  <!-- 		<option value="4">Дочь</option> -->
+		  <!-- 		<option value="10">Друг, подруга</option> -->
+		  <!-- 		<option value="9">Другой родственник</option> -->
+		  <!-- 		<option value="itself">клиент</option> -->
+		  <!-- 		<option value="11">Коллега</option> -->
+		  <!-- 		<option value="1">Мать</option> -->
+		  <!-- 		<option value="15">Остальные</option> -->
+		  <!-- 		<option value="2">Отец</option> -->
+		  <!-- 		<option value="6">Сестра</option> -->
+		  <!-- 		<option value="12">Сосед</option> -->
+		  <!-- 		<option value="3">Сын</option> -->
+		  <!-- 	      </select> -->
+		  <!-- 	    </td> -->
+		  <!-- 	  </tr> -->
+		  <!-- 	</tbody> -->
+		  <!--     </table> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Фамилия -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relatName2" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Имя -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relatName1" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Отчество -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relatNameMid" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td  colspan="2"> -->
+		  <!--     <h2>Дополнительный/экстренный контактный телефон</h2> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Телефонный номер родственника -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relat2PhoneCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled=""> -->
+		  <!--     <input type="text" name="relat2Phone" value="" -->
+		  <!-- 	      class="validate_ok" maxlength="10"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Степень родства -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <table  > -->
+		  <!-- 	<tbody> -->
+		  <!-- 	  <tr> -->
+		  <!-- 	    <td> -->
+		  <!-- 	      <select name="relationship2ToClient" class="disabled"> -->
+		  <!-- 		<option value="">** выберите **</option> -->
+		  <!-- 		<option value="7">Бабушка</option> -->
+		  <!-- 		<option value="5">Брат</option> -->
+		  <!-- 		<option value="8">Дедушка</option> -->
+		  <!-- 		<option value="4">Дочь</option> -->
+		  <!-- 		<option value="10">Друг, подруга</option> -->
+		  <!-- 		<option value="9">Другой родственник</option> -->
+		  <!-- 		<option value="itself">клиент</option> -->
+		  <!-- 		<option value="11">Коллега</option> -->
+		  <!-- 		<option value="1">Мать</option> -->
+		  <!-- 		<option value="15">Остальные</option> -->
+		  <!-- 		<option value="2">Отец</option> -->
+		  <!-- 		<option value="6">Сестра</option> -->
+		  <!-- 		<option value="12">Сосед</option> -->
+		  <!-- 		<option value="3">Сын</option> -->
+		  <!-- 	      </select> -->
+		  <!-- 	    </td> -->
+		  <!-- 	  </tr> -->
+		  <!-- 	</tbody> -->
+		  <!--     </table> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
+		  <!-- <tr> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Фамилия -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relat2Name2" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Имя -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relat2Name1" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!--   <td class="flabel" > -->
+		  <!--     Отчество -->
+		  <!--   </td> -->
+		  <!--   <td class="nlabel" > -->
+		  <!--     <input type="text" name="relat2NameMid" value="" -->
+		  <!-- 	      class="validate_ok disabled" maxlength="30"> -->
+		  <!--   </td> -->
+		  <!-- </tr> -->
 		</tbody>
 	      </table>
 	    </td>
@@ -1229,19 +1212,18 @@
 	  </tr>
 	  <tr>
 	    <td>
-	      <table class="greybox"  align="center">
+	      <table class="greybox"  align="left">
 		<tbody>
 		  <tr>
 		    <td class="flabel" >
-		      Наличие недвижимости в собственности
+		      Наличие недвижимости в собственности*
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="realityOwner"
-				       class="validate_ok">
+			      <select name="realityOwner" class="validate_ok to_validate">
 				<option value="" selected="selected">** выберите **</option>
 				<option value="1">Да</option>
 				<option value="0">Нет</option>
@@ -1257,29 +1239,29 @@
 			  <tr>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="1">
-			      Дом  &nbsp; &nbsp; &nbsp;
+			      Дом
 			    </td>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="2">
-			      Квартира  &nbsp; &nbsp; &nbsp;
+			      Квартира
 			    </td>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="3">
-			      Дача  &nbsp; &nbsp; &nbsp;
+			      Дача
 			    </td>
 			  </tr>
 			  <tr>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="4">
-			      Земельный участок  &nbsp; &nbsp; &nbsp;
+			      Земельный участок
 			    </td>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="5">
-			      Гараж  &nbsp; &nbsp; &nbsp;
+			      Гараж
 			    </td>
 			    <td class="nlabel">
 			      <input type="checkbox" name="realityTypes" value="6">
-			      Другое  &nbsp; &nbsp; &nbsp;
+			      Другое
 			    </td>
 			  </tr>
 			</tbody>
@@ -1310,15 +1292,14 @@
 		<tbody>
 		  <tr>
 		    <td class="flabel" >
-		      Другие кредиты
+		      Другие кредиты*
 		    </td>
 		    <td class="nlabel" >
 		      <table   style="width: 130px">
 			<tbody>
 			  <tr style="width: 130px">
 			    <td style="width: 130px">
-			      <select name="isOtherLoan"
-				       style="width: 130px">
+			      <select name="isOtherLoan" style="width: 130px" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="0">не имеет</option>
 				<option value="1">сейчас имеет</option>
@@ -1366,14 +1347,14 @@
 		<tbody>
 		  <tr>
 		    <td class="flabel" >
-		      Вид занятости
+		      Вид занятости*
 		    </td>
 		    <td class="nlabel" >
 		      <table  >
 			<tbody>
 			  <tr>
 			    <td>
-			      <select name="incomeType">
+			      <select name="incomeType" class="to_validate">
 				<option value="">** выберите **</option>
 				<option value="a">рабочий</option>
 				<option value="b">гос. служащий</option>
@@ -1390,17 +1371,20 @@
 		      </table>
 		    </td>
 		    <td class="flabel" >
-		      Рабочий телефон. Добавочный номер.
+		      Рабочий телефон. Добавочный номер.*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="phoneEmpCountryCode" maxlength="3" size="3" value="7" class="validate_ok disabled" disabled="">&nbsp;<input type="text" name="phoneEmp" value=""/>
+		      <input type="text" name="phoneEmpCountryCode" 
+			     maxlength="3" size="3" value="7" 
+			     class="validate_ok disabled" disabled="">
+		      <input type="text" name="phoneEmp" value="" class="to_validate"/>
 		      <input type="text" name="phoneEmpExtension" size="6" value="">
 		    </td>
 		    <td class="flabel" >
-		      Наименование работодателя
+		      Наименование работодателя*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="empName" value="">
+		      <input type="text" name="empName" value="" class="to_validate">
 		    </td>
 		  </tr>
 		  <tr>
@@ -1411,10 +1395,10 @@
 		      <input type="text" name="empIdent" value="">
 		    </td>
 		    <td class="flabel" >
-		      Должность
+		      Должность*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="occupation" value="">
+		      <input type="text" name="occupation" value="" class="to_validate">
 		    </td>
 		    <td class="flabel" >
 		      Отраслевая принадлежность
@@ -1458,13 +1442,7 @@
 		    <td  colspan="2">
 		      <h2>Адрес работодателя</h2>
 		    </td>
-		  </tr>
-		  <tr>
-		    <td class="nlabel" colspan="6">
-		      <span id="irregularAddressText2">
-		      </span>
-		    </td>
-		  </tr>
+		  </tr>		  
 		  <tr>
 		    <td class="flabel" >
 		      Субъект РФ
@@ -1475,8 +1453,7 @@
 			  <tr>
 			    <td>
 			      <select name="region2">
-				<option value="" selected="selected">** выберите **</option>
-				<option value="39">Калининградская Область</option>
+				<option selected="selected" value="39">Калининградская Область</option>
 			      </select>
 			    </td>
 			  </tr>
@@ -1524,12 +1501,12 @@
 			    <td>
 			      <select name="town2" >
 				<option value="000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-				<option value="002">Балтийск Город*</option>
+				<option value="002">Балтийск Город</option>
 				<option value="001">Калининград Город</option>
 				<option value="008">Ладушкин Город</option>
 				<option value="009">Мамоново Город</option>
 				<option value="003">Пионерский Город</option>
-				<option value="005">Светлогорск Город*</option>
+				<option value="005">Светлогорск Город</option>
 				<option value="006">Светлый Город</option>
 				<option value="007">Советск Город</option>
 				<option value="010">Янтарный Поселок городского типа</option>
@@ -1544,7 +1521,7 @@
 		    <td class="flabel" >
 		      Населенный пункт
 		    </td>
-		    <td class="nlabel" >
+		    <td class="nlabel">
 		      <table  >
 			<tbody>
 			  <tr>
@@ -1734,18 +1711,18 @@
 		  <!-- </tr> -->
 		  <tr>
 		    <td class="flabel" >
-		      Телефон работодателя(с кодом)
+		      Телефон работодателя(с кодом)*
 		    </td>
 		    <td class="nlabel" >
 		      <input type="text" name="empPhoneCountryCode" value="7" disabled="disabled"/>
-		      <input type="text" name="empPhone" size="11" value=""/>
+		      <input type="text" name="empPhone" size="11" value="" class="to_validate"/>
 		      <input type="text" name="empPhoneExtension" size="6" value=""/>
 		    </td>
 		    <td class="flabel" >
-		      В данной организации с (мес./год)
+		      В данной организации с (мес./год)*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="employFrom" value=""/>
+		      <input type="text" name="employFrom" value="" class="to_validate"/>
 		    </td>
 		    <td class="flabel" >
 		      Стаж в отрасли
@@ -1759,21 +1736,17 @@
 		  </tr>
 		  <tr>
 		    <td class="flabel" >
-		      Среднемесячный доход
+		      Среднемесячный доход*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="income" value=""/>
+		      <input type="text" name="income" value="" class="to_validate"/>
 		    </td>
 		    <td class="flabel" >
-		      Доход супруга/ги
+		      Доход супруга/ги*
 		    </td>
 		    <td class="nlabel" >
-		      <input type="text" name="incomePart" value=""/>
-		    </td>
-		    <td class="flabel" >
-		    </td>
-		    <td class="nlabel" >
-		    </td>
+		      <input type="text" name="incomePart" value="" class="to_validate"/>
+		    </td>		    
 		  </tr>
 		</tbody>
 	      </table>
@@ -1979,15 +1952,15 @@
 	      </table>
 
 	      <form id="credit_uploader" name="credit_uploader" action="/credit_uploader" target="credit_uploader" method="post" enctype="multipart/form-data" rel="nofollow">
-	      <table>	
+	      <table>
 		<tbody>
 		  <tr>
 		    <td colspan="6">
 		      <hr >
 		    </td>
 		  </tr>
-		  
-		  <tr>		    
+
+		  <tr>
 		    <td class="flabel" >
 		      Список приложений
 		    </td>
@@ -1998,7 +1971,7 @@
 		      <input type="file" name="passport"/>
 		    </td>
 		    <td>
-		      Фото		      
+		      Фото
 		    </td>
 		    <td>
 		      <input type="file" name="photo"/>
@@ -2008,17 +1981,17 @@
 		  <tr>
 		    <td></td>
 		    <td>
-		      Сканы второго документа		      
+		      Сканы второго документа
 		    </td>
 		    <td><input type="file" name="second_doc"/></td>
 		  </tr>
-		  <tr>		    
+		  <tr>
 		    <td style="display:none;"><!--  -->
 		      <input type="text" name="credit_data"  id="credit_data" value="" />
 		      <input type="text" name="file_names"  id="file_names" value="" />
 		      <input type="text" name="parent"  id="parent" value="1" />
 		      <input type="text" name="deleted_files"  id="deleted_files" value=""/>
-		      <input type="submit" name="credit_submit" value="credit_submit" 
+		      <input type="submit" name="credit_submit" value="credit_submit"
 			     id="credit_submit"/>
 		      <input type="text" name="order_id"  id="order_id" value="" />
 		    </td>

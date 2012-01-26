@@ -87,7 +87,12 @@ function updateSave(tries){
 	return;
     }
     if ($(status).text()=="ok"){
-	alert('получилось');
+	console.log(sending);
+	if (!sending)
+	    alert('получилось');
+	else
+	    sending = false;
+	saved = true;
 	installUploadedFiles();
     }
     else
@@ -141,6 +146,8 @@ function installUploadedFiles(){
     uploadedFiles = {};
     deletedFiles = {};
 }
+var saved = false;
+var sending = false;
 
 function init(){
     $('#calc').click(recalculate);
@@ -169,5 +176,16 @@ function init(){
     $('input[type="file"]').change(addFile);
     $('.save').click(save);
     $('a.uploaded_file span').click(deleteFile());
+    $('input').change(function(e){saved=false;});
+    $('.send').click(function(e){			 
+			 if (!saved){
+			     sending = true;
+			     save();
+			 }
+			 validate();
+		     });
+}
+function validate(){
+    
 }
 init();
