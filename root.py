@@ -1099,9 +1099,10 @@ class Delete(Resource):
                     or not _model['processing']
             if same_author and not_processing:
                 couch.deleteDoc(uuid,_model['_rev'])
-                _user['models'] = [m for m in _user['models'] if m != _model['_id']]
-                _user['notebooks'] = [m for m in _user['notebooks'] if m != _model['_id']]
-                _user['sets'] = [m for m in _user['sets'] if m != _model['_id']]
+                #TODO! rename. it is not a model!
+                for key in ('models','promos','notebooks','sets'):
+                    if key in _user:
+                        _user[key] = [m for m in _user[key] if m != _model['_id']]
                 pcCartTotal(request, _user)
                 couch.saveDoc(_user)
                 request.write('ok')
