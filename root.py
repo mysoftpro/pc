@@ -502,8 +502,6 @@ class Root(Resource):
         self.putChild('bill.pdf', PdfBill())
         self.putChild('oauth',OAuth())
         self.putChild('openid',OpenId())
-        # self.putChild('upgrade_set',TemplateRenderrer(self.static, 'upgrade_set.html'))
-        self.putChild('marketFor',MarketFor())
         self.putChild('videoComments', MarketForVideo())
         self.putChild('videoSpecs', SpecsForVideo())
         self.putChild('saveset', SaveSet())
@@ -877,7 +875,6 @@ class Save(Resource):
 
     # TODO! how fast is base36.gen_id() ???? may be wrap in deferred???
     def saveModel(self, user_model, user_id, new_model, request):
-        from pc import models
 
         userfs = None
         if user_model[0][0]:
@@ -885,10 +882,11 @@ class Save(Resource):
         else:
             userfs = UserForSaving(UserForSaving.makeNewUser())
             addCookies(request, {'pc_key':userfs.pc_key})
+
         modelfs = None
 
         def newModel():
-            modelfs = ModelForSaving(new_model,False)
+            return ModelForSaving(new_model,False).setId()
 
         if user_model[1][0]:
             modelfs = ModelForSaving(user_model[1][1],
@@ -899,11 +897,11 @@ class Save(Resource):
                     pass #ok. lets edit this model
                 else:
                     # just store new model
-                    newModel()
+                    modelfs = newModel()
             else:
-                newModel()
+                modelfs = newModel()
         else:
-            newModel()
+            modelfs = newModel()
 
         # # no it does not matter what we have in model_doc.
         # # brand new or existant model. just copy all fron new model here
@@ -927,13 +925,14 @@ class Save(Resource):
         # if model_doc['_id'] not in user_doc.get(where_to_save,{}):
         #     user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
         userfs.addModel(modelfs)
-        _date=str(date.today()).split('-')
-        user_doc['date'] = _date
-        model_doc['date'] = _date
-        d1 = couch.saveDoc(user_doc)
-        d2 = couch.saveDoc(model_doc)
-        li = defer.DeferredList([d1,d2])
-        li.addCallback(self.finish, request,user_doc)
+        userfs.addDate()
+        modelfs.addDate()
+        return defer.DeferredList([userfs.save(),modelfs.save()])\
+            .addCallback(self.finish, request, userfs.user_doc)
+        # d1 = couch.saveDoc(user_doc)
+        # d2 = couch.saveDoc(model_doc)
+        # li = defer.DeferredList([d1,d2])
+        # li.addCallback(self.finish, request,user_doc)
 
 
 
