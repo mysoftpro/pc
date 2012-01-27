@@ -14,7 +14,8 @@ import simplejson
 from datetime import datetime, date
 from pc.models import\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
-    NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit
+    NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
+    UserForSaving,ModelForSaving
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
    MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm
 from pc.catalog import XmlGetter, WitNewMap
@@ -326,14 +327,6 @@ class CachedStatic(File):
 
         else:
             if '.html' in fileForReading.name or '.json' in fileForReading.name:
-                # name_to_cache = physical_name
-                # DO NOT CACHE VIRTUAL NAMES. UNCOMMENT ALL TO CACHE EM
-                # if len(virtual_name)>0:
-                #     splitted = physical_name.split('\\')
-                #     if len(splitted) == 0:
-                #         splitted = physical_name.split('/')
-                #     if splitted[-1] != virtual_name:
-                #         name_to_cache = None # virtual_name
                 d = self.renderTemplate(fileForReading, last_modified, request)
                 d.addCallback(self._gzip, None, last_modified)
                 d.addCallback(self.render_GSIPPED, request)
@@ -391,15 +384,6 @@ class CachedStatic(File):
         request.write(gzipped)
         request.finish()
 
-# class Cookable(Resource):
-#     def __init__(self):
-#         self.cookies = []
-#         Resource.__init__(self)
-
-#     def checkCookie(self, request):
-#         user_cookie = request.getCookie('pc_user')
-#         if  user_cookie is None:
-#             addCookies(request, {'pc_user':base36.gen_id()})
 
 _comet_users = {}
 
@@ -537,30 +521,6 @@ class Root(Resource):
             return child
             # return self.static.getChild(name, request)
         return self
-
-class MarketFor(Resource):
-    def checkMarketParams(self, res, request):
-        if len(res['rows'])==0:
-            request.write(simplejson.dumps({'error':'no such articul'}))
-        elif 'doc' not in res['rows'][0]:
-            request.write(simplejson.dumps({'error':'no doc'}))
-        else:
-            doc = res['rows'][0]['doc']
-            if 'marketParams' in doc and 'marketComments' in doc and 'marketReviews' in doc:
-                request.write(simplejson.dumps({}))
-            else:
-                request.write(simplejson.dumps({'error':'params is not completed'}))
-        request.finish()
-
-
-
-    @MIMETypeJSON
-    def render_GET(self, request):
-        d = couch.openView(designID, 'articul',
-                           key=request.args.get('articul', ['no articule'])[0],
-                           include_docs=True)
-        d.addCallback(self.checkMarketParams, request)
-        return  NOT_DONE_YET
 
 
 class PdfBill(Resource):
@@ -905,48 +865,44 @@ class Save(Resource):
                 user_id = base36.gen_id()
             d1 = couch.openDoc(user_id)
             d2 = defer.Deferred()
-            model_id = None
             if 'id' in jmodel:
-                model_id = jmodel.pop('id')
-                d2 = couch.openDoc(model_id)
+                d2 = couch.openDoc(jmodel['_id'])
             else:
-                model_id = base36.gen_id()
                 d2.addCallback(lambda x: jmodel)
                 d2.callback(None)
             li = defer.DeferredList([d1,d2])
-            li.addCallback(self.saveModel, user_id, model_id, jmodel, request)
+            li.addCallback(self.saveModel, user_id, jmodel, request)
             return NOT_DONE_YET
         return 'fail'
 
     # TODO! how fast is base36.gen_id() ???? may be wrap in deferred???
-    def saveModel(self, user_model, user_id, model_id, new_model, request):
+    def saveModel(self, user_model, user_id, new_model, request):
         from pc import models
-        user_doc = None
+
+        userfs = None
         if user_model[0][0]:
-            user_doc = user_model[0][1]
+            userfs = UserForSaving(user_model[0][1])
         else:
-            user_doc = {'_id':user_id, 'models':[], 'pc_key':base36.gen_id()}
-            addCookies(request, {'pc_key':user_doc['pc_key']})
-        model_doc = None
+            userfs = UserForSaving(UserForSaving.makeNewUser())
+            addCookies(request, {'pc_key':userfs.pc_key})
+        modelfs = None
+
+        def newModel():
+            modelfs = ModelForSaving(new_model,False)
+
         if user_model[1][0]:
-            edit_model = request.args.get('edit', [None])[0] is not None
-            if edit_model:
-                same_author = user_model[1][1]['author'] == user_id and \
-                'pc_key' in user_doc and \
-                request.getCookie('pc_key') == user_doc['pc_key']
-                not_processing = not 'processing' in user_model[1][1] \
-                    or not user_model[1][1]['processing']
-                if same_author and not_processing:
-                    model_doc = user_model[1][1]
+            modelfs = ModelForSaving(user_model[1][1],
+                                     request.args.get('edit', [None])[0] is not None)
+            if modelfs.editing:
+                if not modelfs.processing and userfs.isValid(request.getCookie('pc_key')):
+                    pass #ok. lets edit this model
                 else:
-                    model_doc = new_model
-                    model_doc['_id'] = model_id
+                    # just store new model
+                    newModel()
             else:
-                model_doc = new_model
-                model_doc['_id'] = model_id
+                newModel()
         else:
-            model_doc = new_model
-            model_doc['_id'] = model_id
+            newModel()
 
         # no it does not matter what we have in model_doc.
         # brand new or existant model. just copy all fron new model here

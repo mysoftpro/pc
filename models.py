@@ -9,7 +9,8 @@ from urllib import unquote_plus, quote_plus
 from datetime import datetime,timedelta
 from pc.mail import send_email
 from twisted.web.resource import Resource
-from pc.common import MIMETypeJSON, forceCond
+from pc.common import MIMETypeJSON
+from pc import base36
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -1274,3 +1275,57 @@ class UserForCredit(object):
                 credit = self._credits[k]
                 name = k
         return credit, name
+
+
+class UserForSaving(object):
+    def __init__(self, user_doc):
+        self.user_doc = user_doc
+        
+    @classmethod
+    def makeNewUser(cls, user_id=None):
+        if user_id is None:
+            user_id = base36.gen_id()
+        return {'_id':user_id, 'pc_key':base36.gen_id()}
+
+    def get(self, field, default=None):
+	return self.user_doc.get(field, default)
+
+    @property
+    def pc_key(self):
+        if self.get('pc_key',None) is None:
+            self.user_doc['pc_key'] = base36.gen_id()
+        return self.get('pc_key')
+
+
+    def isValid(self, pc_key):
+        return pc_key == self.pc_key
+
+
+class ModelForSaving(object):
+    def __init__(self, model_doc, editing=False):
+        self.model_doc = model_doc
+        self.editing = editing
+
+    def get(self, field, default=None):
+	return self.user_doc.get(field, default)    
+
+    @property
+    def processing(self):
+        return self.get('processing',False)
+
+    
+    @property
+    def _id(self):
+        return self.get('_id')
+
+    def setId(self):
+        self.model_doc['_id'] = base36.gen_id()
+    
+
+    # def get_id(self):
+    #     return self.get('_id')
+
+    # def set_id(self,_id):
+    #     self.model_doc['_id'] = _id
+
+    # _id = property(get_id, set_id)
