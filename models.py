@@ -1374,7 +1374,7 @@ class ModelForSaving(object):
 
     @property
     def placement(self):
-        return 'promo' if self.promo else 'models'
+        return 'promos' if self.promo else 'models'
 
 
     def save(self):
