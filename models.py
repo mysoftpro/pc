@@ -1328,8 +1328,6 @@ class ModelForSaving(object):
         self.model_doc = model_doc
         self.editing = editing
 
-
-
     @property
     def _id(self):
         return self.get('_id')

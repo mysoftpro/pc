@@ -864,7 +864,7 @@ class Save(Resource):
             d1 = couch.openDoc(user_id)
             d2 = defer.Deferred()
             if 'id' in jmodel:
-                d2 = couch.openDoc(jmodel['_id'])
+                d2 = couch.openDoc(jmodel['id'])
             else:
                 d2.addCallback(lambda x: jmodel)
                 d2.callback(None)
@@ -893,7 +893,7 @@ class Save(Resource):
                                      request.args.get('edit', [None])[0] is not None)
             if modelfs.editing:
                 if not modelfs.processing and userfs.isValid(request.getCookie('pc_key')):
-                    modelfs.copy(new_model)
+                    modelfs.updateModel(new_model)
                     pass #ok. lets edit this model
                 else:
                     # just store new model
