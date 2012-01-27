@@ -895,6 +895,7 @@ class Save(Resource):
                                      request.args.get('edit', [None])[0] is not None)
             if modelfs.editing:
                 if not modelfs.processing and userfs.isValid(request.getCookie('pc_key')):
+                    modelfs.copy(new_model)
                     pass #ok. lets edit this model
                 else:
                     # just store new model
@@ -904,26 +905,28 @@ class Save(Resource):
         else:
             newModel()
 
-        # no it does not matter what we have in model_doc.
-        # brand new or existant model. just copy all fron new model here
-        for k,v in new_model.items():
-            model_doc[k] = v
-        model_doc['original_prices'] = {}
-        for name,code in model_doc['items'].items():
-            if type(code) is list:
-                code = code[0]
-            if code in models.gChoices_flatten:
-                component = models.gChoices_flatten[code]
-                model_doc['original_prices'].update({code:component['price']})
-            else:
-                model_doc['original_prices'].update({code:0})
+        # # no it does not matter what we have in model_doc.
+        # # brand new or existant model. just copy all fron new model here
+        # for k,v in new_model.items():
+        #     model_doc[k] = v
 
-        model_doc['author'] = user_id
-        where_to_save = 'models'
-        if 'promo' in model_doc:
-            where_to_save = 'promos'
-        if model_doc['_id'] not in user_doc.get(where_to_save,{}):
-            user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
+        # model_doc['original_prices'] = {}
+        # for name,code in model_doc['items'].items():
+        #     if type(code) is list:
+        #         code = code[0]
+        #     if code in models.gChoices_flatten:
+        #         component = models.gChoices_flatten[code]
+        #         model_doc['original_prices'].update({code:component['price']})
+        #     else:
+        #         model_doc['original_prices'].update({code:0})
+
+        # model_doc['author'] = user_id
+        # where_to_save = 'models'
+        # if 'promo' in model_doc:
+        #     where_to_save = 'promos'
+        # if model_doc['_id'] not in user_doc.get(where_to_save,{}):
+        #     user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
+        userfs.addModel(modelfs)
         _date=str(date.today()).split('-')
         user_doc['date'] = _date
         model_doc['date'] = _date

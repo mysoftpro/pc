@@ -1296,9 +1296,18 @@ class UserForSaving(object):
             self.user_doc['pc_key'] = base36.gen_id()
         return self.get('pc_key')
 
+    @property
+    def _id(self):
+        return self.get('_id')
+
 
     def isValid(self, pc_key):
         return pc_key == self.pc_key
+
+    def addModel(self, modelForSaving):        
+        placement = modelForSaving.placement        
+        if modelForSaving._id not in self.get(placement,[]):
+            self.user_doc.setdefault(placement,[]).append(modelForSaving._id)
 
 
 class ModelForSaving(object):
@@ -1321,11 +1330,28 @@ class ModelForSaving(object):
     def setId(self):
         self.model_doc['_id'] = base36.gen_id()
     
+    def updateModel(self, new_model):
+        for k,v in new_model.items():
+            self.model_doc[k] = v
 
-    # def get_id(self):
-    #     return self.get('_id')
+    def setOriginalPrices(self):
+        self.model_doc['original_prices'] = {}
+        choices = globals()['gChoices_flatten']
+        for name,code in self.model_doc['items'].items():
+            if type(code) is list:
+                code = code[0]
+            if code in choices:
+                self.model_doc['original_prices'].update({code:choices[code]})
+            else:
+                self.model_doc['original_prices'].update({code:0})
 
-    # def set_id(self,_id):
-    #     self.model_doc['_id'] = _id
 
-    # _id = property(get_id, set_id)
+    def setAuthor(self, userForSaving):
+        self.model_doc['author'] = userForSaving._id
+
+    @property
+    def promo(self):
+        return self.get('promo', False)
+
+    def placement(self):
+        return 'promo' if self.promo else 'models'
