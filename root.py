@@ -1060,6 +1060,7 @@ class Delete(Resource):
                     or not _model['processing']
             if same_author and not_processing:
                 couch.deleteDoc(uuid,_model['_rev'])
+
                 #TODO! rename. it is not a model!
                 for key in ('models','promos','notebooks','sets'):
                     if key in _user:
