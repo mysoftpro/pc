@@ -4,7 +4,7 @@ from twisted.internet import defer, reactor
 from pc import models
 
 
-class TestModel(unittest.TestCase):
+class TestSave(unittest.TestCase):
 
     def setUp(self):
         models.gChoices = {models.proc:[], models.video:[]}
