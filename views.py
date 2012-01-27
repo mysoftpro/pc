@@ -234,10 +234,9 @@ class SetInCart(ModelInCart):
 	self.model_div = divs[0]
 	self.description_div = divs[1]
 
-    def setModelLink(self):
-
+    def setModelLink(self):        
 	url = '/videocard/'+\
-		     quote_plus(self.model.components[0].get('video_articul','').replace('\t',''))
+		     quote_plus(self.model.components[0].get('articul','').replace('\t',''))
 
 	self.icon.set('href',url)
 
