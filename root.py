@@ -926,7 +926,10 @@ class Save(Resource):
         #     user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
         userfs.addModel(modelfs)
         userfs.addDate()
+        modelfs.addAuthor(userfs)
+        modelfs.setOriginalPrices()
         modelfs.addDate()
+        
         return defer.DeferredList([userfs.save(),modelfs.save()])\
             .addCallback(self.finish, request, userfs.user_doc)
         # d1 = couch.saveDoc(user_doc)

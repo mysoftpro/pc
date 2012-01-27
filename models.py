@@ -1367,7 +1367,7 @@ class ModelForSaving(object):
                 self.model_doc['original_prices'].update({code:0})
 
 
-    def setAuthor(self, userForSaving):
+    def addAuthor(self, userForSaving):
         self.model_doc['author'] = userForSaving._id
 
     @property
