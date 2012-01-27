@@ -323,17 +323,19 @@ class PCView(object):
 class Cart(PCView):
     title = u'Корзина'
 
-    def fixCookies(self, user):
+    def fixCookies(self, user, total):
 	if user.isValid(self.request):
-	    pcCartTotal(self.request, user.user)
+	    pcCartTotal(self.request, user.user, total=total)
 
     def preRender(self):
 	user_d = userFactory(self.name)
-	user_d.addCallback(self.renderModels)
-	user_d.addCallback(self.renderPromos)
-	user_d.addCallback(self.renderNotes)
-	user_d.addCallback(self.renderSets)
-	user_d.addCallback(self.fixCookies)
+        # fix cart! remove it in march please =)
+        total = {}
+	user_d.addCallback(self.renderModels, total)
+	user_d.addCallback(self.renderPromos, total)
+	user_d.addCallback(self.renderNotes, total)
+	user_d.addCallback(self.renderSets, total)
+	user_d.addCallback(self.fixCookies, total)
 	return user_d
 
 
@@ -341,9 +343,11 @@ class Cart(PCView):
 	return self.template.middle.xpath('//div[@id="models"]')[0]
 
 
-    def renderModels(self, user):
+    def renderModels(self, user, total):
 	models_div = self.getModelsDiv()
+        total.update({'models':0})
 	for m in user.getUserModels():
+            total['models']+=1
 	    view = ModelInCart(self.request, m, self.tree,
 			       models_div, user.isValid(self.request) and m.isAuthor(user))
 	    view.render()
@@ -353,15 +357,15 @@ class Cart(PCView):
 
     # TODO! it must be 1 method. and multiple classes for all types!!!!!!
     # may be use adaptors?????????????
-    def renderPromos(self, user):
+    def renderPromos(self, user, total):
 	models_div = self.getModelsDiv()
+        total.update({'promos':0})
 	for m in user.getUserPromos():
+            total['promos']+=1
 	    view = ModelInCart(self.request, m, self.tree,
 			       models_div, user.isValid(self.request) and m.isAuthor(user))
 	    view.render()
 	return user
-
-
 
 
     def getNotesDiv(self):
@@ -372,18 +376,22 @@ class Cart(PCView):
 
 
 
-    def renderNotes(self, user):
+    def renderNotes(self, user, total):
 	models_div = self.getModelsDiv()
+        total.update({'notebooks':0})
 	for m in user.getUserNotebooks():
+            total['notebooks']+=1
 	    view = NotebookInCart(self.request, m, self.tree,
 			       models_div, user.isValid(self.request) and m.isAuthor(user))
 	    view.render()
 	return user
 
 
-    def renderSets(self, user):
+    def renderSets(self, user, total):
 	models_div = self.getModelsDiv()
+        total.update({'sets':0})
 	for m in user.getUserSets():
+            total['sets']+=1
 	    view = SetInCart(self.request, m, self.tree,
 			       models_div, user.isValid(self.request) and m.isAuthor(user))
 	    view.render()

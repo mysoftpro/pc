@@ -41,11 +41,14 @@ def MIMETypeJSON(f):
     return render
 
 
-def pcCartTotal(request, user):
+def pcCartTotal(request, user, total={}):
     in_cart = 0
-    in_cart+= len(user.get('models',[]))
-    in_cart+= len(user.get('promos',[]))
-    in_cart+= len(user.get('notebooks',[]))
-    in_cart+= len(user.get('sets',[]))                  
+    for key in ('models','promos','notebooks','sets'):
+        if key in total:
+            in_cart+=total[key]
+        else:            
+            in_cart+= len(user.get(key,[]))
     if in_cart>0:
         addCookies(request, {'pc_cart':str(in_cart)})
+    else:
+        addCookies(request, {'pc_cart':''})
