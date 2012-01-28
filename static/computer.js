@@ -1673,7 +1673,7 @@ var added_cached;
 
 function to_cartSuccess(data){
     if (!data['id'])
-	alert('Что пошло не так :(');
+	alert('Что то пошло не так :(');
     else{
 	uuid = data['id'];
 	var len = data['id'].length;

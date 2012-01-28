@@ -875,12 +875,11 @@ class Save(Resource):
 
     # TODO! how fast is base36.gen_id() ???? may be wrap in deferred???
     def saveModel(self, user_model, user_id, new_model, request):
-
         userfs = None
         if user_model[0][0]:
             userfs = UserForSaving(user_model[0][1])
         else:
-            userfs = UserForSaving(UserForSaving.makeNewUser())
+            userfs = UserForSaving(UserForSaving.makeNewUser(user_id=user_id))
             addCookies(request, {'pc_key':userfs.pc_key})
 
         modelfs = None

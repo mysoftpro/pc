@@ -11,7 +11,7 @@ from pc.mail import send_email
 from twisted.web.resource import Resource
 from pc.common import MIMETypeJSON
 from pc import base36
-
+from random import randint
 
 BUILD_PRICE = 800
 INSTALLING_PRICE=800
@@ -1286,7 +1286,10 @@ class UserForSaving(object):
     def makeNewUser(cls, user_id=None):
         if user_id is None:
             user_id = base36.gen_id()
-        return {'_id':user_id, 'pc_key':base36.gen_id()}
+        pc_key = base36.gen_id()        
+        if pc_key == user_id:
+            pc_key = user_id+str(randint(0,10))
+        return {'_id':user_id, 'pc_key':pc_key}
 
     def get(self, field, default=None):
         return self.user_doc.get(field, default)
@@ -1307,12 +1310,8 @@ class UserForSaving(object):
 
     def addModel(self, modelForSaving):
         placement = modelForSaving.placement
-        print "yeeeeeeeeeeeeeeeeeeeeeeha"
-        print placement
-        print modelForSaving.model_doc
         if modelForSaving._id not in self.get(placement,[]):
             self.user_doc.setdefault(placement,[]).append(modelForSaving._id)
-        print self.user_doc.get(placement)
 
     def addDate(self):
         self.user_doc['date'] = str(date.today()).split('-')
