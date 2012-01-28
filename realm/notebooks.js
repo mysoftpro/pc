@@ -1,5 +1,5 @@
 function makeDescriptionForm(td){
-    var text = td.html();
+    var text = td.text();
     td.show();
     td.append('<button>Сохранить</button>');
     var area = td.find('textarea');
@@ -7,9 +7,7 @@ function makeDescriptionForm(td){
 	.next()
 	.click(function (){
 		   var doc_holder = td.parent().prev();
-		   var doc = doc_holder.data('doc');
-		   console.log('before');
-		   console.log(doc['_rev']);
+		   var doc = doc_holder.data('doc');		   
 		   $.ajax({
 			      url:'store_description',
 			      data:{'_id':doc._id,

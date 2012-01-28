@@ -149,7 +149,7 @@ class SiteMap(Resource):
         d = couch.openView(designID, 'models')
         d1 = couch.openView(designID, 'blog')
         d2 = couch.openView(designID, 'faq')
-        d3 = couch.openView(designID, 'articul')
+        d3 = couch.openView(designID, 'video_articul')
         li = defer.DeferredList([d,d1,d2, d3])
         li.addCallback(self.siteMap, request)
         return NOT_DONE_YET
@@ -903,27 +903,6 @@ class Save(Resource):
         else:
             modelfs = newModel()
 
-        # # no it does not matter what we have in model_doc.
-        # # brand new or existant model. just copy all fron new model here
-        # for k,v in new_model.items():
-        #     model_doc[k] = v
-
-        # model_doc['original_prices'] = {}
-        # for name,code in model_doc['items'].items():
-        #     if type(code) is list:
-        #         code = code[0]
-        #     if code in models.gChoices_flatten:
-        #         component = models.gChoices_flatten[code]
-        #         model_doc['original_prices'].update({code:component['price']})
-        #     else:
-        #         model_doc['original_prices'].update({code:0})
-
-        # model_doc['author'] = user_id
-        # where_to_save = 'models'
-        # if 'promo' in model_doc:
-        #     where_to_save = 'promos'
-        # if model_doc['_id'] not in user_doc.get(where_to_save,{}):
-        #     user_doc.setdefault(where_to_save,[]).append(model_doc['_id'])
         userfs.addModel(modelfs)
         userfs.addDate()
         modelfs.addAuthor(userfs)
@@ -932,10 +911,6 @@ class Save(Resource):
         
         return defer.DeferredList([userfs.save(),modelfs.save()])\
             .addCallback(self.finish, request, userfs.user_doc)
-        # d1 = couch.saveDoc(user_doc)
-        # d2 = couch.saveDoc(model_doc)
-        # li = defer.DeferredList([d1,d2])
-        # li.addCallback(self.finish, request,user_doc)
 
 
 
