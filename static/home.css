@@ -2782,3 +2782,13 @@ h1.bold.left{
 .credit_link {
     background-position: 0px -378px;
 }
+#news{
+    clear:both;
+    width:940px;
+    margin:10px auto 10px auto;
+    padding:5px 0 0 40px;
+    background-image:url('/static/bui_thumbs.png');
+    background-position:0px -423px;
+    height:32px;
+    background-repeat:no-repeat;
+}
