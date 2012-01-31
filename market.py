@@ -90,14 +90,13 @@ class PriceForMarket(Resource):
             categoryId.set('type','Own')
             categoryId.text = "2"
             offer.append(categoryId)
-
-            for a in doc['_attachments']:
-                if doc['_attachments'][a]['content_type']=="image/jpeg":
-                    picture = etree.Element('picture')
-                    picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+quote_plus(a)
-                    offer.append(picture)
-                    break
-
+            if '_attachments' in doc:
+                for a in doc['_attachments']:
+                    if doc['_attachments'][a]['content_type']=="image/jpeg":
+                        picture = etree.Element('picture')
+                        picture.text = 'http://buildpc.ru/image/'+doc['_id']+'/'+quote_plus(a)
+                        offer.append(picture)
+                        break
             delivery = etree.Element('delivery')
             delivery.text = 'true'
             offer.append(delivery)
