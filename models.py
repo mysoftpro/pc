@@ -706,8 +706,8 @@ class Model(object):
     def replaceComponent(self, code):
         original_price = self.original_prices[code] \
             if code in self.original_prices else 10
-        if type('original_price')is not int and 'price' in original_price:
-             original_price= original_price['price']
+        if type(original_price) is not int and 'price' in original_price:
+             original_price = original_price['price']
         # name = nameForCode(code,model)
         name = self.nameForCode(code)
         def sameCatalog(doc):
