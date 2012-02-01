@@ -928,7 +928,10 @@ class VideocardView(PCView):
             u"""Здесь должна быть видеокарта, но сейчас ее нет в наличии. Пожалуйста, перейдите 
                 на пункт "Видеокарты" в меню, чтобы посмотреть все видеокарты которые продаются у нас.
              """
-
+        top = self.template.top.xpath('//div[@id="video_top"]')[0]
+        top.getparent().remove(top)
+        right = self.template.middle.xpath('//div[@id="videoimage"]')[0]
+        right.getparent().remove(right)
 
     def renderCard(self, tuple_res):
 	res = tuple_res[0]
