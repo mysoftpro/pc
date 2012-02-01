@@ -1361,7 +1361,8 @@ class ModelForSaving(object):
             if type(code) is list:
                 code = code[0]
             if code in choices:
-                self.model_doc['original_prices'].update({code:choices[code]})
+                #fuck slava! here was no ['price']
+                self.model_doc['original_prices'].update({code:choices[code]['price']})
             else:
                 self.model_doc['original_prices'].update({code:0})
 
