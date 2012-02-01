@@ -1018,63 +1018,76 @@ class StorePsu(Resource):
 
 class Evolve(Resource):
 
-    def fillNote(self, note_ob, code, date):
-        note_ob['items'] = {notes:code}
-        note_ob['date'] = date
-        couch.saveDoc(note_ob)
+    # def fillNote(self, note_ob, code, date):
+    #     note_ob['items'] = {notes:code}
+    #     note_ob['date'] = date
+    #     couch.saveDoc(note_ob)
 
-    def evolve(self, res):
-        import pc.models        
-        for r in res['rows']:
-            if not 'doc' in r:continue
-            if r['doc'] is None:
-                continue
-            model = Model(r['doc'])            
-            # found_case = model.findComponent(case)
-            # if model.getCatalogsKey(found_case) == case_exclusive:
-            if model.case.getCatalogsKey() == case_exclusive:
-                if not model.isPromo:
-                    r['doc']['items'].update({power_catalog:"13559"})# 600w Deluxe
-                    if 'original_prices' in r['doc']:
-                        r['doc']['original_prices'].update({"13559":32})
-                else:
-                    r['doc']['items'].update({power_catalog:"18244"})# 500w Deluxe
-                    if 'original_prices' in r['doc']:
-                        r['doc']['original_prices'].update({"18244":20})
-            else:
-                r['doc']['items'].update({power_catalog:"no"+power_catalog})# psu is embeded in case
-            couch.saveDoc(r['doc'])
+    # def evolve(self, res):
+    #     import pc.models        
+    #     for r in res['rows']:
+    #         if not 'doc' in r:continue
+    #         if r['doc'] is None:
+    #             continue
+    #         model = Model(r['doc'])            
+    #         # found_case = model.findComponent(case)
+    #         # if model.getCatalogsKey(found_case) == case_exclusive:
+    #         if model.case.getCatalogsKey() == case_exclusive:
+    #             if not model.isPromo:
+    #                 r['doc']['items'].update({power_catalog:"13559"})# 600w Deluxe
+    #                 if 'original_prices' in r['doc']:
+    #                     r['doc']['original_prices'].update({"13559":32})
+    #             else:
+    #                 r['doc']['items'].update({power_catalog:"18244"})# 500w Deluxe
+    #                 if 'original_prices' in r['doc']:
+    #                     r['doc']['original_prices'].update({"18244":20})
+    #         else:
+    #             r['doc']['items'].update({power_catalog:"no"+power_catalog})# psu is embeded in case
+    #         couch.saveDoc(r['doc'])
 
-    def movePromos(self, res, promos_ids):
-        to_save = {}
-        for r in res['rows']:
-            if 'doc' not in r or r['doc'] is None:continue
-            new_models = []
-            promos = []
-            for i in r['doc']['models']:
-                if i not in promos_ids:
-                    new_models.append(i)
-                else:
-                    promos.append(i)
-            r['doc']['models'] = new_models
-            r['doc']['promos'] = promos
-            if not r['doc']['_id'] in to_save:
-                to_save.update({r['doc']['_id']:r['doc']})
-        for v in to_save.values():
-            couch.saveDoc(v)
+    # def movePromos(self, res, promos_ids):
+    #     to_save = {}
+    #     for r in res['rows']:
+    #         if 'doc' not in r or r['doc'] is None:continue
+    #         new_models = []
+    #         promos = []
+    #         for i in r['doc']['models']:
+    #             if i not in promos_ids:
+    #                 new_models.append(i)
+    #             else:
+    #                 promos.append(i)
+    #         r['doc']['models'] = new_models
+    #         r['doc']['promos'] = promos
+    #         if not r['doc']['_id'] in to_save:
+    #             to_save.update({r['doc']['_id']:r['doc']})
+    #     for v in to_save.values():
+    #         couch.saveDoc(v)
         
 
-    def getUsers(self, res):
-        rows=  res['rows']
-        promos = [r['doc'] for r in rows if 'doc' in r and r['doc'] is not None\
-                      and 'promo' in r['doc'] and r['doc']['promo']]
-        d = couch.listDoc(keys=[doc['author'] for doc in promos], include_docs=True)
-        d.addCallback(self.movePromos, [doc['_id'] for doc in promos])
-        return d
+    # def getUsers(self, res):
+    #     rows=  res['rows']
+    #     promos = [r['doc'] for r in rows if 'doc' in r and r['doc'] is not None\
+    #                   and 'promo' in r['doc'] and r['doc']['promo']]
+    #     d = couch.listDoc(keys=[doc['author'] for doc in promos], include_docs=True)
+    #     d.addCallback(self.movePromos, [doc['_id'] for doc in promos])
+    #     return d
 
+    def fixOriginalPrices(self, res):
+        for r in res['rows']:
+            if 'original_prices' in r['doc']:
+                new_prices= {}
+                procced = False
+                for k,v in r['doc']['original_prices'].items():
+                    if type(v) is int or type(v) is float:
+                        procced = True
+                        break
+                    else:
+                        print r['doc']['_id']
+                if procced:continue
+                        
 
     @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
         d = couch.openView(designID,'user_models', include_docs=True)
-        d.addCallback(self.getUsers)
+        d.addCallback(self.fixOriginalPrices)
         return "ok"
