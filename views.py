@@ -923,19 +923,26 @@ class VideocardView(PCView):
 	    psu_list.append(li)
 	self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
 
+    def fillNoCard(self):
+        self.template.middle.xpath('//div[@id="maparams"]')[0].text = \
+            u"""Здесь должна быть видеокарта, но сейчас ее нет в наличии. Пожалуйста, перейдите 
+                на пункт "Видеокарты" в меню, чтобы посмотреть все видеокарты которые продаются у нас.
+             """
+
 
     def renderCard(self, tuple_res):
 	res = tuple_res[0]
 	user = tuple_res[1]
 	if len(res['rows'])==0:
-	    self.force_no_resource = True
+	    self.force_no_resource = True            
+            self.fillNoCard()
 	    return
 	res = res['rows'][0]
-
 
 	from pc import models
 	if not res['id'] in models.gChoices_flatten:
 	    self.force_no_resource = True
+            self.fillNoCard()
 	    return
 	card = VideoCard(models.gChoices_flatten[res['id']])
 	self.title = card.text
