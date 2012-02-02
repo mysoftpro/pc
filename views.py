@@ -285,7 +285,6 @@ class SetInCart(ModelInCart):
         if self.model.components[0].cat_name == video:
             return super(SetInCart,self).set_price()
         else:
-            self.setTabletLink()
             price_span = self.model_div.find('.//span')
             price_span.set('id',self.model._id)	
             price_span.text = unicode(makeTabletPrice(self.model.components[0].component_doc)['price']) + u' р'
