@@ -163,9 +163,9 @@ function expandMenu(link){
 		   });
     div.mouseleave(function(e){
 			expas['lock']=false;
-			//hideexpa(300);
+			hideexpa(300);
 		   });
-    //hideexpa(3000);
+    hideexpa(3000);
 }
 function ask(e){
     e.preventDefault();
