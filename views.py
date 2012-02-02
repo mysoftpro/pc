@@ -1407,7 +1407,14 @@ class Tablet(PCView):
             img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
             img.set('align','right')
             container.insert(0,img)    
-        img.tail = doc['description']['comments']
+        # img.tail = doc['description']['comments']
+        for el in html.fragments_fromstring(doc['description']['comments']):
+            if type(el) is unicode:
+                if container[-1].tail is None:
+                    container[-1].tail = ''
+                container[-1].tail+=el
+            else:
+                container.append(el)
         self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
     def preRender(self):
         d = couch.openView(designID,'tablet_name',stale=False,include_docs=True,key=self.name)
