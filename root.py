@@ -545,27 +545,6 @@ class PdfBill(Resource):
         request.write(data)
         request.finish()
 
-    def renderNote(self, doc, request):
-        def render(user):
-            print "loooooooooooooooooooooooooooooooooooood"
-            print user
-            if 'notebooks' in user and doc['_id'] in user['notebooks']:
-                def addNote(note):
-                    note['price'] = makeNotePrice(note)
-                    doc['items'] = {'notebook':note['_id']}
-                    doc['full_items'] = [note]
-                    doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
-                    d = self.spawn(doc)
-                    d.addCallback(self.done, request)
-                    return d
-                n = couch.openDoc(user['notebooks'][doc['_id']])
-                n.addCallback(addNote)
-                return n
-            request.write('fail')
-            request.finish()
-        user = couch.openDoc(request.getCookie('pc_user'))
-        user.addCallback(render)
-
     def spawn(self, doc):
         from pc import pdf
         d = defer.Deferred()
@@ -578,9 +557,6 @@ class PdfBill(Resource):
         return d
 
     def renderBill(self, doc, request):
-        if not 'items' in doc:
-            # may be notebook or component
-            return self.renderNote(doc, request)
         model = Model(doc)
         d = self.spawn(model.preparePdf())
         d.addCallback(self.done, request)

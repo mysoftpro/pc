@@ -781,7 +781,12 @@ class Model(object):
             if v is None: continue
             if v.startswith('no'):continue
             component = deepcopy(self.findComponent(k))
-            component['price'] = Model.makePrice(component)
+            if k==notes:
+                component = makeNotePrice(component)
+            elif k == tablet:
+                component = makeTabletPrice(component)
+            else:
+                component['price'] = Model.makePrice(component)
             self.model_doc['full_items'].append(component)
         self.model_doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
         return self.model_doc
