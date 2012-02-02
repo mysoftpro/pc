@@ -108,9 +108,15 @@ var expands = {'howtochose':{'urls':[
 			       ],
 			       'lock':undefined
 			      },
+	       'computers':{'urls':[
+				   {url:'/computer',title:"12 моделей десктопов"},
+				   {url:'/notebook',title:'Ноутбуки Asus'},
+				   {url:'/tablet',title:'Планшетные компьютеры'}
+			       ],
+			       'lock':undefined
+			      },
 	       'more':{'urls':[
 			   {url:'/promotion/ajax',title:'Спец предложение'},
-			   {url:'/notebook',title:'Ноутбуки Asus'},
 			   {url:'/warranty',title:'Гарантии'},
 			   {url:'/support',title:'Поддержка'},
 			   {url:'/blog',title:'Блог'},
@@ -157,10 +163,9 @@ function expandMenu(link){
 		   });
     div.mouseleave(function(e){
 			expas['lock']=false;
-			hideexpa(300);
+			//hideexpa(300);
 		   });
-    hideexpa(3000);
-
+    //hideexpa(3000);
 }
 function ask(e){
     e.preventDefault();

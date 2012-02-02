@@ -78,6 +78,8 @@ class AdminGate(Resource):
         self.putChild('storemodel', StoreModel())
         self.putChild('mothers', Mothers())
         self.putChild('store_mother', StoreMother())
+        self.putChild('tablets', Tablets())
+        self.putChild('store_tablet', StoreTablet())
         self.putChild('store_promo', StorePromo())
         self.putChild('procs', Procs())
         self.putChild('store_proc', StoreProc())
@@ -170,6 +172,23 @@ class Promo(Resource):
         promo.addCallback(self.fillComponents, request)
         return NOT_DONE_YET
 
+
+
+class Tablets(Resource):
+    def finish(self, result, request):
+        request.write(simplejson.dumps(result))
+        request.finish()
+
+    @MIMETypeJSON
+    def render_GET(self, request):
+        from pc import models
+        defer.DeferredList([
+                couch.openView(designID,
+                               'catalogs',
+                               include_docs=True, key=models.tablets, stale=False),
+                ]).addCallback(self.finish, request)
+        return NOT_DONE_YET
+    
 
 class Mothers(Resource):
     def finish(self, result, request):
@@ -524,6 +543,19 @@ class StorePromo(Resource):
         return NOT_DONE_YET
 
 
+
+class StoreTablet(Resource):
+    def finish(self, doc, request):
+        request.write(str(doc['rev']))
+        request.finish()
+
+    @MIMETypeJSON
+    def render_POST(self, request):
+        mother = request.args.get('mother')[0]
+        jmother = simplejson.loads(mother)
+        d = couch.saveDoc(jmother)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
 
 
 class StoreMother(Resource):

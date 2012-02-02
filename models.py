@@ -17,6 +17,7 @@ BUILD_PRICE = 800
 INSTALLING_PRICE=800
 DVD_PRICE = 800
 NOTE_MARGIN=1500
+TABLET_MARGIN=800
 
 gWarning_sent = []
 
@@ -100,6 +101,8 @@ asus_12 = [notes_and_descktops,notes,"7586"]
 asus_14 = [notes_and_descktops,notes,"7495"]
 asus_15 = [notes_and_descktops,notes,"7468"]
 asus_17 = [notes_and_descktops,notes,"7704"]
+tablet = "19220"
+tablets = [notes_and_descktops,notes,tablet]
 
 mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_1156,proc_1156),
@@ -308,6 +311,10 @@ def fillChoices():
 
     defs.append(openChoicesView([asus_12,asus_14,asus_15,asus_17])
                 .addCallback(lambda res: {notes:res}))
+    
+    defs.append(openChoicesView([tablets])
+                .addCallback(lambda res: {tablet:res}))
+
 
     def makeDict(res):
         new_res = {}
@@ -705,7 +712,7 @@ class Model(object):
     # check slots! may be 2 video installed with sli or with crossfire!
     def replaceComponent(self, code):
         original_price = self.original_prices[code] \
-            if code in self.original_prices else 10
+            if code in self.original_prices else 130 #it is good price! about 4000 rubles
         if type(original_price) is dict and 'price' in original_price:
              original_price = original_price['price']
         # name = nameForCode(code,model)
@@ -1381,3 +1388,7 @@ class ModelForSaving(object):
 
     def save(self):
         return couch.saveDoc(self.model_doc)
+
+
+class Tablet(Component):
+    pass

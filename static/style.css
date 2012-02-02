@@ -2747,3 +2747,22 @@ h1.bold.left{
     height:32px;
     background-repeat:no-repeat;
 }
+#computersexpandable{
+    background-image: url("/static/computer.png");
+    margin-left: 10px;
+    min-height: 100px;
+    padding-left: 121px;
+    padding-top: 26px;
+    width: 200px;
+    background-position: 10px 10px;
+}
+.tablet{
+    min-height:260px;
+}
+#tabletPrice{
+    float:right;
+    font-weight:strong;
+    font-size:20px;
+    margin-top:-75px;
+    margin-right:200px;
+}

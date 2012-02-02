@@ -17,7 +17,7 @@ from pc.models import\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
     UserForSaving,ModelForSaving
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm
+   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm,Tablets,Tablet
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -92,6 +92,7 @@ class SiteMap(Resource):
     def siteMap(self, res, request):
         models = res[0][1]['rows']
         videocards = res[3][1]['rows']
+        tablets = res[4][1]['rows']
         posts = res[1][1]['rows']
         faqs = res[2][1]['rows']
         request.setHeader('Content-Type', 'text/xml;charset=utf-8')
@@ -104,9 +105,15 @@ class SiteMap(Resource):
 
         for model in models:
             root.append(self.buildElement('computer/'+model['key'], freq='daily'))
+
+        root.append(self.buildElement('videocard'))
         for videocard in videocards:
             root.append(self.buildElement('videocard/'+quote_plus(videocard['key'].encode('utf-8')), freq='weekly'))
 
+
+        root.append(self.buildElement('tablet'))
+        for tablet in tablets:
+            root.append(self.buildElement('tablet/'+tablet['key'].encode('utf-8'), freq='weekly'))
 
         root.append(self.buildElement('blog'))
         root.append(self.buildElement('faq'))
@@ -150,7 +157,8 @@ class SiteMap(Resource):
         d1 = couch.openView(designID, 'blog')
         d2 = couch.openView(designID, 'faq')
         d3 = couch.openView(designID, 'video_articul')
-        li = defer.DeferredList([d,d1,d2, d3])
+        d4 = couch.openView(designID, 'tablet_name')
+        li = defer.DeferredList([d,d1,d2, d3, d4])
         li.addCallback(self.siteMap, request)
         return NOT_DONE_YET
 
@@ -436,6 +444,15 @@ class Root(Resource):
                                                                               'credit.html'),
                                                         childs=HandlerAndName(CreditForm,
                                                                               'credit.html'))))
+
+
+        self.putChild('tablet',
+              PCTemplateRenderrer(self.static,
+                                  RootAndChilds(root=HandlerAndName(Tablets,
+                                                                    'tablets.html'),
+                                                childs=HandlerAndName(Tablet,
+                                                                      'tablet.html'))))
+
 
 
         # self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))

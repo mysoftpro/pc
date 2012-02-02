@@ -43,7 +43,7 @@ def MIMETypeJSON(f):
 
 def pcCartTotal(request, user, total={}):
     in_cart = 0
-    for key in ('models','promos','notebooks','sets'):
+    for key in ('models','promos','notebooks','sets', 'tabs'):
         if key in total:
             in_cart+=total[key]
         else:            

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from pc.couch import couch, designID
 from twisted.internet import defer
-from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc, Model, notes,UserForCredit
+from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
+    notes,UserForCredit,tablet
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
-    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog, NOTE_MARGIN
+    noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
+    DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
+    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal
@@ -234,9 +237,9 @@ class SetInCart(ModelInCart):
 	self.model_div = divs[0]
 	self.description_div = divs[1]
 
-    def setModelLink(self):        
-	url = '/videocard/'+\
-		     quote_plus(self.model.components[0].get('articul','').replace('\t',''))
+    def setVideoLink(self):
+        url = '/videocard/'+\
+            quote_plus(self.model.components[0].get('articul','').replace('\t',''))
 
 	self.icon.set('href',url)
 
@@ -249,6 +252,45 @@ class SetInCart(ModelInCart):
 
 	#TODO may be other sets will have another link!
 	link.set('href',url)
+
+
+    def setTabletLink(self):
+        url = '/tablet/'+\
+            self.model.components[0].get('vendor','')+'_'+self.model.components[0].get('model','')
+        url = url.replace(' ','_')
+
+	self.icon.set('href',url)
+
+	link = self.model_div.find('.//a')
+	link.text = self.model._id[:-3]
+	strong= etree.Element('strong')
+
+	strong.text = self.model._id[-3:]
+	link.append(strong)
+
+	#TODO may be other sets will have another link!
+	link.set('href',url)
+
+
+
+
+    def setModelLink(self):        
+        if self.model.components[0].cat_name == video:
+            self.setVideoLink()
+        else:
+            self.setTabletLink()
+        
+
+    def set_price(self):
+        if self.model.components[0].cat_name == video:
+            return super(SetInCart,self).set_price()
+        else:
+            self.setTabletLink()
+            price_span = self.model_div.find('.//span')
+            price_span.set('id',self.model._id)	
+            price_span.text = unicode(makeTabletPrice(self.model.components[0].component_doc)['price']) + u' р'
+
+
 
 
     def setIcon(self):
@@ -767,7 +809,7 @@ class VideoCards(PCView):
 	container = self.template.middle.xpath('//div[@id="models"]')[0]
 
 	vendors = set()
-
+        
 	for chipname in chips:
 	    viewlet = deepcopy(self.template.root().find('chip'))
 	    chip_div = etree.Element('div')
@@ -1145,7 +1187,6 @@ class NoteBooks(PCView):
 	json_notebooks= {}
 	for r in result['rows']:
 	    doc = makeNotePrice(r['doc'])
-            
 	    note_div = deepcopy(self.template.root().find('notebook').find('div'))
 	    note_div.set('class',doc['_id']+' note')
 
@@ -1291,3 +1332,98 @@ class CreditForm(PCView):
 	    d1 = defer.Deferred()
 	    d1.callback(None)
 	return defer.DeferredList((d,d1))
+
+
+class Tablets(PCView):
+    title=u'Планшетные компьютеры'
+    def renderTablets(self, res):
+        parent = self.template.middle.xpath('//div[@id="models"]')[0]
+        viewlet = self.tree.find('tablet')
+        for r in res['rows']:
+            doc = makeTabletPrice(r['doc'])
+            container = deepcopy(viewlet)
+            chip_div = etree.Element('div')
+	    chip_div.set('class', 'chip tablet')
+            br = etree.Element('br')
+            chip_title = container.xpath('//h2[@class="chipname"]')[0]
+	    chip_title.text = u'Планшетный компьютер'
+            br.tail = doc['vendor'] +' '+doc['model']
+            chip_title.append(br)
+            
+            container.xpath('//td[@class="t_screen"]')[0].text = doc['screen']
+            container.xpath('//td[@class="t_memory"]')[0].text = doc['memory']
+            container.xpath('//td[@class="t_os"]')[0].text = doc['os']
+            container.xpath('//td[@class="t_resolution"]')[0].text = doc['resolution']
+
+            icon = TabletOb(doc).getComponentIcon(default=None)
+            if icon is not None:
+                image = container.xpath('//img')[0]
+                image.set('src', icon)
+            
+            video_img = container.xpath('//div[@class="modelicon videoicon"]')[0]
+            rate = int(doc['rank'])
+            while rate>0:
+                d = etree.Element('div')
+                d.set('class', 'video_rate')
+                video_img.append(d)
+                rate-=1
+
+            chip_vendors = container.xpath('//ul[@class="chipVendors"]')[0]
+            ve = etree.Element('li')
+            ve.set('id', doc['_id'])
+            link = etree.Element('a')
+            span = etree.Element('span')
+            strong = etree.Element('strong')
+            span.text = u'Подробней'
+            strong.text = unicode(doc['price'])
+            strong.tail = u' р'
+            link.text = u'На страницу товара'
+            href = '/tablet/'+doc['vendor']+'_'+doc['model']
+            link.set('href',href.replace(' ','_'))
+            ve.append(span)
+            ve.append(strong)
+            ve.append(link)
+            chip_vendors.append(ve)
+            
+            for el in container:
+                chip_div.append(el)
+            parent.append(chip_div)
+
+    def preRender(self):
+        from pc import models
+        d = defer.Deferred()
+    	d.addCallback(lambda some:models.gChoices[tablet])
+	d.addCallback(self.renderTablets)
+        d.callback(None)
+        return d
+
+class Tablet(PCView):
+    title=u'Планшетный компьютер'
+    def renderTablet(self, res):
+        if len(res['rows'])==0:
+            self.force_no_resource=True
+            return
+        doc = makeTabletPrice(res['rows'][0]['doc'])
+        title = ' '+ doc['vendor']+' '+doc['model']
+        self.title+=title
+        self.template.top.find('h1').text+= title
+        self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = unicode(doc['price'])+u' р'
+        container = self.template.middle.xpath('.//div[@id="models"]')[0]
+        for i in doc['description']['imgs']:
+            img = etree.Element('img')
+            img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
+            img.set('align','right')
+            container.insert(0,img)    
+        img.tail = doc['description']['comments']
+        self.template.middle.find('script').text += 'var tablet_catalog='+notes+';var _id="'+doc['_id']+'";'
+    def preRender(self):
+        d = couch.openView(designID,'tablet_name',stale=False,include_docs=True,key=self.name)
+        d.addCallback(self.renderTablet)
+        return d
+
+
+def makeTabletPrice(doc):
+    our_price = doc['price']*Course+TABLET_MARGIN
+    copy = deepcopy(doc)
+    copy['price'] = int(round(our_price/10))*10
+    return copy
