@@ -1409,7 +1409,7 @@ class Tablet(PCView):
             img.set('align','right')
             container.insert(0,img)    
         img.tail = doc['description']['comments']
-        self.template.middle.find('script').text += 'var tablet_catalog='+notes+';var _id="'+doc['_id']+'";'
+        self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
     def preRender(self):
         d = couch.openView(designID,'tablet_name',stale=False,include_docs=True,key=self.name)
         d.addCallback(self.renderTablet)

@@ -596,6 +596,9 @@ class Model(object):
 
     def __iter__(self):
         for k,v in self.model_doc['items'].items():
+            # fucken legacy
+            if k == 'tablet_catalog':
+                k = tablet
             yield k,v
 
 
@@ -669,8 +672,22 @@ class Model(object):
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
 
 
-    def getComponentPrice(self, component_doc):
-        return self.component_prices[component_doc._id]
+    def getComponentPrice(self, component):
+        print ".."
+        print component.cat_name
+        if not 'no' in component.component_doc['_id']:
+            print component.component_doc['_id']
+            print component.component_doc['catalogs']
+            print "!"
+        if component.cat_name == notes:
+            # fucken legacy
+            if component.getCatalogsKey()[-1] == tablet:
+                return makeTabletPrice(component.component_doc)['price']
+            else:
+                return makeNotePrice(component.component_doc)['price']
+        elif component.cat_name == tablet:
+            return makeTabletPrice(component.component_doc)['price']
+        return self.component_prices[component._id]
 
 
     @property
@@ -827,7 +844,7 @@ class Model(object):
         self.aliasses_reverted = {}
         for k,v in parts_aliases.items():
             self.aliasses_reverted.update({v:k})
-        for cat_name,code in self:
+        for cat_name,code in self:            
             count = 1
             if type(code) is list:
                 count = len(code)

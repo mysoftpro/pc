@@ -10,7 +10,8 @@
 
 
      $('#tocart').click(function(){
-                            var set = {tablet_catalog:_id};
+                            var set = {};
+			    set[tablet_catalog] = _id;
                             $.ajax({
                                       url:'/saveset',
                                       data:{data:JSON.stringify(set)},
