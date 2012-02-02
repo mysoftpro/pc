@@ -111,7 +111,7 @@ var expands = {'howtochose':{'urls':[
 	       'computers':{'urls':[
 				   {url:'/computer',title:"12 моделей десктопов"},
 				   {url:'/notebook',title:'Ноутбуки Asus'},
-				   {url:'/tablet',title:'Планшетные компьютеры'}
+				   {url:'/tablet',title:'Планшеты'}
 			       ],
 			       'lock':undefined
 			      },
