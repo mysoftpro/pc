@@ -1345,6 +1345,7 @@ class Tablets(PCView):
             
             container.xpath('//td[@class="t_screen"]')[0].text = doc['screen']
             container.xpath('//td[@class="t_memory"]')[0].text = doc['memory']
+            container.xpath('//td[@class="t_flash"]')[0].text = doc['flash']
             container.xpath('//td[@class="t_os"]')[0].text = doc['os']
             container.xpath('//td[@class="t_resolution"]')[0].text = doc['resolution']
 
