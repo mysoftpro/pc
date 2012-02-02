@@ -673,12 +673,6 @@ class Model(object):
 
 
     def getComponentPrice(self, component):
-        print ".."
-        print component.cat_name
-        if not 'no' in component.component_doc['_id']:
-            print component.component_doc['_id']
-            print component.component_doc['catalogs']
-            print "!"
         if component.cat_name == notes:
             # fucken legacy
             if component.getCatalogsKey()[-1] == tablet:

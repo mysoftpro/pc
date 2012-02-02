@@ -547,6 +547,8 @@ class PdfBill(Resource):
 
     def renderNote(self, doc, request):
         def render(user):
+            print "loooooooooooooooooooooooooooooooooooood"
+            print user
             if 'notebooks' in user and doc['_id'] in user['notebooks']:
                 def addNote(note):
                     note['price'] = makeNotePrice(note)
