@@ -45,7 +45,7 @@ class ModelInCart(object):
 	    self.icon.set('href','/promotion/'+self.model.parent)
 
 	link = self.model_div.find('.//a')
-	link.text = self.model._id[:-3]
+	link.text = self.model._id[0:-3]
 	strong= etree.Element('strong')
 
 	strong.text = self.model._id[-3:]
@@ -244,7 +244,7 @@ class SetInCart(ModelInCart):
 	self.icon.set('href',url)
 
 	link = self.model_div.find('.//a')
-	link.text = self.model._id[:-3]
+	link.text = self.model._id[0:-3]
 	strong= etree.Element('strong')
 
 	strong.text = self.model._id[-3:]
@@ -262,7 +262,7 @@ class SetInCart(ModelInCart):
 	self.icon.set('href',url)
 
 	link = self.model_div.find('.//a')
-	link.text = self.model._id[:-3]
+	link.text = self.model._id[0:-3]
 	strong= etree.Element('strong')
 
 	strong.text = self.model._id[-3:]
@@ -312,7 +312,7 @@ class NotebookInCart(SetInCart):
 	self.icon.set('href',url)
 
 	link = self.model_div.find('.//a')
-	link.text = self.model._id[:-3]
+	link.text = self.model._id[0:-3]
 	strong= etree.Element('strong')
 
 	strong.text = self.model._id[-3:]
