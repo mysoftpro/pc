@@ -36,6 +36,8 @@ function saveDoc(e){
     doc['resolution'] = tr.find('input[name="resolution"]').val();
     doc['memory'] = tr.find('input[name="memory"]').val();
     doc['rank'] = tr.find('input[name="rank"]').val();
+    doc['youtube'] = tr.find('input[name="youtube"]').val();
+
     $.ajax({
 	       url:'store_tablet',
 	       type:'POST',
@@ -109,6 +111,9 @@ function fillMothers(data){
 	    var rank = $(document.createElement('td'));
 	    rank.append(addInput(doc,'rank'));
 
+	    var youtube = $(document.createElement('td'));
+	    youtube.append(addInput(doc,'youtube'));
+
 
 	    function showdesc(e){
 		var target = $(e.target);
@@ -130,7 +135,7 @@ function fillMothers(data){
                 .click(saveDoc)
                 .text('сохранить');
             tr.append(name).append(vendor).append(model).append(os)
-	    .append(screen).append(resolution).append(memory).append(rank)
+	    .append(screen).append(resolution).append(memory).append(rank).append(youtube)
                 .append(open).append(save);	    
 	    tr.data('doc',doc);
 	    //console.log(tr.data('doc')._id);
@@ -144,7 +149,7 @@ function fillMothers(data){
 
 $(function(){
       var table = $('#mothertable');
-      table.html('<tr><td>name</td><td>vendor</td><td>model</td><td>os</td><td>screen</td><td>resolution</td><td>memory</td><td>rank</td></tr>');
+      table.html('<tr><td>name</td><td>vendor</td><td>model</td><td>os</td><td>screen</td><td>resolution</td><td>memory</td><td>rank</td><td>youtube</td></tr>');
       $.ajax({
                  url:'tablets',
                  success:fillMothers

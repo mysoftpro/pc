@@ -1402,6 +1402,11 @@ class Tablet(PCView):
         self.template.top.find('h1').text+= title
         self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = unicode(doc['price'])+u' р'
         container = self.template.middle.xpath('.//div[@id="models"]')[0]
+        if 'youtube' in doc:
+            for el in html.fragments_fromstring(doc['youtube']):
+                container.append(el)
+            br = etree.Element('br')
+            container.append(br)
         for i in doc['description']['imgs']:
             img = etree.Element('img')
             img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
