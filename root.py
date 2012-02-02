@@ -15,9 +15,9 @@ from datetime import datetime, date
 from pc.models import\
     BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
-    UserForSaving,ModelForSaving
+    UserForSaving,ModelForSaving,makeNotePrice,makeTabletPrice
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,makeNotePrice,CreditForm,Tablets,Tablet
+   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource

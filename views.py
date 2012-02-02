@@ -6,7 +6,7 @@ from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
-    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN
+    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal
@@ -1136,12 +1136,6 @@ class SpecsForVideo(Resource):
 	return NOT_DONE_YET
 
 
-def makeNotePrice(doc):
-    our_price = doc['price']*Course+NOTE_MARGIN
-    copy = deepcopy(doc)
-    copy['price'] = int(round(our_price/10))*10
-    return copy
-
 def getNoteBookName(doc):
 
     if 'nname' in doc:
@@ -1422,8 +1416,3 @@ class Tablet(PCView):
         return d
 
 
-def makeTabletPrice(doc):
-    our_price = doc['price']*Course+TABLET_MARGIN
-    copy = deepcopy(doc)
-    copy['price'] = int(round(our_price/10))*10
-    return copy

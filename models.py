@@ -1392,3 +1392,15 @@ class ModelForSaving(object):
 
 class Tablet(Component):
     pass
+
+#TODO move it proper class
+def makeTabletPrice(doc):
+    our_price = doc['price']*Course+TABLET_MARGIN
+    copy = deepcopy(doc)
+    copy['price'] = int(round(our_price/10))*10
+    return copy
+def makeNotePrice(doc):
+    our_price = doc['price']*Course+NOTE_MARGIN
+    copy = deepcopy(doc)
+    copy['price'] = int(round(our_price/10))*10
+    return copy
