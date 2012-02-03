@@ -6,7 +6,7 @@ from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
-    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice
+    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice,Router
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal
@@ -1401,7 +1401,7 @@ class Tablet(PCView):
         title = ' '+ doc['vendor']+' '+doc['model'] +' '+doc['os']
         self.title+=title
         self.template.top.xpath('//h1')[0].text+= title
-        self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
+        # self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
         container = self.template.middle.xpath('.//div[@id="maparams"]')[0]
         if 'youtube' in doc:
             for el in html.fragments_fromstring(doc['youtube']):
@@ -1423,8 +1423,45 @@ class Tablet(PCView):
             img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
             # img.set('align','right')
             routers.insert(0,img)
-
+        self.installRouters(routers)
         self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
+
+
+    def installRouters(self, routers_container):
+	json_routers = {}
+	from pc import models
+        
+        appr_routers = [Router(r['doc']) for r in models.gChoices[models.routers]['rows']]
+
+        router_list = routers_container.find('ul')
+	for router in sorted(appr_routers, lambda p1,p2: p1.makePrice()-p2.makePrice()):
+
+            price = router.makePrice()
+            if price<200:continue
+
+	    json_routers[router._id] = {'_id':router._id,'name':router.text,'price':router.makePrice()}
+	    li = etree.Element('li')
+	    li.set('id', router._id)
+
+	    em = etree.Element('em')
+	    em.text = router.text.replace(u'Блок питания', '')
+
+	    strong = etree.Element('strong')            
+	    strong.text = unicode(price)+u' р.'
+
+
+	    span = etree.Element('span')
+	    span.set('class','videoadd')
+	    span.text = u'добавить к заказу'
+
+	    li.append(em)
+	    li.append(strong)
+	    li.append(span)
+	    router_list.append(li)
+	self.template.middle.find('script').text = 'var routers='+simplejson.dumps(json_routers)+';'
+
+
+
     def preRender(self):
         d = couch.openView(designID,'tablet_name',stale=False,include_docs=True,key=self.name)
         d.addCallback(self.renderTablet)

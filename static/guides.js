@@ -327,7 +327,7 @@ var catalogsForVendors = {
 
 function makeMask(action, _closing){
     function _makeMask(e){
-        //try{
+	var iframe = $('iframe');
         if (e)
             e.preventDefault();
         var maskHeight = $(document).height();
@@ -352,15 +352,17 @@ function makeMask(action, _closing){
         action();
         details.prepend('<div id="closem"></div><div style="clear:both;"></div>');
         $('#closem').click(function(e){$('#mask').click();});
+	iframe.hide();
         function closing(){
-        }
+	}
         details.fadeIn(600, closing);
         masked = true;
         $('#mask').click(function () {
                              $(this).hide();
                              details.hide();
                              masked = false;
-                             _closing();
+                             iframe.show();
+			     _closing();
                          });
 
         $(document.documentElement).keyup(function (event) {

@@ -107,9 +107,9 @@ tablets = [notes_and_descktops,notes,tablet]
 
 network = "7405"
 routers = "7551"
-edimax_router = "15090"
-digitus_router = "19931"
-dlink_router = "12980"
+edimax_routers = [network,routers,"15090"]
+digitus_routers = [network,routers,"19931"]
+dlink_routers = [network,routers,"12980"]
 
 
 
@@ -324,6 +324,10 @@ def fillChoices():
     
     defs.append(openChoicesView([tablets])
                 .addCallback(lambda res: {tablet:res}))
+
+    defs.append(openChoicesView([digitus_routers,dlink_routers,edimax_routers])
+                .addCallback(lambda res: {routers:res}))
+
 
 
     def makeDict(res):
@@ -1432,3 +1436,9 @@ def makeNotePrice(doc):
     copy = deepcopy(doc)
     copy['price'] = int(round(our_price/10))*10
     return copy
+
+
+class Router(Component):
+    pass
+
+
