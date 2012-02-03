@@ -1400,7 +1400,7 @@ class Tablet(PCView):
         doc = makeTabletPrice(res['rows'][0]['doc'])
         title = ' '+ doc['vendor']+' '+doc['model']
         self.title+=title
-        self.template.top.find('h1').text+= title
+        self.template.top.xpath('//h1')[0].text+= title
         self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
         container = self.template.middle.xpath('.//div[@id="models"]')[0]
         if 'youtube' in doc:

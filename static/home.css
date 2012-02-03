@@ -2811,3 +2811,10 @@ h1.bold.left{
     margin-top:-75px;
     margin-right:200px;
 }
+#tabletPrice{
+    float:right;
+    font-weight:strong;
+    font-size:20px;
+    margin-top:15px;
+    margin-right:50px;
+}
