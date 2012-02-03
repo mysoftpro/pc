@@ -360,7 +360,8 @@ class WitNewMap(Resource):
         'http://www.newsystem.ru/goods-and-services/catalog/108/9463/':'sata_disks',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
         'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft',
-        'http://www.newsystem.ru/goods-and-services/catalog/108/9413/':'psu'
+        'http://www.newsystem.ru/goods-and-services/catalog/108/9413/':'psu',
+        'http://newsystem.ru/goods-and-services/catalog/106/9389/':'tablets'
         }
     def goForNew(self, headers, request):
         first = request.args.get('first', [None])[0]
