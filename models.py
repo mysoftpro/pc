@@ -104,6 +104,16 @@ asus_17 = [notes_and_descktops,notes,"7704"]
 tablet = "19220"
 tablets = [notes_and_descktops,notes,tablet]
 
+
+network = "7405"
+routers = "7551"
+edimax_router = "15090"
+digitus_router = "19931"
+dlink_router = "12980"
+
+
+
+
 mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_1156,proc_1156),
                          (mother_1366,proc_1366),

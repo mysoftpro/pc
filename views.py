@@ -1328,7 +1328,7 @@ class CreditForm(PCView):
 
 
 class Tablets(PCView):
-    title=u'Планшетные компьютеры'
+    title=u'Планшетные компьютеры c ОС Android'
     def renderTablets(self, res):
         parent = self.template.middle.xpath('//div[@id="models"]')[0]
         viewlet = self.tree.find('tablet')
@@ -1398,21 +1398,16 @@ class Tablet(PCView):
             self.force_no_resource=True
             return
         doc = makeTabletPrice(res['rows'][0]['doc'])
-        title = ' '+ doc['vendor']+' '+doc['model']
+        title = ' '+ doc['vendor']+' '+doc['model'] +' '+doc['os']
         self.title+=title
         self.template.top.xpath('//h1')[0].text+= title
         self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
-        container = self.template.middle.xpath('.//div[@id="models"]')[0]
+        container = self.template.middle.xpath('.//div[@id="maparams"]')[0]
         if 'youtube' in doc:
             for el in html.fragments_fromstring(doc['youtube']):
                 container.append(el)
             br = etree.Element('br')
             container.append(br)
-        for i in doc['description']['imgs']:
-            img = etree.Element('img')
-            img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
-            img.set('align','right')
-            container.insert(0,img)    
         # img.tail = doc['description']['comments']
         for el in html.fragments_fromstring(doc['description']['comments']):
             if type(el) is unicode:
@@ -1421,6 +1416,14 @@ class Tablet(PCView):
                 container[-1].tail+=el
             else:
                 container.append(el)
+
+        routers = self.template.middle.xpath('//div[@id="videoimage"]')[0]
+        for i in doc['description']['imgs']:
+            img = etree.Element('img')
+            img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
+            # img.set('align','right')
+            routers.insert(0,img)
+
         self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
     def preRender(self):
         d = couch.openView(designID,'tablet_name',stale=False,include_docs=True,key=self.name)
