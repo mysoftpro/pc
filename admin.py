@@ -975,6 +975,8 @@ class GetDescFromNew(Resource):
     def render_GET(self, request):
         link = request.args.get('link')[0]
         d = getNewDescription(link)
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print link
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 

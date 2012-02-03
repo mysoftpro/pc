@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{_id}}"><td>{{text}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/><a class="hide" href="">x</a></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}} stock:{{stock}}={{new_stock}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/><a class="hide" href="">x</a></td>');
 
 
 function storeNewDesc(doc){
@@ -51,7 +51,7 @@ function fill(data){
 			     }
 			     if (doc['catalogs']){
 				 catalogs=JSON.stringify(doc['catalogs']);
-			     }
+			     }			     
 			     table.append(desc_template({
 							    _id:doc['_id'],
 							    description:desc,
@@ -60,7 +60,9 @@ function fill(data){
 							    name:name,
 							    warranty:warranty,
 							    articul:articul,
-							    catalogs:catalogs
+							    catalogs:catalogs,
+							    stock:doc['stock1'],
+							    new_stock:doc['new_stock']
 							}));
 			     $('#'+doc['_id'])
 				 .find('input[name="get"]')
