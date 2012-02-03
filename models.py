@@ -1412,6 +1412,8 @@ class Tablet(Component):
 #TODO move it proper class
 def makeTabletPrice(doc):
     our_price = doc['price']*Course+TABLET_MARGIN
+    if our_price>10000:
+        our_price+=400
     copy = deepcopy(doc)
     copy['price'] = int(round(our_price/10))*10
     return copy
