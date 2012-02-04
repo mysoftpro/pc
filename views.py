@@ -6,7 +6,8 @@ from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
-    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice,Router
+    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice,Router,\
+    routers as router_catalog
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal
@@ -158,7 +159,6 @@ class ModelInCart(object):
 	    a.text = u'переименовать'
 	    a.set('href', '')
 	    h3.append(a)
-	# zzz
 
 
     def fillComponentsList(self):
@@ -219,6 +219,13 @@ class ModelInCart(object):
 
 class SetInCart(ModelInCart):
 
+    # def __init__(self, *args, **kwargs):
+    #     # here is notebook now!!!!!!!!!!!
+    #     # why??????????????
+    #     print "2!"
+    #     self.tablet = [c for c in self.model.components if c.getCatalogsKey(c) == tablet][0]
+    #     super(SetInCart, self).__init__(*args, **kwargs)
+
     def fillExtra(self):
 	if self.author and not self.model.processing:
 	    extra = deepcopy(self.tree.find('cart_extra'))
@@ -255,8 +262,9 @@ class SetInCart(ModelInCart):
 
 
     def setTabletLink(self):
+        #zzzzzzzzzzzzzzzzz
         url = '/tablet/'+\
-            self.model.components[0].get('vendor','')+'_'+self.model.components[0].get('model','')
+            self.model.components[0].get('vendor','')+'_'+self.tablet.get('model','')
         url = url.replace(' ','_')
 
 	self.icon.set('href',url)
@@ -1392,7 +1400,13 @@ class Tablets(PCView):
         return d
 
 class Tablet(PCView):
-    title=u'Планшетный компьютер'
+    
+    def __init__(self, *args, **kwargs):
+	super(Tablet, self).__init__(*args, **kwargs)
+	self.script = self.template.middle.find('script')
+	self.script.text = ''
+        self.title = u'Планшетный компьютер'
+
     def renderTablet(self, res):
         if len(res['rows'])==0:
             self.force_no_resource=True
@@ -1401,6 +1415,7 @@ class Tablet(PCView):
         title = ' '+ doc['vendor']+' '+doc['model'] +' '+doc['os']
         self.title+=title
         self.template.top.xpath('//h1')[0].text+= title
+        
         # self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
         container = self.template.middle.xpath('.//div[@id="maparams"]')[0]
         if 'youtube' in doc:
@@ -1424,7 +1439,22 @@ class Tablet(PCView):
             # img.set('align','right')
             routers.insert(0,img)
         self.installRouters(routers)
+        
         self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
+
+
+        price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
+	rows = price_table.findall('tr')
+	for r in rows:
+	    r[-1].text = unicode(doc['price'])+ u' р.'
+	    first = r[0]
+	    if first.text != u'Итого':
+		first.find('div').text = doc['description'].get('name', "")
+
+
+        self.script.text += 'var _id="'+doc['_id']+'";var price='+str(doc['price'])+';'
+	self.script.text += 'var tablet_catalog='+tablet+';var router_catalog='+router_catalog+';'
+
 
 
     def installRouters(self, routers_container):

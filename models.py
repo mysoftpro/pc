@@ -155,7 +155,7 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
          case:50, displ:90,
          audio:100, soft:110,
-         kbrd:120, mouse:130, audio:140, psu:150, notes:160}
+         kbrd:120, mouse:130, audio:140, psu:150, notes:160, routers:170, tablet:180}
 
 parts_names = {proc:u'Процессор', ram:u'Память',
                video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
@@ -163,7 +163,8 @@ parts_names = {proc:u'Процессор', ram:u'Память',
                network:u'Сетевая карта',
                mother:u'Материнская плата',displ:u'Монитор',
                audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
-               soft:u'ОС', psu:u'Блок питания', notes:u'Ноутбуки'}
+               soft:u'ОС', psu:u'Блок питания', notes:u'Ноутбуки',
+               routers:u'Маршрутизаторы',tablet:u'Планшет'}
 
 
 parts_aliases = {
@@ -181,7 +182,9 @@ parts_aliases = {
     'soft':soft,
     'case':case,
     'psu':psu,
-    'notes':notes
+    'notes':notes,
+    'router':routers,
+    'tablet':tablet
     }
 
 def noComponentFactory(_doc, name, text=u' нет'):
@@ -852,6 +855,15 @@ class Model(object):
             ret['old_code'] = code
         return ret
 
+
+    def getComponet(self, catalog):
+        component = None
+        for c in self.components:
+            if self.getCatalogsKey(c)==tablets:
+                component=c
+                break
+        return component
+        
 
     def walkOnComponents(self):
         self.aliasses_reverted = {}

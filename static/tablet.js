@@ -21,7 +21,7 @@ function init(){
 			     e.preventDefault();
 			     var target = $(e.target);
 			     var psu_id = target.parent().attr('id');
-			     var psu = psus[psu_id];
+			     var psu = routers[psu_id];
 			     var power_div = $('#powername');
 			     if (power_div.length==0){
 				 $('#video_top').css('height','120px');
@@ -68,11 +68,11 @@ function init(){
 			   if (powername.length>0)
 			       power = powername.data();
 			   if (card['pcs'] && card['pcs']==2)
-			       set[video_catalog] = [card['_id'],card['_id']];
+			       set[tablet_catalog] = [card['_id'],card['_id']];
 			   else
-			       set[video_catalog] = card['_id'];
+			       set[tablet_catalog] = card['_id'];
 			   if (power['_id'])
-			       set[power_catalog] = power['_id'];
+			       set[router_catalog] = power['_id'];
 			   $.ajax({
 				      url:'/saveset',
 				      data:{data:JSON.stringify(set)},
@@ -135,46 +135,4 @@ function recalculate(){
 	      }, 0);
 
 }
-
 init();
-
-// (function init(){
-//      $('#tocart').click(function(){
-//                             var set = {};
-// 			    set[tablet_catalog] = _id;
-//                             $.ajax({
-//                                       url:'/saveset',
-//                                       data:{data:JSON.stringify(set)},
-//                                       success:function(data){
-//                                           if (data=="ok"){
-//                                               var cart_el = $('#cart');
-//                                               if (cart_el.length>0){
-//                                                   cart_el.text('Корзина('+$.cookie('pc_cart')+')');
-//                                               }
-//                                               else{
-//                                                   $('#main_menu')
-//                                                       .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
-
-//                                               }
-//                                               alert('Получилось!');
-//                                           }
-//                                           else
-//                                               alert('Что-то пошло не так =(');
-//                                       }
-//                                   });
-//                        });
-//      $('#psu_list li').click(function(e){
-// 				var target = $(e.target);
-// 				var tag = target[0].tagName.toLowerCase();
-// 				if(tag=='span')
-// 				    return;
-// 				var guard = 10;
-// 				while(tag!=='li'){
-// 				    target = target.parent();
-// 				    tag = target[0].tagName.toLowerCase();
-// 				}
-// 				showComponent({preventDefault:function(){},
-// 					       target:{id:'_'+target[0].id}});
-// 			    });
-
-// }());
