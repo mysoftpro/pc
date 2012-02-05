@@ -550,6 +550,14 @@ class Model(object):
         return proc_video
 
 
+    def getComponentCount(self, component):
+        retval = 1
+        code = self.model_doc['items'][component.cat_name]
+        if type(code) is list:
+            retval = len(code)
+        return retval
+
+
     def get(self, field, default=None):
         return self.model_doc.get(field, default)
 
@@ -965,7 +973,7 @@ class Component(object):
 
     @property
     def text(self):
-        return self.get('text', False)
+        return self.get('text', '')
 
     @property
     def description(self):

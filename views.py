@@ -105,13 +105,10 @@ class ModelInCart(object):
 
     def renderComponent(self, component):
 	li = etree.Element('li')
-	try:
-	    if component.text:
-		li.text = component.text
-	    else:
-		li.text=''
-	except:
-	    li.text = u'ошибка'
+        li.text = component.text
+        count = self.model.getComponentCount(component)
+        if count>1:
+           li.text+=' '+str(count) + u' шт'
 
 	if not 'promo' in self.model:
 	    strong = etree.Element('strong')
