@@ -1321,29 +1321,30 @@ class Tablets(PCView):
         parent = self.template.middle.xpath('//div[@id="models"]')[0]
         viewlet = self.tree.find('tablet')
         for r in res['rows']:
-            doc = makeTabletPrice(r['doc'])
+            tab = TabletOb(r['doc'])
+            # doc = makeTabletPrice(r['doc'])
             container = deepcopy(viewlet)
             chip_div = etree.Element('div')
 	    chip_div.set('class', 'chip tablet')
             br = etree.Element('br')
             chip_title = container.xpath('//h2[@class="chipname"]')[0]
 	    chip_title.text = u'Планшетный компьютер'
-            br.tail = doc['vendor'] +' '+doc['model']
+            br.tail = tab.vendor +' '+tab.model
             chip_title.append(br)
             
-            container.xpath('//td[@class="t_screen"]')[0].text = doc['screen']
-            container.xpath('//td[@class="t_memory"]')[0].text = doc['memory']
-            container.xpath('//td[@class="t_flash"]')[0].text = doc['flash']
-            container.xpath('//td[@class="t_os"]')[0].text = doc['os']
-            container.xpath('//td[@class="t_resolution"]')[0].text = doc['resolution']
+            container.xpath('//td[@class="t_screen"]')[0].text = tab.screen
+            container.xpath('//td[@class="t_memory"]')[0].text = tab.memory
+            container.xpath('//td[@class="t_flash"]')[0].text = tab.flash
+            container.xpath('//td[@class="t_os"]')[0].text = tab.os
+            container.xpath('//td[@class="t_resolution"]')[0].text = tab.resolution
+            icon = tab.getComponentIcon(default=None)
 
-            icon = TabletOb(doc).getComponentIcon(default=None)
             if icon is not None:
                 image = container.xpath('//img')[0]
                 image.set('src', icon)
             
             video_img = container.xpath('//div[@class="modelicon videoicon"]')[0]
-            rate = int(doc['rank'])
+            rate = tab.rank
             while rate>0:
                 d = etree.Element('div')
                 d.set('class', 'video_rate')
@@ -1352,15 +1353,15 @@ class Tablets(PCView):
 
             chip_vendors = container.xpath('//ul[@class="chipVendors"]')[0]
             ve = etree.Element('li')
-            ve.set('id', doc['_id'])
+            ve.set('id', tab._id)
             link = etree.Element('a')
             span = etree.Element('span')
             strong = etree.Element('strong')
             span.text = u'Подробней'
-            strong.text = unicode(doc['price'])
+            strong.text = unicode(tab.makePrice())
             strong.tail = u' р'
             link.text = u'На страницу товара'
-            href = '/tablet/'+doc['vendor']+'_'+doc['model']
+            href = '/tablet/'+tab.vendor+'_'+tab.model
             link.set('href',href.replace(' ','_'))
             ve.append(span)
             ve.append(strong)

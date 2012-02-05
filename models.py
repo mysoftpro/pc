@@ -669,7 +669,6 @@ class Model(object):
     def procCatalogs(self):
         return self.get('proc_catalogs')
 
-
     def __init__(self, model_doc):
         self.model_doc = model_doc
         self.isOrder = False
@@ -687,7 +686,6 @@ class Model(object):
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
-
 
     @property
     def original_prices(self):
@@ -789,19 +787,10 @@ class Model(object):
 
     def preparePdf(self):
         self.model_doc['full_items'] = []
-        for k,v in self:
-            if type(v) is list:
-                v = v[0]
-            if v is None: continue
-            if v.startswith('no'):continue
-            component = deepcopy(self.findComponent(k))
-            if k==notes:
-                component = makeNotePrice(component)
-            elif k == tablet:
-                component = makeTabletPrice(component)
-            else:
-                component['price'] = Model.makePrice(component)
-            self.model_doc['full_items'].append(component)
+        for c in self.components:
+            doc = deepcopy(c.component_doc)
+            doc['price'] = c.makePrice()
+            self.model_doc['full_items'].append(doc)
         self.model_doc['const_prices'] = [DVD_PRICE, BUILD_PRICE, INSTALLING_PRICE]
         return self.model_doc
 
@@ -1447,14 +1436,41 @@ class ModelForSaving(object):
 
 
 class Tablet(Component):
-    pass
-    # def makePrice(self):
-    #     if self._price is  None:
-    #         our_price = self.component_doc['price']*Course+TABLET_MARGIN
-    #         if our_price>10000:
-    #             our_price+=400
-    #         self._price = int(round(our_price/10))*10            
-    #     return self._price
+    @property
+    def vendor(self):
+        return self.get('vendor','')
+    
+    @property
+    def model(self):
+        return self.get('model','')
+
+    @property
+    def screen(self):
+        return self.get('screen','')
+
+    @property
+    def memory(self):
+        return self.get('memory','')
+
+
+    @property
+    def flash(self):
+        return self.get('flash','')
+
+
+    @property
+    def os(self):
+        return self.get('os','')
+
+    @property
+    def resolution(self):
+        return self.get('resolution','')
+
+    @property
+    def rank(self):
+        return int(self.get('rank','0'))
+
+
 
 
 #TODO move it proper class

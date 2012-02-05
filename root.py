@@ -13,9 +13,9 @@ from pc.couch import couch, designID, sync as couch_sync
 import simplejson
 from datetime import datetime, date
 from pc.models import\
-    BUILD_PRICE,INSTALLING_PRICE,DVD_PRICE,ZipConponents, CatalogsFor,\
+    ZipConponents, CatalogsFor,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
-    UserForSaving,ModelForSaving,makeNotePrice,makeTabletPrice
+    UserForSaving,ModelForSaving
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
    MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet
 from pc.catalog import XmlGetter, WitNewMap
