@@ -1470,17 +1470,11 @@ class Tablet(Component):
     def rank(self):
         return int(self.get('rank','0'))
 
+    @property
+    def youtube(self):
+        return self.component_doc.get('youtube',False)
 
 
-
-#TODO move it proper class
-def makeTabletPrice(doc):
-    our_price = doc['price']*Course+TABLET_MARGIN
-    if our_price>10000:
-        our_price+=400
-    copy = deepcopy(doc)
-    copy['price'] = int(round(our_price/10))*10
-    return copy
 def makeNotePrice(doc):
     our_price = doc['price']*Course+NOTE_MARGIN
     copy = deepcopy(doc)

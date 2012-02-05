@@ -6,7 +6,7 @@ from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
-    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeTabletPrice,makeNotePrice,Router,\
+    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeNotePrice,Router,\
     routers as router_catalog
 from copy import deepcopy
 from lxml import etree, html
@@ -1322,7 +1322,6 @@ class Tablets(PCView):
         viewlet = self.tree.find('tablet')
         for r in res['rows']:
             tab = TabletOb(r['doc'])
-            # doc = makeTabletPrice(r['doc'])
             container = deepcopy(viewlet)
             chip_div = etree.Element('div')
 	    chip_div.set('class', 'chip tablet')
@@ -1392,20 +1391,19 @@ class Tablet(PCView):
         if len(res['rows'])==0:
             self.force_no_resource=True
             return
-        doc = makeTabletPrice(res['rows'][0]['doc'])
-        title = ' '+ doc['vendor']+' '+doc['model'] +' '+doc['os']
+        tab = TabletOb(res['rows'][0]['doc'])
+        title = ' '+ tab.vendor+' '+tab.model +' '+tab.os
         self.title+=title
         self.template.top.xpath('//h1')[0].text+= title
         
         # self.template.top.xpath('//div[@id="tabletPrice"]')[0].text = u'Цена: '+unicode(doc['price'])+u' р'
         container = self.template.middle.xpath('.//div[@id="maparams"]')[0]
-        if 'youtube' in doc:
-            for el in html.fragments_fromstring(doc['youtube']):
+        if tab.youtube:
+            for el in html.fragments_fromstring(tab.youtube):
                 container.append(el)
             br = etree.Element('br')
             container.append(br)
-        # img.tail = doc['description']['comments']
-        for el in html.fragments_fromstring(doc['description']['comments']):
+        for el in html.fragments_fromstring(tab.description['comments']):
             if type(el) is unicode:
                 if container[-1].tail is None:
                     container[-1].tail = ''
@@ -1414,26 +1412,25 @@ class Tablet(PCView):
                 container.append(el)
 
         routers = self.template.middle.xpath('//div[@id="videoimage"]')[0]
-        for i in doc['description']['imgs']:
+        for i in tab.description['imgs']:
             img = etree.Element('img')
-            img.set('src','/image/'+doc['_id']+'/'+i+'.jpg')
-            # img.set('align','right')
+            img.set('src','/image/'+tab._id+'/'+i+'.jpg')
             routers.insert(0,img)
         self.installRouters(routers)
         
-        self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'+doc['_id']+'";'
+        self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'\
+            +tab._id+'";'
 
 
         price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
 	rows = price_table.findall('tr')
 	for r in rows:
-	    r[-1].text = unicode(doc['price'])+ u' р.'
+	    r[-1].text = unicode(tab.makePrice())+ u' р.'
 	    first = r[0]
 	    if first.text != u'Итого':
-		first.find('div').text = doc['description'].get('name', "")
+		first.find('div').text = tab.description.get('name', "")
 
-
-        self.script.text += 'var _id="'+doc['_id']+'";var price='+str(doc['price'])+';'
+        self.script.text += 'var _id="'+tab._id+'";var price='+str(tab.makePrice())+';'
 	self.script.text += 'var tablet_catalog='+tablet+';var router_catalog='+router_catalog+';'
 
 
