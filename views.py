@@ -219,13 +219,6 @@ class ModelInCart(object):
 
 class SetInCart(ModelInCart):
 
-    # def __init__(self, *args, **kwargs):
-    #     # here is notebook now!!!!!!!!!!!
-    #     # why??????????????
-    #     print "2!"
-    #     self.tablet = [c for c in self.model.components if c.getCatalogsKey(c) == tablet][0]
-    #     super(SetInCart, self).__init__(*args, **kwargs)
-
     def fillExtra(self):
 	if self.author and not self.model.processing:
 	    extra = deepcopy(self.tree.find('cart_extra'))
@@ -245,8 +238,9 @@ class SetInCart(ModelInCart):
 	self.description_div = divs[1]
 
     def setVideoLink(self):
+        video_doc = self.model.getComponent(video_catalog)
         url = '/videocard/'+\
-            quote_plus(self.model.components[0].get('articul','').replace('\t',''))
+            quote_plus(video_doc.get('articul','').replace('\t',''))
 
 	self.icon.set('href',url)
 
@@ -262,9 +256,9 @@ class SetInCart(ModelInCart):
 
 
     def setTabletLink(self):
-        #zzzzzzzzzzzzzzzzz
+        tablet_doc = self.model.getComponent(tablet)
         url = '/tablet/'+\
-            self.model.components[0].get('vendor','')+'_'+self.tablet.get('model','')
+            tablet_doc.get('vendor','')+'_'+tablet_doc.get('model','')
         url = url.replace(' ','_')
 
 	self.icon.set('href',url)
@@ -280,28 +274,15 @@ class SetInCart(ModelInCart):
 	link.set('href',url)
 
 
-
-
     def setModelLink(self):        
-        if self.model.components[0].cat_name == video:
+        if self.model.getComponent(video) is not None:
             self.setVideoLink()
-        else:
+        elif self.model.getComponent(tablet) is not None:
             self.setTabletLink()
         
 
-    def set_price(self):
-        if self.model.components[0].cat_name == video:
-            return super(SetInCart,self).set_price()
-        else:
-            price_span = self.model_div.find('.//span')
-            price_span.set('id',self.model._id)	
-            price_span.text = unicode(makeTabletPrice(self.model.components[0].component_doc)['price']) + u' р'
-
-
-
-
-    def setIcon(self):
-	self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
+    def setIcon(self):	
+        self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
 
 
 
@@ -1300,7 +1281,6 @@ class CreditForm(PCView):
 			    if 'selected' in o.attrib:
 				del o.attrib['selected']
         if self.name != parent_name:
-            print "install paren!"
             self.template.middle.xpath('.//input[@id="parent"]')[0].set('value',parent_name)
         else:
             self.template.middle.xpath('.//input[@id="parent"]')[0].set('value','')

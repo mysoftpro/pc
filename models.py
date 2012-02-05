@@ -706,7 +706,7 @@ class Model(object):
         return self.get('original_prices', {})
 
     @classmethod
-    def getCatalogsKey(cls, doc):
+    def getCatalogsKey(cls, doc):        
         if 'catalogs' not in doc:
             return 'no'
         if type(doc['catalogs'][0]) is dict:
@@ -856,14 +856,25 @@ class Model(object):
         return ret
 
 
-    def getComponet(self, catalog):
-        component = None
+    def getComponent(self, catalog):
+        component = None        
+        _type = type(catalog)
         for c in self.components:
-            if self.getCatalogsKey(c)==tablets:
-                component=c
-                break
+            cat = c.getCatalogsKey()
+            if _type is list:
+                if cat == catalog:                    
+                    component=c
+                    break
+            elif _type is str:
+                if catalog in cat:
+                    component=c
+                    break
         return component
         
+    def componentFactory(self, component_doc, cat_name):        
+        return Component(component_doc, cat_name)
+
+
 
     def walkOnComponents(self):
         self.aliasses_reverted = {}
@@ -884,9 +895,9 @@ class Model(object):
             self.updateCatPrice(cat_name,mouse,price)
             self.updateCatPrice(cat_name,kbrd,price)
             self.component_prices[code] = price
-            self.components.append(Component(component_doc, cat_name))
+            self.components.append(self.componentFactory(component_doc, cat_name))
             if cat_name == case:
-                self.case = Component(component_doc, case)
+                self.case = self.components[-1]
 
         if self.installing:
             self.total += INSTALLING_PRICE
@@ -920,11 +931,9 @@ class Component(object):
 
     @property
     def cat_name(self):
-        if self._cat_name is not None:
-            return self._cat_name
-        else:
-            return self.getCatalogsKey()[1]
-
+        if self._cat_name is None:
+            self._cat_name = self.getCatalogsKey()[1]
+        return self._cat_name
 
     def get(self, field, default=None):
         return self.component_doc.get(field, default)
@@ -1217,6 +1226,14 @@ class Notebook(Model):
     @property
     def name(self):
         return u'Ноутбук'
+    
+    def makePrice(self):
+        if self._price is  None:
+            our_price = self.component_doc['price']*Course+NOTE_MARGIN
+            self._price = int(round(our_price/10))*10            
+        return self._price
+
+
 
 
 class Set(Model):
@@ -1433,7 +1450,14 @@ class ModelForSaving(object):
 
 
 class Tablet(Component):
-    pass
+    def makePrice(self):
+        if self._price is  None:
+            our_price = self.component_doc['price']*Course+TABLET_MARGIN
+            if our_price>10000:
+                our_price+=400
+            self._price = int(round(our_price/10))*10            
+        return self._price
+
 
 #TODO move it proper class
 def makeTabletPrice(doc):
