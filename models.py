@@ -881,7 +881,13 @@ class Model(object):
         return component
         
     def componentFactory(self, component_doc, cat_name):        
-        return Component(component_doc, cat_name)
+        catalog = self.getCatalogsKey(component_doc)
+        component = Component(component_doc, cat_name)
+        if catalog[-1] == tablet:
+            component = Tablet(component_doc,cat_name)
+        elif catalog[1] == notes:
+            component = Note(component_doc,cat_name)
+        return component
 
 
 
@@ -897,7 +903,7 @@ class Model(object):
             component_doc = self.findComponent(cat_name)
             component = self.componentFactory(component_doc, cat_name)
             code = component_doc['_id']
-            price = Model.makePrice(component_doc)*count
+            price = self.makePrice(component_doc)*count
             self.total += price
             self.updateCatPrice(cat_name,displ,price)
             self.updateCatPrice(cat_name,soft,price)
@@ -905,7 +911,7 @@ class Model(object):
             self.updateCatPrice(cat_name,mouse,price)
             self.updateCatPrice(cat_name,kbrd,price)
             self.component_prices[code] = price
-            self.components.append(self.componentFactory(component_doc, cat_name))
+            self.components.append(component)
             if cat_name == case:
                 self.case = component
 
@@ -1228,20 +1234,14 @@ class Psu(Component):
         return self.get('power',0)
 
 
-
+class Note(Component):
+    pass
 
 class Notebook(Model):
 
     @property
     def name(self):
-        return u'Ноутбук'
-    
-    # def makePrice(self):
-    #     if self._price is  None:
-    #         our_price = self.component_doc['price']*Course+NOTE_MARGIN
-    #         self._price = int(round(our_price/10))*10            
-    #     return self._price
-
+        return u'Ноутбук'    
 
 
 
