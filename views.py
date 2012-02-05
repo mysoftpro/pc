@@ -236,48 +236,20 @@ class SetInCart(ModelInCart):
 	self.model_div = divs[0]
 	self.description_div = divs[1]
 
-    def setVideoLink(self):
-        video_doc = self.model.getComponent(video_catalog)
-        url = '/videocard/'+\
-            quote_plus(video_doc.get('articul','').replace('\t',''))
-
-	self.icon.set('href',url)
-
-	link = self.model_div.find('.//a')
-	link.text = self.model._id[0:-3]
-	strong= etree.Element('strong')
-
-	strong.text = self.model._id[-3:]
-	link.append(strong)
-
-	#TODO may be other sets will have another link!
-	link.set('href',url)
-
-
-    def setTabletLink(self):
-        tablet_doc = self.model.getComponent(tablet_catalog)
-        url = '/tablet/'+\
-            tablet_doc.get('vendor','')+'_'+tablet_doc.get('model','')
-        url = url.replace(' ','_')
-
-	self.icon.set('href',url)
-
-	link = self.model_div.find('.//a')
-	link.text = self.model._id[0:-3]
-	strong= etree.Element('strong')
-
-	strong.text = self.model._id[-3:]
-	link.append(strong)
-
-	#TODO may be other sets will have another link!
-	link.set('href',url)
-
-
     def setModelLink(self):        
-        if self.model.getComponent(video) is not None:
-            self.setVideoLink()
-        elif self.model.getComponent(tablet_catalog) is not None:
-            self.setTabletLink()
+        main_component = self.model.getComponentForIcon()        
+        url = main_component.url
+
+	self.icon.set('href',url)
+
+	link = self.model_div.find('.//a')
+	link.text = self.model._id[0:-3]
+	strong= etree.Element('strong')
+
+	strong.text = self.model._id[-3:]
+	link.append(strong)
+
+	link.set('href',url)
         
 
     def setIcon(self):	        

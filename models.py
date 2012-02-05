@@ -684,7 +684,6 @@ class Model(object):
         self.case = None
         self.walkOnComponents()
 
-
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
@@ -1226,6 +1225,12 @@ class VideoCard(Component):
     def has(self, field):
         return self.get(field,default='-1')!='-1'
 
+    @property
+    def url(self):
+        return '/videocard/'+\
+             quote_plus(self.get('articul','').replace('\t',''))
+
+
 
 class Psu(Component):
     @property
@@ -1234,7 +1239,9 @@ class Psu(Component):
 
 
 class Note(Component):
-    pass
+    @property
+    def url(self):
+        return '/notebook'
 
 class Notebook(Model):
 
@@ -1458,6 +1465,11 @@ class ModelForSaving(object):
 
 
 class Tablet(Component):
+    @property
+    def url(self):
+        return '/tablet/'+\
+            self.get('vendor','')+'_'+self.get('model','')
+
     @property
     def vendor(self):
         return self.get('vendor','')
