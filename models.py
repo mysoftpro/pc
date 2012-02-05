@@ -725,9 +725,18 @@ class Model(object):
         if doc['price'] == 0:
             return 0
         course = Course
-        if Model.getCatalogsKey(doc) == windows:
+        catalog = Model.getCatalogsKey(doc)
+        if catalog == windows:
             course = 1
         our_price = float(doc['price'])*Margin*course
+        # notes and tablets has notes as second element of catalogs
+        # so first check for tableyt
+        if catalog[-1] == tablet:
+            our_price = doc['price']*Course+TABLET_MARGIN
+            if our_price>10000:
+                our_price+=400
+        elif catalog[1] == notes:        
+            our_price = doc['price']*Course+NOTE_MARGIN
         return int(round(our_price/10))*10
 
 
@@ -886,6 +895,7 @@ class Model(object):
                 count = len(code)
                 code = code[0]
             component_doc = self.findComponent(cat_name)
+            component = self.componentFactory(component_doc, cat_name)
             code = component_doc['_id']
             price = Model.makePrice(component_doc)*count
             self.total += price
@@ -897,7 +907,7 @@ class Model(object):
             self.component_prices[code] = price
             self.components.append(self.componentFactory(component_doc, cat_name))
             if cat_name == case:
-                self.case = self.components[-1]
+                self.case = component
 
         if self.installing:
             self.total += INSTALLING_PRICE
@@ -912,7 +922,6 @@ class Component(object):
 
     def __init__(self, component_doc, cat_name=None):
         self.component_doc = component_doc
-        # ???
         self._cat_name = cat_name
         self._price = None
 
@@ -1227,11 +1236,11 @@ class Notebook(Model):
     def name(self):
         return u'Ноутбук'
     
-    def makePrice(self):
-        if self._price is  None:
-            our_price = self.component_doc['price']*Course+NOTE_MARGIN
-            self._price = int(round(our_price/10))*10            
-        return self._price
+    # def makePrice(self):
+    #     if self._price is  None:
+    #         our_price = self.component_doc['price']*Course+NOTE_MARGIN
+    #         self._price = int(round(our_price/10))*10            
+    #     return self._price
 
 
 
@@ -1450,13 +1459,14 @@ class ModelForSaving(object):
 
 
 class Tablet(Component):
-    def makePrice(self):
-        if self._price is  None:
-            our_price = self.component_doc['price']*Course+TABLET_MARGIN
-            if our_price>10000:
-                our_price+=400
-            self._price = int(round(our_price/10))*10            
-        return self._price
+    pass
+    # def makePrice(self):
+    #     if self._price is  None:
+    #         our_price = self.component_doc['price']*Course+TABLET_MARGIN
+    #         if our_price>10000:
+    #             our_price+=400
+    #         self._price = int(round(our_price/10))*10            
+    #     return self._price
 
 
 #TODO move it proper class
