@@ -689,18 +689,6 @@ class Model(object):
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
 
 
-    def getComponentPrice(self, component):
-        if component.cat_name == notes:
-            # fucken legacy
-            if component.getCatalogsKey()[-1] == tablet:
-                return makeTabletPrice(component.component_doc)['price']
-            else:
-                return makeNotePrice(component.component_doc)['price']
-        elif component.cat_name == tablet:
-            return makeTabletPrice(component.component_doc)['price']
-        return self.component_prices[component._id]
-
-
     @property
     def original_prices(self):
         return self.get('original_prices', {})

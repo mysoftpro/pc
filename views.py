@@ -116,7 +116,7 @@ class ModelInCart(object):
 
 	if not 'promo' in self.model:
 	    strong = etree.Element('strong')
-	    strong.text = unicode(self.model.getComponentPrice(component))+ u' р'
+	    strong.text = unicode(component.makePrice())+ u' р'
 	    li.append(strong)
 	li.set('id',self.model._id+'_'+component._id)
 	if component.old_code and not self.model.isPromo:
