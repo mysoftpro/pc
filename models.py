@@ -681,7 +681,9 @@ class Model(object):
         self.cat_prices = {}
         self.component_prices = {}
         self.total = 0
+        self.case = None
         self.walkOnComponents()
+
 
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
@@ -856,6 +858,23 @@ class Model(object):
                     component=c
                     break
         return component
+
+
+    def getComponentForIcon(self):
+        if self.case is not None:
+            return self.case
+        retval = self.components[0]
+        for c in self.components:
+            if type(c) is VideoCard:
+                retval = c
+                break
+            elif type(c) is Tablet:
+                retval = c
+                break
+            elif type(c) is Note:
+                retval = c
+                break
+        return retval
         
     def componentFactory(self, component_doc, cat_name):        
         catalog = self.getCatalogsKey(component_doc)
@@ -864,6 +883,9 @@ class Model(object):
             component = Tablet(component_doc,cat_name)
         elif catalog[1] == notes:
             component = Note(component_doc,cat_name)
+        else:
+            if video in catalog:
+                component = VideoCard(component_doc)
         return component
 
 

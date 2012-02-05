@@ -2,11 +2,11 @@
 from pc.couch import couch, designID
 from twisted.internet import defer
 from pc.models import userFactory, noChoicesYet, fillChoices, Model, cleanDoc,\
-    notes,UserForCredit,tablet
+    notes,UserForCredit,tablet as tablet_catalog
 from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,video,\
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
-    NOTE_MARGIN, Tablet as TabletOb, TABLET_MARGIN,makeNotePrice,Router,\
+    Tablet as TabletOb, makeNotePrice,Router,\
     routers as router_catalog
 from copy import deepcopy
 from lxml import etree, html
@@ -19,7 +19,6 @@ from twisted.web.error import NoResource
 from twisted.web.resource import Resource
 from twisted.web.server import NOT_DONE_YET
 from pc.market import getMarket
-import re
 
 class ModelInCart(object):
     def __init__(self, request, model, tree, container, author):
@@ -256,7 +255,7 @@ class SetInCart(ModelInCart):
 
 
     def setTabletLink(self):
-        tablet_doc = self.model.getComponent(tablet)
+        tablet_doc = self.model.getComponent(tablet_catalog)
         url = '/tablet/'+\
             tablet_doc.get('vendor','')+'_'+tablet_doc.get('model','')
         url = url.replace(' ','_')
@@ -277,12 +276,15 @@ class SetInCart(ModelInCart):
     def setModelLink(self):        
         if self.model.getComponent(video) is not None:
             self.setVideoLink()
-        elif self.model.getComponent(tablet) is not None:
+        elif self.model.getComponent(tablet_catalog) is not None:
             self.setTabletLink()
         
 
-    def setIcon(self):	
-        self.icon.find('img').set('src',self.model.components[0].getComponentIcon())
+    def setIcon(self):	        
+        self.icon.find('img').\
+            set('src',
+                self.model.getComponentForIcon().\
+                    getComponentIcon())
 
 
 
@@ -292,8 +294,8 @@ class NotebookInCart(SetInCart):
     def set_price(self):
     	price_span = self.model_div.find('.//span')
 	price_span.set('id',self.model._id)	
-	price_span.text = unicode(makeNotePrice(self.model.components[0].component_doc)['price']) + u' р'
-
+	price_span.text = unicode(makeNotePrice(self.model.components[0].component_doc)['price']) +\
+            u' р'
 
     def setModelLink(self):
 	url = '/notebook'
@@ -305,8 +307,6 @@ class NotebookInCart(SetInCart):
 
 	strong.text = self.model._id[-3:]
 	link.append(strong)
-
-	#TODO may be other sets will have another link!
 	link.set('href',url)
 
 
@@ -345,7 +345,6 @@ class PCView(object):
 	    self.postRender()
 	    return self.skin.render()
 	d.addCallback(_render)
-	# d.addErrback(self.noResource)
 	return d
 
 
@@ -1374,7 +1373,7 @@ class Tablets(PCView):
     def preRender(self):
         from pc import models
         d = defer.Deferred()
-    	d.addCallback(lambda some:models.gChoices[tablet])
+    	d.addCallback(lambda some:models.gChoices[tablet_catalog])
 	d.addCallback(self.renderTablets)
         d.callback(None)
         return d
@@ -1418,7 +1417,7 @@ class Tablet(PCView):
             routers.insert(0,img)
         self.installRouters(routers)
         
-        self.template.middle.find('script').text += 'var tablet_catalog='+tablet+';var _id="'\
+        self.template.middle.find('script').text += 'var tablet_catalog='+tablet_catalog+';var _id="'\
             +tab._id+'";'
 
 
@@ -1431,7 +1430,7 @@ class Tablet(PCView):
 		first.find('div').text = tab.description.get('name', "")
 
         self.script.text += 'var _id="'+tab._id+'";var price='+str(tab.makePrice())+';'
-	self.script.text += 'var tablet_catalog='+tablet+';var router_catalog='+router_catalog+';'
+	self.script.text += 'var tablet_catalog='+tablet_catalog+';var router_catalog='+router_catalog+';'
 
 
 
