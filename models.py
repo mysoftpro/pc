@@ -684,6 +684,7 @@ class Model(object):
         self.case = None
         self.walkOnComponents()
 
+    # TODO why do i need that??? grep for method name 
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})

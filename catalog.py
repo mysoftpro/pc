@@ -101,14 +101,7 @@ class XmlGetter(Resource):
                     component_changed = True
                     doc[k] = item[k]
         if component_changed:
-            # do not store version attachments
             couch.saveDoc(doc)
-            # d = couch.addAttachments(doc, raw_doc, version=True)
-            # # TODO! drop some later attachments!
-            # # if updates are every hour - store just 8 of them, for example
-            # d.addCallback(lambda _doc:couch.saveDoc(_doc))
-            # d.addErrback(self.pr)
-            # return d
 
     def cleanDocs(self, _all_docs, codes):
         """ if no doc in codes (the component is disapeared from wit db) -> put 0 to its stock1"""
@@ -784,7 +777,6 @@ def parseNewDescription(f, external_id, remaining=None, parser=None):
     spoon = 1024*10
     if remaining is None:
         remaining = f.tell()
-        # TODO! how do i know, that the received fileis more than 1024???
         parser=etree.HTMLParser(target=NewDescriptionTarget())#encoding='cp1251'
         f.seek(0)
         rd = f.read(spoon)

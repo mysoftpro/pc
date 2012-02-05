@@ -24,7 +24,7 @@ function init(){
 			     var psu = routers[psu_id];
 			     var power_div = $('#powername');
 			     if (power_div.length==0){
-				 $('#video_top').css('height','120px');
+				 $('#video_top').css('height','75px');
 				 $('#videoname').parent().parent()
 				     .after(_.template('<tr><td><div id="powername">{{name}}</div></td><td>1 шт</td><td>{{price}}</td></tr>', {price:psu.price+' р.',name:psu.name}));
 				 power_div = $('#powername');

@@ -1170,7 +1170,6 @@ class NoteBooks(PCView):
                 if token in doc:
                     doc.pop(token)
 	    doc['catalogs'] = Model.getCatalogsKey(doc)
-	    #TODO save all this shit found from re
 	    json_notebooks.update({doc['_id']:doc})
 
 	self.template.middle.find('script').text = 'var notebooks=' + simplejson.dumps(json_notebooks)

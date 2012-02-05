@@ -1185,7 +1185,6 @@ class SaveSet(Resource):
 
         user_id = request.getCookie('pc_user')
         d = couch.openDoc(user_id)
-        # d.addCallback(self.save,jdata,request)
 
         d.addCallback(self.oldUser, jdata, request)
         d.addErrback(self.newUser, user_id, jdata, request)

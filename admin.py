@@ -391,26 +391,6 @@ class FindOrder(Resource):
             component = wrap(_model.findComponent(k))
             if type(v) is list:
                 component.addCallback(addCount(len(v)))
-            # component = None
-            # if v is not None:
-            #     try:
-            #         if type(v) is list:
-            #           # component = couch.openDoc(v[0])
-            #           # TODO! what if no component in choices?????????
-            #           component = wrap(deepcopy(models.gChoices_flatten[v[0]]))
-            #           component.addCallback(addCount(len(v)))
-            #         else:
-            #           if not v.startswith('no'):
-            #               # component = couch.openDoc(v)
-            #               component = wrap(deepcopy(models.gChoices_flatten[v]))
-            #               component.addCallback(addCount(1))
-            #           else:
-            #               component = wrap(noComponentFactory({}, k))
-            #     except KeyError:
-            #         print "aheheheheheh"
-            #         component = wrap(noComponentFactory({'_id':v}, k))
-            # else:
-            #     component = wrap(noComponentFactory({}, k))
             component.addCallback(addPrice())
             component.addCallback(popDesc())
             component.addCallback(addName(parts_names[k]))
