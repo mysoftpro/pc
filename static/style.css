@@ -2767,3 +2767,5 @@ h1.bold.left{
     margin-right:20px;
     margin-bottom:10px;
 }
+.faqtags{float:left;}
+.faqtags a{margin-left:5px;color:white;}

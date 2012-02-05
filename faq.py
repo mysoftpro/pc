@@ -27,12 +27,20 @@ class Faq(object):
             ilimit = 20
         startkey=['z']
         endkey=['0']
+        tag = self.request.args.get('tag', [None])[0]
         key = self.request.args.get('key', [None])[0]
-        if key is not None:
-            startkey.insert(0,key)
-            endkey.insert(0,key)
-        d = couch.openView(designID,self._id,include_docs=True,stale=True,
-                           startkey=startkey,endkey=endkey, descending=True,limit=ilimit)
+
+        if tag is not None:
+            startkey.insert(0,tag)
+            endkey.insert(0,tag)
+            d = couch.openView(designID,'blogtags',include_docs=True,stale=True,
+                               startkey=startkey,endkey=endkey,limit=ilimit,descending=True)
+        else:
+            if key is not None:
+                startkey.insert(0,key)
+                endkey.insert(0,key)
+            d = couch.openView(designID,self._id,include_docs=True,stale=True,
+                               startkey=startkey,endkey=endkey, descending=True,limit=ilimit)
         d.addCallback(self.render)
         return d
 
@@ -41,8 +49,8 @@ class Faq(object):
         for el in viewlet:
             self.template.top.append(el)
 
-    def render(self, res):        
-        self.fillTheTop()        
+    def render(self, res):
+        self.fillTheTop()
         title = self.skin.root().xpath('//title')[0]
         title.text = self.title
         faqs = self.template.middle.find('div')
@@ -67,6 +75,12 @@ class Faq(object):
             _date = r['doc']['date']
             _date.reverse()
             faq_viewlet.xpath('//div[@class="faqdate"]')[0].text = u'.'.join(_date)
+            tag_container = faq_viewlet.xpath('//div[@class="faqtags"]')[0]
+            for tag in r['doc'].get('tags',[]):
+                a = etree.Element('a')
+                a.set('href','/blog?tag='+tag)
+                a.text = tag
+                tag_container.append(a)
             text_field = faq_viewlet.xpath('//div[@class="faqbody"]')[0]
             text_field.text = ''
             if r['doc']['type'] == 'blog' and 'parent' not in r['doc']:
@@ -149,7 +163,7 @@ class StoreFaq(Resource):
         return d
 
 
-    def storeBlog(self, doc, request):        
+    def storeBlog(self, doc, request):
         from pc.admin import portal,auth_wrapper
         # get it from /usr/lib/python2.6/dist-packages/twisted/web/_auth/wrapper.py  L 120
         authheader = request.getHeader('authorization')
@@ -171,7 +185,7 @@ class StoreFaq(Resource):
         if _type is None or _type not in self.types:
             _type = 'faq'
         doc.update({'type':_type})
-        
+
         doc.update({'author':request.getCookie('pc_user')})
         email = request.args.get('email',[None])[0]
         if email is not None:

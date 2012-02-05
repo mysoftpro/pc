@@ -651,12 +651,16 @@ class FromBlog(Resource):
         Resource.__init__(self, *args, **kwargs)
         self.blog_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blog', reactor=reactor)
         self.faq_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/faq', reactor=reactor)
+        self.tag_proxy = proxy.ReverseProxyResource('127.0.0.1', 5984, '/pc/_design/pc/_view/blogtags', reactor=reactor)
 
     @MIMETypeJSON
     def render_GET(self, request):
         proxy = self.blog_proxy
         if 'faq' in request.getHeader('Referer'):
             proxy = self.faq_proxy
+        else:
+            if request.args.get('tags',[None]) is not None:
+                proxy = self.tag_proxy
         return proxy.render(request)
 
 
