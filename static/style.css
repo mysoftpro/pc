@@ -2757,7 +2757,7 @@ h1.bold.left{
     background-position: 10px 10px;
 }
 .tablet{
-    min-height:260px;
+    min-height:280px;
 }
 #tabletPrice{
     float:right;
