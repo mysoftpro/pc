@@ -1,12 +1,12 @@
 from paisley import CouchDB
+import simplejson
 from pc.secure import couchadmin, couchpassword
 
 import os
 import os.path
 
 def pr(failure):
-    pass
-    # print failure
+    print failure
 
 def getDesign(failure):
     d = None
@@ -17,9 +17,9 @@ def getDesign(failure):
         return d
 
 
-couch = CouchDB('127.0.0.1', dbName='pc', username=couchadmin, password=couchpassword)
-design_id = "_design/pc"
-designID = "pc"
+couch = CouchDB('127.0.0.1', dbName='used', username=couchadmin, password=couchpassword)
+design_id = "_design/used"
+designID = "used"
 
 
 this_file = __file__
@@ -32,11 +32,9 @@ def syncViews(designDoc):
     new_design = {'views':{}}
     new_design['_id'] = design_id
     new_design['_rev'] = designDoc['_rev']
-    if 'lists' in designDoc:
-        new_design['lists'] = designDoc['lists']
     map_files = [f for f in  files if 'map' in f.split('.')]
+
     for f in map_files:
-        if '#' in f or '~' in f: continue
         view_name = f.split('/')[-1].split('.')[0]
         map_file = open(os.path.join(os.path.dirname(this_file), 'json', f))
         _map = map_file.read()
@@ -56,6 +54,8 @@ def syncViews(designDoc):
     def compDicts(di1, di2):
         changed = False
         def getcha(element):
+            print "getcha!"
+            print element
             return True
         try:
             for el in di1:
@@ -68,21 +68,34 @@ def syncViews(designDoc):
                         changed = getcha(eel)
                         break
                     if di1[el][eel] != di2[el][eel]:
+                        # print "fuck!"
+                        # print type(di1[el][eel])
+                        # print type(di2[el][eel])
+                        # print di1[el][eel].encode('utf-8')
+                        # print di2[el][eel].encode('utf-8')
                         changed = getcha((di1[el][eel],di2[el][eel]))
                         break
         except Exception, e:
-            pass
+            print "fuuuuuuuuuuuuuuuuuuuuuuuuuck"
+            print e
         return changed
     res = None
     if compDicts(designDoc['views'], new_design['views']) or compDicts(new_design['views'], designDoc['views']):
+        print "stooooooooooooooooooooooooore new design"
         res = couch.saveDoc(new_design)
         def pr(res):
-            pass
-            # print res
+            print res
         res.addCallback(pr)
         res.addErrback(pr)
     print "finish syncing"
     return res
+
+
+
+d = couch.openDoc(design_id)
+d.addCallback(syncViews)
+d.addErrback(pr)
+
 
 def sync():
     d = couch.openDoc(design_id)

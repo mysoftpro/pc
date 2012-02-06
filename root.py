@@ -10,6 +10,7 @@ from twisted.web.server import NOT_DONE_YET
 import os
 from twisted.web.http import CACHED
 from pc.couch import couch, designID, sync as couch_sync
+from used import couch as used_couch
 import simplejson
 from datetime import datetime, date
 from pc.models import\
@@ -37,6 +38,8 @@ from urllib import unquote_plus, quote_plus
 from pc.simple_pages import simplePage, partPage
 from pc.market import PriceForMarket
 from twisted.web.error import Error
+from pc.used import views as used_views, evolve as evolve_used
+
 static_hooks = {
     'promotion.html':promotion,
     'howtochoose.html':simplePage,
@@ -402,6 +405,7 @@ class Root(Resource):
     @classmethod
     def sync(cls):
         couch_sync()
+        used_couch.sync()
 
     def __init__(self, host_url, index_page):
         Resource.__init__(self)
@@ -446,6 +450,7 @@ class Root(Resource):
                                                                               'credit.html'))))
 
 
+
         self.putChild('tablet',
               PCTemplateRenderrer(self.static,
                                   RootAndChilds(root=HandlerAndName(Tablets,
@@ -456,6 +461,14 @@ class Root(Resource):
 
 
         # self.putChild('notebook', TemplateRenderrer(self.static, 'notebook.html'))
+
+        self.putChild('used',
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=HandlerAndName(used_views.Used,
+                                                                              'used.html'),
+                                                        childs=None)))
+        
+
 
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
         self.putChild('howtouse', TemplateRenderrer(self.static, 'howtouse.html'))
@@ -525,6 +538,10 @@ class Root(Resource):
         self.putChild('credit_uploader', CreditUploader())
         self.putChild('deleteCreditAttachment', DeleteCreditAttachment())
         self.putChild('sendCreditApp',SendCreditApp())
+        self.putChild('irr_pc', IrrPC())
+        self.putChild('new_pc', NewPC())
+        self.putChild('avito_pc', AvitoPC())
+        self.putChild('evolve_used',EvolveUsed())
 
 
     def getChild(self, name, request):
@@ -1351,3 +1368,41 @@ class SendCreditApp(Resource):
         d.addCallback(self.finish, request)
         d.addCallback(self.fail, request)
         return NOT_DONE_YET
+
+
+
+from pc.used import irr_pc, new_pc,avito_pc
+from pc.secure import used_key
+
+
+def checkKey(func):
+    def check(self, request):
+        key = request.args.get('key',[None])[0]
+        if key is None or key !=used_key:
+            return "fail"
+        return func(self, request)
+    return check
+
+class IrrPC(Resource):
+    @checkKey
+    def render_GET(self, request):
+        irr_pc.crawl()
+        return "ok"
+
+class NewPC(Resource):
+    @checkKey
+    def render_GET(self, request):
+        new_pc.crawl()
+        return "ok"
+
+class AvitoPC(Resource):
+    @checkKey
+    def render_GET(self, request):
+        avito_pc.crawl()
+        return "ok"
+
+class EvolveUsed(Resource):
+    @checkKey
+    def render_GET(self,request):
+        evolve_used.evolve()
+        return "ok"

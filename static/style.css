@@ -2747,6 +2747,7 @@ h1.bold.left{
     height:32px;
     background-repeat:no-repeat;
 }
+
 #computersexpandable{
     background-image: url("/static/computer.png");
     margin-left: 10px;
@@ -2764,8 +2765,51 @@ h1.bold.left{
     font-weight:strong;
     font-size:20px;
     margin-top:15px;
+
     margin-right:20px;
     margin-bottom:10px;
 }
-.faqtags{float:left;}
-.faqtags a{margin-left:5px;color:white;}
+
+.ad{
+    margin:20px 0 40px 0;
+}
+.ad_subject{
+    font-size:22px;
+    line-height:26px;
+}
+.ad_body{
+    float:left;
+    width:80%;
+}
+.ad_meta{
+    float:right;
+    width:20%;
+}
+.ad_price{
+    font-size:22px;
+    margin-left:auto;
+    margin-right:auto;
+    width:88%;
+}
+.ad_date{
+    margin:5px auto 0 auto;
+    width:50%;
+}
+.ad_phone{
+    clear:both;
+    font-size:18px;
+}
+.faqtags{
+    float:left;
+}
+.faqtags a{
+    margin-left:5px;
+    color:white;
+}
+
+.ad:nth-child(2n){
+    background-color:#222;
+}
+.ad:nth-child(2n+1){
+    background-color:#333;
+}
