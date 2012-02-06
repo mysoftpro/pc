@@ -943,9 +943,8 @@ class Component(object):
 
     def getComponentIcon(self, default = "/static/icon.png"):
         retval = default
-        if self.description and 'imgs' in self.description:
-            imgs = self.description['imgs']
-            if len(imgs)>0:
+        imgs = self.description.get('imgs',[])
+        if len(imgs)>0:
                 retval = ''.join(("/image/",self._id,"/",
                                   imgs[0],'.jpg'))
         if retval is not None and '/preview' in retval:

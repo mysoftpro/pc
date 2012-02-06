@@ -1370,7 +1370,7 @@ class Tablet(PCView):
                 container.append(el)
             br = etree.Element('br')
             container.append(br)
-        for el in html.fragments_fromstring(tab.description['comments']):
+        for el in html.fragments_fromstring(tab.description.get('comments','')):
             if type(el) is unicode:
                 if container[-1].tail is None:
                     container[-1].tail = ''
@@ -1379,7 +1379,7 @@ class Tablet(PCView):
                 container.append(el)
 
         routers = self.template.middle.xpath('//div[@id="videoimage"]')[0]
-        for i in tab.description['imgs']:
+        for i in tab.description.get('imgs',[]):
             img = etree.Element('img')
             img.set('src','/image/'+tab._id+'/'+i+'.jpg')
             routers.insert(0,img)
