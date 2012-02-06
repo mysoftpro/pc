@@ -103,6 +103,11 @@ class AdminGate(Resource):
         self.putChild('get_desc_from_new',GetDescFromNew())
         self.putChild('store_new_desc',StoreNewDesc())
 
+
+        self.putChild('get_soho_descriptions',GetSohoDescriptions())
+        self.putChild('store_soho_desc',StoreSohoDesc())
+
+
         self.putChild('psus', Psus())
         self.putChild('store_psu', StorePsu())
         self.putChild('evolve', Evolve())
@@ -945,6 +950,21 @@ class GetNewDescriptions(Resource):
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
+
+class GetSohoDescriptions(Resource):
+
+    def finish(self, res, request):
+        request.write(simplejson.dumps(res))
+        request.finish()
+
+    @MIMETypeJSON
+    def render_GET(self, request):
+        d = couch.openView(designID, 'soho_components', include_docs=True)
+        d.addCallback(self.finish, request)
+        return NOT_DONE_YET
+
+
+
 class GetDescFromNew(Resource):
 
     def finish(self, res, request):
@@ -962,20 +982,24 @@ class GetDescFromNew(Resource):
 
 
 class StoreNewDesc(Resource):
-
+    price_field = 'us_price'
+    stock_field = 'new_stock'
+    
     def finish(self, doc, desc, name, img, warranty, articul, catalogs):
         doc['description'] = {}
         doc['description'].update({'comments':desc})
         doc['description'].update({'name':name})
-        #TODO get and store image!
+        print "eeeeeeeeeeeeeeeeeeeeeeha!"
+        print img
+        # TODO get and store image!
         if len(warranty)>0:
             doc['warranty_type'] = warranty
         if len(articul)>0:
             doc['articul'] = articul.replace('\t','')
         if len(catalogs)>0:
             doc['catalogs'] = simplejson.loads(catalogs)
-            doc['price'] = doc['us_price']
-            doc['stock1'] = doc['new_stock']
+            doc['price'] = doc[self.price_field]
+            doc['stock1'] = doc[self.stock_field]
 
         if len(img)>0:
             doc['description'].update({'imgs':[img]})
@@ -999,6 +1023,11 @@ class StoreNewDesc(Resource):
         d.addCallback(self.finish, desc, name, img, warranty, articul, catalogs)
         return "ok"
 
+
+
+class StoreSohoDesc(StoreNewDesc):
+    price_field = 'usd_price'
+    stock_field = 'soh_stock'
 
 
 class Psus(Resource):

@@ -979,8 +979,8 @@ class Component(object):
 
     @property
     def description(self):
-        descr = self.get('description', False)
-        if not descr:
+        descr = self.get('description', {})
+        if len(descr)==0:
             choices = globals()['gChoices_flatten']
             if self._id in choices:
                 cached = choices[self._id]
