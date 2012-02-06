@@ -731,6 +731,8 @@ class Model(object):
             our_price = doc['price']*Course+TABLET_MARGIN
             if our_price>10000:
                 our_price+=400
+            if our_price>20000:
+                our_price+=400
         elif catalog[1] == notes:        
             our_price = doc['price']*Course+NOTE_MARGIN
         return int(round(our_price/100))*100
