@@ -53,7 +53,7 @@ var storeSingleDesc = function(code){
 			 $jq.ajax({
 				      type: 'POST',
 				      url:'http://localhost/xml',
-				      data:{'op':'descr','code':code, 'desription':data, 'key':'see secure.py'}
+				      data:{'op':'descr','code':code, 'desription':data, 'key':'a68ef0ea90b595cf6a77bf0566000f2c'}
 				    });
 		     }
 		 });
