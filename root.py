@@ -542,7 +542,8 @@ class Root(Resource):
         self.putChild('new_pc', NewPC())
         self.putChild('avito_pc', AvitoPC())
         self.putChild('evolve_used',EvolveUsed())
-
+        self.putChild('update_maximus',UpdateMaximus())
+        self.putChild('update_soho',UpdateSoho())
 
     def getChild(self, name, request):
         # self.checkCookie(request)
@@ -1375,7 +1376,7 @@ from pc.used import irr_pc, new_pc,avito_pc
 from pc.secure import used_key
 
 
-def checkKey(func):
+def checkUsedKey(func):
     def check(self, request):
         key = request.args.get('key',[None])[0]
         if key is None or key !=used_key:
@@ -1384,25 +1385,52 @@ def checkKey(func):
     return check
 
 class IrrPC(Resource):
-    @checkKey
+    @checkUsedKey
     def render_GET(self, request):
         irr_pc.crawl()
         return "ok"
 
 class NewPC(Resource):
-    @checkKey
+    @checkUsedKey
     def render_GET(self, request):
         new_pc.crawl()
         return "ok"
 
 class AvitoPC(Resource):
-    @checkKey
+    @checkUsedKey
     def render_GET(self, request):
         avito_pc.crawl()
         return "ok"
 
 class EvolveUsed(Resource):
-    @checkKey
+    @checkUsedKey
     def render_GET(self,request):
         evolve_used.evolve()
+        return "ok"
+
+
+
+from pc.secure import csv_key
+from pc.csv_parser import maximus,soho
+
+def checkCsvKey(func):
+    def check(self, request):
+        key = request.args.get('key',[None])[0]
+        if key is None or key !=csv_key:
+            return "fail"
+        return func(self, request)
+    return check
+
+
+class UpdateMaximus(Resource):
+    @checkCsvKey
+    def render_GET(self, request):
+        maximus()
+        return "ok"
+
+
+class UpdateSoho(Resource):
+    @checkCsvKey
+    def render_GET(self, request):
+        soho()
         return "ok"
