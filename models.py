@@ -733,7 +733,7 @@ class Model(object):
                 our_price+=400
         elif catalog[1] == notes:        
             our_price = doc['price']*Course+NOTE_MARGIN
-        return int(round(our_price/10))*10
+        return int(round(our_price/100))*100
 
 
     @property
@@ -1521,7 +1521,7 @@ class Tablet(Component):
 def makeNotePrice(doc):
     our_price = doc['price']*Course+NOTE_MARGIN
     copy = deepcopy(doc)
-    copy['price'] = int(round(our_price/10))*10
+    copy['price'] = int(round(our_price/100))*100
     return copy
 
 
