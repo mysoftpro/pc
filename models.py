@@ -1476,8 +1476,8 @@ class ModelForSaving(object):
 class Tablet(Component):
     @property
     def url(self):
-        return '/tablet/'+\
-            self.get('vendor','')+'_'+self.get('model','')
+        url = '/tablet/'+self.get('vendor','')+'_'+self.get('model','')
+        return url.replace(' ','_')
 
     @property
     def vendor(self):
