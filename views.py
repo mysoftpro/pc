@@ -1371,7 +1371,7 @@ class Tablet(PCView):
             br = etree.Element('br')
             container.append(br)
         for el in html.fragments_fromstring(tab.description.get('comments','')):
-            if type(el) is unicode:
+            if type(el) is unicode or type(el) is str:
                 if container[-1].tail is None:
                     container[-1].tail = ''
                 container[-1].tail+=el
