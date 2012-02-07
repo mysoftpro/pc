@@ -618,19 +618,25 @@ function showPromo(){
 
     if (!(document.location.href.split('?')[0].split('/').pop() ==='computer')
         || $.cookie('pc_promo_shown'))return;
-    toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <span style="font-size:12px;"> Спецпредложения в пункте меню "Еще"</span></p>');
+    toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <div style="font-size:12px;margin-top:-10px;"> Спецпредложения в пункте меню "Еще"</div></p><div class="small_square_button small_reset" style="margin-top: -45px;margin-right: 180px;">Закрыть</div>');
     _.delay(function(){
                 toppopup
                     .show()
                     .animate({top:"0",left:"0"}, 500,function(){
-                                 _.delay(function(){
-                                             toppopup
-                                                 .show()
-                                                 .animate({top:"-70",left:"0"}, 500,function(){
-                                                              toppopup.hide();
-                                                              $.cookie('pc_promo_shown', 1, {domain:'.buildpc.ru', path:'/', expires:1000});
-                                                          });
-                                         }, 10000);
+				 var _hide = function hide(){
+                                     toppopup
+                                         .show()
+                                         .animate({top:"-70",left:"0"}, 
+						  500,function(){
+                                                      toppopup.hide();
+                                                      $.cookie('pc_promo_shown', 1,
+							       {domain:'.buildpc.ru', 
+								path:'/', 
+								expires:1000});
+                                                  });
+                                 };
+				 toppopup.find('.small_reset').click(_hide);
+                                 _.delay(_hide, 10000);
                              });
             },7000);
 }
