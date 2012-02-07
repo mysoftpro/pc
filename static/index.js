@@ -6,7 +6,7 @@ function init(){
     };
 
     var mock = $(document.createElement('div')).css('display','none');
-    $('body').append('mock');
+    $('body').append(mock);
     mock.append('<img src="http://buildpc.ru/static/computer.png"/><img src="http://buildpc.ru/static/binocular.png"/><img src="http://buildpc.ru/static/microscope.png"/>');
 
     var lock = false;
