@@ -986,11 +986,15 @@ class StoreNewDesc(Resource):
     stock_field = 'new_stock'
     
     def finish(self, doc, desc, name, img, warranty, articul, catalogs):
-        doc['description'] = {}
-        doc['description'].update({'comments':desc})
-        doc['description'].update({'name':name})
-        print "eeeeeeeeeeeeeeeeeeeeeeha!"
-        print img
+        descr = doc.get('description',{})
+        descr.update({'comments':desc})
+        descr.update({'name':name})
+
+        imgs = descr.get('imgs',[])
+        if len(img)>0:
+            imgs.insert(0,img)
+        descr['imgs'] = imgs
+        
         # TODO get and store image!
         if len(warranty)>0:
             doc['warranty_type'] = warranty
@@ -1001,10 +1005,6 @@ class StoreNewDesc(Resource):
             doc['price'] = doc[self.price_field]
             doc['stock1'] = doc[self.stock_field]
 
-        if len(img)>0:
-            doc['description'].update({'imgs':[img]})
-        else:
-            doc['description'].update({'imgs':[]})
 
         d = couch.saveDoc(doc)
         if len(img)>0:
