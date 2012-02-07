@@ -618,7 +618,7 @@ function showPromo(){
 
     if (!(document.location.href.split('?')[0].split('/').pop() ==='computer')
         || $.cookie('pc_promo_shown'))return;
-    toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <div style="font-size:12px;margin-top:-10px;"> Спецпредложения в пункте меню "Еще"</div></p><div class="small_square_button small_reset" style="margin-top: -45px;margin-right: 180px;">Закрыть</div>');
+    toppopup.html('<p>Посмотрите наше <a target="_blank" href="/promotion/ajax">Спец предложение</a><br/> Полностью укомплектованный суперсовременный компьютер с установленным Windows, в качестве мультимедийной станции и для игр. <div style="font-size:12px;margin-top:-10px;"> Спецпредложения в пункте меню "Еще"</div></p><div class="small_square_button small_reset" style="margin-top: -45px;margin-right: 150px;">Закрыть</div>');
     _.delay(function(){
                 toppopup
                     .show()
