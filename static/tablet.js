@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 function init(){
-    $('#psu_list li').click(function(e){
+    $('ul.chipVendors li').click(function(e){
 				var target = $(e.target);
 				var tag = target[0].tagName.toLowerCase();
 				if(tag=='span')
@@ -21,7 +21,11 @@ function init(){
 			     e.preventDefault();
 			     var target = $(e.target);
 			     var psu_id = target.parent().attr('id');
-			     var psu = routers[psu_id];
+			     var psu;
+			     if (target.parent().parent().attr('id') == 'routers_list')
+				 psu = routers[psu_id];
+			     else
+				 psu = sds[psu_id];
 			     var power_div = $('#powername');
 			     if (power_div.length==0){
 				 $('#video_top').css('height','75px');

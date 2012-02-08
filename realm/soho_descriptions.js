@@ -3,7 +3,7 @@ _.templateSettings = {
     ,evaluate: /\[\[(.+?)\]\]/g
 };
 
-var desc_template = _.template('<tr id="{{_id}}"><td>{{text}} stock:{{stock}}={{new_stock}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/><a class="hide" href="">x</a></td>');
+var desc_template = _.template('<tr id="{{_id}}"><td>{{text}} stock:{{stock}}={{new_stock}} ${{price}}</td><td><textarea>{{description}}</textarea><input name="name" value="{{name}}"/><input name="img" value="{{img}}"/><input name="warranty" value="{{warranty}}"/><input name="articul" value="{{articul}}"/><input name="catalogs" value=\'{{catalogs}}\'/></td><td><input name="get" type="submit" value="get"/><input name="save" type="submit" value="save"/><a class="hide" href="">x</a></td></tr>');
 
 
 function storeNewDesc(doc){
@@ -62,7 +62,8 @@ function fill(data){
                                                             articul:articul,
                                                             catalogs:catalogs,
                                                             stock:doc['stock1'],
-                                                            new_stock:doc['soh_stock']
+                                                            new_stock:doc['soh_stock'],
+							    price:doc['usd_price'],
                                                         }));
                              $('#'+doc['_id'])
                                  .find('input[name="get"]')

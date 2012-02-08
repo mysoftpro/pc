@@ -112,7 +112,9 @@ digitus_routers = [network,routers,"19931"]
 dlink_routers = [network,routers,"12980"]
 
 
-
+flash = "13710"
+micro_sd = "7407"
+flash_micro_sd = [flash,micro_sd]
 
 mother_to_proc_mapping= [(mother_1155,proc_1155),
                          (mother_1156,proc_1156),
@@ -331,18 +333,27 @@ def fillChoices():
     defs.append(openChoicesView([digitus_routers,dlink_routers,edimax_routers])
                 .addCallback(lambda res: {routers:res}))
 
+    defs.append(openChoicesView([flash_micro_sd])
+                .addCallback(filterSd)
+                .addCallback(lambda res: {micro_sd:res}))
 
-
-    def makeDict(res):
-        new_res = {}
-        for el in res:
-            if el[0]:
-                new_res.update(el[1])
-        globals()['gChoices'] = new_res
-        flatChoices(new_res)
-        return globals()['gChoices']
-    #TODO - this callback to the higher level
     return defer.DeferredList(defs).addCallback(makeDict).addCallback(fillNew)
+
+
+def makeDict(res):
+    new_res = {}
+    for el in res:
+        if el[0]:
+            new_res.update(el[1])
+    globals()['gChoices'] = new_res
+    flatChoices(new_res)
+    return globals()['gChoices']
+
+
+def filterSd(res):
+    res['rows'] = [r for r in res['rows'] if len(r.get('doc',{}).get('description',{}))>0]
+    return res
+    
 
 def fillNew(global_choices):
     def fill(res):
@@ -1529,4 +1540,7 @@ def makeNotePrice(doc):
 class Router(Component):
     pass
 
+
+class Sd(Component):
+    pass
 

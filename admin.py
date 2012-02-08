@@ -662,7 +662,7 @@ class WarrantyFill(Resource):
                       'price':c['ourprice'],
                       'pcs':c['count']}
             record.update({'factory':doc['factory_idses'][code]})
-            record.update({'warranty':c['warranty_type']})
+            record.update({'warranty':c.get('warranty_type','-')})
             res.append(record)
         ob = {'items':res}
         ob.update({'building':model['building']})
