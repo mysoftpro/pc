@@ -818,7 +818,7 @@ class Model(object):
                     if c['_id'].startswith('no'):
                         price = 0
                     else:
-                        price = c['ourprice']*c['count']
+                        price = c['ourprice']*c.get('count',1)
                     components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
                 return lambda code: [c for c in components if c['_id'] == code][0]
             elif self.isPromo:
