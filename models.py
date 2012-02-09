@@ -1071,7 +1071,9 @@ def userFactory(name):
     user.addCallback(lambda some: UserForCart(results))
     return user
 
-
+# TODO! fix fucken cart!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# my cart is broken. it is fixed in fixCookies, but than put to it again - the total counter
+# is broken again
 class UserForCart(object):
     def __init__(self, results):
         """ if has orders - get orders instead appropriate models"""
