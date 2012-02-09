@@ -7,7 +7,7 @@ from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,vide
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
     Tablet as TabletOb, makeNotePrice,Router,\
-    routers as router_catalog, Sd
+    routers as router_catalog, Sd, flash as sds_catalog
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal
@@ -1384,11 +1384,10 @@ class Tablet(PCView):
             img.set('src','/image/'+tab._id+'/'+i+'.jpg')
             additional.insert(0,img)
         uls = additional.findall('ul')
-        self.installRouters(uls[0])
-        self.installSDs(uls[1])
-        self.template.middle.find('script').text += 'var tablet_catalog='+tablet_catalog+';var _id="'\
-            +tab._id+'";'
-
+        bindings = {}
+        self.installRouters(uls[0],bindings)
+        self.installSDs(uls[1],bindings)
+        
 
         price_table = self.template.middle.xpath('//table[@id="videoprice"]')[0]
 	rows = price_table.findall('tr')
@@ -1399,13 +1398,15 @@ class Tablet(PCView):
 		first.find('div').text = tab.description.get('name', "")
 
         self.script.text += 'var _id="'+tab._id+'";var price='+str(tab.makePrice())+';'
-	self.script.text += 'var tablet_catalog='+tablet_catalog+';var router_catalog='+router_catalog+';'
+	self.script.text += 'var tablet_catalog="'+tablet_catalog+'";'            
+        self.script.text+='var bindings='+simplejson.dumps(bindings)+';'
 
 
 
-    def installRouters(self, router_list):
+    def installRouters(self, router_list, bindings):
 	json_routers = {}
-	from pc import models
+	router_list.set('id', router_catalog)        
+        from pc import models
         
         appr_routers = [Router(r['doc']) for r in models.gChoices[models.routers]['rows']]
         
@@ -1433,15 +1434,15 @@ class Tablet(PCView):
 	    li.append(strong)
 	    li.append(span)
 	    router_list.append(li)        
-	self.script.text += 'var routers='+simplejson.dumps(json_routers)+';'
+        bindings.update({router_catalog:json_routers})	
 
 
 
 
-    def installSDs(self, sd_list):
+    def installSDs(self, sd_list,bindings):
 	json_sds = {}
 	from pc import models
-        
+        sd_list.set('id', sds_catalog)
         appr_sds = [Sd(r['doc']) for r in models.gChoices[models.micro_sd]['rows']]
 
 	for sd in sorted(appr_sds, lambda p1,p2: p1.makePrice()-p2.makePrice()):
@@ -1468,7 +1469,7 @@ class Tablet(PCView):
 	    li.append(strong)
 	    li.append(span)
 	    sd_list.append(li)
-	self.script.text += 'var sds='+simplejson.dumps(json_sds)+';'
+        bindings.update({sds_catalog:json_sds})
 
 
 
