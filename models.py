@@ -157,7 +157,7 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
 parts = {mother:0, proc:10, video:20, hdd:30, ram:40,
          case:50, displ:90,
          audio:100, soft:110,
-         kbrd:120, mouse:130, audio:140, psu:150, notes:160, routers:170, tablet:180}
+         kbrd:120, mouse:130, audio:140, psu:150, notes:160, routers:170, tablet:180, micro_sd:190}
 
 parts_names = {proc:u'Процессор', ram:u'Память',
                video:u'Видеокарта', hdd:u'Жесткий диск', case:u'Корпус',
@@ -166,7 +166,7 @@ parts_names = {proc:u'Процессор', ram:u'Память',
                mother:u'Материнская плата',displ:u'Монитор',
                audio:u'Аудиосистема', kbrd:u'Клавиатура', mouse:u'Мышь',
                soft:u'ОС', psu:u'Блок питания', notes:u'Ноутбуки',
-               routers:u'Маршрутизаторы',tablet:u'Планшет'}
+               routers:u'Маршрутизаторы',tablet:u'Планшет',micro_sd:u'SD карты'}
 
 
 parts_aliases = {
@@ -186,7 +186,8 @@ parts_aliases = {
     'psu':psu,
     'notes':notes,
     'router':routers,
-    'tablet':tablet
+    'tablet':tablet,
+    'sdcards':micro_sd
     }
 
 def noComponentFactory(_doc, name, text=u' нет'):

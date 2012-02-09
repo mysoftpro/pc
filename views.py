@@ -7,7 +7,7 @@ from pc.models import model_categories,mouse,kbrd,displ,soft,audio, network,vide
     noComponentFactory,parts, parts_names,mother_to_proc_mapping,INSTALLING_PRICE,BUILD_PRICE,\
     DVD_PRICE,parts_aliases,Course, VideoCard, Psu, video as video_catalog, psu as power_catalog,\
     Tablet as TabletOb, makeNotePrice,Router,\
-    routers as router_catalog, Sd, flash as sds_catalog
+    routers as router_catalog, Sd, micro_sd as sds_catalog
 from copy import deepcopy
 from lxml import etree, html
 from pc.common import forceCond, pcCartTotal

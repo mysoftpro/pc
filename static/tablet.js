@@ -27,6 +27,7 @@ var localCart = {
         var tot = $('#videoprice').find('tr').last();
         var row = $('#cat'+catalog);
         if (row.length==0){
+	    $('#video_top').css('height',$('#video_top').height()+25);
             tot.before('<tr id="cat'+catalog+'"><td></td><td>1 шт</td><td> р.</td></tr>');
             row = tot.prev();
         }
@@ -39,7 +40,7 @@ var localCart = {
                                               if (key==tablet_catalog)return;
                                               total +=	bindings[key][items[key]].price;
                                  });
-        tot.children().last().text(total+' р.');
+        tot.children().last().text(total+' р.');	
     }
 };
 
@@ -61,4 +62,26 @@ var localCart = {
                                                target:{id:'_'+target[0].id}});
                                  });
      $('.videoadd').click(function(e){localCart.addItem(e);});
+         $('#tocart').click(function(){			   
+			   $.ajax({
+				      url:'/saveset',
+				      data:{data:JSON.stringify(localCart.items)},
+				      success:function(data){
+					  if (data=="ok"){
+					      var cart_el = $('#cart');
+					      if (cart_el.length>0){
+						  cart_el.text('Корзина('+$.cookie('pc_cart')+')');
+					      }
+					      else{
+						  $('#main_menu')
+						      .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',{cart:$.cookie('pc_user')}));
+
+					      }
+					      alert('Получилось!');
+					  }
+					  else
+					      alert('Что-то пошло не так =(');
+				      }
+				  });
+		       });
 })();
