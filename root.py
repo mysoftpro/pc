@@ -677,7 +677,7 @@ class FromBlog(Resource):
         if 'faq' in request.getHeader('Referer'):
             proxy = self.faq_proxy
         else:
-            if request.args.get('tags',[None]) is not None:
+            if request.args.get('tags',[None])[0] is not None:
                 proxy = self.tag_proxy
         return proxy.render(request)
 
