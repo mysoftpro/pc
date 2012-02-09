@@ -352,8 +352,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -1183,7 +1183,6 @@ class SaveSet(Resource):
 
     def newUser(self, fail, user_id, jdata, request):
         if type(fail.value) is Error and fail.value.status == 404:
-            print "new user!!!!!!!!!!!!!!!!!!!!!!"
             pass
         else:
             print "_____________________________"

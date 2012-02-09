@@ -1409,9 +1409,10 @@ class Tablet(PCView):
         from pc import models
         
         appr_routers = [Router(r['doc']) for r in models.gChoices[models.routers]['rows']]
-        
+        i = 0
 	for router in sorted(appr_routers, lambda p1,p2: p1.makePrice()-p2.makePrice()):
-
+            if i>5: break
+            i+=1
             price = router.makePrice()
             if price<200:continue
 
