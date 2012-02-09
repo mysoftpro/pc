@@ -740,7 +740,7 @@ class SessionGetter(Resource):
 
 class ClearCache(Resource):
     def render_GET(self, request):
-        clear_cache()
+        clear_cache(request.args.get('choices',[None])[0])
         return "ok"
 
 class UpdatePrices(Resource):
@@ -772,16 +772,15 @@ class ClearAttachments(Resource):
         return "ok"
 
 
-def clear_cache():
-    # globals()['_cached_statics'] = {}
-    # _dir = globals()['static_dir']
-    from pc import root
-    root._cached_statics = {}
-    for f in os.listdir(root.static_dir):
-        try:
-            os.utime(os.path.join(root.static_dir,f), None)
-        except:
-            pass
+def clear_cache(choices_only=None):
+    if choices_only is None:
+        from pc import root
+        root._cached_statics = {}
+        for f in os.listdir(root.static_dir):
+            try:
+                os.utime(os.path.join(root.static_dir,f), None)
+            except:
+                pass    
     from pc import views
     views.no_component_added = False
     from pc import models
