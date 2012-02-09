@@ -114,7 +114,7 @@ function init(){
     
     $('body').append('<span style="display:none"><img src="/image/ajax/sst-ps05b_1.png" style="margin-top:-40px;"></span>');
 
-    var promo_html = '<div id="support"><img style="margin-top:-40px;" align="right" height="200" src="/image/ajax/sst-ps05b_1.png"/><div style="margin-top:55px;"><a href="/promotion/ajax">Специальное предложение!</a><br/>Мультимедийный компьютер на новейшей платформе AMD с монитором и установленным Windows7 за 23900 рублей</div><div style="font-size:11px;line-height:14px;margin-top:-40px;">Все работает "из коробки". Установлены все обновления, антивирус Microsoft Security Essentials. Видеосистема проверена на Modern Warfare 3, WoW Cataclysm и Deus Ex с разрешениями 1920x1024. Гарантия 12 месяцев на все комплектующие. Бесплатная доставка по городу и области.</div></div>';
+    var promo_html = '<div id="support"><div style="background-image:url(/static/vaider.png);height: 220px;padding-left:115px;background-repeat:no-repeat;">Вам предлагают компьютер за 15 тысяч? Наверняка это мощный и <br/>современный компьютер.<div style="background-image:url(/static/vaider1.png);height: 220px;background-repeat:no-repeat;background-position: 200px -0px;padding-top:45px;margin-top:-45px;">Но на самом деле, <br/>серьезные штуки только <br/>начинаются c 15-и тысяч.</div></div> ';
 
     _.delay(function(){
 		banner.find('img').animate({'width':0,'height':0},
@@ -132,8 +132,7 @@ function init(){
 							     });
 					       }
 	       				   });
-	    }, 3000);
-    //_7363_7399_7451 _7363_7396_7607 Celeron
+	    }, 100);
     var core_template = '<div class="cores" title="количество ядер"></div>';
     var proc_video_template = '<div class="mvendors inproc {{proc_cat}}" title="Процессор"></div><div class="mvendors invideo {{video_cat}}" title="Видеокарта"></div><div class="iproc">{{cores}}<div class="pbrand">{{proc_brand}}</div><div title="Кэш процессора" class="cache">{{cache}}</div><div style="clear: both;"></div></div>';
     _($('.modelprice').toArray())

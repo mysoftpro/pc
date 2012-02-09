@@ -138,7 +138,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('computer?cat=admin'))
         root.append(self.buildElement('computer?cat=game'))
 
-        root.append(self.buildElement('/promotion/ajax'))
+        # root.append(self.buildElement('/promotion/ajax'))
 
         for p in posts:
             if p['key'][1] != 'z': continue
