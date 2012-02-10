@@ -2813,4 +2813,6 @@ h1.bold.left{
 .ad:nth-child(2n+1){
     background-color:#333;
 }
-#banner_html{display:none;}
+#bannerhtml{
+    display:none;
+}
