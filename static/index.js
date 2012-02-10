@@ -114,7 +114,7 @@ function init(){
 
     $('body').append('<span style="display:none"><img src="/image/ajax/sst-ps05b_1.png" style="margin-top:-40px;"></span>');
 
-    var promo_html = '<div id="support"><span style="display:block;background-image:url(/static/vaider.png);height: 220px;padding-left:115px;background-repeat:no-repeat;">Вам предлагают компьютер за 15 тысяч? Наверняка это мощный и <br/>современный компьютер.<span style="display:block;opacity:0;background-image:url(/static/vaider1.png);height: 220px;background-repeat:no-repeat;background-position: 200px -0px;padding-top:71px;margin-top:-48px;padding-left:10px">Но на самом деле, <br/> <span>серьезные штуки</span> только <br/>начинаются c 15-ти тысяч. <br/>Посмотрите, из чего<br/> состоит по-настоящему <br/><a href="/computer/render">быстрая машина</a>.</span></span></div>';
+    var promo_html = '';
     var tot =0;
     _.delay(function(){
                 banner.find('img').animate({'width':0,'height':0},
@@ -123,7 +123,7 @@ function init(){
                                                tot+=1;					       
                                                if (tot<4)return;
                                                banner.css('opacity','0');
-                                               banner.html(promo_html);
+                                               banner.html($('#bannerhtml').html());
 					       if ($.browser.msie && $.browser.version<=8)return;
 					       var first_span = banner.find('span').first();
                                                var sec_span =first_span.find('span').first();
