@@ -115,8 +115,7 @@ var expands = {'howtochose':{'urls':[
 			       ],
 			       'lock':undefined
 			      },
-	       'more':{'urls':[
-			   {url:'/promotion/ajax',title:'Спец предложение'},
+	       'more':{'urls':[			   
 			   {url:'/warranty',title:'Гарантии'},
 			   {url:'/support',title:'Поддержка'},
 			   {url:'/blog',title:'Блог'},

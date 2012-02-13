@@ -14,11 +14,11 @@ from used import couch as used_couch
 import simplejson
 from datetime import datetime, date
 from pc.models import\
-    ZipConponents, CatalogsFor,\
+    ZipConponents, CatalogsFor,noChoicesYet, fillChoices,\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
-    UserForSaving,ModelForSaving
+    UserForSaving,ModelForSaving, Note as NoteOb
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet
+   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet,Notes, Note
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -39,6 +39,7 @@ from pc.simple_pages import simplePage, partPage
 from pc.market import PriceForMarket
 from twisted.web.error import Error
 from pc.used import views as used_views, evolve as evolve_used
+from pc.common import forceCond
 
 static_hooks = {
     'promotion.html':promotion,
@@ -92,6 +93,7 @@ class SiteMap(Resource):
         url.append(priority)
         return url
 
+    @forceCond(noChoicesYet, fillChoices)
     def siteMap(self, res, request):
         models = res[0][1]['rows']
         videocards = res[3][1]['rows']
@@ -133,6 +135,11 @@ class SiteMap(Resource):
         root.append(self.buildElement('processor'))
         root.append(self.buildElement('notebook'))
 
+        #zzz
+        from pc import models
+        for row in models.gChoices[notes]['rows']:
+            root.append(self.buildElement('notebook/'+quote_plus(NoteOb(row['doc']).getNoteHash())))
+
         root.append(self.buildElement('computer?cat=home'))
         root.append(self.buildElement('computer?cat=work'))
         root.append(self.buildElement('computer?cat=admin'))
@@ -154,7 +161,7 @@ class SiteMap(Resource):
 
         request.write(etree.tostring(root, encoding='utf-8', xml_declaration=True))
         request.finish()
-
+        
     def render_GET(self, request):
         d = couch.openView(designID, 'models')
         d1 = couch.openView(designID, 'blog')
@@ -352,8 +359,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        if _name is not None and "js" in _name and "min." not in _name:
-            _content = jsmin(_content)
+        # if _name is not None and "js" in _name and "min." not in _name:
+        #     _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -435,9 +442,10 @@ class Root(Resource):
 
         self.putChild('notebook',
                       PCTemplateRenderrer(self.static,
-                                          RootAndChilds(root=HandlerAndName(NoteBooks,
-                                                                            'notebook.html'),
-                                                        childs=None)))
+                                          RootAndChilds(root=HandlerAndName(Notes,
+                                                                            'notes.html'),
+                                                        childs=HandlerAndName(Note,
+                                                                            'note.html'))))
 
         self.putChild('promotion', TemplateRenderrer(self.static, 'promotion.html','promotion.html'))
 

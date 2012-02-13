@@ -222,7 +222,9 @@ class XmlGetter(Resource):
         if doc is None: return
         print "save! " + doc["_id"]
         if 'description' in doc:
-            doc['description'] = description
+            # DO NOT STORE description!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # doc['description'] = description
+            return
         else:
             doc.update({'description':description})
         if 'imgs' not in doc['description']:

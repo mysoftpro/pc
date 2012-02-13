@@ -112,8 +112,6 @@ function init(){
     }
     var banner =$('#greeting_banner');
 
-    $('body').append('<span style="display:none"><img src="/image/ajax/sst-ps05b_1.png" style="margin-top:-40px;"></span>');
-
     var promo_html = '';
     var tot =0;
     _.delay(function(){

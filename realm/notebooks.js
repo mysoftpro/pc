@@ -27,13 +27,15 @@ function makeDescriptionForm(td){
 function saveDoc(e){
     var tr = $(e.target).parent();
     var doc = tr.data('doc');
-    // doc['hdmi'] = parseInt(tr.find('input[name="hdmi"]').val());
-    // doc['dvi'] = parseInt(tr.find('input[name="dvi"]').val());
-    // doc['d-sub'] = parseInt(tr.find('input[name="d-sub"]').val());
     doc['size'] = parseInt(tr.find('input[name="size"]').val());
     doc['performance'] = parseInt(tr.find('input[name="performance"]').val());
+    // doc['proc'] = parseInt(tr.find('input[name="proc"]').val());
+    // doc['proc_vendor'] = parseInt(tr.find('input[name="proc_vendor"]').val());
+    // doc['video'] = parseInt(tr.find('input[name="video"]').val());
+    // doc['ram'] = parseInt(tr.find('input[name="ram"]').val());
+    // doc['hdd'] = parseInt(tr.find('input[name="hdd"]').val());
+    // doc['os'] = parseInt(tr.find('input[name="os"]').val());
     if (tr.data('description')){
-	//console.log(tr.find('textarea').val());
 	doc['description']['comments'] = tr.next().find('textarea').val();
     }    
     $.ajax({
@@ -95,6 +97,27 @@ function fillVideos(data){
             var performance = $(document.createElement('td'));
             performance.append(addInput(doc,'performance'));
 
+	    
+	    // var proc = $(document.createElement('td'));
+            // proc.append(addInput(doc,'proc'));
+
+	    // var proc_vendor = $(document.createElement('td'));
+            // proc_vendor.append(addInput(doc,'proc_vendor'));
+
+	    // var video = $(document.createElement('td'));
+            // video.append(addInput(doc,'video'));
+
+	    // var ram = $(document.createElement('td'));
+            // ram.append(addInput(doc,'ram'));
+
+	    // var hdd = $(document.createElement('td'));
+            // hdd.append(addInput(doc,'hdd'));
+
+
+            // var os = $(document.createElement('td'));
+            // os.append(addInput(doc,'os'));
+
+
             function showdesc(e){
 		var target = $(e.target);
 		var td = target.parent().next().find('td');
@@ -116,6 +139,8 @@ function fillVideos(data){
                 .text('сохранить');
             tr.append(name)
             .append(size).append(performance)
+		//.append(proc).append(proc_vendor).append(video).append(ram).append(hdd)
+		//.append(os)
                 .append(open).append(save);
             tr.data('doc',doc);
             tr1.append(description);
@@ -129,6 +154,7 @@ function fillVideos(data){
 $(function(){
       var table = $('#videotable');
       table.html('<tr><td>name</td><td>size</td><td>performance</td></tr>');
+      //<td>proc</td><td>proc_vendor</td><td>video</td><td>ram</td><td>hdd</td><td>os</td>
       $.ajax({
                  url:'notebooks',
                  success:fillVideos

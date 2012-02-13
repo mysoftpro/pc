@@ -3,37 +3,37 @@
     background-color: #3F3F3F;
 }
 body {
-	margin: 0;
-	padding: 0;
-	font: 14px Arial, Helvetica, sans-serif;
-	color: #DDD;
-	line-height: 22px;
-	background-color: #3F3F3F;
-	margin:0;
-	background-repeat:no-repeat;
-	height:100%;
+        margin: 0;
+        padding: 0;
+        font: 14px Arial, Helvetica, sans-serif;
+        color: #DDD;
+        line-height: 22px;
+        background-color: #3F3F3F;
+        margin:0;
+        background-repeat:no-repeat;
+        height:100%;
 }
 
 img {
-	border: none;
-	outline: none;
+        border: none;
+        outline: none;
 }
 
 a {
-	color:#999;
-	outline: none;
-	text-decoration: underline;
+        color:#999;
+        outline: none;
+        text-decoration: underline;
 }
 a:hover {
-	color: #7b9c0a;
-	text-decoration: underline;
+        color: #7b9c0a;
+        text-decoration: underline;
 }
 h1 a, h2 a, h3 a {
-	color: #999;
-	text-decoration: none;
+        color: #999;
+        text-decoration: none;
 }
 h2 {
-	margin: 8px 0;
+        margin: 8px 0;
 }
 
 
@@ -162,46 +162,46 @@ p {
 
 
 #gradient_background {
-	margin: 0;
-	/* padding: 30px 0 0 0; */
-	width: 100%;
-	text-align: center;
-	background: #202020 url(gradient_background.jpg) center bottom repeat-x;
-	/* min-height:380px; */
+        margin: 0;
+        /* padding: 30px 0 0 0; */
+        width: 100%;
+        text-align: center;
+        background: #202020 url(gradient_background.jpg) center bottom repeat-x;
+        /* min-height:380px; */
 }
 
 
 #container {
-	margin: 0 auto 0 auto;
-	padding: 0;
-	width: 1000px;
-	text-align: left;
-	position: relative;
+        margin: 0 auto 0 auto;
+        padding: 0;
+        width: 1000px;
+        text-align: left;
+        position: relative;
 }
 
 #block-block-2 a {
-	margin: 7px 0 0 40px;
-	width: 300px;
-	height: 22px;
-	float: left;
+        margin: 7px 0 0 40px;
+        width: 300px;
+        height: 22px;
+        float: left;
 }
 
 #extras {
-	margin: 0 auto 0 auto;
-	padding: 0;
-	width: 1000px;
-	text-align: left;
-	margin-top:50px;
+        margin: 0 auto 0 auto;
+        padding: 0;
+        width: 1000px;
+        text-align: left;
+        margin-top:50px;
 }
 
 #footer {
-	margin: 0px auto 0px auto;
-	padding: 0;
-	width: 100%;
-	color: #999;
-	text-align: center;
-	clear:both;
-	background-color: #3f3f3f;
+        margin: 0px auto 0px auto;
+        padding: 0;
+        width: 100%;
+        color: #999;
+        text-align: center;
+        clear:both;
+        background-color: #3f3f3f;
 }
 
 .clear-block:after {
@@ -275,13 +275,13 @@ ul#main_menu {
     float:right;
 }
 ul#main_menu li {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-	float: left;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        float: left;
 }
 ul#main_menu li a {
-	margin: 0 0 0 16px;
+        margin: 0 0 0 16px;
 }
 
 
@@ -1008,25 +1008,25 @@ strong.red{
     -moz-background-size: 40px 40px;
     background-size: 40px 40px;
     background-image: -webkit-gradient(linear, left top, right bottom,
-				       color-stop(.25, rgba(255, 255, 255, .05)), color-stop(.25, transparent),
-				       color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .05)),
-				       color-stop(.75, rgba(255, 255, 255, .05)), color-stop(.75, transparent),
-				       to(transparent));
+                                       color-stop(.25, rgba(255, 255, 255, .05)), color-stop(.25, transparent),
+                                       color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .05)),
+                                       color-stop(.75, rgba(255, 255, 255, .05)), color-stop(.75, transparent),
+                                       to(transparent));
     background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-					      transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-					      transparent 75%, transparent);
+                                              transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+                                              transparent 75%, transparent);
     background-image: -moz-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-					   transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-					   transparent 75%, transparent);
+                                           transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+                                           transparent 75%, transparent);
     background-image: -ms-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-					  transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-					  transparent 75%, transparent);
+                                          transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+                                          transparent 75%, transparent);
     background-image: -o-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-					 transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-					 transparent 75%, transparent);
+                                         transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+                                         transparent 75%, transparent);
     background-image: linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-				      transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-				      transparent 75%, transparent);
+                                      transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+                                      transparent 75%, transparent);
     -moz-box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
     -webkit-box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
     box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
@@ -1064,20 +1064,20 @@ strong.red{
 @-webkit-keyframes animate-bg
 {
     from {
-	background-position: 0 0;
+        background-position: 0 0;
     }
     to {
-	background-position: -80px 0;
+        background-position: -80px 0;
     }
 }
 
 @-moz-keyframes animate-bg
 {
     from {
-	background-position: 0 0;
+        background-position: 0 0;
     }
     to {
-	background-position: -80px 0;
+        background-position: -80px 0;
     }
 }
 
@@ -1660,40 +1660,40 @@ h1.bold.left{
 }
 
 .dragdealer {
-	position: relative;
-	height: 5px;
-	background: #777;
-	width:75px;
-	float:right;
-	margin-right:60px;
-	margin-top:8px;
-	border-radius:3px;
-	-moz-border-radius:3px 3px 3px 3px;
-	-webkit-border-bottom-left-radius:3px;
-	-webkit-border-bottom-right-radius:3px;
-	-webkit-border-top-left-radius:3px;
-	-webkit-border-top-right-radius:3px;
-	border:1px solid #333;
+        position: relative;
+        height: 5px;
+        background: #777;
+        width:75px;
+        float:right;
+        margin-right:60px;
+        margin-top:8px;
+        border-radius:3px;
+        -moz-border-radius:3px 3px 3px 3px;
+        -webkit-border-bottom-left-radius:3px;
+        -webkit-border-bottom-right-radius:3px;
+        -webkit-border-top-left-radius:3px;
+        -webkit-border-top-right-radius:3px;
+        border:1px solid #333;
 }
 
 .dragdealer .handle {
-	position: absolute;
-	cursor: pointer;
+        position: absolute;
+        cursor: pointer;
 }
 .dragdealer .red-bar {
-	width: 8px;
-	height: 20px;
-	background:  #7B9C0A;
-	margin-top:-7px;
-	border-radius:3px;
-	-moz-border-radius:3px 3px 3px 3px;
-	-webkit-border-bottom-left-radius:3px;
-	-webkit-border-bottom-right-radius:3px;
-	-webkit-border-top-left-radius:3px;
-	-webkit-border-top-right-radius:3px;
+        width: 8px;
+        height: 20px;
+        background:  #7B9C0A;
+        margin-top:-7px;
+        border-radius:3px;
+        -moz-border-radius:3px 3px 3px 3px;
+        -webkit-border-bottom-left-radius:3px;
+        -webkit-border-bottom-right-radius:3px;
+        -webkit-border-top-left-radius:3px;
+        -webkit-border-top-right-radius:3px;
 }
 .dragdealer .disabled {
-	background: #898989;
+        background: #898989;
 }
 .dragfiller{
     width:1px;
@@ -2815,4 +2815,41 @@ h1.bold.left{
 }
 #bannerhtml{
     display:none;
+}
+.proc_filter{
+    background-image:url('proc_filter.png');
+    background-repeat:no-repeat;
+    float:left;
+    height:160px;
+    width:180px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:10px;
+}
+.intel_active{
+    background-position:-361px 0px;
+}
+.intel_inactive{
+    background-position:-542px 1px;
+}
+.amd_active{
+    background-position:0px 0px;
+}
+.amd_inactive{
+    background-position:-181px 0px;
+}
+td.note_video{
+    position:absolute;
+}
+.notes{
+    min-height:275px;
+}
+td.note_proc{
+    position:absolute;
+}
+.notes .video_rate{
+    margin-top:-5px;
+}
+.notes .videoicon{
+    margin-top:-5px;
 }

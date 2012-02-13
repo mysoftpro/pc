@@ -227,15 +227,24 @@ def noChoicesYet():
 font_pat_1 = '<font[^>]*>[^<]*</font>'
 font_pat_2 = '<font[^>]*>'
 
-def cleanFlattenChoice(doc):
-    def _pop(name):
-        if 'descriptions' in doc and name in doc['descriptions']:
-            doc['descriptions'].pop(name)
-    _pop('img')
-    _pop('name')
-    _pop('comments')
-    doc['text'] = re.sub(font_pat_1,'',doc['text'])
-    doc['text'] = re.sub(font_pat_2,'',doc['text'])
+
+
+
+
+class Doc(dict):
+    def __init__(self,di,rows):
+        # here is the place, where i can drop some parameters from doc
+        # to reduce memory consumption
+        super(Doc,self).__init__(di)
+        self.parent = rows
+        self.parent_row = [row for row in self.parent if row['doc']==self][0]
+
+    def destroy(self):
+        # pop self from flat choices
+        globals()['gChoices_flatten'].pop(self.get('_id'))
+        # pop self from choices
+        self.parent.pop(self.parent.index(self.parent_row))
+
 
 
 def flatChoices(res):
@@ -244,12 +253,14 @@ def flatChoices(res):
             for el in choices:
                 if el[0]:
                     for ch in el[1][1]['rows']:
-                        cleanFlattenChoice(ch['doc'])
-                        globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+                        doc = Doc(ch['doc'],el[1][1]['rows'])
+                        ch['doc'] = doc
+                        globals()['gChoices_flatten'][ch['doc']['_id']] = doc
+
         else:
             for ch in choices['rows']:
-                cleanFlattenChoice(ch['doc'])
-                globals()['gChoices_flatten'][ch['doc']['_id']] = ch['doc']
+                doc = Doc(ch['doc'],choices['rows'])
+                globals()['gChoices_flatten'][ch['doc']['_id']] = doc
 
 
 
@@ -327,7 +338,7 @@ def fillChoices():
 
     defs.append(openChoicesView([asus_12,asus_14,asus_15,asus_17])
                 .addCallback(lambda res: {notes:res}))
-    
+
     defs.append(openChoicesView([tablets])
                 .addCallback(lambda res: {tablet:res}))
 
@@ -354,7 +365,7 @@ def makeDict(res):
 def filterSd(res):
     res['rows'] = [r for r in res['rows'] if len(r.get('doc',{}).get('description',{}))>0]
     return res
-    
+
 
 def fillNew(global_choices):
     def fill(res):
@@ -362,7 +373,11 @@ def fillNew(global_choices):
             wit_doc = globals()['gChoices_flatten'][row['key']]
             if wit_doc['price']>row['value'][0]:
                 wit_doc['price'] = row['value'][0]
-            wit_doc['stock1'] = row['value'][1]
+            wit_doc['stock1'] += row['value'][1]
+            # important addition !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! zzz ttt
+            if wit_doc['stock1'] == 0 and wit_doc['_id'] == '20502':
+                # pop doc whoth zero stock from all choices
+                wit_doc.destroy()
     d = couch.openView(designID, 'new_map', keys = globals()['gChoices_flatten'].keys())
     d.addCallback(fill)
     d.addCallback(lambda some: global_choices)
@@ -544,14 +559,63 @@ def upgrade_set(template, skin, request):
 
 
 
-class Model(object):
+class Model(dict):
+
+    def __init__(self, model_doc):
+
+        self.model_doc = model_doc
+        self.isOrder = False
+        self.orderComponents = []
+        if self.model_doc.get('_id').startswith('order'):
+            self.orderComponents = self.model_doc['components']
+            self.model_doc = model_doc['model']
+            self.isOrder = True
+        self.components = []
+        self.cat_prices = {}
+        self.component_prices = {}
+        self.total = 0
+        self.case = None
+        super(Model,self).__init__(self.model_doc)
+        self.walkOnComponents()
+
+
+
+    def walkOnComponents(self):
+        self.aliasses_reverted = {}
+        for k,v in parts_aliases.items():
+            self.aliasses_reverted.update({v:k})
+        for cat_name,code in self.get('items',{}).items():
+            count = 1
+            if type(code) is list:
+                count = len(code)
+                code = code[0]
+            component_doc = self.findComponent(cat_name)
+            component = self.componentFactory(component_doc, cat_name)
+            code = component_doc['_id']
+            price = self.makePrice(component_doc)*count
+            self.total += price
+            self.updateCatPrice(cat_name,displ,price)
+            self.updateCatPrice(cat_name,soft,price)
+            self.updateCatPrice(cat_name,audio,price)
+            self.updateCatPrice(cat_name,mouse,price)
+            self.updateCatPrice(cat_name,kbrd,price)
+            self.component_prices[code] = price
+            self.components.append(component)
+            if cat_name == case:
+                self.case = component
+        if self.installing:
+            self.total += INSTALLING_PRICE
+        if self.building:
+            self.total += BUILD_PRICE
+        if self.dvd:
+            self.total += DVD_PRICE
+
 
     def buildProcAndVideo(self):
         proc_video = {}
         for c in self.components:
             if c.cat_name == proc:
                 proc_video['proc_code'] = c._id
-                #zzzzzzz
                 proc_video['proc_catalog'] = c.getCatalogsKey()
                 proc_video['brand'] = c.brand
                 proc_video['cores'] = c.cores
@@ -570,8 +634,17 @@ class Model(object):
         return retval
 
 
-    def get(self, field, default=None):
-        return self.model_doc.get(field, default)
+    # def get(self, field, default=None):
+    #     return self.model_doc.get(field, default)
+
+
+
+    # def __iter__(self):
+    #     for k,v in self.model_doc['items'].items():
+    #         # fucken legacy
+    #         if k == 'tablet_catalog':
+    #             k = tablet
+    #         yield k,v
 
 
     @property
@@ -631,24 +704,17 @@ class Model(object):
     def ourPrice(self):
         return self.get('our_price', False)
 
-    def __iter__(self):
-        for k,v in self.model_doc['items'].items():
-            # fucken legacy
-            if k == 'tablet_catalog':
-                k = tablet
-            yield k,v
-
 
     def getCode(self, cat_name):
         retval = None
-        for k,v in self:
+        for k,v in self.get('items',{}).items():
             if k==cat_name:
                 retval = v
         return retval
 
     def nameForCode(self, code):
         retval = None
-        for _name,_code in self:
+        for _name,_code in self.get('items',{}).items():
             if type(_code) is list and code in _code:
                 retval = _name
                 break
@@ -689,22 +755,8 @@ class Model(object):
     def procCatalogs(self):
         return self.get('proc_catalogs')
 
-    def __init__(self, model_doc):
-        self.model_doc = model_doc
-        self.isOrder = False
-        self.orderComponents = []
-        if self.get('_id').startswith('order'):
-            self.orderComponents = self.model_doc['components']
-            self.model_doc = model_doc['model']
-            self.isOrder = True
-        self.components = []
-        self.cat_prices = {}
-        self.component_prices = {}
-        self.total = 0
-        self.case = None
-        self.walkOnComponents()
 
-    # TODO why do i need that??? grep for method name 
+    # TODO why do i need that??? grep for method name
     def updateCatPrice(self, catalogs, required_catalogs, price):
         if catalogs == required_catalogs:
             self.cat_prices.update({self.aliasses_reverted[required_catalogs]:price})
@@ -714,7 +766,7 @@ class Model(object):
         return self.get('original_prices', {})
 
     @classmethod
-    def getCatalogsKey(cls, doc):        
+    def getCatalogsKey(cls, doc):
         if 'catalogs' not in doc:
             return 'no'
         if type(doc['catalogs'][0]) is dict:
@@ -730,6 +782,7 @@ class Model(object):
         #orders! they prices are fixed
         if 'ourprice' in doc:
             return doc['ourprice']
+
         if doc['price'] == 0:
             return 0
         course = Course
@@ -745,7 +798,7 @@ class Model(object):
                 our_price+=400
             if our_price>20000:
                 our_price+=400
-        elif catalog[1] == notes:        
+        elif catalog[1] == notes:
             our_price = doc['price']*Course+NOTE_MARGIN
         return int(round(our_price/100))*100
 
@@ -762,7 +815,6 @@ class Model(object):
             if code in self.original_prices else 130 #it is good price! about 4000 rubles
         if type(original_price) is dict and 'price' in original_price:
              original_price = original_price['price']
-        # name = nameForCode(code,model)
         name = self.nameForCode(code)
         def sameCatalog(doc):
             retval = True
@@ -845,7 +897,7 @@ class Model(object):
             else:
                 return lambda code: globals()['gChoices_flatten'][code] if code in globals()['gChoices_flatten'] else None
         look_for = lookFor()
-        # code = model['items'][name]
+
         code = self.getCode(cat_name)
         if type(code) is list:
             code = code[0]
@@ -867,12 +919,12 @@ class Model(object):
 
 
     def getComponent(self, catalog):
-        component = None        
+        component = None
         _type = type(catalog)
         for c in self.components:
             cat = c.getCatalogsKey()
             if _type is list:
-                if cat == catalog:                    
+                if cat == catalog:
                     component=c
                     break
             elif _type is str:
@@ -897,8 +949,8 @@ class Model(object):
                 retval = c
                 break
         return retval
-        
-    def componentFactory(self, component_doc, cat_name):        
+
+    def componentFactory(self, component_doc, cat_name):
         catalog = self.getCatalogsKey(component_doc)
         component = Component(component_doc, cat_name)
         if catalog[-1] == tablet:
@@ -912,46 +964,14 @@ class Model(object):
 
 
 
-    def walkOnComponents(self):
-        self.aliasses_reverted = {}
-        for k,v in parts_aliases.items():
-            self.aliasses_reverted.update({v:k})
-        for cat_name,code in self:            
-            count = 1
-            if type(code) is list:
-                count = len(code)
-                code = code[0]
-            component_doc = self.findComponent(cat_name)
-            component = self.componentFactory(component_doc, cat_name)
-            code = component_doc['_id']
-            price = self.makePrice(component_doc)*count
-            self.total += price
-            self.updateCatPrice(cat_name,displ,price)
-            self.updateCatPrice(cat_name,soft,price)
-            self.updateCatPrice(cat_name,audio,price)
-            self.updateCatPrice(cat_name,mouse,price)
-            self.updateCatPrice(cat_name,kbrd,price)
-            self.component_prices[code] = price
-            self.components.append(component)
-            if cat_name == case:
-                self.case = component
 
-        if self.installing:
-            self.total += INSTALLING_PRICE
-        if self.building:
-            self.total += BUILD_PRICE
-        if self.dvd:
-            self.total += DVD_PRICE
-
-
-
-class Component(object):
+class Component(dict):
 
     def __init__(self, component_doc, cat_name=None):
         self.component_doc = component_doc
         self._cat_name = cat_name
         self._price = None
-
+        super(Component,self).__init__(component_doc)
 
     def getComponentIcon(self, default = "/static/icon.png"):
         retval = default
@@ -970,12 +990,12 @@ class Component(object):
             self._cat_name = self.getCatalogsKey()[1]
         return self._cat_name
 
-    def get(self, field, default=None):
-        return self.component_doc.get(field, default)
+    # def get(self, field, default=None):
+    #     return self.component_doc.get(field, default)
 
-    def __iter__(self):
-        for k,v in self.component_doc.items():
-            yield k,v
+    # def __iter__(self):
+    #     for k,v in self.component_doc.items():
+    #         yield k,v
 
     @property
     def _id(self):
@@ -1267,11 +1287,86 @@ class Note(Component):
     def url(self):
         return '/notebook'
 
+    def getNoteBookName(self):
+        if 'nname' in self:
+            return self['nname']
+
+        text = self.get('text','')
+        found = re.findall('[sSuU]+([a-zA-Z0-9 ]+)[ ][0-9\,\.0-9"]+[ ]',text)
+        _text = None
+        if len(found)>0:
+            _text = found[0].strip()
+        else:
+            _text = text[0:text.index('"')]
+            _text = _text.replace(u'Ноутбук ASUS','').replace(u'Ноутбук Asus','')
+        return _text
+
+    def getNoteHash(self):
+        retval = self.get('text','').replace(u"®","").replace(u"™","").lower()\
+            .replace(u'ноутбук ','')\
+            .replace(' ','-')\
+            .replace('/','-')
+        print len(self.get('text',''))
+        print retval
+        return retval
+
+    @property
+    def rate(self):
+        return self.get('rate',3)
+
+    @property
+    def procVendor(self):
+        retval = 'Intel'
+        if 'AMD' in self.get('text',''):
+            retval = 'AMD'
+        return retval
+
+
+    def __init__(self, *args,**kwargs):        
+        # Ноутбук ASUS X54C 15.6" HD, B800/2Gb/320Gb/ Intel HD 3000/DVD-RW/WLAN/Cam/DOS20417 $420
+        super(Note,self).__init__(*args,**kwargs)
+        self.slashes = self.get('text','').split('/')
+        if 'Core' in self.slashes[0] and 'AMD' not in self.slashes[0]:
+            self.slashes[0] = 'Core '+self.slashes[0].split('Core')[1]
+        else:
+            self.slashes[0] = self.slashes[0].split(' ')[-1]
+        
+    @property
+    def proc(self):
+        return self.slashes[0]
+
+    @property
+    def ram(self):
+        return self.slashes[1]
+
+    @property
+    def hdd(self):
+        return self.slashes[2]
+
+    @property
+    def video(self):
+        return self.slashes[3]
+
+    @property
+    def os(self):
+        return self.slashes[-1]
+
+
+    @property
+    def display_size(self):        
+        return self.text.split("\"")[0].split(" ")[-1]+'"'
+
+    @property
+    def youtube(self):
+        return self.get('youtube','')
+    
+
+
 class Notebook(Model):
 
     @property
     def name(self):
-        return u'Ноутбук'    
+        return u'Ноутбук'
 
 
 
@@ -1282,7 +1377,7 @@ class Set(Model):
 
 
 # TODO! common class for couch docs
-class UserForCredit(object):
+class UserForCredit(dict):
 
     class CreditData(object):
         def __init__(self, order_id, data, file_names, attachments,deleted_files, parent):
@@ -1297,16 +1392,8 @@ class UserForCredit(object):
 
     def __init__(self, user_doc):
         self.user_doc = user_doc
+        super(UserForCredit,self).__init__(user_doc)
 
-
-
-
-    def get(self, field, default=None):
-        return self.user_doc.get(field, default)
-
-    def __iter__(self):
-        for k,v in self.user_doc.items():
-            yield k,v
 
     @property
     def _id(self):
@@ -1393,7 +1480,7 @@ class UserForSaving(object):
     def makeNewUser(cls, user_id=None):
         if user_id is None:
             user_id = base36.gen_id()
-        pc_key = base36.gen_id()        
+        pc_key = base36.gen_id()
         if pc_key == user_id:
             pc_key = user_id+str(randint(0,10))
         return {'_id':user_id, 'pc_key':pc_key}
@@ -1497,7 +1584,7 @@ class Tablet(Component):
     @property
     def vendor(self):
         return self.get('vendor','')
-    
+
     @property
     def model(self):
         return self.get('model','')
@@ -1546,4 +1633,3 @@ class Router(Component):
 
 class Sd(Component):
     pass
-
