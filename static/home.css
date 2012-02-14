@@ -2819,3 +2819,40 @@ h1.bold.left{
     margin-right:50px;
 }
 #bannerhtml{display:none;}
+.proc_filter{
+    background-image:url('proc_filter.png');
+    background-repeat:no-repeat;
+    float:left;
+    height:160px;
+    width:180px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:10px;
+}
+.intel_active{
+    background-position:-361px 0px;
+}
+.intel_inactive{
+    background-position:-542px 1px;
+}
+.amd_active{
+    background-position:0px 0px;
+}
+.amd_inactive{
+    background-position:-181px 0px;
+}
+td.note_video{
+    position:absolute;
+}
+.notes{
+    min-height:275px;
+}
+td.note_proc{
+    position:absolute;
+}
+.notes .video_rate{
+    margin-top:-5px;
+}
+.notes .videoicon{
+    margin-top:-5px;
+}
