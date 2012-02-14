@@ -7,9 +7,7 @@ function makeDescriptionForm(td){
 	.next()
 	.click(function (){
 		   var doc_holder = td.parent().prev();
-		   var doc = doc_holder.data('doc');
-		   console.log('before');
-		   console.log(doc['_rev']);
+		   var doc = doc_holder.data('doc');		   
 		   $.ajax({
 			      url:'store_description',
 			      data:{'_id':doc._id,
@@ -92,7 +90,8 @@ function fillVideos(data){
                                            });;
         for (var j=0;j<rows.length;j++){
             var doc = rows[j]['doc'];
-            var tr = $(document.createElement('tr'));
+            if (!doc['stock1'])continue;
+	    var tr = $(document.createElement('tr'));
             var tr1 = $(document.createElement('tr'));
             var name = $(document.createElement('td'));
             name.html(doc['text'] + '<strong>' + doc['_id'] + '</strong> $'+doc.price);
