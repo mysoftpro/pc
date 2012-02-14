@@ -1623,6 +1623,9 @@ class Note(Tablet):
             container.append(el)
         br = etree.Element('br')
         container.append(br)
+        # h3 = etree.Element('h3')
+        # h3.text = u'Автоматический перевод'
+        # container.append(h3)
 
         for el in html.fragments_fromstring(note.description.get('comments','')):
             if type(el) is unicode or type(el) is str:
