@@ -683,10 +683,11 @@ class NewTarget(object):
         deleted = []
         for row in res['rows']:
             if 'doc' in row and row['doc']['_id'] not in ids:
-                row['doc']['stock1'] = 0
-                row['doc']['new_stock'] = 0
-                deleted.append(row['doc']['_id'])
-                couch.saveDoc(row['doc'])
+                if not row['doc']['stock1'] ==0 or not row['doc']['new_stock'] == 0:
+                    row['doc']['stock1'] = 0
+                    row['doc']['new_stock'] = 0
+                    deleted.append(row['doc']['_id'])
+                    couch.saveDoc(row['doc'])
         return ','.join(deleted)
 
     def cleanNewDocs(self, li, external_id):
