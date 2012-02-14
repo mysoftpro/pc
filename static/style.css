@@ -2853,3 +2853,16 @@ td.note_proc{
 .notes .videoicon{
     margin-top:-5px;
 }
+.spec {
+    position: relative;
+    top: -185px;
+    font-size: 16px;
+    width: 70px;
+    left: 99px;
+    background-image: url('price_tag_small.png');
+    background-repeat: no-repeat;
+    background-position: 5px 12px;
+    padding: 20px;
+    color: white;
+    font-weight: bold;
+}

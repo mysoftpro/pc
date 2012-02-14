@@ -1565,7 +1565,7 @@ class Notes(PCView):
             if note.get('old_price',False):
 	        spec = etree.Element('div')
 	        spec.set('class','spec')
-	        spec.text = u'Специальная цена!'
+	        spec.text = u'Спец цена!'
 	        star_container.append(spec)
 	    for el in viewlet:
 		chip_div.append(el)
