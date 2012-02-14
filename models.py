@@ -260,6 +260,7 @@ def flatChoices(res):
 	else:
 	    for ch in choices['rows']:
 		doc = Doc(ch['doc'],choices['rows'])
+                ch['doc'] = doc
 		globals()['gChoices_flatten'][ch['doc']['_id']] = doc
 
 
@@ -377,6 +378,7 @@ def fillNew(global_choices):
 		cats = Model.getCatalogsKey(wit_doc)
 		if  cats == asus_12 or cats==asus_14 or cats==asus_15 or cats==asus_17:
 		    wit_doc.update({'old_price':wit_doc['price']})
+                    
 	    wit_doc['stock1'] += row['value'][1]
 	    if wit_doc['stock1'] == 0:
 		# pop doc whoth zero stock from all choices
@@ -1286,6 +1288,7 @@ class Psu(Component):
 
 
 class Note(Component):
+
     @property
     def url(self):
 	return '/notebook'
@@ -1331,6 +1334,7 @@ class Note(Component):
 	    self.slashes[0] = 'Core '+self.slashes[0].split('Core')[1]
 	else:
 	    self.slashes[0] = self.slashes[0].split(' ')[-1]
+
 
     @property
     def proc(self):
