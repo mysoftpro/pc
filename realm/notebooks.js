@@ -29,7 +29,7 @@ function saveDoc(e){
     var doc = tr.data('doc');
     doc['size'] = parseInt(tr.find('input[name="size"]').val());
     doc['performance'] = parseInt(tr.find('input[name="performance"]').val());
-    // doc['proc'] = parseInt(tr.find('input[name="proc"]').val());
+    doc['youtube'] = tr.find('input[name="youtube"]').val();
     // doc['proc_vendor'] = parseInt(tr.find('input[name="proc_vendor"]').val());
     // doc['video'] = parseInt(tr.find('input[name="video"]').val());
     // doc['ram'] = parseInt(tr.find('input[name="ram"]').val());
@@ -96,26 +96,10 @@ function fillVideos(data){
 
             var performance = $(document.createElement('td'));
             performance.append(addInput(doc,'performance'));
-
 	    
-	    // var proc = $(document.createElement('td'));
-            // proc.append(addInput(doc,'proc'));
+	    var youtube = $(document.createElement('td'));
+            youtube.append(addInput(doc,'youtube'));
 
-	    // var proc_vendor = $(document.createElement('td'));
-            // proc_vendor.append(addInput(doc,'proc_vendor'));
-
-	    // var video = $(document.createElement('td'));
-            // video.append(addInput(doc,'video'));
-
-	    // var ram = $(document.createElement('td'));
-            // ram.append(addInput(doc,'ram'));
-
-	    // var hdd = $(document.createElement('td'));
-            // hdd.append(addInput(doc,'hdd'));
-
-
-            // var os = $(document.createElement('td'));
-            // os.append(addInput(doc,'os'));
 
 
             function showdesc(e){
@@ -139,7 +123,8 @@ function fillVideos(data){
                 .text('сохранить');
             tr.append(name)
             .append(size).append(performance)
-		//.append(proc).append(proc_vendor).append(video).append(ram).append(hdd)
+		.append(youtube)
+	        //.append(proc_vendor).append(video).append(ram).append(hdd)
 		//.append(os)
                 .append(open).append(save);
             tr.data('doc',doc);
@@ -153,8 +138,8 @@ function fillVideos(data){
 
 $(function(){
       var table = $('#videotable');
-      table.html('<tr><td>name</td><td>size</td><td>performance</td></tr>');
-      //<td>proc</td><td>proc_vendor</td><td>video</td><td>ram</td><td>hdd</td><td>os</td>
+      table.html('<tr><td>name</td><td>size</td><td>performance</td><td>youtube</td></tr>');
+      //<td>proc_vendor</td><td>video</td><td>ram</td><td>hdd</td><td>os</td>
       $.ajax({
                  url:'notebooks',
                  success:fillVideos
