@@ -863,6 +863,20 @@ class WitForMapping(Resource):
                                'catalogs',
                                include_docs=True, key=models.radeon, stale=False),         
                 ])
+        elif key == 'notebooks':
+            asus_12 = ["7362","7404","7586"]
+            asus_14 = ["7362","7404","7495"]
+            asus_15 = ["7362","7404","7468"]
+            asus_17 = ["7362","7404","7704"]
+            d = defer.DeferredList([couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                                               key = asus_12),
+                                    couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                                               key = asus_14),
+                                    couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                                                   key = asus_15),
+                                    couch.openView(designID,'catalogs',include_docs=True,stale=False,
+                                               key = asus_17),
+                                                   ])
         d.addCallback(self.finish, request)
 
         return NOT_DONE_YET

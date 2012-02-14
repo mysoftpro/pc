@@ -258,7 +258,7 @@ class SetInCart(ModelInCart):
 
 
 class NotebookInCart(SetInCart):
-
+    """ Legacy. no it is Set, not notebook!"""
 
     def set_price(self):
         price_span = self.model_div.find('.//span')
@@ -1141,6 +1141,7 @@ def getNotePerformance(doc):
 
 
 class NoteBooks(PCView):
+    """ Legacy! now Note view used instead"""
     def renderNotebooks(self, result):
         json_notebooks= {}
         for r in result['rows']:
@@ -1560,8 +1561,12 @@ class Notes(PCView):
                 d = etree.Element('div')
                 d.set('class', 'video_rate')
                 star_container.append(d)
-                rate-=1
-
+                rate-=1                        
+            # if note.get('old_price',False):
+            #     spec = etree.Element('div')
+            #     spec.set('class','spec')
+            #     spec.text = u'Специальная цена!'
+            #     star_container.append(spec)
             for el in viewlet:
                 chip_div.append(el)
 
@@ -1623,10 +1628,7 @@ class Note(Tablet):
             container.append(el)
         br = etree.Element('br')
         container.append(br)
-        # h3 = etree.Element('h3')
-        # h3.text = u'Автоматический перевод'
-        # container.append(h3)
-
+        # ttt!
         for el in html.fragments_fromstring(note.description.get('comments','')):
             if type(el) is unicode or type(el) is str:
                 if container[-1].tail is None:

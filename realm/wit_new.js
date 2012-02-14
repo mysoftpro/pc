@@ -29,7 +29,7 @@ function fillWit(data){
 }
 function fillNew(data){
     var tr = $('#unique_new').find('tr').first().next();
-    _(data['rows']).each(function(row){			     
+    _(data['rows']).each(function(row){
 			     if (row['doc']['map_to_wi']){
 				 var _id = row['doc']['_id'];
 				 news_for_wit[_id] = row['doc'];
@@ -40,6 +40,9 @@ function fillNew(data){
 			     td.text(row['doc']['text']+' '+row['doc']['_id']+' $'+row['doc']['us_price']);
 			     if (row['doc']['catalogs'])
 				 td.css('color','green');
+			     if (!row['doc']['stock1'] && !row['doc']['new_stock'])
+				 td.css('color','blue');
+
 			     tr = tr.next();
 			 });
     dones+=1;
@@ -203,7 +206,7 @@ $(function(){
       // for (var i=0;i<500;i++){
       // 	  tr.parent().append(tr.clone());
       // }
-      
+
       $.ajax({
 		 url:'wit_for_mapping'+document.location.search,
 		 success:fillWit
