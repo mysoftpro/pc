@@ -203,12 +203,13 @@ $(function(){
       // for (var i=0;i<500;i++){
       // 	  tr.parent().append(tr.clone());
       // }
+      
       $.ajax({
-		 url:'wit_for_mapping',
+		 url:'wit_for_mapping'+document.location.search,
 		 success:fillWit
 	     });
       $.ajax({
-		 url:'new_for_mapping',
+		 url:'new_for_mapping'+document.location.search,
 		 success:fillNew
 	     });
 

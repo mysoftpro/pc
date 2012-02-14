@@ -794,17 +794,13 @@ def clear_cache(choices_only=None):
 
 class NewForMapping(Resource):
     def finish(self, res, request):
-        new_res = {'rows':[]}
-        for r in res['rows']:
-            if r['doc']['new_catalogs'] not in ['videos', 'procs', 'mothers']:
-                continue
-            new_res['rows'].append(r)
-        request.write(simplejson.dumps(new_res))
+        request.write(simplejson.dumps(res))
         request.finish()
 
     @MIMETypeJSON
     def render_GET(self, request):
-        d = couch.openView(designID, 'new_components', include_docs=True)
+        key = request.args.get('key',[None])[0]
+        d = couch.openView(designID, 'new_catalogs', include_docs=True, key=key)
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
@@ -817,56 +813,57 @@ class WitForMapping(Resource):
     @MIMETypeJSON
     def render_GET(self, request):
         import models
-        defer.DeferredList([
-                couch.openView(designID,
-                               'catalogs',
-                               include_docs=True, key=models.mother_1155, stale=False),
-                # .addCallback(lambda res: ("LGA1155",res)),
-                couch.openView(designID,
-                               'catalogs',
-                               include_docs=True, key=models.mother_1156, stale=False),
-                # .addCallback(lambda res: ("LGA1166",res)),
-                couch.openView(designID,
-                               'catalogs',
-                               include_docs=True, key=models.mother_775, stale=False),
-                # .addCallback(lambda res: ("LGA775",res)),
-                couch.openView(designID,
-                               'catalogs',
-                               include_docs=True, key=models.mother_am23, stale=False),
-                # .addCallback(lambda res: ("AM2 3",res)),
-                couch.openView(designID,
-                               'catalogs',
-                               include_docs=True, key=models.mother_fm1, stale=False),
-                # .addCallback(lambda res: ("FM1",res))
-
+        d = None
+        key = request.args.get('key',None)[0]
+        if key == 'mothers':
+            d = defer.DeferredList([
+                    couch.openView(designID,
+                                   'catalogs',
+                                   include_docs=True, key=models.mother_1155, stale=False),
+                    couch.openView(designID,
+                                   'catalogs',
+                                   include_docs=True, key=models.mother_1156, stale=False),
+                    couch.openView(designID,
+                                   'catalogs',
+                                   include_docs=True, key=models.mother_775, stale=False),
+                    couch.openView(designID,
+                                   'catalogs',
+                                   include_docs=True, key=models.mother_am23, stale=False),
+                    couch.openView(designID,
+                                   'catalogs',
+                                   include_docs=True, key=models.mother_fm1, stale=False),
+                    ])
+        elif key=='procs':
+            d = defer.DeferredList([
                 couch.openView(designID,
                                "catalogs",
                                include_docs=True,key=models.proc_1155, stale=False),
-                #.addCallback(lambda res:('LGA1155',res)),
+
                 couch.openView(designID,
                                'catalogs',
                                include_docs=True,key=models.proc_1156, stale=False),
                 couch.openView(designID,
                                'catalogs',
                                include_docs=True,key=models.proc_am23, stale=False),
-                #.addCallback(lambda res:('AM2 3',res)),
+
                 couch.openView(designID,
                                'catalogs',
                                include_docs=True,key=models.proc_775, stale=False),
-                #.addCallback(lambda res:('LGA755',res)),
+
                 couch.openView(designID,
                                'catalogs',
                                include_docs=True, key=models.proc_fm1, stale=False),
-                #.addCallback(lambda res: ("FM1",res))
+                ])
+        elif key=='videos':
+            d = defer.DeferredList([
                 couch.openView(designID,
                                'catalogs',
                                include_docs=True, key=models.geforce, stale=False),
-                # .addCallback(lambda res: ("GeForce",res)),
                 couch.openView(designID,
                                'catalogs',
-                               include_docs=True, key=models.radeon, stale=False),
-                # .addCallback(lambda res: ("Radeon",res)),
-                ]).addCallback(self.finish, request)
+                               include_docs=True, key=models.radeon, stale=False),         
+                ])
+        d.addCallback(self.finish, request)
 
         return NOT_DONE_YET
 
