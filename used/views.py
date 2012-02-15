@@ -30,9 +30,10 @@ def installgWords(res):
 
 
 class Used(PCView):
-
     items_on_page = 20
-
+    title = u'Бывшие в употреблении'
+    tag = None
+    skip = 0
     def renderAds(self, li_res):
         viewlet = self.tree.find('ad').find('div')
         container = self.template.middle.find('div')
@@ -69,26 +70,20 @@ class Used(PCView):
         pager_links = self.template.middle.xpath('div[@id="used_pager"]')[0].findall('a')
         next = pager_links[-1]
 
-        skip = self.request.args.get('skip',['0'])[0]
-        try:
-            skip = int(skip)
-        except:
-            skip = 0
-        next.set('href','?skip='+str(skip+self.items_on_page))
-        tag = self.request.args.get('tag',[None])[0]
         
-        if tag is not None:
-            next.set('href',unicode(next.get('href'))+u'&tag='+unicode(tag, 'utf-8'))
-        if skip > 0:
+        next.set('href','?skip='+str(self.skip+self.items_on_page))
+        
+        if self.tag is not None:
+            next.set('href',unicode(next.get('href'))+u'&tag='+self.tag)
+        if self.skip > 0:
             previous_link = pager_links[0]
             previous_link.text = u'<< назад'
-            previous_link.set('href','?skip='+str(skip-self.items_on_page))
-            if tag is not None:
+            previous_link.set('href','?skip='+str(self.skip-self.items_on_page))
+            if self.tag is not None:
                 previous_link.set('href',
-                                  unicode(previous_link.get('href'))+u'&tag='+unicode(tag,'utf-8'))
+                                  unicode(previous_link.get('href'))+u'&tag='+self.tag)
         if len(res['rows'])<self.items_on_page:
             next.getparent().remove(next)
-
 
         tag_res = li_res[1][1]
         tag_container = self.template.top.xpath('div[@id="used_tags"]')[0]
@@ -99,32 +94,31 @@ class Used(PCView):
             a.text = row['key']+'-'+str(row['value'])
             tag_container.append(a)
 
-    def analyze(self, res):
-        for row in sorted(res['rows'], lambda row1,row2:row2['value']-row1['value']):
-            if row['value'] <10:break
-            print row['key'].encode('utf-8')+'-'+str(row['value'])
 
     def preRender(self):
         today = date.today()
         key = [str(today.year),addSym(today.month),addSym(today.day)+'a']
         skip = self.request.args.get('skip',[0])[0]
         try:
-            skip = int(skip)
+            self.skip = int(skip)
         except:
-            skip=0
+            pass
         stale = not bool(self.request.args.get('stale',[''])[0])
         if not stale:
             globals()['gWords'] = None
         tag = self.request.args.get('tag',[None])[0]
         d = None
         if tag is None:
+            self.title+=u' компьютеры и комплектующие'
             d = couch.openView(designID, 'fetch',startkey=key,descending=True, limit=self.items_on_page,
-                          include_docs=True, skip=skip, stale=stale)
+                          include_docs=True, skip=self.skip, stale=stale)
         else:
+            self.tag = unicode(tag, 'utf-8')
+            self.title=u'Бывший в употреблении '+self.tag
             d = couch.openView(designID, 'words',
-                               key=tag, reduce=False,
+                               key=self.tag, reduce=False,
                                stale=not bool(stale),
-                               include_docs=True,limit=self.items_on_page,skip=skip)
+                               include_docs=True,limit=self.items_on_page,skip=self.skip)
         if globals()['gWords'] is None:            
             d1 = couch.openView(designID, 'words',reduce=True, group=True, stale=stale)
             d1.addCallback(installgWords)

@@ -2917,3 +2917,19 @@ td.note_proc{
 .ad:nth-child(2n+1){
     background-color:#dddddd;
 }
+#used_pager {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    text-align: right;
+    font-size: 22px;
+    padding: 20px 20px 20px 0px;
+}
+#used_tags{
+    position:absolute;
+    top:200px;
+    left:-165px;
+}
+#used_tags a{
+    display:block;
+}

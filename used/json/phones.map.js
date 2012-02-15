@@ -1,9 +1,9 @@
-function(doc) {
+function(doc){
     if (doc.phone &&
-	(doc.phone !== '') &&
-        (doc.phone !== '89022506126' &&
-	 doc.phone !== '+79210095968'&&
-	doc.phone !== '76-10-24'&&
+	doc.phone !== '' &&
+	doc.phone !== '89022506126' &&
+	doc.phone !== '+79210095968' &&
+	doc.phone !== '76-10-24' &&
 	doc.phone !== '8-911-471-66-31' &&
 	doc.phone !== '89097800424'&&
 	doc.phone !== '89114526397'&&
@@ -24,11 +24,7 @@ function(doc) {
 	doc.phone !== '777-456'&&
 	doc.phone !== '56-32-65'&&
 	doc.phone !== 'Интернет-магазин http://max-price.ru/Отправить e-mail'
-	) &&
-	doc.phone.match(/\d+/g) &&
-        doc.price && doc.price !=='' &&
-        doc.date  &&
-        doc.subj){
-        emit(doc.date.concat(doc['_id']));
+       ){
+	emit(doc['phone']);
     }
 }
