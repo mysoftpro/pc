@@ -2776,6 +2776,8 @@ h1.bold.left{
 .ad_subject{
     font-size:22px;
     line-height:26px;
+    max-width: 760px;
+    padding: 5px 0px 5px 0px;
 }
 .ad_body{
     float:left;

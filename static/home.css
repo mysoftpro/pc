@@ -2869,3 +2869,51 @@ td.note_proc{
     color: white;
     font-weight: bold;
 }
+.ad{
+    padding:20px;
+}
+.ad_subject{
+    font-size:22px;
+    line-height:26px;
+    max-width: 760px;
+    padding: 5px 0px 5px 0px;
+}
+.ad_body{
+    float:left;
+    width:80%;
+    overflow: hidden;
+}
+.ad_meta{
+    float:right;
+    width:20%;
+}
+.ad_price{
+    font-size:20px;
+    margin-left:auto;
+    margin-right:auto;
+    width:88%;
+    color:black;
+}
+.ad_date{
+    margin:5px auto 0 auto;
+    width:50%;
+}
+.ad_phone{
+    clear:both;
+    font-size:18px;
+    color:black;
+}
+.faqtags{
+    float:left;
+}
+.faqtags a{
+    margin-left:5px;
+    color:black;
+}
+
+.ad:nth-child(2n){
+    background-color:#ededed;
+}
+.ad:nth-child(2n+1){
+    background-color:#dddddd;
+}
