@@ -30,4 +30,50 @@
 					  }
 					  el.text(real_phone);
 				      });
+
+     var price_text = 'цена';
+     var phone_text = 'телефон';
+     var subj_text = 'Напишите здесь заголовок Вашего объявления';
+     var area_text = 'Напишите здесь текст Вашего объявления';
+     
+     var form = $('#faq_top');
+     var phone = form.find('input[name="phone"]');
+     var price = form.find('input[name="price"]');
+     var area =  form.find('textarea');
+     var subj =  form.find('input[name="subj"]');
+     phone.click(function(e){
+		    var t = $(e.target);
+		    if (t.val()==phone_text)
+			t.val('');
+		});
+     
+     price.click(function(e){
+		    var t = $(e.target);
+		    if (t.val()==price_text)
+			t.val('');
+		});
+     
+     area.click(function(e){
+		    var t = $(e.target);
+		    if (t.val()==area_text)
+			t.val('');
+		});
+     subj.click(function(e){
+		    var t = $(e.target);
+		    if (t.val()==subj_text)
+			t.val('');
+		});
+     form.find('.sendfaq').click(function(e){
+				     $.ajax({
+						url:'/storeUsed',
+						data:{'price':price.val(),
+						      'phone':phone.val(),
+						      'text':area.val(),
+						      'subj':subj.val()
+						     },
+						success:function(data){
+						    alert('Получилось! Ваше объявление скоро появится здесь.');
+						}
+					    });
+				 });
 }());

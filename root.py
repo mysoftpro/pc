@@ -359,8 +359,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -552,6 +552,8 @@ class Root(Resource):
         self.putChild('evolve_used',EvolveUsed())
         self.putChild('update_maximus',UpdateMaximus())
         self.putChild('update_soho',UpdateSoho())
+        self.putChild('storeUsed',StoreUsed())
+        
 
     def getChild(self, name, request):
         # self.checkCookie(request)
@@ -1441,3 +1443,24 @@ class UpdateSoho(Resource):
     def render_GET(self, request):
         soho()
         return "ok"
+
+class StoreUsed(Resource):
+    def notify(self, res):
+        return send_email('inbox@buildpc.ru',
+                   u'Частное объявление',
+                   res['id'],
+                   sender=u'Компьютерный магазин <admin@buildpc.ru>')
+    def render_GET(self, request):
+        price = request.args.get('price',[None])[0]
+        phone = request.args.get('phone',[None])[0]
+        text = request.args.get('text',[None])[0]
+        subj = request.args.get('subj',[None])[0]
+        author = request.getCookie('pc_user')
+        if price is None or phone is None or text is None or author is None or subj is None:
+            return "fail"
+        doc = {'category':None, 'dep':'pc','params':'','external_id':base36.gen_id(),
+               'phone':phone,'price':price,'src':'bui','subj':subj,'text':'text','week':True}
+        d = used_couch.couch.saveDoc(doc)
+        d.addCallback(self.notify)
+        return "ok"
+        
