@@ -2882,7 +2882,7 @@ td.note_proc{
 #used_tags{
     position:absolute;
     top:125px;
-    left:-165px;
+    left:-125px;
 }
 #used_tags a{
     display:block;
