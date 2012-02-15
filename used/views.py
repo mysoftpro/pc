@@ -18,8 +18,21 @@ def addSym(number):
     return stri
 
 
+gWords = None
+
+
+def installgWords(res):
+    globals()['gWords'] = res
+    return res
+
+
+
+
 
 class Used(PCView):
+
+    items_on_page = 20
+
     def renderAds(self, li_res):
         viewlet = self.tree.find('ad').find('div')
         container = self.template.middle.find('div')
@@ -55,26 +68,26 @@ class Used(PCView):
             container.append(view)
         pager_links = self.template.middle.xpath('div[@id="used_pager"]')[0].findall('a')
         next = pager_links[-1]
+
         skip = self.request.args.get('skip',['0'])[0]
         try:
             skip = int(skip)
         except:
             skip = 0
-        next.set('href','?skip='+str(skip+50))
+        next.set('href','?skip='+str(skip+self.items_on_page))
         tag = self.request.args.get('tag',[None])[0]
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print tag
-        print [next.get('href')+'&tag='+tag]
+        
         if tag is not None:
-            print "yooooooooooooooooooooo"
-            print next.get('href')
             next.set('href',unicode(next.get('href'))+u'&tag='+unicode(tag, 'utf-8'))
         if skip > 0:
             previous_link = pager_links[0]
             previous_link.text = u'<< назад'
-            previous_link.set('href','?skip='+str(skip-50))
+            previous_link.set('href','?skip='+str(skip-self.items_on_page))
             if tag is not None:
-                previous_link.set('href',unicode(previous_link.get('href'))+u'&tag='+unicode(tag,'utf-8'))
+                previous_link.set('href',
+                                  unicode(previous_link.get('href'))+u'&tag='+unicode(tag,'utf-8'))
+        if len(res['rows'])<self.items_on_page:
+            next.getparent().remove(next)
 
 
         tag_res = li_res[1][1]
@@ -92,24 +105,33 @@ class Used(PCView):
             print row['key'].encode('utf-8')+'-'+str(row['value'])
 
     def preRender(self):
-        key = self.request.args.get('key',[None])[0]
+        today = date.today()
+        key = [str(today.year),addSym(today.month),addSym(today.day)+'a']
         skip = self.request.args.get('skip',[0])[0]
         try:
             skip = int(skip)
         except:
             skip=0
-        stale = self.request.args.get('stale',[''])[0]
+        stale = not bool(self.request.args.get('stale',[''])[0])
+        if not stale:
+            globals()['gWords'] = None
         tag = self.request.args.get('tag',[None])[0]
         d = None
         if tag is None:
-            d = couch.openView(designID, 'fetch',startkey=key,descending=True, limit=50,
-                          include_docs=True, skip=skip, stale=not bool(stale))
+            d = couch.openView(designID, 'fetch',startkey=key,descending=True, limit=self.items_on_page,
+                          include_docs=True, skip=skip, stale=stale)
         else:
             d = couch.openView(designID, 'words',
                                key=tag, reduce=False,
                                stale=not bool(stale),
-                               include_docs=True,limit=50,skip=skip)
-        d1 = couch.openView(designID, 'words',reduce=True, group=True, stale=not bool(stale))
+                               include_docs=True,limit=self.items_on_page,skip=skip)
+        if globals()['gWords'] is None:            
+            d1 = couch.openView(designID, 'words',reduce=True, group=True, stale=stale)
+            d1.addCallback(installgWords)
+        else:
+            d1= defer.Deferred()
+            d1.addCallback(lambda some: globals()['gWords'])
+            d1.callback(None)
         li = defer.DeferredList((d,d1))
         li.addCallback(self.renderAds)
         return li
