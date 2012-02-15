@@ -2871,3 +2871,11 @@ td.note_proc{
     color: white;
     font-weight: bold;
 }
+#used_pager {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    text-align: right;
+    font-size: 22px;
+    padding: 20px 20px 20px 0px;
+}
