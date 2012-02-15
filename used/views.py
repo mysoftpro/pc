@@ -6,6 +6,7 @@ from pc.views import PCView
 from copy import deepcopy
 from pc.used.couch import couch, designID
 import simplejson
+import re
 
 def addSym(number):
     stri = str(number)
@@ -28,6 +29,12 @@ class Used(PCView):
         container = self.template.middle.find('div')
         for r in res['rows']:
             doc = r['doc']
+            match_phone = re.match('[0-9+\(\) -]*',doc['phone'])
+            if match_phone is None:
+                continue
+            if doc['_id'] == 'a5cb8d7fc44c7bd5fd217709fa0252e6':
+                print match_phone.group()
+            real_phone = match_phone.group()
             view = deepcopy(viewlet)
             view.set('id',doc['_id'])
             view.xpath('//div[@class="ad_subject"]')[0].text = doc['subj']
@@ -40,7 +47,8 @@ class Used(PCView):
             view.xpath('//div[@class="ad_price"]')[0].text = price
             view.xpath('//div[@class="ad_date"]')[0].text = '.'.join(reversed(doc['date']))
             phone = ''
-            for char in doc['phone']:
+            
+            for char in real_phone:
                 phone+=str(ord(char))+':'
             view.xpath('//div[@class="ad_phone"]')[0].text = phone
             container.append(view)
