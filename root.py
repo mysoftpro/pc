@@ -1461,7 +1461,8 @@ class StoreUsed(Resource):
         if price is None or phone is None or text is None or author is None or subj is None:
             return "fail"
         doc = {'category':None, 'dep':'pc','params':'','external_id':base36.gen_id(),
-               'phone':phone,'price':price,'src':'bui','subj':subj,'text':'text','week':True}
+               'phone':phone,'price':price,'src':'bui','subj':subj,'text':'text','week':True,
+               'date':str(date.today()).split('-')}
         d = used_couch.couch.saveDoc(doc)
         d.addCallback(self.notify)
         return "ok"
