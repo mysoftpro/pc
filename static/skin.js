@@ -118,7 +118,8 @@ var expands = {'howtochose':{'urls':[
 	       'more':{'urls':[			   
 			   {url:'/warranty',title:'Гарантии'},
 			   {url:'/support',title:'Поддержка'},
-			   {url:'/blog',title:'Блог'},
+			   {url:'/used',title:'Барахолка'},
+			   {url:'/blog',title:'Блог'},			   
 			   {url:'/about',title:"Про магазин"}
 
 		       ],
