@@ -145,7 +145,7 @@ class SiteMap(Resource):
         root.append(self.buildElement('computer?cat=admin'))
         root.append(self.buildElement('computer?cat=game'))
 
-        root.append(self.buildElement('used'))
+        root.append(self.buildElement('used', freq='daily'))
 
         # root.append(self.buildElement('/promotion/ajax'))
 
