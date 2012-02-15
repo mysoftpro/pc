@@ -1587,7 +1587,7 @@ class Notes(PCView):
 	    inp.set('id', v.replace(' ','_'))
 	    label = td.find('label')
 	    label.set('for',v.replace(' ','_'))
-	    label.text = v+'-'+self.categories[v]
+	    label.text = v+' '+self.categories[v]
 	    row.append(td)
 	    i+=1
 

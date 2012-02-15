@@ -2879,3 +2879,11 @@ td.note_proc{
     font-size: 22px;
     padding: 20px 20px 20px 0px;
 }
+#used_tags{
+    position:absolute;
+    top:125px;
+    left:-165px;
+}
+#used_tags a{
+    display:block;
+}

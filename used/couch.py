@@ -54,7 +54,7 @@ def syncViews(designDoc):
     def compDicts(di1, di2):
         changed = False
         def getcha(element):
-            print "getcha!"
+            print "getcha used!"
             print element
             return True
         try:
@@ -67,12 +67,15 @@ def syncViews(designDoc):
                     if eel not in di2[el]:
                         changed = getcha(eel)
                         break
-                    if di1[el][eel] != di2[el][eel]:
-                        # print "fuck!"
-                        # print type(di1[el][eel])
-                        # print type(di2[el][eel])
-                        # print di1[el][eel].encode('utf-8')
-                        # print di2[el][eel].encode('utf-8')
+                    if type(di1[el][eel]) is unicode:
+                        comp1 = di1[el][eel].encode('utf-8')
+                    else:
+                        comp1 = di1[el][eel]
+                    if type(di2[el][eel]) is unicode:
+                        comp2 = di2[el][eel].encode('utf-8')
+                    else:
+                        comp2 = di2[el][eel]
+                    if comp1 != comp2:
                         changed = getcha((di1[el][eel],di2[el][eel]))
                         break
         except Exception, e:
@@ -92,9 +95,9 @@ def syncViews(designDoc):
 
 
 
-d = couch.openDoc(design_id)
-d.addCallback(syncViews)
-d.addErrback(pr)
+# d = couch.openDoc(design_id)
+# d.addCallback(syncViews)
+# d.addErrback(pr)
 
 
 def sync():

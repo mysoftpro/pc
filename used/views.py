@@ -8,6 +8,8 @@ from pc.used.couch import couch, designID
 import simplejson
 import re
 from urllib import unquote_plus, quote_plus
+from twisted.internet import defer
+from lxml import etree
 
 def addSym(number):
     stri = str(number)
@@ -15,29 +17,14 @@ def addSym(number):
         stri = "0"+stri
     return stri
 
-def fetch(key=None, skip='0', stale=''):
-    # legacy!
-    if key is None:
-        today = date.today()
-        key = [str(today.year),addSym(today.month),addSym(today.day)+'a']
-    else:
-        key = simplejson.loads(key)
-        key[-1] = key[-1][:-1]    
-    #use skip instead of last key
-    try:
-        skip = int(skip)
-    except:
-        skip=0
-    return couch.openView(designID, 'fetch',startkey=key,descending=True, limit=50, 
-                          include_docs=True, skip=skip, stale=not bool(stale))
-
 
 
 class Used(PCView):
-    def renderAds(self, res):
+    def renderAds(self, li_res):
         viewlet = self.tree.find('ad').find('div')
         container = self.template.middle.find('div')
         # last_key = None
+        res = li_res[0][1]
         for r in res['rows']:
             doc = r['doc']
             # last_key = r['key']
@@ -72,18 +59,57 @@ class Used(PCView):
         try:
             skip = int(skip)
         except:
-            skip = 0        
+            skip = 0
         next.set('href','?skip='+str(skip+50))
+        tag = self.request.args.get('tag',[None])[0]
+        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        print tag
+        print [next.get('href')+'&tag='+tag]
+        if tag is not None:
+            print "yooooooooooooooooooooo"
+            print next.get('href')
+            next.set('href',unicode(next.get('href'))+u'&tag='+unicode(tag, 'utf-8'))
         if skip > 0:
             previous_link = pager_links[0]
             previous_link.text = u'<< назад'
             previous_link.set('href','?skip='+str(skip-50))
+            if tag is not None:
+                previous_link.set('href',unicode(previous_link.get('href'))+u'&tag='+unicode(tag,'utf-8'))
+
+
+        tag_res = li_res[1][1]
+        tag_container = self.template.top.xpath('div[@id="used_tags"]')[0]
+        for row in sorted(tag_res['rows'], lambda row1,row2:row2['value']-row1['value']):
+            if row['value'] <10:break
+            a = etree.Element('a')
+            a.set('href','?tag='+row['key'])
+            a.text = row['key']+'-'+str(row['value'])
+            tag_container.append(a)
+
+    def analyze(self, res):
+        for row in sorted(res['rows'], lambda row1,row2:row2['value']-row1['value']):
+            if row['value'] <10:break
+            print row['key'].encode('utf-8')+'-'+str(row['value'])
 
     def preRender(self):
-        
         key = self.request.args.get('key',[None])[0]
         skip = self.request.args.get('skip',[0])[0]
+        try:
+            skip = int(skip)
+        except:
+            skip=0
         stale = self.request.args.get('stale',[''])[0]
-        d = fetch(key,skip, stale)
-        d.addCallback(self.renderAds)
-        return d
+        tag = self.request.args.get('tag',[None])[0]
+        d = None
+        if tag is None:
+            d = couch.openView(designID, 'fetch',startkey=key,descending=True, limit=50,
+                          include_docs=True, skip=skip, stale=not bool(stale))
+        else:
+            d = couch.openView(designID, 'words',
+                               key=tag, reduce=False,
+                               stale=not bool(stale),
+                               include_docs=True,limit=50,skip=skip)
+        d1 = couch.openView(designID, 'words',reduce=True, group=True, stale=not bool(stale))
+        li = defer.DeferredList((d,d1))
+        li.addCallback(self.renderAds)
+        return li
