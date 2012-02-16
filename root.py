@@ -18,7 +18,7 @@ from pc.models import\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
     UserForSaving,ModelForSaving, Note as NoteOb
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet,Notes, Note
+   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet,Notes, Note, Constructor
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -32,7 +32,7 @@ from pc.game import gamePage
 from pc.payments import DOValidateUser,DONotifyPayment
 from pc.di import Di
 import sys
-from pc.auth import OAuth, OpenId
+from pc.auth import OAuth, OpenId, LineReceiver
 from pc.common import addCookies, MIMETypeJSON, pcCartTotal
 from urllib import unquote_plus, quote_plus
 from pc.simple_pages import simplePage, partPage
@@ -40,6 +40,8 @@ from pc.market import PriceForMarket
 from twisted.web.error import Error
 from pc.used import views as used_views, evolve as evolve_used
 from pc.common import forceCond
+from twisted.web.http_headers import Headers
+from twisted.web.client import Agent as HTTPAgent
 
 static_hooks = {
     'promotion.html':promotion,
@@ -478,6 +480,13 @@ class Root(Resource):
                                                                               'used.html'),
                                                         childs=None)))
         
+        self.putChild('constructor',
+                      PCTemplateRenderrer(self.static,
+                                          RootAndChilds(root=HandlerAndName(Constructor,
+                                                                              'constructor.html'),
+                                                        childs=None)))
+
+
 
 
         self.putChild('howtochoose', TemplateRenderrer(self.static, 'howtochoose.html'))
@@ -555,7 +564,7 @@ class Root(Resource):
         self.putChild('update_maximus',UpdateMaximus())
         self.putChild('update_soho',UpdateSoho())
         self.putChild('storeUsed',StoreUsed())
-        
+        self.putChild('stuck',Stuck())
 
     def getChild(self, name, request):
         # self.checkCookie(request)
@@ -1461,9 +1470,24 @@ class StoreUsed(Resource):
         if price is None or phone is None or text is None or author is None or subj is None:
             return "fail"
         doc = {'category':None, 'dep':'pc','params':'','external_id':base36.gen_id(),
-               'phone':phone,'price':price,'src':'bui','subj':subj,'text':'text','week':True,
+               'phone':phone,'price':price,'src':'bui','subj':subj,'text':text,'week':True,
                'date':str(date.today()).split('-')}
         d = used_couch.couch.saveDoc(doc)
         d.addCallback(self.notify)
         return "ok"
         
+
+class Stuck(Resource):
+    def parseSiteMap(self, f):
+        f.seek(0)
+        # here!
+    def getSiteMap(self, response):
+        d = defer.Deferred()
+        response.deliverBody(LineReceiver(d, "enc"))
+        d.addCallback(self.parseSiteMap)
+
+    def render_GET(self, request):
+        agent = HTTPAgent(reactor)
+        request_d = agent.request('GET', 'http://buildpc.ru/sitemap.xml',Headers({}),None)
+        request_d.addCallback(self.getSiteMap)
+        return "ok"

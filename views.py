@@ -1673,3 +1673,10 @@ class Note(Tablet):
 	d.addCallback(self.renderNote, current_note)
 	d.callback(None)
 	return d
+
+
+class Constructor(PCView):
+    def preRender(self):
+        d = defer.Deferred()
+        d.callback(None)
+        return d

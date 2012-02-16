@@ -2887,3 +2887,15 @@ td.note_proc{
 #used_tags a{
     display:block;
 }
+#ccontainer{
+    width:1000px;
+    height:600px;
+    border:1px solid white;
+    margin-left:auto;
+    margin-right:auto;
+}
+#ccenter{
+    position:absolute;
+    left:444px;
+    top:266px;
+}
