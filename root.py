@@ -484,7 +484,8 @@ class Root(Resource):
                       PCTemplateRenderrer(self.static,
                                           RootAndChilds(root=HandlerAndName(Constructor,
                                                                               'constructor.html'),
-                                                        childs=None)))
+                                                        childs=HandlerAndName(Constructor,
+                                                                              'constructor.html'))))
 
 
 

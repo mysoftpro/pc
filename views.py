@@ -1676,7 +1676,16 @@ class Note(Tablet):
 
 
 class Constructor(PCView):
+    def renderModel(self,doc):
+        from pc import models
+        self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\
+            'var choices='+simplejson.dumps(models.gChoices)+';var parts_aliases='+\
+            simplejson.dumps(parts_aliases)+';'
+        
     def preRender(self):
-        d = defer.Deferred()
-        d.callback(None)
+        name = self.name
+        if name is None:
+            name = 'render'
+        d = couch.openDoc(name)
+        d.addCallback(self.renderModel)
         return d
