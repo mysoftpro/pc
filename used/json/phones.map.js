@@ -23,7 +23,24 @@ function(doc){
 	doc.phone !== '+79814587585'&&
 	doc.phone !== '777-456'&&
 	doc.phone !== '56-32-65'&&
-	doc.phone !== 'Интернет-магазин http://max-price.ru/Отправить e-mail'
+	doc.phone !== 'Интернет-магазин http://max-price.ru/Отправить e-mail'&&
+	doc.phone !== '+7-967-1186367'&&
+	doc.phone !== '790-36-98'&&
+	doc.phone !== '8 925 206 35 31'&&
+	doc.phone !== '8 926 031 81 81'&&
+	doc.phone !== '8-905-513-0658'&&
+	doc.phone !== '8-905-734-63-83'&&
+	doc.phone !== '8-910-456-8678'&&
+	doc.phone !== '8-926-265-42-75'&&
+	doc.phone !== '8-926-316-0763'&&
+	doc.phone !== '8-965-284-14-50'&&
+	doc.phone !== '8909 9836744'&&
+	doc.phone !== '8909-620-5184'&&
+	doc.phone !== '8929 576 03 00'&&
+	doc.phone !== '8965-284-14-50'&&
+	doc.phone !== '949-91-53'&&
+	doc.phone !== '9499153'&&
+	doc.phone !== '89506782708'
        ){
 	emit(doc['phone']);
     }

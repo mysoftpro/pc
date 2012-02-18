@@ -363,8 +363,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        if _name is not None and "js" in _name and "min." not in _name:
-            _content = jsmin(_content)
+        # if _name is not None and "js" in _name and "min." not in _name:
+        #     _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -1408,7 +1408,7 @@ def checkUsedKey(func):
 class IrrPC(Resource):
     @checkUsedKey
     def render_GET(self, request):
-        irr_pc.crawl()
+        irr_pc.crawl()        
         return "ok"
 
 class NewPC(Resource):

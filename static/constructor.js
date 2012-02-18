@@ -26,10 +26,25 @@ var satelite_box_size = 88;
          .chain()
          .keys()
          .map(function(key){
-		  var alias = aliases_reverted[key];
-		  var component_id = model['items'][key];
-		  console.log(component_id.length);
-	      });
+                  var alias = aliases_reverted[key];
+                  var component_id = model['items'][key];
+                  var count = 1;
+                  //hack
+                  if (component_id.length<=2){
+                      count = component_id.length;
+                      component_id = component_id[0];
+                  }
+                  return new Component({
+                                           id:component_id,
+                                           count:count,
+                                           alias:aliases_reverted[key],
+                                           part:key,
+                                           storage:choices[key]
+                                       });
+              })
+         .value();
+     var model_collection = new Model(model_components);
+
      // var model = new Model()
      // var container = $('#ccontainer');
      // var central = $("#ccenter");

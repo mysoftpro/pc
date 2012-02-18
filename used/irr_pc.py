@@ -75,8 +75,20 @@ class IrrAutoTarget:
                     if self.end_of_tag(ma, params): break
                     if 'data' in params:
                         self.text+= params['data']
+                        
             # mainParams
-
+            safe_count = 0
+            if self.match({'tag':'table','id':'mainParams'}, params):
+                while True:
+                    safe_count +=1
+                    params = yield
+                    if 'data' in params:
+                        self.kaliningrad = self.kaliningrad or u'калининград' in params['data'].lower()
+                    if self.kaliningrad:
+                        break
+                    if safe_count>=100:
+                        print "fuuuuuuuuuuuuuuuuuuuuuuck!"
+                        break
             if self.match({'tag':'table','id':'allParams'}, params):
                 got_fields = False
                 while not got_fields:
@@ -126,136 +138,9 @@ class IrrAutoTarget:
                         break
                     if 'data' in params:
                         self.phone+= params['data']
-            # params = yield
-            # got_subject = False
-            # got_price = False
-            # if self.match({'tag':'div','class':'w-title'}, params):
-            #     while not got_price:
-            #         params = yield
-
-            #         ma = self.match({'tag':'p'}, params)
-            #         if self.end_of_tag(ma, params): continue
-            #         if ma:
-            #             while not got_subject:
-            #                 params = yield
-            #                 ma = self.match({'tag':'b'}, params)
-            #                 if self.end_of_tag(ma, params): break
-            #                 if ma:
-            #                     while not got_subject:
-            #                         params = yield
-            #                         if 'data' in params:
-            #                             self.subject+= params['data']
-            #                         else:
-            #                             got_subject = True
-
-            #         ma = self.match({'tag':'strong'}, params)
-            #         if self.end_of_tag(ma, params): break
-            #         if ma:
-            #             while not got_price:
-            #                 params = yield
-            #                 ma = self.match({'tag':'span'}, params)
-            #                 if self.end_of_tag(ma, params): break
-            #                 if ma:
-            #                     while not got_price:
-            #                         params = yield
-            #                         if 'data' in params:
-            #                             self.price += params['data']
-            #                         else:
-            #                             got_price = True
-
-            # got_fields = False
-
-            # if self.match({'tag':'table','class':'customfields'}, params):
-            #     while not got_fields:
-            #         params = yield
-            #         ma = self.match({'tag':'tr'}, params)
-            #         if self.end_of_tag(ma, params): continue
-            #         if ma:
-            #             got_header = False
-            #             while not got_header:
-            #                 params = yield
-            #                 ma = self.match({'tag':'th'}, params)
-            #                 if self.end_of_tag(ma, params): break
-            #                 if ma:
-            #                     header = ""
-            #                     while not got_header:
-            #                         params = yield
-            #                         if 'data' in params:
-            #                             header += params['data']
-            #                         else:
-            #                             got_header = True
-            #                     self.fields.append([header.replace("\t","").replace("\n","")]) # [['СЂРµРіРёРѕРЅ','РєР°Р»РёРЅРёРЅРіСЂР°Рґ'],['РіРѕРґ','2000']]
-
-            #             got_value = False
-            #             while not got_value:
-            #                 #got_value = False
-            #                 params = yield
-            #                 ma = self.match({'tag':'td'}, params)
-            #                 if self.end_of_tag(ma, params): break
-            #                 if ma:
-            #                     value = ""
-            #                     while not got_value:
-            #                         params = yield
-            #                         if 'data' in params:
-            #                             value += params['data']
-            #                         else:
-            #                             got_value = True
-            #                     self.fields[-1].append(value.replace("\t","").replace("\n",""))
-
-            #         else:
-            #             if self.end_of_tag(self.match({'tag':'table'},params), params):
-            #                 got_fields = True
-
-            # #continue
-            # got_text = False
-            # if self.match({'tag': 'div', 'class': 'brd-md additional-text'}, params):
-            #     while not got_text:
-            #         params = yield
-            #         ma = self.match({'tag':'p'}, params)
-            #         if self.end_of_tag(ma, params):break
-            #         if ma:
-            #             while not got_text:
-            #                 params = yield
-            #                 if 'data' in params:
-            #                     self.text += params['data'].replace("\t","").replace("\n","")
-
-            #                 elif 'tag' in params and 'end' in params and params['tag'] == 'p':
-            #                     got_text = True
-            #                 else:
-            #                     pass
-
-            # got_phone = False
-
-            # if self.match({'tag':'li', 'class':'ico-phone'}, params):
-            #     while not got_phone:
-            #         params = yield
-            #         if 'data' in params:
-            #             self.phone += params['data'].replace("\t","").replace("\n","")
-            #         else:
-            #             if self.end_of_tag(self.match({'tag':'li'},params),params):
-            #                 got_phone = True
-
-            # if self.match({'tag':'li','class':'ico-mphone'}, params) and len(re.findall(number_pat, ' ' + self.phone +  ' ')) == 0:
-            #     got_phone = False
-            #     while not got_phone:
-            #         params = yield
-            #         if 'data' in params:
-            #             self.phone += params['data'].replace("\t","").replace("\n","")
-            #         else:
-            #             if self.end_of_tag(self.match({'tag':'li'},params),params):
-            #                 got_phone = True
-
-            # if self.match({'tag':'li','class':'no-ico'}, params) and len(re.findall(number_pat, ' ' + self.phone +  ' ')) == 0:
-            #     got_phone = False
-            #     while not got_phone:
-            #         params = yield
-            #         if 'data' in params:
-            #             self.phone += params['data'].replace("\t","").replace("\n","")
-            #         else:
-            #             if self.end_of_tag(self.match({'tag':'li'},params),params):
-            #                 got_phone = True
 
     def __init__(self, category):
+        self.kaliningrad = False
         self.price = ''
         self.text = ''
         self.phone = ''
@@ -371,10 +256,14 @@ def parseAds(f, external_id, category, remaining=None, parser=None, target=None)
                     num = possible_phone
             di['price'] = findPrice(di['text'], di['price'])
             json = simplejson.dumps(di)
-            d =couch.saveDoc(json)
+            if target.kaliningrad:
+                d =couch.saveDoc(json)
+            else:
+                print "this is not kaliningrad"
+                return None
             def ret(doc):
                 answer = 'no phone for this ad: ' + base_ads_url + '/' + external_id \
-                    + ' stored at ' +doc['id']                    
+                    + ' stored at ' +doc['id']
                 if len(num)>0:
                     answer = "storing " + base_ads_url + '/' + external_id + \
                         " at:" + ' stored at '+ doc['id']
@@ -453,7 +342,8 @@ def crawl():
     # defs = [Deferred() for x in ]
     # TODO! errors to email
     _calls = []
-    for cat,url_count in cats.items():        
+    for cat,url_count in cats.items():
+
         for i in xrange(1,url_count[1]+1):
             d = Deferred()
             d.addCallback(reTitles)
@@ -500,3 +390,13 @@ def crawl():
     #     initial.addCallback(c)
     return dl
 
+
+# def _deleteMoscow(res):
+#     for r in res['rows']:
+#         if 'doc' in r and r['doc'] is not None:
+#             couch.deleteDoc(r['doc']['_id'], r['doc']['_rev'])
+
+# def deleteMoscow():
+#     d = couch.listDoc(keys=to_delete, include_docs=True)
+#     d.addCallback(_deleteMoscow)
+#     return d
