@@ -46,37 +46,32 @@ var Component = Backbone
                         return ob[key];
                     return def;
                 },
-                getIcon:function(){
+                getIcon:function(){		    
                     var img = this.dget(this.dget(this.get('doc'),'description'),'imgs',[])[0];
-                    if (img){
-                        var ext = '.jpg';
+		    var ext = '.jpg';
+                    if (img){                        
                         if (img.match('jpeg')){
                             ext = '';
-                            img = encodeURIComponent(path);
+                            img = encodeURIComponent(img);
                         }
                     }
+                    else{
+			img='';
+			ext = '';
+		    }                        
                     return '/image/'+this.id+'/'+img+ext;
                 }
             });
 var SateliteView = Backbone
     .View
     .extend({
-		initialize:function(){
-		  _.bindAll(this, "getStyle");
-		},
-                box_size:88,
-                style_template:_.template("position:absolute;left:{{left}};top:{{top}};border:1px solid red"),
-                getStyle:function(){
-                    return this.style_template({
-                                                   left:this.options.x-this.box_size/2+'px',
-                                                   top:this.options.y-this.box_size/2+'px'
-                                               });
-                },
+
                 renderCycle:function(){
+                    var half_box_size = this.options.box_size  / 2;
                     var context = this.el.getContext("2d");
-                    var centerX = this.box_size / 2;
-                    var centerY = this.box_size  / 2;
-                    var radius = (this.box_size-3)/2;
+                    var centerX = half_box_size;
+                    var centerY = half_box_size;
+                    var radius = half_box_size-3;
 
                     context.beginPath();
                     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
@@ -92,7 +87,7 @@ var SateliteView = Backbone
 
                         var jimg = $(imageObj);
                         jimg.css('width','100px');
-                        context.drawImage(imageObj, 0, 0, 235,235);
+                        context.drawImage(imageObj, 0, 0, half_box_size*2,half_box_size*2);
                     };
                     imageObj.src = this.model.getIcon();
 
@@ -104,7 +99,6 @@ var SateliteView = Backbone
 
 var CentralView = SateliteView
     .extend({
-                box_size:235
             });
 
 var Model = Backbone
@@ -131,41 +125,54 @@ var ModelView = Backbone
     .View
     .extend({
                 initialize:function(){
-                    _.bindAll(this, "renderSatelite");
+                    _.bindAll(this, "renderSatelite",
+                              "renderSatelite",
+                              "makeSateliteAttributes");
                 },
-                events: {
+                style_template:_.template("position:absolute;left:{{left}};top:{{top}};"),
+                makeSateliteAttributes:function(x,y){
+                    return {
+                        width:this.satelite_box_size,
+                        height:this.satelite_box_size,
+                        style:this.style_template({
+                                                      left:x-this.satelite_box_size/2+'px',
+                                                      top:y-this.satelite_box_size/2+'px'
+                                                  })
+                    };
                 },
                 renderSatelite:function(m,i){
                     var angle = this.satelite_angle*i;
                     //offset from central to center of satelite
                     var offset_x = this.satelite_radius*Math.cos(angle);
                     var offset_y = this.satelite_radius*Math.sin(angle);
-                    var satelite_center_x = offset_x+this.central_pos.left;
-                    var satelite_center_y = offset_y+this.central_pos.top;
-                    var satel_view = new SateliteView({x:satelite_center_x, y:satelite_center_y});
-
-                    this.$el
-                        .append(satel_view
-                                .make('canvas',
-                                      {width:satel_view.box_size,
-                                       'height':satel_view.box_size,
-                                       'style':satel_view.getStyle()
-                                      }));
-		},
+                    var satel_x = offset_x+this.central_pos.left;
+                    var satel_y = offset_y+this.central_pos.top;
+                    var satel_view = new SateliteView({model:m,
+                                                       tagName:'canvas',
+                                                       attributes:this.makeSateliteAttributes(satel_x,
+                                                                                              satel_y),
+                                                       x:satel_x,
+                                                       y:satel_y,
+                                                       box_size:this.satelite_box_size});
+                    this.$el.append(satel_view.el);
+                    satel_view.render();
+                },
                 render: function() {
                     var _case = this.collection.getByAlias('case');
                     var case_view = new CentralView({
-                                                    model:_case,
-                                                    el:document.getElementById('ccenter')
+                                                        model:_case,
+                                                        el:document.getElementById('ccenter'),
+                                                        box_size:this.central_box_size
                                                 });
                     case_view.render();
                     this.central_pos = case_view.$el.position();
-                    this.central_pos.left+=case_view.box_size/2;
-                    this.central_pos.top+=case_view.box_size/2;
+                    this.central_pos.left+=case_view.options.box_size/2;
+                    this.central_pos.top+=case_view.options.box_size/2;
                     this
                         .collection
                         .each(this.renderSatelite);
                 },
+                central_box_size:235,
                 satelite_radius:255,
                 satelite_angle:2*Math.PI/12,
                 satelite_box_size:88
