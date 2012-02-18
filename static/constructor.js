@@ -1,27 +1,32 @@
+_.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+    ,evaluate: /\[\[(.+?)\]\]/g
+};
+
 var Component = Backbone
     .Model
     .extend({
-                initialize:function(){		    
+                initialize:function(){
                     this.set('doc', this.getObjectFromStorage());
                 },
                 getObjectFromStorage:function(){
                     var _id = this.id;
                     var storage = this.get('storage');
-		    if (storage['rows'])
-			return _(storage['rows']).chain()
-			.select(function(ob){
+                    if (storage['rows'])
+                        return _(storage['rows']).chain()
+                        .select(function(ob){
                                     return ob.doc._id == _id;
                                 })
-			.first()
-			.value()
-			.doc;
-		    return _(this.get('storage'))
+                        .first()
+                        .value()
+                        .doc;
+                    return _(this.get('storage'))
                         .chain()
                         .values()
                         .map(function(arr){return arr[1];})
                         .map(function(ob){
-				 return ob[1]['rows'];
-			     })
+                                 return ob[1]['rows'];
+                             })
                         .map(function(arr){
                                     return _(arr).select(function(ob){
                                                              return ob.doc._id == _id;
@@ -31,32 +36,42 @@ var Component = Backbone
                         .first()
                         .first()
                         .value()
-			.doc;
+                        .doc;
                 },
-		dget:function(ob,key,_def){
-		    var def = {};
-		    if (_def)
-			def = _def;
-		    if (ob[key])
-			return ob[key];
-		    return def;
-		},
+                dget:function(ob,key,_def){
+                    var def = {};
+                    if (_def)
+                        def = _def;
+                    if (ob[key])
+                        return ob[key];
+                    return def;
+                },
                 getIcon:function(){
-		    var img = this.dget(this.dget(this.get('doc'),'description'),'imgs',[])[0];
-		    if (img){
-			var ext = '.jpg';
-			if (img.match('jpeg')){
-			    ext = '';
-			    img = encodeURIComponent(path);
-			}
-		    }
-		    return '/image/'+this.id+'/'+img+ext;
+                    var img = this.dget(this.dget(this.get('doc'),'description'),'imgs',[])[0];
+                    if (img){
+                        var ext = '.jpg';
+                        if (img.match('jpeg')){
+                            ext = '';
+                            img = encodeURIComponent(path);
+                        }
+                    }
+                    return '/image/'+this.id+'/'+img+ext;
                 }
             });
 var SateliteView = Backbone
     .View
     .extend({
+		initialize:function(){
+		  _.bindAll(this, "getStyle");
+		},
                 box_size:88,
+                style_template:_.template("position:absolute;left:{{left}};top:{{top}};border:1px solid red"),
+                getStyle:function(){
+                    return this.style_template({
+                                                   left:this.options.x-this.box_size/2+'px',
+                                                   top:this.options.y-this.box_size/2+'px'
+                                               });
+                },
                 renderCycle:function(){
                     var context = this.el.getContext("2d");
                     var centerX = this.box_size / 2;
@@ -115,20 +130,45 @@ var Model = Backbone
 var ModelView = Backbone
     .View
     .extend({
+                initialize:function(){
+                    _.bindAll(this, "renderSatelite");
+                },
                 events: {
                 },
-                getCentralCoords:function(){
+                renderSatelite:function(m,i){
+                    var angle = this.satelite_angle*i;
+                    //offset from central to center of satelite
+                    var offset_x = this.satelite_radius*Math.cos(angle);
+                    var offset_y = this.satelite_radius*Math.sin(angle);
+                    var satelite_center_x = offset_x+this.central_pos.left;
+                    var satelite_center_y = offset_y+this.central_pos.top;
+                    var satel_view = new SateliteView({x:satelite_center_x, y:satelite_center_y});
 
-                },
+                    this.$el
+                        .append(satel_view
+                                .make('canvas',
+                                      {width:satel_view.box_size,
+                                       'height':satel_view.box_size,
+                                       'style':satel_view.getStyle()
+                                      }));
+		},
                 render: function() {
                     var _case = this.collection.getByAlias('case');
                     var case_view = new CentralView({
                                                     model:_case,
                                                     el:document.getElementById('ccenter')
                                                 });
-                    console.log(1);
                     case_view.render();
-                }
+                    this.central_pos = case_view.$el.position();
+                    this.central_pos.left+=case_view.box_size/2;
+                    this.central_pos.top+=case_view.box_size/2;
+                    this
+                        .collection
+                        .each(this.renderSatelite);
+                },
+                satelite_radius:255,
+                satelite_angle:2*Math.PI/12,
+                satelite_box_size:88
             });
 
 
@@ -163,58 +203,4 @@ var ModelView = Backbone
                                     });
      model_view.render();
 
-
-     // var model = new Model()
-     // var container = $('#ccontainer');
-     // var central = $("#ccenter");
-     // var context = central[0].getContext("2d");
-     // var centerX = central_box_size / 2;
-     // var centerY = central_box_size  / 2;
-     // var radius = (central_box_size-3)/2;
-
-     // context.beginPath();
-     // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-
-     // context.lineWidth = 5;
-     // context.strokeStyle = "#B9D3E1";
-     // context.stroke();
-     // context.clip();
-
-     // var imageObj = new Image();
-
-     // imageObj.onload = function(){
-
-     //     var jimg = $(imageObj);
-     //     jimg.css('width','100px');
-     //     context.drawImage(imageObj, 0, 0, 235,235);
-     // };
-     // imageObj.src = "image/new_109653/haf.jpg";
-
-     // var component_ids = ['case','ram','proc','mother','video','hdd','psu','mouse',
-     //                      'keyboard','os', 'dosplay','audio'];
-     // var satelite_angle = (2*Math.PI/12);
-     // var central_pos = central.position();
-     // central_pos.left+=centerX;
-     // central_pos.top+=centerY;
-     // var satelite_radius = 255;
-     // _(component_ids).each(function(c,i){
-     //                           var angle = satelite_angle*i;
-     //                           //offset from central to center of satelite
-     //                           var offset_x = satelite_radius*Math.cos(angle);
-     //                           var offset_y = satelite_radius*Math.sin(angle);
-     //                           var satelite_center_x = offset_x+central_pos.left;
-     //                           var satelite_center_y = offset_y+central_pos.top;
-     //                           var satel = $(document.createElement('canvas'));
-     //                           satel.attr('width',satelite_box_size);
-     //                           satel.attr('height',satelite_box_size);
-     //                           satel.attr('id', c);
-     //                           satel.css({
-     //                                         position:'absolute',
-     //                                         left:satelite_center_x-satelite_box_size/2+'px',
-     //                                         top:satelite_center_y-satelite_box_size/2+'px',
-     //                                         border:'1px solid red'
-     //                                     });
-     //                           container.append(satel);
-     //                           // container.append('<div>'+i+'</div>');
-     //                       });
  })();
