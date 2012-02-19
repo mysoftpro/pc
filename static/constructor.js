@@ -20,6 +20,7 @@ var Component = Backbone
                         .first()
                         .value()
                         .doc;
+		    console.log('here');
                     return _(this.get('storage'))
                         .chain()
                         .values()
@@ -32,7 +33,8 @@ var Component = Backbone
                                                              return ob.doc._id == _id;
                                                          });
                               })
-                        .select(function(arr){console.log(arr);return arr.length>0;})
+			.map(function(some){return some;})
+                        .select(function(arr){return arr.length>0;})			
                         .first()
                         .first()
                         .value()
@@ -188,7 +190,7 @@ var ModelView = Backbone
          .map(function(key){
                   var alias = aliases_reverted[key];
                   var component_id = model['items'][key];
-                  var count = 1;
+		  var count = 1;
                   //hack
                   if (component_id.length<=2){
                       count = component_id.length;

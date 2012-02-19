@@ -602,6 +602,7 @@ class Model(dict):
 		count = len(code)
 		code = code[0]
 	    component_doc = self.findComponent(cat_name)
+            component_doc.update({'count':count})
 	    component = self.componentFactory(component_doc, cat_name)
 	    code = component_doc['_id']
 	    price = self.makePrice(component_doc)*count
@@ -971,7 +972,7 @@ class Model(dict):
 	    component = Note(component_doc,cat_name)
 	else:
 	    if video in catalog:
-		component = VideoCard(component_doc)
+		component = VideoCard(component_doc, cat_name)
 	return component
 
 
