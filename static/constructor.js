@@ -83,10 +83,17 @@ var SateliteView = Backbone
                                                         });
                     new_center_view.render();
                     parent.central_view = new_center_view;
-                    //reduce old active view
+
+                    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
+
+		    //reduce old active view
                     parent.active_satelite.options.box_size = parent.satelite_box_size;
 		    parent.active_satelite.$el.attr('width',parent.satelite_box_size);
 		    parent.active_satelite.$el.attr('height',parent.satelite_box_size);
+		    // shift
+		    var apos = parent.active_satelite.$el.position();		    		    
+		    parent.active_satelite.$el.css({top:apos.top+delta+'px',
+						    'left':apos.left+delta+'px'});
                     parent.active_satelite.render();
 
                     parent.active_satelite = this;
@@ -95,6 +102,9 @@ var SateliteView = Backbone
                     this.options.box_size = parent.active_satelite_size;
 		    this.$el.attr('width',parent.active_satelite_size);
 		    this.$el.attr('height',parent.active_satelite_size);
+		    // shift
+		    var pos = this.$el.position();		    		    
+		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
                     this.render();
 
                     this.options.box_size = this.options.box_size/2;
@@ -184,7 +194,7 @@ var ModelView = Backbone
                     var satel_y = offset_y+this.central_pos.top;
                     var box_size = this.satelite_box_size;
                     var active = false;
-                    if (m.get('alias') == 'case'){
+                    if (m.get('alias') == 'proc'){
                         box_size = this.active_satelite_size;
                         active = true;
                     }
