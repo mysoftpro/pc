@@ -1676,6 +1676,24 @@ class Note(Tablet):
 
 
 class Constructor(PCView):
+    # def cleanChoices(self):   
+    #     from pc import models
+    #     for name,choices in models.gChoices.items():
+    #         if type(choices) is list:
+    #             for el in choices:
+    #                 if el[0]:
+    #                     for ch in el[1][1]['rows']:
+    #                         doc = Doc(ch['doc'],el[1][1]['rows'])
+    #                         ch['doc'] = doc
+    #                         globals()['gChoices_flatten'][ch['doc']['_id']] = doc
+
+    #         else:
+    #             for ch in choices['rows']:
+    #                 doc = Doc(ch['doc'],choices['rows'])
+    #                 ch['doc'] = doc
+    #                 globals()['gChoices_flatten'][ch['doc']['_id']] = doc
+
+
     def renderModel(self,doc):
         from pc import models
         self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\

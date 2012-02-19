@@ -32,7 +32,7 @@ var Component = Backbone
                                                              return ob.doc._id == _id;
                                                          });
                               })
-                        .select(function(arr){return arr.length>0;})
+                        .select(function(arr){console.log(arr);return arr.length>0;})
                         .first()
                         .first()
                         .value()
@@ -192,7 +192,7 @@ var ModelView = Backbone
                   //hack
                   if (component_id.length<=2){
                       count = component_id.length;
-                      component_id = component_id[0];
+		      component_id = component_id[0];	  
                   }
                   return new Component({
                                            id:component_id,
