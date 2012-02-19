@@ -57,8 +57,7 @@ var Component = Backbone
                         }
                     }
                     else{
-                        img='';
-                        ext = '';
+                        return '/static/no_image.jpg';
                     }
                     return '/image/'+this.id+'/'+img+ext;
                 }
