@@ -1122,7 +1122,6 @@
     //     var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
     //
     make: function(tagName, attributes, content) {	
-	console.log(attributes);
 	var el = document.createElement(tagName);
       if (attributes) $(el).attr(attributes);
       if (content) $(el).html(content);

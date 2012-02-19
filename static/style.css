@@ -2899,3 +2899,6 @@ td.note_proc{
     left:444px;
     top:266px;
 }
+canvas.satelite{
+    cursor:pointer;
+}
