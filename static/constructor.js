@@ -38,41 +38,28 @@ var Component = Backbone
 			retval = '/image/'+this.id+'/'+img+ext;
 		    }
 		    return retval;
-
-		    // var img = this.dget(this.dget(this.get('doc'),'description'),'imgs',[])[0];
-		    // var ext = '.jpg';
-		    // if (img){
-		    // 	if (img.match('jpeg')){
-		    // 	    ext = '';
-		    // 	    img = encodeURIComponent(img);
-		    // 	}
-		    // }
-		    // else{
-		    // 	return
-		    // }
-		    // return '/image/'+this.id+'/'+img+ext;
 		}
 	    });
 var SateliteView = Backbone
     .View
     .extend({
 		initialize:function(){
-		    _.bindAll(this, "makeActive");
+		    _.bindAll(this, "makeActive", "render");
 		},
 		events:{
 		    click:"makeActive"
 		},
 		makeActive:function(){
 		    var parent = this.options.parent;
-		    var old_center_view = parent.central_view;
-		    var new_center_view = new CentralView({
+		    var old_central_view = parent.central_view;
+		    var new_central_view = new CentralView({
 							      model:this.model,
-							      el:old_center_view.el,
+							      el:old_central_view.el,
 							      id:this.model.get('alias'),
 							      box_size:parent.central_box_size
 							});
-		    new_center_view.render();
-		    parent.central_view = new_center_view;
+		    new_central_view.render();
+		    parent.central_view = new_central_view;
 
 		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
 
@@ -132,32 +119,14 @@ var SateliteView = Backbone
 	    });
 
 var CentralView = SateliteView
-    .extend({
-		buttonsRendered:false,
-		renderButtons:function(){
-		    if (!this.buttonsRendered){
-			//var d = $(document.createElement('div'));
-
-			this.$el.after('<div id="gbetter" class="large_button"></div>');
-			var pos = this.$el.position();
-			this.$el.next().css({
-						position:'absolute',
-						top:'500px',
-						left:'565px'
-					    });
-			this.$el.after('<div id="gcheaper" class="large_button"></div>');
-			this.$el.next().css({
-						position:'absolute',
-						top:'500px',
-						left:'510px'
-					    });
-
-		    }
-		},
-		render:function(){
-		    this.renderCycle();
-		    this.renderButtons();
-		}
+    .extend({		
+		// render:function(){
+		//     this.renderCycle();
+		//     if (!this.buttonsRendered){
+		// 	this.renderButtons();
+		// 	this.buttonsRendered = true;
+		//     }
+		// }
 	    });
 
 var Model = Backbone
@@ -186,32 +155,48 @@ var ModelView = Backbone
 		initialize:function(){
 		    _.bindAll(this, "renderSatelite",
 			      "renderSatelite",
-			      "makeSateliteAttributes");
+			      "makeSateliteAttributes","makeBetter","makeCheaper", "cheaperBetter");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
 		    'click #gbetter':"makeBetter"
 		},
-		makeCheaper:function(){
-		    console.log('cheaper');
+		cheaperBetter:function(delta, cond){
+		    var model = this.active_satelite.model;
+		    var storage = model.get('storage');
+		    var sorted = storage.sort(function(doc1,doc2){
+						  return doc1.price-doc2.price;
+					      });
+		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(model.id);
+		    if (cond(in_sorted,sorted.length))
+			return;
+		    var new_doc = sorted[in_sorted+delta];
+		    var count = 1;
+		    var component_id = new_doc['_id'];
+		    //hack
+		    if (component_id.length<=2){
+			count = component_id.length;
+			component_id = component_id[0];
+		    }
+		    var clock = this.active_satelite.options.clock;
+		    var old_component = this.active_satelite.model;
+		    var new_component = new Component({
+						      id:component_id,
+						      part:old_component.get('part'),
+						      alias:old_component.get('alias'),
+						      count:count,
+						      storage:old_component.get('storage')
+						  });
+		    //zzz
+		    this.active_satelite.$el.remove();
+		    var new_satel_view = this.renderSatelite(new_component, clock);
+		    new_satel_view.makeActive();
 		},
 		makeBetter:function(){
-		    var model = this.central_view.model;
-		    var storage = model.get('storage');
-		    if (Array.isArray(storage)){
-			var acc = {'rows':[]};
-			_(storage).reduce(function(_acc, el){
-					      var li = el[1];
-					      var ob = li[1];
-					      _acc['rows'].concat(ob['rows']);
-					      return _acc;
-					  }, acc);
-			storage = acc;
-		    }
-		    // var sorted = storage['rows'].
-		    // _(storage['rows']).map(function(el){
-		    // 				    return
-		    // 				})
+		    this.cheaperBetter(1,function(index,length){return index+1==length;});
+		},
+		makeCheaper:function(){
+		    this.cheaperBetter(-1,function(index,length){return index-1<=0;});
 		},
 		style_template:_.template("position:absolute;left:{{left}};top:{{top}};"),
 		makeSateliteAttributes:function(box_size, x,y){
@@ -246,6 +231,7 @@ var ModelView = Backbone
 							   satel_y),
 						       x:satel_x,
 						       y:satel_y,
+						       clock:i,
 						       active:active,
 						       box_size:box_size,
 						       parent:this
@@ -254,6 +240,7 @@ var ModelView = Backbone
 			this.active_satelite = satel_view;
 		    this.$el.append(satel_view.el);
 		    satel_view.render();
+		    return satel_view;
 		},
 		render: function() {
 		    var _case = this.collection.getByAlias('case');
@@ -269,6 +256,24 @@ var ModelView = Backbone
 		    this
 			.collection
 			.each(this.renderSatelite);
+
+		    this.central_view.$el.after('<div id="gbetter" class="large_button"></div>');
+		    this.central_view.$el.next().css({
+					    position:'absolute',
+					    top:'500px',
+					    left:'565px',
+					    'float':'none',
+					    margin:0
+					});
+		    this.central_view.$el.after('<div id="gcheaper" class="large_button"></div>');
+		    this.central_view.$el.next().css({
+					    position:'absolute',
+					    top:'500px',
+					    left:'510px',
+					    'float':'none',
+					    margin:0
+					});
+
 		},
 		central_box_size:235,
 		satelite_radius:255,
