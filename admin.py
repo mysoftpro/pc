@@ -22,6 +22,8 @@ from pc.common import MIMETypeJSON, forceCond
 from twisted.web.static import File
 from twisted.web.resource import Resource
 from copy import deepcopy
+from twisted.web.client import Agent
+from twisted.web.http_headers import Headers
 
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
 
@@ -104,6 +106,7 @@ class AdminGate(Resource):
         self.putChild('store_new_desc',StoreNewDesc())
 
 
+
         self.putChild('get_soho_descriptions',GetSohoDescriptions())
         self.putChild('store_soho_desc',StoreSohoDesc())
 
@@ -113,6 +116,9 @@ class AdminGate(Resource):
         self.putChild('evolve', Evolve())
 
         self.putChild('store_description', StoreDescription())
+
+
+        self.putChild('addImage', AddImage())
 
 
     def render_GET(self, request):
@@ -1070,77 +1076,49 @@ class StorePsu(Resource):
 
 
 class Evolve(Resource):
-
-    # def fillNote(self, note_ob, code, date):
-    #     note_ob['items'] = {notes:code}
-    #     note_ob['date'] = date
-    #     couch.saveDoc(note_ob)
-
-    # def evolve(self, res):
-    #     import pc.models
-    #     for r in res['rows']:
-    #         if not 'doc' in r:continue
-    #         if r['doc'] is None:
-    #             continue
-    #         model = Model(r['doc'])
-    #         # found_case = model.findComponent(case)
-    #         # if model.getCatalogsKey(found_case) == case_exclusive:
-    #         if model.case.getCatalogsKey() == case_exclusive:
-    #             if not model.isPromo:
-    #                 r['doc']['items'].update({power_catalog:"13559"})# 600w Deluxe
-    #                 if 'original_prices' in r['doc']:
-    #                     r['doc']['original_prices'].update({"13559":32})
-    #             else:
-    #                 r['doc']['items'].update({power_catalog:"18244"})# 500w Deluxe
-    #                 if 'original_prices' in r['doc']:
-    #                     r['doc']['original_prices'].update({"18244":20})
-    #         else:
-    #             r['doc']['items'].update({power_catalog:"no"+power_catalog})# psu is embeded in case
-    #         couch.saveDoc(r['doc'])
-
-    # def movePromos(self, res, promos_ids):
-    #     to_save = {}
-    #     for r in res['rows']:
-    #         if 'doc' not in r or r['doc'] is None:continue
-    #         new_models = []
-    #         promos = []
-    #         for i in r['doc']['models']:
-    #             if i not in promos_ids:
-    #                 new_models.append(i)
-    #             else:
-    #                 promos.append(i)
-    #         r['doc']['models'] = new_models
-    #         r['doc']['promos'] = promos
-    #         if not r['doc']['_id'] in to_save:
-    #             to_save.update({r['doc']['_id']:r['doc']})
-    #     for v in to_save.values():
-    #         couch.saveDoc(v)
-
-
-    # def getUsers(self, res):
-    #     rows=  res['rows']
-    #     promos = [r['doc'] for r in rows if 'doc' in r and r['doc'] is not None\
-    #                   and 'promo' in r['doc'] and r['doc']['promo']]
-    #     d = couch.listDoc(keys=[doc['author'] for doc in promos], include_docs=True)
-    #     d.addCallback(self.movePromos, [doc['_id'] for doc in promos])
-    #     return d
-
-    def fixOriginalPrices(self, res):
+    def fixNew(self, res):
         for r in res['rows']:
-            if 'original_prices' in r['doc']:
-                need_save = False
-                for k,v in r['doc']['original_prices'].items():
-                    print type(v)
-                    if type(v) is dict:
-                        r['doc']['original_prices'][k] = v['price']
-                        need_save = True
-                if not need_save:
-                    continue
-                couch.saveDoc(r['doc'])
-                print "saved!"
-
+            doc = r['doc']
+            doc.update({'description':{'imgs':[r['key']]}})
+            print doc['_id']
+            couch.saveDoc(doc)
     @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
-        d = couch.openView(designID,'user_models', include_docs=True)
-        d.addCallback(self.fixOriginalPrices)
+        d = couch.openView(designID,'new_without_description', include_docs=True)
+        d.addCallback(self.fixNew)
         return "ok"
+
+
+class AddImage(Resource):
+    def finish(self, some, request):
+        request.write('ok')
+        request.finish()
+    def addImage(self, image, doc, request):
+        name = [k for k in image.keys()][0]
+        if name.endswith('.jpg'):
+            name = name.split('.jpg')[0]
+        d = couch.addAttachments(doc, image)#image is a dictionary
+        if not 'description' in doc:
+            doc.update({'description':{'imgs':[]}})
+        imgs = doc['description'].get('imgs',[])
+        imgs.insert(0,name)
+        doc['description']['imgs'] = imgs
+        d.addCallback(lambda _doc:couch.saveDoc(_doc))
+        d.addCallback(self.finish, request)
+        
+    def goForImage(self, doc, request):
+        from pc.catalog import ImageReceiver
+        d = defer.Deferred()
+        agent = Agent(reactor)
+        url = request.args.get('url')[0]
+        image_request = agent.request('GET', str(url),Headers({}),None)
+        image_request.addCallback(lambda response: \
+                                      response.deliverBody(ImageReceiver(url.split('/')[-1],d)))
+        d.addCallback(self.addImage, doc, request)
+
+    def render_GET(self, request):
+        print "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyya"
+        _id = request.args.get('_id')[0]        
+        d= couch.openDoc(_id)
+        d.addCallback(self.goForImage, request)
+        return NOT_DONE_YET

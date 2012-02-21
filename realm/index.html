@@ -7,6 +7,20 @@
 	#main li {margin-bottom:10px;}
 	#models li {margin:0;}
       </style>
+      <script type="text/javascript" src="/static/jquery-1.6.min.js"></script>
+      <script type="text/javascript" src="/static/underscore-min.js"></script>
+      <script type="text/javascript">
+	$(function(){
+	$('#addImage').click(function(e){
+	var target = $(e.target);	
+	$.ajax({
+	       url:'/admin/addImage',
+	       data:{'_id':target.prev().val(),'url':target.prev().prev().val()},
+	       success:function(data){if (data=='ok')alert('получилось')}
+	       });
+	});
+	});
+      </script>
   </head>
   <body>
     <ul id="main">
@@ -77,7 +91,10 @@
       <li><a href="blog.html">Написать в блог</a></li>
       <li><a href="comet.html">Комет</a></li>
       <li><a href="couch/_utils/database.html?pc">CouchDB</a></li>
-      <li><a href="evolve">Evolve</a></li>
+      <li><a href="evolve">Evolve</a></li>      
     </ul>
+    <span>url<input name="_id" type="text" value=""/>
+          id<input name="url" type="text" value=""/>
+	  <input type="button" id="addImage" value="upload"/>
   </body>
 </html>
