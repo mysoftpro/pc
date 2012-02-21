@@ -130,13 +130,13 @@ Margin=1.15
 Course = 30.5
 
 #refactor (just comment it and youl see
-def cleanDoc(doc, price, clean_text=True, clean_description=True):
+def cleanDoc(doc, price, clean_text=True, clean_description=True, imgs=False):
     new_doc = {}
     to_clean = ['id', '_attachments','flags','inCart',
 		     'ordered','reserved','stock1', '_rev', 'warranty_type',
 		'articul', 'rur_price','us_price','us_recommended_price', 'rur_recommended_price',
 		'new_stock', 'new_link', 'new_catalogs', "marketComments","marketParams",
-		"marketReviews", "description"]
+		"marketReviews", "description", "youtube"]
     if clean_text:
 	to_clean.append('text')
     if ('sli' in doc and 'crossfire' in doc and 'ramslots' not in doc and 'stock1' in doc) and \
@@ -150,6 +150,8 @@ def cleanDoc(doc, price, clean_text=True, clean_description=True):
 	    new_doc.update({token:Model.getCatalogsKey(doc)})
 	else:
 	    new_doc.update({token:doc[token]})
+    if imgs and len(doc.get('description',{}).get('imgs',[]))>0:
+        new_doc['imgs'] = doc['description']['imgs']
     new_doc['price'] = price
     return new_doc
 
@@ -896,7 +898,8 @@ class Model(dict):
 			price = 0
 		    else:
 			price = c['ourprice']*c.get('count',1)
-		    components.append(cleanDoc(c, price, clean_text=False, clean_description=False))
+		    components.append(cleanDoc(c, price, clean_text=False, 
+                                               clean_description=False))
 		return lambda code: [c for c in components if c['_id'] == code][0]
 	    elif self.isPromo:
 		components = []

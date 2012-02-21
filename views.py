@@ -1677,15 +1677,36 @@ class Note(Tablet):
 
 class Constructor(PCView):
 
+    def simpleChoices(self):
+        simple_choices = {}
+        from pc import models
+        for name,choices in models.gChoices.items():
+            simple_choices.update({name:[]})
+            if type(choices) is list:
+                for el in choices:
+                    if el[0]:
+                        for ch in el[1][1]['rows']:
+                            price = Model.makePrice(ch['doc'])
+                            simple_choices[name].append(cleanDoc(ch['doc'], price, 
+                                                                 clean_text=False,
+                                                                 imgs=True))
+
+            else:
+                for ch in choices['rows']:
+                    price = Model.makePrice(ch['doc'])
+                    simple_choices[name].append(cleanDoc(ch['doc'], price,
+                                                         clean_text=False,
+                                                         imgs=True))
+        return simple_choices
+                    
     def renderModel(self,doc):
         model = Model(doc)
         corrected_items = {}
         for c in model.components:
             corrected_items.update({c._cat_name:c.component_doc.get('_id')})
         doc['items'] = corrected_items
-        from pc import models
         self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\
-            'var choices='+simplejson.dumps(models.gChoices)+';var parts_aliases='+\
+            'var choices='+simplejson.dumps(self.simpleChoices())+';var parts_aliases='+\
             simplejson.dumps(parts_aliases)+';'
 
     def preRender(self):
