@@ -88,7 +88,8 @@ var SateliteView = Backbone
 		},
 		renderCycle:function(){
 		    this.el.width = this.el.width;
-		    var half_box_size = this.options.box_size  / 2;
+		    var full_box_size = this.options.box_size;
+		    var half_box_size = full_box_size / 2;
 		    var context = this.el.getContext("2d");
 		    var centerX = half_box_size;
 		    var centerY = half_box_size;
@@ -101,14 +102,30 @@ var SateliteView = Backbone
 		    context.strokeStyle = "#B9D3E1";
 		    context.stroke();
 		    context.clip();
+		    context.fillStyle = "white";
+		    context.fill();
 
 		    var imageObj = new Image();
 
 		    imageObj.onload = function(){
-
-			var jimg = $(imageObj);
-			jimg.css('width','100px');
-			context.drawImage(imageObj, 0, 0, half_box_size*2,half_box_size*2);
+			var to_scale = imageObj.width;
+			var other = imageObj.height;
+			if (imageObj.width>imageObj.height){
+			    to_scale = imageObj.height;
+			}
+			var wratio = full_box_size/imageObj.width;
+			var hratio = full_box_size/imageObj.height;
+			var scale = wratio;
+			if (wratio>hratio)
+			    scale = hratio;
+			if (-50 < imageObj.height-imageObj.height < 20)
+			    scale = scale*0.9;
+			var new_width = imageObj.width*scale;
+			var new_height = imageObj.height*scale;
+			var woffset = (full_box_size-new_width)/2;
+			var hoffset = (full_box_size-new_height)/2;
+			context.drawImage(imageObj, woffset, hoffset,
+					  new_width,new_height);
 		    };
 		    imageObj.src = this.model.getIcon();
 
@@ -119,7 +136,7 @@ var SateliteView = Backbone
 	    });
 
 var CentralView = SateliteView
-    .extend({		
+    .extend({
 		// render:function(){
 		//     this.renderCycle();
 		//     if (!this.buttonsRendered){
@@ -161,16 +178,23 @@ var ModelView = Backbone
 		    'click #gcheaper':"makeCheaper",
 		    'click #gbetter':"makeBetter"
 		},
+		previousCheaperBetter:{
+		    1:'',
+		    0:''
+		},
 		cheaperBetter:function(delta, cond){
 		    var model = this.active_satelite.model;
 		    var storage = model.get('storage');
 		    var sorted = storage.sort(function(doc1,doc2){
 						  return doc1.price-doc2.price;
 					      });
+		    //console.log(this.active_satelite.model.id);
+		    //console.log(_(sorted).map(function(el){return el.price;}));
 		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(model.id);
-		    if (cond(in_sorted,sorted.length))
+		    if (cond(in_sorted,sorted.length)){
 			return;
-		    var new_doc = sorted[in_sorted+delta];
+		    }
+		    var new_doc = sorted[in_sorted+delta];		    
 		    var count = 1;
 		    var component_id = new_doc['_id'];
 		    //hack
@@ -178,8 +202,14 @@ var ModelView = Backbone
 			count = component_id.length;
 			component_id = component_id[0];
 		    }
+		    if (this.previousCheaperBetter[delta+1] == component_id){
+			//this component was allready shown
+			//we have infinite loop here
+			console.log('log;');
+		    }		    
 		    var clock = this.active_satelite.options.clock;
-		    var old_component = this.active_satelite.model;
+		    var old_component = this.active_satelite.model;		    
+		    this.previousCheaperBetter[delta+1] = old_component.id;
 		    var new_component = new Component({
 						      id:component_id,
 						      part:old_component.get('part'),
@@ -187,6 +217,7 @@ var ModelView = Backbone
 						      count:count,
 						      storage:old_component.get('storage')
 						  });
+
 		    //zzz
 		    this.active_satelite.$el.remove();
 		    var new_satel_view = this.renderSatelite(new_component, clock);
@@ -251,6 +282,9 @@ var ModelView = Backbone
 						});
 		    this.central_view.render();
 		    this.central_pos = this.central_view.$el.position();
+		    //move satelite little up
+		    this.central_view.$el.css({'top':this.central_pos.top-30+'px'});
+		    //add offset for surrounding satelites calculations (to find center)
 		    this.central_pos.left+=this.central_view.options.box_size/2;
 		    this.central_pos.top+=this.central_view.options.box_size/2;
 		    this
@@ -259,29 +293,33 @@ var ModelView = Backbone
 
 		    this.central_view.$el.after('<div id="gbetter" class="large_button"></div>');
 		    this.central_view.$el.next().css({
-					    position:'absolute',
-					    top:'500px',
-					    left:'565px',
+							 position:'absolute',
+					    top:'535px',
+					    left:'600px',
 					    'float':'none',
 					    margin:0
 					});
 		    this.central_view.$el.after('<div id="gcheaper" class="large_button"></div>');
 		    this.central_view.$el.next().css({
 					    position:'absolute',
-					    top:'500px',
-					    left:'510px',
+					    top:'535px',
+					    left:'545px',
 					    'float':'none',
 					    margin:0
 					});
 
 		},
-		central_box_size:235,
-		satelite_radius:255,
+		central_box_size:300,
+		satelite_radius:250,
 		satelite_angle:2*Math.PI/12,
 		satelite_box_size:88,
-		active_satelite_size:136
+		active_satelite_size:136,
+		code:function(){
+		    return this.central_view.model.id;
+		}
 	    });
 
+var model_view;
 
 (function init(){
      var aliases_reverted = {};
@@ -308,7 +346,7 @@ var ModelView = Backbone
 	      })
 	 .value();
      var model_collection = new Model(model_components);
-     var model_view = new ModelView({
+     model_view = new ModelView({
 					collection:model_collection,
 					el:document.getElementById('ccontainer')
 				    });

@@ -148,7 +148,7 @@ function init(){
                                                              });
                                                }
                                            });
-            }, 4000);
+            }, 8000);
     var core_template = '<div class="cores" title="количество ядер"></div>';
     var proc_video_template = '<div class="mvendors inproc {{proc_cat}}" title="Процессор"></div><div class="mvendors invideo {{video_cat}}" title="Видеокарта"></div><div class="iproc">{{cores}}<div class="pbrand">{{proc_brand}}</div><div title="Кэш процессора" class="cache">{{cache}}</div><div style="clear: both;"></div></div>';
     _($('.modelprice').toArray())
