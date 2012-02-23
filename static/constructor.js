@@ -180,21 +180,23 @@ var ModelView = Backbone
 		},
 		previousCheaperBetter:{
 		    1:'',
-		    0:''
+		    0:'',
+		    dir:1
 		},
-		cheaperBetter:function(delta, cond){
+		cheaperBetter:function(delta, cond, jump){
 		    var model = this.active_satelite.model;
 		    var storage = model.get('storage');
 		    var sorted = storage.sort(function(doc1,doc2){
 						  return doc1.price-doc2.price;
 					      });
-		    //console.log(this.active_satelite.model.id);
-		    //console.log(_(sorted).map(function(el){return el.price;}));
 		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(model.id);
 		    if (cond(in_sorted,sorted.length)){
 			return;
 		    }
-		    var new_doc = sorted[in_sorted+delta];		    
+		    var new_index = in_sorted+delta;
+		    if (jump)
+			new_index+=jump;
+		    var new_doc = sorted[new_index];
 		    var count = 1;
 		    var component_id = new_doc['_id'];
 		    //hack
@@ -202,14 +204,19 @@ var ModelView = Backbone
 			count = component_id.length;
 			component_id = component_id[0];
 		    }
-		    if (this.previousCheaperBetter[delta+1] == component_id){
+		    if (this.previousCheaperBetter['dir'] == delta &&
+			this.previousCheaperBetter[delta+1] == component_id){
 			//this component was allready shown
 			//we have infinite loop here
-			console.log('log;');
-		    }		    
+			// console.log(_(sorted).map(function(el){return el.price;}));
+			//console.log(this.active_satelite.model.get('doc').price);
+			//console.log(this.active_satelite.model.get('doc')._id);
+			return this.cheaperBetter(delta,cond, delta);
+		    }
 		    var clock = this.active_satelite.options.clock;
-		    var old_component = this.active_satelite.model;		    
+		    var old_component = this.active_satelite.model;
 		    this.previousCheaperBetter[delta+1] = old_component.id;
+		    this.previousCheaperBetter['dir'] = delta;
 		    var new_component = new Component({
 						      id:component_id,
 						      part:old_component.get('part'),
