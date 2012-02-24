@@ -232,11 +232,12 @@ font_pat_2 = '<font[^>]*>'
 
 # this shit works for simplejson.dumps(choices)
 class DocDescription(dict):    
-    def iteritems(self):
-        for k,v in self.items():
-            if k!='imgs':
-                continue
-            yield k,v
+    # def iteritems(self):
+    #     for k,v in self.items():
+    #         if k!='imgs':
+    #             continue
+    #         yield k,v
+    pass
 
 
 class Doc(dict):
@@ -248,7 +249,7 @@ class Doc(dict):
 	self.parent_row = [row for row in self.parent if row['doc']==self][0]
         if 'description' in self:
             self['description'] = DocDescription(self['description'])
-        
+
     def destroy(self):
 	# pop self from flat choices
 	globals()['gChoices_flatten'].pop(self.get('_id'))
@@ -264,14 +265,13 @@ def flatChoices(res):
 		    for ch in el[1][1]['rows']:
 			doc = Doc(ch['doc'],el[1][1]['rows'])
 			ch['doc'] = doc
-			globals()['gChoices_flatten'][ch['doc']['_id']] = doc
+			globals()['gChoices_flatten'][ch['doc']['_id']] = doc                        
 
 	else:
 	    for ch in choices['rows']:
 		doc = Doc(ch['doc'],choices['rows'])
                 ch['doc'] = doc
-		globals()['gChoices_flatten'][ch['doc']['_id']] = doc
-
+		globals()['gChoices_flatten'][ch['doc']['_id']] = doc                
 
 
 

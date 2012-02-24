@@ -870,7 +870,7 @@ class Component(Resource):
         default = {'name':'','comments':'','img':[],'imgs':[]}
         if _id is None: return simplejson.dumps(default)
         if 'no' in _id: return simplejson.dumps(default)
-        from pc import models
+        from pc import models        
         if _id in models.gChoices_flatten and 'description' in models.gChoices_flatten[_id]:
             doc = models.gChoices_flatten[_id]
             descr = doc['description']
