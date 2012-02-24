@@ -2902,3 +2902,43 @@ td.note_proc{
 canvas.satelite{
     cursor:pointer;
 }
+#cparams{
+    width:300px;
+    height:300px;
+    font-size:26px;
+    float:left;
+}
+#cpriceheader{
+    margin-bottom:20px;
+}
+#cprice{
+    font-size:60px;
+    margin-right:5px;
+}
+#cperfheader{
+    font-size:16px;
+    margin-top:10px;
+    margin-bottom:17px;
+}
+
+#cperformance{
+    font-size:60px;
+    margin-right:5px;
+}
+#cdescription{
+    width:260px;
+    float:right;
+    height:590px;
+    border:1px solid green;
+    margin-top:40px;
+}
+#ctocart{
+    width:140px;
+    height:140px;
+    background-image:url('/static/new_basket.png');
+    background-repeat:no-repeat;
+    cursor:pointer;
+    float:right;
+    margin-top:40px;
+    margin-right:25px;
+}

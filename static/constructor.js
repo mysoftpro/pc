@@ -205,13 +205,10 @@ var ModelView = Backbone
 			component_id = component_id[0];
 		    }
 		    if (this.previousCheaperBetter['dir'] == delta &&
-			this.previousCheaperBetter[delta+1] == component_id){
-			//this component was allready shown
-			//we have infinite loop here
-			// console.log(_(sorted).map(function(el){return el.price;}));
-			//console.log(this.active_satelite.model.get('doc').price);
-			//console.log(this.active_satelite.model.get('doc')._id);
-			return this.cheaperBetter(delta,cond, delta);
+		    	this.previousCheaperBetter[delta+1] == component_id){
+		    	//this component was allready shown
+		    	//we have infinite loop here
+		    	return this.cheaperBetter(delta,cond, delta);
 		    }
 		    var clock = this.active_satelite.options.clock;
 		    var old_component = this.active_satelite.model;
@@ -228,6 +225,9 @@ var ModelView = Backbone
 		    //zzz
 		    this.active_satelite.$el.remove();
 		    var new_satel_view = this.renderSatelite(new_component, clock);
+		    this.collection.remove(old_component);
+		    this.collection.add(new_component);
+		    this.recalculate();
 		    new_satel_view.makeActive();
 		},
 		makeBetter:function(){
@@ -235,6 +235,11 @@ var ModelView = Backbone
 		},
 		makeCheaper:function(){
 		    this.cheaperBetter(-1,function(index,length){return index-1<=0;});
+		},
+		recalculate:function(){
+		    var price = this
+			.collection.reduce(function(acc,model){
+					       return acc+model.get('doc').price;},0);
 		},
 		style_template:_.template("position:absolute;left:{{left}};top:{{top}};"),
 		makeSateliteAttributes:function(box_size, x,y){
