@@ -123,7 +123,7 @@ var SateliteView = Backbone
 			var new_width = imageObj.width*scale;
 			var new_height = imageObj.height*scale;
 			var woffset = (full_box_size-new_width)/2;
-			var hoffset = (full_box_size-new_height)/2;
+			var hoffset = (full_box_size-new_height)/2;			
 			context.drawImage(imageObj, woffset, hoffset,
 					  new_width,new_height);
 		    };
@@ -131,6 +131,7 @@ var SateliteView = Backbone
 
 		},
 		render:function(){
+		    console.log('render');
 		    this.renderCycle();
 		}
 	    });
@@ -172,7 +173,9 @@ var ModelView = Backbone
 		initialize:function(){
 		    _.bindAll(this, "renderSatelite",
 			      "renderSatelite",
-			      "makeSateliteAttributes","makeBetter","makeCheaper", "cheaperBetter");
+			      "makeSateliteAttributes","makeBetter",
+			      "makeCheaper", "cheaperBetter",
+			     "fillDescription");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
@@ -227,8 +230,21 @@ var ModelView = Backbone
 		    var new_satel_view = this.renderSatelite(new_component, clock);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
-		    this.recalculate();
 		    new_satel_view.makeActive();
+		    this.componentChanged(component_id);
+		},
+		componentChanged:function(component_id){
+		    this.recalculate();		    
+		    this.$el.find('#cdescription').css('opacity',0);
+		    $.ajax({url:'/component',data:{id:component_id},success:this.fillDescription});
+		},
+		fillDescription:function(data){
+		    var descr = this.$el.find('#cdescription');
+		    descr.jScrollPaneRemove();
+		    descr.html(data['comments'])
+		    	.jScrollPane();
+		    descr.parent().css({'float':'right'}).css('top','40px');
+		    descr.animate({'opacity':'1.0'}, 300);
 		},
 		makeBetter:function(){
 		    this.cheaperBetter(1,function(index,length){return index+1==length;});
@@ -240,6 +256,11 @@ var ModelView = Backbone
 		    var price = this
 			.collection.reduce(function(acc,model){
 					       return acc+model.get('doc').price;},0);
+		    var text_price = price+'';
+		    if (text_price.length>=5){
+			text_price = text_price.substr(0,2)+' '+text_price.substr(2,3);
+		    }
+		    this.$el.find('#cprice').text(text_price);
 		},
 		style_template:_.template("position:absolute;left:{{left}};top:{{top}};"),
 		makeSateliteAttributes:function(box_size, x,y){
@@ -282,7 +303,9 @@ var ModelView = Backbone
 		    if (active)
 			this.active_satelite = satel_view;
 		    this.$el.append(satel_view.el);
+		    console.log(1);
 		    satel_view.render();
+		    console.log(2);
 		    return satel_view;
 		},
 		render: function() {
@@ -318,7 +341,8 @@ var ModelView = Backbone
 					    left:'545px',
 					    'float':'none',
 					    margin:0
-					});
+						     });
+		    this.componentChanged(_case.id);
 
 		},
 		central_box_size:300,

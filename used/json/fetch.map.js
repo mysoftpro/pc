@@ -42,7 +42,8 @@ function(doc) {
 	doc.phone !== '9499153'&&
 	doc.phone !== '89506782708'&&
 	 doc.phone !== '37 30 99'&&
-	 doc.phone !== '89527978731'
+	 doc.phone !== '89527978731'&&
+	doc.phone !== '509787'
 	) &&
 	doc.phone.match(/\d+/g) &&
         doc.price && doc.price !=='' &&
