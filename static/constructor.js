@@ -58,6 +58,7 @@ var SateliteView = Backbone
 							      id:this.model.get('alias'),
 							      box_size:parent.central_box_size
 							});
+		    console.log('render crntral');
 		    new_central_view.render();
 		    parent.central_view = new_central_view;
 
@@ -71,9 +72,11 @@ var SateliteView = Backbone
 		    var apos = parent.active_satelite.$el.position();
 		    parent.active_satelite.$el.css({top:apos.top+delta+'px',
 						    'left':apos.left+delta+'px'});
+		    console.log('render active');
 		    parent.active_satelite.render();
 
 		    parent.active_satelite = this;
+		    this.active = true;
 
 		    //increase this view
 		    this.options.box_size = parent.active_satelite_size;
@@ -82,8 +85,8 @@ var SateliteView = Backbone
 		    // shift
 		    var pos = this.$el.position();
 		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
+		    console.log('makeActive');
 		    this.render();
-
 		    this.options.box_size = this.options.box_size/2;
 		},
 		renderCycle:function(){
@@ -138,13 +141,6 @@ var SateliteView = Backbone
 
 var CentralView = SateliteView
     .extend({
-		// render:function(){
-		//     this.renderCycle();
-		//     if (!this.buttonsRendered){
-		// 	this.renderButtons();
-		// 	this.buttonsRendered = true;
-		//     }
-		// }
 	    });
 
 var Model = Backbone
@@ -172,7 +168,6 @@ var ModelView = Backbone
     .extend({
 		initialize:function(){
 		    _.bindAll(this, "renderSatelite",
-			      "renderSatelite",
 			      "makeSateliteAttributes","makeBetter",
 			      "makeCheaper", "cheaperBetter",
 			     "fillDescription");
@@ -227,6 +222,7 @@ var ModelView = Backbone
 
 		    //zzz
 		    this.active_satelite.$el.remove();
+		    console.log('cheaper better');
 		    var new_satel_view = this.renderSatelite(new_component, clock);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
@@ -282,50 +278,55 @@ var ModelView = Backbone
 		    var satel_x = offset_x+this.central_pos.left;
 		    var satel_y = offset_y+this.central_pos.top;
 		    var box_size = this.satelite_box_size;
-		    var active = false;
-		    if (m.get('alias') == 'case'){
-			box_size = this.active_satelite_size;
-			active = true;
-		    }
+		    // var active = false;
+		    // if (m.get('alias') == 'case'){
+		    // 	box_size = this.active_satelite_size;
+		    // 	active = true;
+		    // }
 		    var satel_view = new SateliteView({model:m,
 						       tagName:'canvas',
 						       attributes:this.makeSateliteAttributes(
 							   box_size,
 							   satel_x,
 							   satel_y),
-						       x:satel_x,
-						       y:satel_y,
+						       //x:satel_x,
+						       //y:satel_y,
 						       clock:i,
-						       active:active,
+						       //active:active,
 						       box_size:box_size,
 						       parent:this
 						      });
-		    if (active)
-			this.active_satelite = satel_view;
+		    // if (active)
+		    // 	this.active_satelite = satel_view;
 		    this.$el.append(satel_view.el);
-		    console.log(1);
-		    satel_view.render();
-		    console.log(2);
+		    console.log('render satelite');
+		    satel_view.render();		 
 		    return satel_view;
 		},
-		render: function() {
+		render: function() {		    
 		    var _case = this.collection.getByAlias('case');
 		    this.central_view = new CentralView({
 							model:_case,
 							el:document.getElementById('ccenter'),
 							box_size:this.central_box_size
 						});
-		    this.central_view.render();
+		    //do not render it cause will render it during makeActive
+		    //this.central_view.render();
 		    this.central_pos = this.central_view.$el.position();
 		    //move satelite little up
 		    this.central_view.$el.css({'top':this.central_pos.top-30+'px'});
 		    //add offset for surrounding satelites calculations (to find center)
 		    this.central_pos.left+=this.central_view.options.box_size/2;
 		    this.central_pos.top+=this.central_view.options.box_size/2;
-		    this
+		    var satelites = this
 			.collection
-			.each(this.renderSatelite);
-
+			.map(this.renderSatelite);
+		    var case_view = _(satelites)
+			.select(function(view){
+				    return view.model.get('alias')=='case';})[0];
+		    
+		    console.log(case_view);
+		    case_view.makeActive();
 		    this.central_view.$el.after('<div id="gbetter" class="large_button"></div>');
 		    this.central_view.$el.next().css({
 							 position:'absolute',
@@ -343,7 +344,6 @@ var ModelView = Backbone
 					    margin:0
 						     });
 		    this.componentChanged(_case.id);
-
 		},
 		central_box_size:300,
 		satelite_radius:250,
