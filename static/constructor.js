@@ -58,9 +58,17 @@ var SateliteView = Backbone
 							      id:this.model.get('alias'),
 							      box_size:parent.central_box_size
 							});
-		    console.log('render central in makeactive');
 		    new_central_view.render();
 		    parent.central_view = new_central_view;
+		    //ttt
+		    var old_active_view = parent.active_satelite;
+		    if (old_active_view.model.get('alias')!==this.model.get('alias')){
+			old_active_view.$el.remove();
+			var ordinal_view = parent.makeSatelite(old_active_view.model,
+							       old_active_view.options.clock);
+			ordinal_view.render();
+		    }
+
 
 		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
 
@@ -73,6 +81,7 @@ var SateliteView = Backbone
 		    parent.active_satelite.$el.css({top:apos.top+delta+'px',
 						    'left':apos.left+delta+'px'});
 
+		    // ttt
 		    parent.active_satelite = this;
 		    this.active = true;
 
@@ -83,7 +92,6 @@ var SateliteView = Backbone
 		    // shift
 		    var pos = this.$el.position();
 		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
-		    console.log('render satelite in makeActive');
 		    this.render();
 		    this.options.box_size = this.options.box_size/2;
 		},
@@ -132,7 +140,6 @@ var SateliteView = Backbone
 
 		},
 		render:function(){
-		    console.log('render');
 		    this.renderCycle();
 		}
 	    });
@@ -217,10 +224,7 @@ var ModelView = Backbone
 						      count:count,
 						      storage:old_component.get('storage')
 						  });
-
-		    //zzz
-		    this.active_satelite.$el.remove();
-		    console.log('cheaper better');
+		    //this.active_satelite.$el.remove();
 		    var new_satel_view = this.makeSatelite(new_component, clock);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
@@ -306,7 +310,7 @@ var ModelView = Backbone
 		    this.central_pos.top+=this.central_view.options.box_size/2;
 		    //make case default active view
 		    var satelites = this
-			.collection		    
+			.collection
 			.map(this.makeSatelite);
 		    _(satelites).each(function(view){
 					  if (view.model.get('alias')!='case')
@@ -317,22 +321,22 @@ var ModelView = Backbone
 				    return view.model.get('alias')=='case';})[0];
 		    //this is a hack. i do not have active view yet, but it is required by makeActive
 		    this.active_satelite = case_view;
-		    case_view.makeActive();		    
+		    case_view.makeActive();
 		    this.central_view.$el.after('<div id="gbetter" class="large_button"></div>');
 		    this.central_view.$el.next().css({
 							 position:'absolute',
-					    top:'535px',
-					    left:'600px',
-					    'float':'none',
-					    margin:0
+							 top:'535px',
+							 left:'600px',
+							 'float':'none',
+							 margin:0
 					});
 		    this.central_view.$el.after('<div id="gcheaper" class="large_button"></div>');
 		    this.central_view.$el.next().css({
-					    position:'absolute',
-					    top:'535px',
-					    left:'545px',
-					    'float':'none',
-					    margin:0
+							 position:'absolute',
+							 top:'535px',
+							 left:'545px',
+							 'float':'none',
+							 margin:0
 						     });
 		    this.componentChanged(_case.id);
 		},
