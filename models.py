@@ -838,6 +838,9 @@ class Model(dict):
 	    if proc==name:
 		retval = self.procCatalogs == self.getCatalogsKey(doc)
 	    return retval
+        # fucken legacy
+        if name == 'tablet_catalog':
+            name = tablet
 	choices = globals()['gChoices'][name]
 	flatten = []
 	if type(choices) is list:

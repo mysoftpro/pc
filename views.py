@@ -1701,13 +1701,27 @@ class Constructor(PCView):
                     
     def renderModel(self,doc):
         model = Model(doc)
+        uuid = '';
+        if not model.ours:
+            uuid = model._id;
+        # i just need that to replace components!!!!!!!!
         corrected_items = {}
         for c in model.components:
-            corrected_items.update({c._cat_name:c.component_doc.get('_id')})
+            cat = c._cat_name
+            _id = c.component_doc.get('_id')
+            orig_id = doc['items'].get(cat,None)
+            if type(orig_id) is list:
+                new_id = []
+                le = len(orig_id)
+                while le !=0:
+                    new_id.append(_id)
+                    le-=1
+                _id = new_id
+            corrected_items.update({cat:_id})
         doc['items'] = corrected_items
         self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\
             'var choices='+simplejson.dumps(self.simpleChoices())+';var parts_aliases='+\
-            simplejson.dumps(parts_aliases)+';'
+            simplejson.dumps(parts_aliases)+';var uuid=+'+simplejson.dumps(uuid)+';'
 
     def preRender(self):
         name = self.name

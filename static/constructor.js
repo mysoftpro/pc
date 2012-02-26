@@ -8,14 +8,16 @@ var Component = Backbone
     .extend({
 		initialize:function(){
 		    var id = this.id;
-		    var storage = this.get('storage');
-		    this.set('doc',
-			     _(storage)
+		    var storage = this.get('storage');		    
+		    var doc = _(storage)
 			     .chain()
 			     .select(function(doc){
 					 return doc['_id']==id;})
 			     .first()
-			     .value());
+			     .value(); 
+		    if (!doc)
+			doc = {};
+		    this.set('doc',doc);
 		},
 		dget:function(ob,key,_def){
 		    var def = {};
@@ -44,10 +46,13 @@ var SateliteView = Backbone
     .View
     .extend({
 		initialize:function(){
-		    _.bindAll(this, "makeActive", "render");
+		    _.bindAll(this, "makeActive", "render", "getDescription");
 		},
 		events:{
 		    click:"makeActive"
+		},
+		getDescription:function(component){
+		  return this.options.parent.getDescription(component);
 		},
 		makeActive:function(){
 		    var parent = this.options.parent;
@@ -60,28 +65,21 @@ var SateliteView = Backbone
 							});
 		    new_central_view.render();
 		    parent.central_view = new_central_view;
-		    //ttt
+		    //remove old element
 		    var old_active_view = parent.active_satelite;
-		    if (old_active_view.model.get('alias')!==this.model.get('alias')){
+		    if(old_active_view == this){
+		    }
+		    else{
 			old_active_view.$el.remove();
+		    }
+		    // make ordinal view
+		    if (old_active_view.model.get('alias')!==this.model.get('alias')){
 			var ordinal_view = parent.makeSatelite(old_active_view.model,
 							       old_active_view.options.clock);
 			ordinal_view.render();
 		    }
 
 
-		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
-
-		    //reduce old active view
-		    parent.active_satelite.options.box_size = parent.satelite_box_size;
-		    parent.active_satelite.$el.attr('width',parent.satelite_box_size);
-		    parent.active_satelite.$el.attr('height',parent.satelite_box_size);
-		    // shift
-		    var apos = parent.active_satelite.$el.position();
-		    parent.active_satelite.$el.css({top:apos.top+delta+'px',
-						    'left':apos.left+delta+'px'});
-
-		    // ttt
 		    parent.active_satelite = this;
 		    this.active = true;
 
@@ -89,11 +87,13 @@ var SateliteView = Backbone
 		    this.options.box_size = parent.active_satelite_size;
 		    this.$el.attr('width',parent.active_satelite_size);
 		    this.$el.attr('height',parent.active_satelite_size);
-		    // shift
+		    //shift active view according to its size
+		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
 		    var pos = this.$el.position();
 		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
 		    this.render();
 		    this.options.box_size = this.options.box_size/2;
+		    this.getDescription(this.model);
 		},
 		renderCycle:function(){
 		    this.el.width = this.el.width;
@@ -175,11 +175,80 @@ var ModelView = Backbone
 		    _.bindAll(this, "makeSatelite",
 			      "makeSateliteAttributes","makeBetter",
 			      "makeCheaper", "cheaperBetter",
-			     "fillDescription");
+			     "fillDescription","getDescription",
+			      "componentChanged", "save");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
-		    'click #gbetter':"makeBetter"
+		    'click #gbetter':"makeBetter",
+		    'click #ctocart':"save"
+		},
+		save:function(){
+		    var model_to_store = {};
+		    var items = {};
+		    this.collection.each(function(m){
+					     var count = m.get('count');
+					     var id = m.get('doc')._id;
+					     if (count>1){
+						 var new_id = [];
+						 while (count!=0){
+						     new_id.push(id);
+						     count-=1;
+						 }
+						 id = new_id;
+					     }
+					     items[m.get('part')]=id;
+					 });
+
+		    // for (_id in model){
+		    // 	var new_model_comp = filterByCatalogs(_(new_model).values(),
+		    // 					      getCatalogs(model[_id]))[0];
+		    // 	var body = jgetBodyById(_id);
+		    // 	if (isMother(body)){
+		    // 	    model_to_store["mother_catalogs"] = getCatalogs(new_model_comp);
+		    // 	}
+		    // 	if (isProc(body)){
+		    // 	    model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
+		    // 	}
+		    // 	var to_store = null;
+		    // 	if (new_model_comp.count && new_model_comp.count>1){
+		    // 	    to_store = [];
+		    // 	    for (var i=0;i<new_model_comp.count;i++){
+		    // 		to_store.push(new_model_comp['_id']);
+		    // 	    }
+		    // 	}
+		    // 	else{
+		    // 	    if (!new_model_comp['_id'].match('no'))
+		    // 		to_store = new_model_comp['_id'];
+		    // 	}
+		    // 	var part = jgetPart(body);
+		    // 	items[part] = to_store;
+		    // }
+
+		    // model_to_store['items'] = items;
+		    // model_to_store['installing'] = $('#oinstalling').is(':checked');
+		    // model_to_store['building'] = $('#obuild').is(':checked');
+		    // model_to_store['dvd'] = $('#odvd').is(':checked');
+
+		    // var to_send = {};
+		    // if (uuid){
+		    // 	if (edit && !processing){
+		    // 	    model_to_store['id'] = uuid;
+		    // 	    to_send['edit'] = 't';
+		    // 	}
+		    // 	else{
+		    // 	    model_to_store['parent'] = uuid;
+		    // 	}
+		    // }
+		    // else{
+		    // 	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
+		    // }
+		    // to_send['model'] = JSON.stringify(model_to_store);
+		    // $.ajax({
+		    // 	       url:'/save',
+		    // 	       data:to_send,
+		    // 	       success:to_cartSuccess
+		    // 	   });
 		},
 		previousCheaperBetter:{
 		    1:'',
@@ -187,26 +256,20 @@ var ModelView = Backbone
 		    dir:1
 		},
 		cheaperBetter:function(delta, cond, jump){
-		    var model = this.active_satelite.model;
-		    var storage = model.get('storage');
+		    var component = this.active_satelite.model;
+		    var storage = component.get('storage');
 		    var sorted = storage.sort(function(doc1,doc2){
 						  return doc1.price-doc2.price;
 					      });
-		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(model.id);
+		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(component.id);
 		    if (cond(in_sorted,sorted.length)){
 			return;
 		    }
 		    var new_index = in_sorted+delta;
 		    if (jump)
 			new_index+=jump;
-		    var new_doc = sorted[new_index];
-		    var count = 1;
+		    var new_doc = sorted[new_index];		    
 		    var component_id = new_doc['_id'];
-		    //hack
-		    if (component_id.length<=2){
-			count = component_id.length;
-			component_id = component_id[0];
-		    }
 		    if (this.previousCheaperBetter['dir'] == delta &&
 		    	this.previousCheaperBetter[delta+1] == component_id){
 		    	//this component was allready shown
@@ -217,32 +280,38 @@ var ModelView = Backbone
 		    var old_component = this.active_satelite.model;
 		    this.previousCheaperBetter[delta+1] = old_component.id;
 		    this.previousCheaperBetter['dir'] = delta;
+		    console.log(old_component.get('count'));
 		    var new_component = new Component({
 						      id:component_id,
 						      part:old_component.get('part'),
 						      alias:old_component.get('alias'),
-						      count:count,
+						      count:old_component.get('count'),
 						      storage:old_component.get('storage')
 						  });
-		    //this.active_satelite.$el.remove();
 		    var new_satel_view = this.makeSatelite(new_component, clock);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
 		    new_satel_view.makeActive();
-		    this.componentChanged(component_id);
+		    this.componentChanged(new_component);
 		},
-		componentChanged:function(component_id){
+		componentChanged:function(component){
 		    this.recalculate();
-		    this.$el.find('#cdescription').css('opacity',0);
-		    $.ajax({url:'/component',data:{id:component_id},success:this.fillDescription});
+		    this.getDescription(component);
 		},
-		fillDescription:function(data){
+		getDescription:function(component){
+		    this.$el.find('#cdescription').css('opacity',0);
+		    $.ajax({url:'/component',data:{id:component.id},
+			    success:this.fillDescription(component)});
+		},
+		fillDescription:function(component){
 		    var descr = this.$el.find('#cdescription');
-		    descr.jScrollPaneRemove();
-		    descr.html(data['comments'])
-		    	.jScrollPane();
-		    descr.parent().css({'float':'right'}).css('top','40px');
-		    descr.animate({'opacity':'1.0'}, 300);
+		    return function(data){
+			descr.jScrollPaneRemove();
+			descr.html('<h2>'+component.get('doc').text+'</h2>'+data['comments'])
+		    	    .jScrollPane();
+			descr.parent().css({'float':'right'}).css('top','40px');
+			descr.animate({'opacity':'1.0'}, 300);
+		    };
 		},
 		makeBetter:function(){
 		    this.cheaperBetter(1,function(index,length){return index+1==length;});
@@ -338,7 +407,7 @@ var ModelView = Backbone
 							 'float':'none',
 							 margin:0
 						     });
-		    this.componentChanged(_case.id);
+		    this.componentChanged(_case);
 		},
 		central_box_size:300,
 		satelite_radius:250,
@@ -362,18 +431,19 @@ var model_view;
 		  var alias = aliases_reverted[key];
 		  var component_id = model['items'][key];
 		  var count = 1;
-		  //hack
-		  if (component_id.length<=2){
+		  //hack. this means it is list! everery string id is more than 4 by default
+		  if (component_id.length<=4){
 		      count = component_id.length;
 		      component_id = component_id[0];
 		  }
-		  return new Component({
+		  var c = new Component({
 					   id:component_id,
 					   part:key,
 					   alias:aliases_reverted[key],
 					   count:count,
 					   storage:choices[key]
 				       });
+		  return c;
 	      })
 	 .value();
      var model_collection = new Model(model_components);
