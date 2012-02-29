@@ -4,15 +4,20 @@ _.templateSettings = {
 };
 
 var exclusive_case = "10837";
-function checkPsuForCase(old_component, new_component){
+function checkPsuForCase(old_component, new_component){    
     if (old_component.catalogs[2]!=exclusive_case && new_component.catalogs[2]==exclusive_case){
 	var video_component = new_model[code('video')];
 	checkPsuForVideo(video_component, 'forced');
     }
-    var psu_select = jgetSelectByRow($('#' + parts['psu']));
-    if (new_component.catalogs[2]==exclusive_case){
+    var psu_row = $('#' + parts['psu']);
+    var psu_select = jgetSelectByRow(psu_row);
+    if (new_component.catalogs[2]==exclusive_case){	
 	psu_select.find('option').first().prop('disabled', true);
-	psu_select.trigger("liszt:updated");
+	psu_select.trigger("liszt:updated");	
+	if (psu_select.val().match('no')){
+	    //zzz
+	    psu_row.find('.better').click();
+	}
     }
     else{
 	psu_select.find('option').first().prop('disabled', false);

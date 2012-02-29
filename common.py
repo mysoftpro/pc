@@ -5,9 +5,9 @@ def addCookies(request, cookies):
     now = datetime.now()
     localhost = request.getRequestHostname()=='localhost'
     if localhost:
-	request.addCookie('pc_cookie_forced1','true',expires=now.replace(year=2038).strftime('%a, %d %b %Y %H:%M:%S UTC'),path='/')
+	request.addCookie('pc_cookie_forced1','true',expires=now.replace(year=2036).strftime('%a, %d %b %Y %H:%M:%S UTC'),path='/')
     for k,v in cookies.items():
-	year = 2038
+	year = 2036
 	if v=='':
 	    year = 2000
 	t = now.replace(year=year).strftime('%a, %d %b %Y %H:%M:%S UTC')
