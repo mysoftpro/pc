@@ -1,7 +1,7 @@
 function(doc) {
     if (doc.phone &&
 	(doc.phone !== '') &&
-        (doc.phone !== '89022506126' &&
+	(doc.phone !== '89022506126' &&
 	 doc.phone !== '+79210095968'&&
 	doc.phone !== '76-10-24'&&
 	doc.phone !== '8-911-471-66-31' &&
@@ -43,12 +43,16 @@ function(doc) {
 	doc.phone !== '89506782708'&&
 	 doc.phone !== '37 30 99'&&
 	 doc.phone !== '89527978731'&&
-	doc.phone !== '509787'
+	doc.phone !== '509787'&&
+	doc.phone !== '8-952-792-43-97'&&
+	doc.phone !== '89062397671'&&
+	doc.phone !== '89520551180'&&
+	 doc.phone !== '89521148662'
 	) &&
 	doc.phone.match(/\d+/g) &&
-        doc.price && doc.price !=='' &&
-        doc.date  &&
-        doc.subj){
-        emit(doc.date.concat(doc['_id']));
+	doc.price && doc.price !=='' &&
+	doc.date  &&
+	doc.subj){
+	emit(doc.date.concat(doc['_id']));
     }
 }
