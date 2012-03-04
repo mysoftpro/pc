@@ -221,7 +221,7 @@ var ModelView = Backbone
 		    }
 		    else{
 		    	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
-		    }		    
+		    }
 		    model_to_store['installing'] = this.$el.find('#oinstalling').is(':checked');
 		    model_to_store['building'] = $('#obuild').is(':checked');
 		    model_to_store['dvd'] = this.$el.find('#odvd').is(':checked');
@@ -306,7 +306,18 @@ var ModelView = Backbone
 		recalculate:function(){
 		    var price = this
 			.collection.reduce(function(acc,model){
-					       return acc+model.get('doc').price;},0);
+					       console.log(model.get('doc').price*model.get('count'));
+					       return acc+model.get('doc').price*model.get('count');
+					   },0);
+		    if(this.$el.find('#odvd').is(':checked')){
+			price+=800;
+		    }
+		    if(this.$el.find('#obuild').is(':checked')){
+			price+=800;
+		    }
+		    if(this.$el.find('#oinstalling').is(':checked')){
+			price+=800;
+		    }
 		    var text_price = price+'';
 		    if (text_price.length>=5){
 			text_price = text_price.substr(0,2)+' '+text_price.substr(2,3);
