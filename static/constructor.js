@@ -8,13 +8,13 @@ var Component = Backbone
     .extend({
 		initialize:function(){
 		    var id = this.id;
-		    var storage = this.get('storage');		    
+		    var storage = this.get('storage');
 		    var doc = _(storage)
 			     .chain()
 			     .select(function(doc){
 					 return doc['_id']==id;})
 			     .first()
-			     .value(); 
+			     .value();
 		    if (!doc)
 			doc = {};
 		    this.set('doc',doc);
@@ -176,16 +176,23 @@ var ModelView = Backbone
 			      "makeSateliteAttributes","makeBetter",
 			      "makeCheaper", "cheaperBetter",
 			     "fillDescription","getDescription",
-			      "componentChanged", "save");
+			      "componentChanged", "save", "getCatalogs");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
 		    'click #gbetter':"makeBetter",
 		    'click #ctocart':"save"
 		},
+		getCatalogs:function(alias){
+		    var m = this.collection.getByAlias(alias);
+		    var doc = _(m.get('storage'))
+			    .select(function(doc){return doc._id==m.id;})[0];
+		    return doc['catalogs'];
+		},
 		save:function(){
 		    var model_to_store = {};
 		    var items = {};
+		    var edit = false;//edit used when 'save' is click
 		    this.collection.each(function(m){
 					     var count = m.get('count');
 					     var id = m.get('doc')._id;
@@ -199,50 +206,27 @@ var ModelView = Backbone
 					     }
 					     items[m.get('part')]=id;
 					 });
+		    model_to_store['items'] = items;
+		    model_to_store['mother_catalogs'] = this.getCatalogs('mother');
+		    model_to_store['proc_catalogs'] = this.getCatalogs('proc');
 
-		    // for (_id in model){
-		    // 	var new_model_comp = filterByCatalogs(_(new_model).values(),
-		    // 					      getCatalogs(model[_id]))[0];
-		    // 	var body = jgetBodyById(_id);
-		    // 	if (isMother(body)){
-		    // 	    model_to_store["mother_catalogs"] = getCatalogs(new_model_comp);
-		    // 	}
-		    // 	if (isProc(body)){
-		    // 	    model_to_store["proc_catalogs"] = getCatalogs(new_model_comp);
-		    // 	}
-		    // 	var to_store = null;
-		    // 	if (new_model_comp.count && new_model_comp.count>1){
-		    // 	    to_store = [];
-		    // 	    for (var i=0;i<new_model_comp.count;i++){
-		    // 		to_store.push(new_model_comp['_id']);
-		    // 	    }
-		    // 	}
-		    // 	else{
-		    // 	    if (!new_model_comp['_id'].match('no'))
-		    // 		to_store = new_model_comp['_id'];
-		    // 	}
-		    // 	var part = jgetPart(body);
-		    // 	items[part] = to_store;
-		    // }
+		    if (uuid){
+		    	if (edit && !processing){
+		    	    model_to_store['id'] = uuid;
+		    	    to_send['edit'] = 't';
+		    	}
+		    	else{
+		    	    model_to_store['parent'] = uuid;
+		    	}
+		    }
+		    else{
+		    	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
+		    }		    
+		    model_to_store['installing'] = this.$el.find('#oinstalling').is(':checked');
+		    model_to_store['building'] = $('#obuild').is(':checked');
+		    model_to_store['dvd'] = this.$el.find('#odvd').is(':checked');
+		    console.log(model_to_store);
 
-		    // model_to_store['items'] = items;
-		    // model_to_store['installing'] = $('#oinstalling').is(':checked');
-		    // model_to_store['building'] = $('#obuild').is(':checked');
-		    // model_to_store['dvd'] = $('#odvd').is(':checked');
-
-		    // var to_send = {};
-		    // if (uuid){
-		    // 	if (edit && !processing){
-		    // 	    model_to_store['id'] = uuid;
-		    // 	    to_send['edit'] = 't';
-		    // 	}
-		    // 	else{
-		    // 	    model_to_store['parent'] = uuid;
-		    // 	}
-		    // }
-		    // else{
-		    // 	model_to_store['parent'] = _(document.location.href.split('/')).last().split('?')[0];
-		    // }
 		    // to_send['model'] = JSON.stringify(model_to_store);
 		    // $.ajax({
 		    // 	       url:'/save',
@@ -268,7 +252,7 @@ var ModelView = Backbone
 		    var new_index = in_sorted+delta;
 		    if (jump)
 			new_index+=jump;
-		    var new_doc = sorted[new_index];		    
+		    var new_doc = sorted[new_index];
 		    var component_id = new_doc['_id'];
 		    if (this.previousCheaperBetter['dir'] == delta &&
 		    	this.previousCheaperBetter[delta+1] == component_id){

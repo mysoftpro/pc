@@ -1721,7 +1721,7 @@ class Constructor(PCView):
         doc['items'] = corrected_items
         self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\
             'var choices='+simplejson.dumps(self.simpleChoices())+';var parts_aliases='+\
-            simplejson.dumps(parts_aliases)+';var uuid=+'+simplejson.dumps(uuid)+';'
+            simplejson.dumps(parts_aliases)+';var uuid='+simplejson.dumps(uuid)+';'
 
     def preRender(self):
         name = self.name
