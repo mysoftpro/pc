@@ -181,7 +181,10 @@ var ModelView = Backbone
 		events:{
 		    'click #gcheaper':"makeCheaper",
 		    'click #gbetter':"makeBetter",
-		    'click #ctocart':"save"
+		    'click #ctocart':"save",
+		    'change #odvd':"recalculate",
+		    'change #obuild':"recalculate",
+		    'change #oinstalling':"recalculate"
 		},
 		getCatalogs:function(alias){
 		    var m = this.collection.getByAlias(alias);
@@ -191,6 +194,7 @@ var ModelView = Backbone
 		},
 		save:function(){
 		    var model_to_store = {};
+		    var to_send = {};
 		    var items = {};
 		    var edit = false;//edit used when 'save' is click
 		    this.collection.each(function(m){
@@ -225,14 +229,35 @@ var ModelView = Backbone
 		    model_to_store['installing'] = this.$el.find('#oinstalling').is(':checked');
 		    model_to_store['building'] = $('#obuild').is(':checked');
 		    model_to_store['dvd'] = this.$el.find('#odvd').is(':checked');
-		    console.log(model_to_store);
+		    
 
-		    // to_send['model'] = JSON.stringify(model_to_store);
-		    // $.ajax({
-		    // 	       url:'/save',
-		    // 	       data:to_send,
-		    // 	       success:to_cartSuccess
-		    // 	   });
+		    to_send['model'] = JSON.stringify(model_to_store);		    
+		    $.ajax({
+		    	       url:'/save',
+		    	       data:to_send,
+		    	       success:this.to_cartSuccess
+		    	   });
+		},
+		to_cartSuccess: function(data){
+		    if (!data['id'])
+			alert('Что то пошло не так :(');
+		    else{
+			uuid = data['id'];			
+			var cart_el = $('#cart');
+			if (cart_el.length>0){
+			    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
+			}
+			else{
+			    if (!data['edit']){
+				$('#main_menu')
+				    .append(_.template('<li><a id="cart" href="/cart/{{cart}}">Корзина(1)</a></li>',
+						       {
+							   cart:$.cookie('pc_user')
+						       }));
+			    }
+			}						
+			alert('Получилось!');
+		    }
 		},
 		previousCheaperBetter:{
 		    1:'',
@@ -263,8 +288,7 @@ var ModelView = Backbone
 		    var clock = this.active_satelite.options.clock;
 		    var old_component = this.active_satelite.model;
 		    this.previousCheaperBetter[delta+1] = old_component.id;
-		    this.previousCheaperBetter['dir'] = delta;
-		    console.log(old_component.get('count'));
+		    this.previousCheaperBetter['dir'] = delta;		    
 		    var new_component = new Component({
 						      id:component_id,
 						      part:old_component.get('part'),
@@ -305,8 +329,7 @@ var ModelView = Backbone
 		},
 		recalculate:function(){
 		    var price = this
-			.collection.reduce(function(acc,model){
-					       console.log(model.get('doc').price*model.get('count'));
+			.collection.reduce(function(acc,model){					       
 					       return acc+model.get('doc').price*model.get('count');
 					   },0);
 		    if(this.$el.find('#odvd').is(':checked')){
