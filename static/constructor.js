@@ -182,7 +182,8 @@ var ModelView = Backbone
 			      "makeSateliteAttributes","makeBetter",
 			      "makeCheaper", "cheaperBetter",
 			     "fillDescription","getDescription",
-			      "componentChanged", "save", "getCatalogs");
+			      "componentChanged", "save", "getCatalogs", "checkConfig",
+			     "checkSocket");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
@@ -280,7 +281,7 @@ var ModelView = Backbone
 					      });
 		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(component.id);
 		    if (cond(in_sorted,sorted.length)){
-			return;
+			return undefined;
 		    }
 		    var new_index = in_sorted+delta;
 		    if (jump)
@@ -309,8 +310,32 @@ var ModelView = Backbone
 		    this.collection.add(new_component);
 		    new_satel_view.makeActive();
 		    this.componentChanged(new_component, delta);
+		    return new_component;
+		},
+		componentChanged:function(component, delta){
+		    // during checkConfig other components possible will be changed
+		    this.checkConfig(component, delta);
+		    this.recalculate();
+		    this.getDescription(component);
 		},
 		checkConfig:function(component, delta){
+		    var alias = component.get('alias');
+		    if (alias=='proc' || alias == 'mother'){
+			var may_be_changed = this.checkSocket(component, delta);
+			console.log('11111');
+			console.log(component.id);
+			console.log(may_be_changed.id);
+			if (may_be_changed.id!==component.id){
+			    // active view was changed. it need to make active original component
+			    var original_view = _(this.satelites)
+				.select(function(view){
+					    return view.model.id==component.id;})[0];
+			    //this.active_satelite = other_view;
+			    original_view.makeActive();
+			}
+		    }
+		},
+		checkSocket:function(component, delta){
 		    var mother_catalogs = this.getCatalogs('mother');
 		    var proc_catalogs = this.getCatalogs('proc');
 		    var mapped = _(mother_to_proc_mapping)
@@ -321,17 +346,53 @@ var ModelView = Backbone
 					&& _.difference(proc_map, proc_catalogs).length==0;
 				});
 		    if (mapped.length==0){
-			//it need to change socket!
-			var other = 'proc';
-			if (component.get('alias')==other)
-			    other='mother';
-			//zzz
+			//may be it need to change socket!
+			//mark that socket is changed if needed.
+			//socket must be changed only once
+			//if user switch motherboard and it is not consistent with proc_catalogs
+			//i will switch to proc now and make it cheaper or better
+			//but during this switching DO NOT SWITCH BACK to mother!
+			//change only proc for all other iterations
+			var other;
+			if (this.socketTransition){
+			    //change the same component
+			    other = component.get('alias');
+			}
+			else{
+			    //change component on other side of socket
+			    if (component.get('alias') == 'proc')
+				other = 'mother';
+			    else
+				other = 'proc';
+			    this.socketTransition = true;
+			}
+			var other_view = _(this.satelites)
+			    .select(function(view){
+					return view.model.get('alias')==other;})[0];
+			//this.active_satelite = other_view;
+			other_view.makeActive();
+			var new_other;
+			if (delta>0){
+			    //try one direction. if nothing returned - try another
+			    new_other = this.makeBetter();
+			    if (!new_other)
+				new_other = this.makeCheaper();
+			}
+			else{
+			    new_other = this.makeCheaper();
+			    if (!new_other)
+				new_other = this.makeBetter();
+			}
+			if (!new_other){
+			    console.log('what da fuck???');
+			}
+			return new_other;
 		    }
-		},
-		componentChanged:function(component, delta){
-		    this.checkConfig(component, delta);
-		    this.recalculate();
-		    this.getDescription(component);
+		    else{
+			//all clear. change socket transition to initial
+			this.socketTransition = false;
+			return component;
+		    }
 		},
 		getDescription:function(component){
 		    this.$el.find('#cdescription').css('opacity',0);
@@ -349,10 +410,10 @@ var ModelView = Backbone
 		    };
 		},
 		makeBetter:function(){
-		    this.cheaperBetter(1,function(index,length){return index+1>=length;});
+		    return this.cheaperBetter(1,function(index,length){return index+1>=length;});
 		},
 		makeCheaper:function(){
-		    this.cheaperBetter(-1,function(index,length){return index-1<0;});
+		    return this.cheaperBetter(-1,function(index,length){return index-1<0;});
 		},
 		recalculate:function(){
 		    var price = this
@@ -423,14 +484,14 @@ var ModelView = Backbone
 		    this.central_pos.left+=this.central_view.options.box_size/2;
 		    this.central_pos.top+=this.central_view.options.box_size/2;
 		    //make case default active view
-		    var satelites = this
+		    this.satelites = this
 			.collection
 			.map(this.makeSatelite);
-		    _(satelites).each(function(view){
+		    _(this.satelites).each(function(view){
 					  if (view.model.get('alias')!='case')
 					      view.render();
 				      });
-		    var case_view = _(satelites)
+		    var case_view = _(this.satelites)
 			.select(function(view){
 				    return view.model.get('alias')=='case';})[0];
 		    //this is a hack. i do not have active view yet, but it is required by makeActive
