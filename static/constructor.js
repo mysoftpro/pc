@@ -74,7 +74,6 @@ var SateliteView = Backbone
 			ordinal_view.render();
 		    }
 
-
 		    parent.active_satelite = this;
 		    this.active = true;
 
@@ -306,6 +305,11 @@ var ModelView = Backbone
 						      storage:old_component.get('storage')
 						  });
 		    var new_satel_view = this.makeSatelite(new_component, clock);
+		    this.satelites = _(this.satelites)
+			.select(function(view){
+				    return view.model.id !== old_component.id;
+				});
+		    this.satelites.push(new_satel_view);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
 		    new_satel_view.makeActive();
@@ -330,7 +334,6 @@ var ModelView = Backbone
 			    var original_view = _(this.satelites)
 				.select(function(view){
 					    return view.model.id==component.id;})[0];
-			    //this.active_satelite = other_view;
 			    original_view.makeActive();
 			}
 		    }
