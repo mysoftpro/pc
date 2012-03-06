@@ -1719,10 +1719,17 @@ class Constructor(PCView):
                 _id = new_id
             corrected_items.update({cat:_id})
         doc['items'] = corrected_items
-        self.template.middle.find('script').text = 'var model='+simplejson.dumps(doc)+';'+\
-            'var choices='+simplejson.dumps(self.simpleChoices())+';var parts_aliases='+\
-            simplejson.dumps(parts_aliases)+';var uuid='+simplejson.dumps(uuid)+';'
-
+        self.template.middle.find('script').\
+            text = ''.join(('var model=',simplejson.dumps(doc),';',
+                            'var choices=',
+                            simplejson.dumps(self.simpleChoices()),
+                            ';var parts_aliases=',
+                            simplejson.dumps(parts_aliases),
+                            ';var uuid=',simplejson.dumps(uuid),';',
+                            ';var mother_to_proc_mapping=',
+                            simplejson.dumps(mother_to_proc_mapping),
+                           ';var parts_names=',simplejson.dumps(parts_names)))
+        
     def preRender(self):
         name = self.name
         if name is None:

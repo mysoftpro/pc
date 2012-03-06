@@ -1,3 +1,6 @@
+//TODO
+//checkMother!
+//checkProc!
 _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
@@ -18,14 +21,6 @@ var Component = Backbone
 		    if (!doc)
 			doc = {};
 		    this.set('doc',doc);
-		},
-		dget:function(ob,key,_def){
-		    var def = {};
-		    if (_def)
-			def = _def;
-		    if (ob[key])
-			return ob[key];
-		    return def;
 		},
 		getIcon:function(){
 		    var doc = this.get('doc');
@@ -113,6 +108,17 @@ var SateliteView = Backbone
 		    context.clip();
 		    context.fillStyle = "white";
 		    context.fill();
+		    var image_src = this.model.getIcon();
+		    if(image_src.match('no_image')){
+			context.font = "10pt Calibri";
+			context.fillStyle = "black";
+			context.textAlign = "center";
+			context.fillText(parts_names[parts_aliases[this.model.get('alias')]],
+					 centerX, centerY);
+			context.fillText('нет', centerX, centerY+10);
+			context.fillText('картинки', centerX, centerY+20);
+			return;
+		    }
 
 		    var imageObj = new Image();
 
@@ -136,7 +142,7 @@ var SateliteView = Backbone
 			context.drawImage(imageObj, woffset, hoffset,
 					  new_width,new_height);
 		    };
-		    imageObj.src = this.model.getIcon();
+		    imageObj.src = image_src;
 
 		},
 		render:function(){
@@ -188,8 +194,10 @@ var ModelView = Backbone
 		},
 		getCatalogs:function(alias){
 		    var m = this.collection.getByAlias(alias);
-		    var doc = _(m.get('storage'))
-			    .select(function(doc){return doc._id==m.id;})[0];
+		    //???
+		    // var doc = _(m.get('storage'))
+		    // 	    .select(function(doc){return doc._id==m.id;})[0];
+		    var doc = m.get('doc');
 		    return doc['catalogs'];
 		},
 		save:function(){
@@ -229,9 +237,9 @@ var ModelView = Backbone
 		    model_to_store['installing'] = this.$el.find('#oinstalling').is(':checked');
 		    model_to_store['building'] = $('#obuild').is(':checked');
 		    model_to_store['dvd'] = this.$el.find('#odvd').is(':checked');
-		    
 
-		    to_send['model'] = JSON.stringify(model_to_store);		    
+
+		    to_send['model'] = JSON.stringify(model_to_store);
 		    $.ajax({
 		    	       url:'/save',
 		    	       data:to_send,
@@ -242,7 +250,7 @@ var ModelView = Backbone
 		    if (!data['id'])
 			alert('Что то пошло не так :(');
 		    else{
-			uuid = data['id'];			
+			uuid = data['id'];
 			var cart_el = $('#cart');
 			if (cart_el.length>0){
 			    cart_el.text('Корзина('+$.cookie('pc_cart')+')');
@@ -255,7 +263,7 @@ var ModelView = Backbone
 							   cart:$.cookie('pc_user')
 						       }));
 			    }
-			}						
+			}
 			alert('Получилось!');
 		    }
 		},
@@ -288,7 +296,7 @@ var ModelView = Backbone
 		    var clock = this.active_satelite.options.clock;
 		    var old_component = this.active_satelite.model;
 		    this.previousCheaperBetter[delta+1] = old_component.id;
-		    this.previousCheaperBetter['dir'] = delta;		    
+		    this.previousCheaperBetter['dir'] = delta;
 		    var new_component = new Component({
 						      id:component_id,
 						      part:old_component.get('part'),
@@ -300,9 +308,28 @@ var ModelView = Backbone
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
 		    new_satel_view.makeActive();
-		    this.componentChanged(new_component);
+		    this.componentChanged(new_component, delta);
 		},
-		componentChanged:function(component){
+		checkConfig:function(component, delta){
+		    var mother_catalogs = this.getCatalogs('mother');
+		    var proc_catalogs = this.getCatalogs('proc');
+		    var mapped = _(mother_to_proc_mapping)
+			.select(function(mp){
+				    var mother_map = mp[0];
+				    var proc_map = mp[1];
+				    return _.difference(mother_map, mother_catalogs).length==0
+					&& _.difference(proc_map, proc_catalogs).length==0;
+				});
+		    if (mapped.length==0){
+			//it need to change socket!
+			var other = 'proc';
+			if (component.get('alias')==other)
+			    other='mother';
+			//zzz
+		    }
+		},
+		componentChanged:function(component, delta){
+		    this.checkConfig(component, delta);
 		    this.recalculate();
 		    this.getDescription(component);
 		},
@@ -322,14 +349,14 @@ var ModelView = Backbone
 		    };
 		},
 		makeBetter:function(){
-		    this.cheaperBetter(1,function(index,length){return index+1==length;});
+		    this.cheaperBetter(1,function(index,length){return index+1>=length;});
 		},
 		makeCheaper:function(){
-		    this.cheaperBetter(-1,function(index,length){return index-1<=0;});
+		    this.cheaperBetter(-1,function(index,length){return index-1<0;});
 		},
 		recalculate:function(){
 		    var price = this
-			.collection.reduce(function(acc,model){					       
+			.collection.reduce(function(acc,model){
 					       return acc+model.get('doc').price*model.get('count');
 					   },0);
 		    if(this.$el.find('#odvd').is(':checked')){
@@ -425,7 +452,7 @@ var ModelView = Backbone
 							 'float':'none',
 							 margin:0
 						     });
-		    this.componentChanged(_case);
+		    this.componentChanged(_case, 1);
 		},
 		central_box_size:300,
 		satelite_radius:250,
