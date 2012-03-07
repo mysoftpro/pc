@@ -49,19 +49,26 @@ var SateliteView = Backbone
 		getDescription:function(component){
 		  return this.options.parent.getDescription(component);
 		},
-		makeActive:function(){
+		makeActive:function(event_or_silent){
 		    var parent = this.options.parent;
-		    var old_central_view = parent.central_view;
-		    var new_central_view = new CentralView({
-							      model:this.model,
-							      el:old_central_view.el,
-							      id:this.model.get('alias'),
-							      box_size:parent.central_box_size
-							});
-		    new_central_view.render();
-		    parent.central_view = new_central_view;
+		    //if switching socket, do not render central view for the component
+		    //on the other side of socket
+		    if (!event_or_silent.silent){			
+			var old_central_view = parent.central_view;
+			var new_central_view = new CentralView({
+								   model:this.model,
+								   el:old_central_view.el,
+								   id:this.model.get('alias'),
+								   box_size:parent.central_box_size
+							       });
+			new_central_view.render();
+			parent.central_view = new_central_view;
+		    }
+
 		    //remove old element
 		    var old_active_view = parent.active_satelite;
+
+
 		    if(old_active_view == this){
 		    }
 		    else{
@@ -72,10 +79,18 @@ var SateliteView = Backbone
 			var ordinal_view = parent.makeSatelite(old_active_view.model,
 							       old_active_view.options.clock);
 			ordinal_view.render();
+			parent.satelites = _(parent.satelites)
+			.select(function(v){
+				    return v.model.id!=old_active_view.model.id;});
+			parent.satelites.push(ordinal_view);
 		    }
 
 		    parent.active_satelite = this;
 		    this.active = true;
+		    parent.satelites = _(parent.satelites)
+			.select(function(v){
+				    return v.model.id!=this.model.id;});
+		    parent.satelites.push(this);
 
 		    //increase this view
 		    this.options.box_size = parent.active_satelite_size;
@@ -312,7 +327,9 @@ var ModelView = Backbone
 		    this.satelites.push(new_satel_view);
 		    this.collection.remove(old_component);
 		    this.collection.add(new_component);
-		    new_satel_view.makeActive();
+		    //if switching socket, do not render central view for the component
+		    //on the other side of socket
+		    new_satel_view.makeActive({silent:this.socketTransition});
 		    this.componentChanged(new_component, delta);
 		    return new_component;
 		},
@@ -326,15 +343,12 @@ var ModelView = Backbone
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
-			console.log('11111');
-			console.log(component.id);
-			console.log(may_be_changed.id);
 			if (may_be_changed.id!==component.id){
 			    // active view was changed. it need to make active original component
 			    var original_view = _(this.satelites)
-				.select(function(view){
-					    return view.model.id==component.id;})[0];
-			    original_view.makeActive();
+			    	.select(function(view){
+			    		    return view.model.id==component.id;})[0];
+			    original_view.makeActive({});
 			}
 		    }
 		},
@@ -352,7 +366,7 @@ var ModelView = Backbone
 			//may be it need to change socket!
 			//mark that socket is changed if needed.
 			//socket must be changed only once
-			//if user switch motherboard and it is not consistent with proc_catalogs
+			//if user switch motherboard and it is not compatible with proc_catalogs
 			//i will switch to proc now and make it cheaper or better
 			//but during this switching DO NOT SWITCH BACK to mother!
 			//change only proc for all other iterations
@@ -373,7 +387,9 @@ var ModelView = Backbone
 			    .select(function(view){
 					return view.model.get('alias')==other;})[0];
 			//this.active_satelite = other_view;
-			other_view.makeActive();
+			//if switching socket, do not render central view for the component
+			//on the other side of socket
+			other_view.makeActive({silent:true});
 			var new_other;
 			if (delta>0){
 			    //try one direction. if nothing returned - try another
@@ -499,7 +515,7 @@ var ModelView = Backbone
 				    return view.model.get('alias')=='case';})[0];
 		    //this is a hack. i do not have active view yet, but it is required by makeActive
 		    this.active_satelite = case_view;
-		    case_view.makeActive();
+		    case_view.makeActive({});
 		    this.central_view.$el.after('<div id="gbetter" class="large_button"></div>');
 		    this.central_view.$el.next().css({
 							 position:'absolute',
