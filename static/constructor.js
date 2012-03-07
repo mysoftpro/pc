@@ -13,14 +13,15 @@ var Component = Backbone
 		    var id = this.id;
 		    var storage = this.get('storage');
 		    var doc = _(storage)
-			     .chain()
-			     .select(function(doc){
-					 return doc['_id']==id;})
-			     .first()
-			     .value();
+			.chain()
+			.select(function(doc){
+				    return doc['_id']==id;})
+			.first()
+			.value();
 		    if (!doc)
 			doc = {};
 		    this.set('doc',doc);
+		    _.bindAll(this, "getIcon", "cheaperBetter");
 		},
 		getIcon:function(){
 		    var doc = this.get('doc');
@@ -35,6 +36,45 @@ var Component = Backbone
 			retval = '/image/'+this.id+'/'+img+ext;
 		    }
 		    return retval;
+		},
+		previousCheaperBetter:{
+		    1:'',
+		    0:'',
+		    dir:1
+		},
+
+		cheaperBetter:function(delta, cond, jump){		    
+		    var th = this;
+		    var storage = this.get('storage');
+		    var sorted = storage.sort(function(doc1,doc2){
+						  return doc1.price-doc2.price;
+					      });
+		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(th.id);
+		    if (cond(in_sorted,sorted.length)){
+			return undefined;
+		    }
+		    var new_index = in_sorted+delta;
+		    if (jump)
+			new_index+=jump;
+		    var new_doc = sorted[new_index];
+		    var component_id = new_doc['_id'];
+		    if (this.previousCheaperBetter['dir'] == delta &&
+		    	this.previousCheaperBetter[delta+1] == component_id){
+		    	//this component was allready shown
+		    	//we have infinite loop here
+		    	return this.cheaperBetter(delta,cond, delta);
+		    }
+		    
+		    var old_component = this;
+		    this.previousCheaperBetter[delta+1] = this.id;
+		    this.previousCheaperBetter['dir'] = delta;
+		    return new Component({
+					     id:component_id,
+					     part:old_component.get('part'),
+					     alias:old_component.get('alias'),
+					     count:old_component.get('count'),
+					     storage:old_component.get('storage')
+					 });
 		}
 	    });
 var SateliteView = Backbone
@@ -47,23 +87,23 @@ var SateliteView = Backbone
 		    click:"makeActive"
 		},
 		getDescription:function(component){
-		  return this.options.parent.getDescription(component);
+		    return this.options.parent.getDescription(component);
 		},
-		makeActive:function(event_or_silent){
+		makeActive:function(){
 		    var parent = this.options.parent;
 		    //if switching socket, do not render central view for the component
 		    //on the other side of socket
-		    if (!event_or_silent.silent){
-			var old_central_view = parent.central_view;
-			var new_central_view = new CentralView({
-								   model:this.model,
-								   el:old_central_view.el,
-								   id:this.model.get('alias'),
-								   box_size:parent.central_box_size
-							       });
-			new_central_view.render();
-			parent.central_view = new_central_view;
-		    }
+
+		    var old_central_view = parent.central_view;
+		    var new_central_view = new CentralView({
+							       model:this.model,
+							       el:old_central_view.el,
+							       id:this.model.get('alias'),
+							       box_size:parent.central_box_size
+							   });
+		    new_central_view.render();
+		    parent.central_view = new_central_view;
+
 
 		    //remove old element
 		    var old_active_view = parent.active_satelite;
@@ -80,8 +120,8 @@ var SateliteView = Backbone
 							       old_active_view.options.clock);
 			ordinal_view.render();
 			parent.satelites = _(parent.satelites)
-			.select(function(v){
-				    return v.model.id!=old_active_view.model.id;});
+			    .select(function(v){
+					return v.model.id!=old_active_view.model.id;});
 			parent.satelites.push(ordinal_view);
 		    }
 
@@ -93,19 +133,19 @@ var SateliteView = Backbone
 				    return v.model.id!==th.model.id;});
 		    parent.satelites.push(this);
 
-		    if (!event_or_silent.silent){
-			//increase this view
-			this.options.box_size = parent.active_satelite_size;
-			this.$el.attr('width',parent.active_satelite_size);
-			this.$el.attr('height',parent.active_satelite_size);
-			//shift active view according to its size
-			var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
-			var pos = this.$el.position();
-			this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
-			this.render();
-			this.options.box_size = this.options.box_size/2;
-			this.getDescription(this.model);
-		    }
+		    
+		    //increase this view
+		    this.options.box_size = parent.active_satelite_size;
+		    this.$el.attr('width',parent.active_satelite_size);
+		    this.$el.attr('height',parent.active_satelite_size);
+		    //shift active view according to its size
+		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
+		    var pos = this.$el.position();
+		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
+		    this.render();
+		    this.options.box_size = this.options.box_size/2;
+		    this.getDescription(this.model);
+		    
 		},
 		renderCycle:function(){
 		    this.el.width = this.el.width;
@@ -199,9 +239,9 @@ var ModelView = Backbone
 		    _.bindAll(this, "makeSatelite",
 			      "makeSateliteAttributes","makeBetter",
 			      "makeCheaper", "cheaperBetter",
-			     "fillDescription","getDescription",
+			      "fillDescription","getDescription",
 			      "componentChanged", "save", "getCatalogs", "checkConfig",
-			     "checkSocket");
+			      "checkSocket");
 		},
 		events:{
 		    'click #gcheaper':"makeCheaper",
@@ -286,64 +326,31 @@ var ModelView = Backbone
 			alert('Получилось!');
 		    }
 		},
-		previousCheaperBetter:{
-		    1:'',
-		    0:'',
-		    dir:1
-		},
 		cheaperBetter:function(delta, cond, jump){
 		    var component = this.active_satelite.model;
-		    var storage = component.get('storage');
-		    var sorted = storage.sort(function(doc1,doc2){
-						  return doc1.price-doc2.price;
-					      });
-		    var in_sorted = _(sorted).map(function(doc){return doc._id;}).indexOf(component.id);
-		    if (cond(in_sorted,sorted.length)){
-			return undefined;
-		    }
-		    var new_index = in_sorted+delta;
-		    if (jump)
-			new_index+=jump;
-		    var new_doc = sorted[new_index];
-		    var component_id = new_doc['_id'];
-		    if (this.previousCheaperBetter['dir'] == delta &&
-		    	this.previousCheaperBetter[delta+1] == component_id){
-		    	//this component was allready shown
-		    	//we have infinite loop here
-		    	return this.cheaperBetter(delta,cond, delta);
-		    }
+		    var new_component = component.cheaperBetter(delta, cond, jump);
 		    var clock = this.active_satelite.options.clock;
-		    var old_component = this.active_satelite.model;
-		    this.previousCheaperBetter[delta+1] = old_component.id;
-		    this.previousCheaperBetter['dir'] = delta;
-		    var new_component = new Component({
-						      id:component_id,
-						      part:old_component.get('part'),
-						      alias:old_component.get('alias'),
-						      count:old_component.get('count'),
-						      storage:old_component.get('storage')
-						  });
 		    var new_satel_view = this.makeSatelite(new_component, clock);
 		    this.satelites = _(this.satelites)
 			.select(function(view){
-				    return view.model.id !== old_component.id;
+				    return view.model.id !== component.id;
 				});
 		    this.satelites.push(new_satel_view);
-		    this.collection.remove(old_component);
+		    this.collection.remove(component);
 		    this.collection.add(new_component);
 		    //if switching socket, do not render central view for the component
 		    //on the other side of socket
-		    new_satel_view.makeActive({silent:this.socketTransition});
+		    new_satel_view.makeActive();
 		    this.componentChanged(new_component, delta);
 		    return new_component;
 		},
 		componentChanged:function(component, delta){
 		    // during checkConfig other components possible will be changed
-		    this.checkConfig(component, delta);
+		    //this.checkConfig(component, delta);
 		    this.recalculate();
 		    this.getDescription(component);
 		},
-		checkConfig:function(component, delta){
+		checkConfig:function(component, delta){		    
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
@@ -390,10 +397,9 @@ var ModelView = Backbone
 			var other_view = _(this.satelites)
 			    .select(function(view){
 					return view.model.get('alias')==other;})[0];
-			//this.active_satelite = other_view;
 			//if switching socket, do not render central view for the component
 			//on the other side of socket
-			other_view.makeActive({silent:true});
+			other_view.makeActive();
 			var new_other;
 			if (delta>0){
 			    //try one direction. if nothing returned - try another
@@ -494,10 +500,10 @@ var ModelView = Backbone
 		render: function() {
 		    var _case = this.collection.getByAlias('case');
 		    this.central_view = new CentralView({
-							model:_case,
-							el:document.getElementById('ccenter'),
-							box_size:this.central_box_size
-						});
+							    model:_case,
+							    el:document.getElementById('ccenter'),
+							    box_size:this.central_box_size
+							});
 		    //do not render it cause will render it during makeActive
 		    //this.central_view.render();
 		    this.central_pos = this.central_view.$el.position();
@@ -511,9 +517,9 @@ var ModelView = Backbone
 			.collection
 			.map(this.makeSatelite);
 		    _(this.satelites).each(function(view){
-					  if (view.model.get('alias')!='case')
-					      view.render();
-				      });
+					       if (view.model.get('alias')!='case')
+						   view.render();
+					   });
 		    var case_view = _(this.satelites)
 			.select(function(view){
 				    return view.model.get('alias')=='case';})[0];
@@ -527,7 +533,7 @@ var ModelView = Backbone
 							 left:'600px',
 							 'float':'none',
 							 margin:0
-					});
+						     });
 		    this.central_view.$el.after('<div id="gcheaper" class="large_button"></div>');
 		    this.central_view.$el.next().css({
 							 position:'absolute',
@@ -566,20 +572,20 @@ var model_view;
 		      component_id = component_id[0];
 		  }
 		  var c = new Component({
-					   id:component_id,
-					   part:key,
-					   alias:aliases_reverted[key],
-					   count:count,
-					   storage:choices[key]
-				       });
+					    id:component_id,
+					    part:key,
+					    alias:aliases_reverted[key],
+					    count:count,
+					    storage:choices[key]
+					});
 		  return c;
 	      })
 	 .value();
      var model_collection = new Model(model_components);
      model_view = new ModelView({
-					collection:model_collection,
-					el:document.getElementById('ccontainer')
-				    });
+				    collection:model_collection,
+				    el:document.getElementById('ccontainer')
+				});
      model_view.render();
 
  })();
