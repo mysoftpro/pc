@@ -350,7 +350,20 @@ var ModelView = Backbone
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
-			console.log(may_be_changed.get('doc').text);
+			if (may_be_changed){
+			    //render new view
+			    var changed_alias = may_be_changed.get('alias');
+			    var view_to_change = _(this.satelites)
+				.select(function(view){
+					    return view.model.get('alias') == changed_alias;
+					})[0];
+			    console.log(view_to_change);
+			    view_to_change.$el.remove();
+			    var new_satel_view = view_to_change
+				.options.parent
+				.makeSatelite(may_be_changed, view_to_change.options.clock);
+			    new_satel_view.render();
+			}
 		    }
 		},
 		checkSocket:function(component, delta){
@@ -383,6 +396,8 @@ var ModelView = Backbone
 			0:function(index,length){return index-1<0;}
 		    };
 		    separate();
+		    if (mapped())
+			return false;
 		    var guard = 30;
 		    while (!mapped()){
 			var new_other = other_component.cheaperBetter(delta,conds[delta+1]);
