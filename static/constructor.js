@@ -43,7 +43,7 @@ var Component = Backbone
 		    dir:1
 		},
 
-		cheaperBetter:function(delta, cond, jump){		    
+		cheaperBetter:function(delta, cond, jump){
 		    var th = this;
 		    var storage = this.get('storage');
 		    var sorted = storage.sort(function(doc1,doc2){
@@ -64,17 +64,22 @@ var Component = Backbone
 		    	//we have infinite loop here
 		    	return this.cheaperBetter(delta,cond, delta);
 		    }
-		    
+
 		    var old_component = this;
 		    this.previousCheaperBetter[delta+1] = this.id;
 		    this.previousCheaperBetter['dir'] = delta;
-		    return new Component({
+		    var collection = this.get('collection');
+		    var new_component = new Component({
 					     id:component_id,
-					     part:old_component.get('part'),
-					     alias:old_component.get('alias'),
-					     count:old_component.get('count'),
-					     storage:old_component.get('storage')
-					 });
+							  part:old_component.get('part'),
+							  alias:old_component.get('alias'),
+							  count:old_component.get('count'),
+							  storage:old_component.get('storage'),
+							  collection:collection
+					 });		    
+		    collection.add(new_component);
+		    collection.remove(this);		    
+		    return new_component;
 		}
 	    });
 var SateliteView = Backbone
@@ -133,7 +138,7 @@ var SateliteView = Backbone
 				    return v.model.id!==th.model.id;});
 		    parent.satelites.push(this);
 
-		    
+
 		    //increase this view
 		    this.options.box_size = parent.active_satelite_size;
 		    this.$el.attr('width',parent.active_satelite_size);
@@ -145,7 +150,7 @@ var SateliteView = Backbone
 		    this.render();
 		    this.options.box_size = this.options.box_size/2;
 		    this.getDescription(this.model);
-		    
+
 		},
 		renderCycle:function(){
 		    this.el.width = this.el.width;
@@ -331,15 +336,11 @@ var ModelView = Backbone
 		    var new_component = component.cheaperBetter(delta, cond, jump);
 		    var clock = this.active_satelite.options.clock;
 		    var new_satel_view = this.makeSatelite(new_component, clock);
-		    this.satelites = _(this.satelites)
-			.select(function(view){
-				    return view.model.id !== component.id;
-				});
-		    this.satelites.push(new_satel_view);
-		    this.collection.remove(component);
-		    this.collection.add(new_component);
-		    //if switching socket, do not render central view for the component
-		    //on the other side of socket
+		    // this.satelites = _(this.satelites)
+		    // 	.select(function(view){
+		    // 		    return view.model.id !== component.id;
+		    // 		});
+		    // this.satelites.push(new_satel_view);
 		    new_satel_view.makeActive();
 		    this.componentChanged(new_component, delta);
 		    return new_component;
@@ -350,7 +351,7 @@ var ModelView = Backbone
 		    this.recalculate();
 		    this.getDescription(component);
 		},
-		checkConfig:function(component, delta){		    
+		checkConfig:function(component, delta){
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
@@ -359,7 +360,7 @@ var ModelView = Backbone
 			    var original_view = _(this.satelites)
 				.select(function(view){
 			    		    return view.model.id==component.id;})[0];
-			    original_view.makeActive({});			    
+			    original_view.makeActive({});
 			}
 		    }
 		},
@@ -495,6 +496,11 @@ var ModelView = Backbone
 						       parent:this
 						      });
 		    this.$el.append(satel_view.el);
+		    this.satelites = _(this.satelites)
+		    	.select(function(view){
+		    		    return view.model.get('alias') !== m.get('alias');
+		    		});
+		    this.satelites.push(satel_view);
 		    return satel_view;
 		},
 		render: function() {
@@ -513,9 +519,7 @@ var ModelView = Backbone
 		    this.central_pos.left+=this.central_view.options.box_size/2;
 		    this.central_pos.top+=this.central_view.options.box_size/2;
 		    //make case default active view
-		    this.satelites = this
-			.collection
-			.map(this.makeSatelite);
+		    this.collection.map(this.makeSatelite);
 		    _(this.satelites).each(function(view){
 					       if (view.model.get('alias')!='case')
 						   view.render();
@@ -582,6 +586,7 @@ var model_view;
 	      })
 	 .value();
      var model_collection = new Model(model_components);
+     model_collection.each(function(m){m.set({collection:model_collection});});
      model_view = new ModelView({
 				    collection:model_collection,
 				    el:document.getElementById('ccontainer')
