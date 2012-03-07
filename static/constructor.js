@@ -38,7 +38,7 @@ var Component = Backbone
 		    return retval;
 		},
 		previousCheaperBetter:{
-		    1:'',
+		    2:'',
 		    0:'',
 		    dir:1
 		},
@@ -76,9 +76,9 @@ var Component = Backbone
 							  count:old_component.get('count'),
 							  storage:old_component.get('storage'),
 							  collection:collection
-					 });		    
+					 });
 		    collection.add(new_component);
-		    collection.remove(this);		    
+		    collection.remove(this);
 		    return new_component;
 		}
 	    });
@@ -335,7 +335,7 @@ var ModelView = Backbone
 		    var component = this.active_satelite.model;
 		    var new_component = component.cheaperBetter(delta, cond, jump);
 		    var clock = this.active_satelite.options.clock;
-		    var new_satel_view = this.makeSatelite(new_component, clock);		    
+		    var new_satel_view = this.makeSatelite(new_component, clock);
 		    new_satel_view.makeActive();
 		    this.componentChanged(new_component, delta);
 		    return new_component;
@@ -350,54 +350,53 @@ var ModelView = Backbone
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
+			console.log(may_be_changed.get('doc').text);
 		    }
 		},
 		checkSocket:function(component, delta){
-		    var mother_catalogs = this.getCatalogs('mother');
-		    var proc_catalogs = this.getCatalogs('proc');
-		    var mapped = _(mother_to_proc_mapping)
-			.select(function(mp){
-				    var mother_map = mp[0];
-				    var proc_map = mp[1];
-				    return _.difference(mother_map, mother_catalogs).length==0
-					&& _.difference(proc_map, proc_catalogs).length==0;
-				});
-		    if (mapped.length==0){
-			//may be it need to change socket!
-			//mark that socket is changed if needed.
-			//socket must be changed only once
-			//if user switch motherboard and it is not compatible with proc_catalogs
-			//i will switch to proc now and make it cheaper or better
-			//but during this switching DO NOT SWITCH BACK to mother!
-			//change only proc for all other iterations
-			var other;
-			if (this.socketTransition){
-			    //change the same component
-			    other = component.get('alias');
+
+		    var mother_catalogs,proc_catalogs,other_component;
+		    var th = this;
+		    var separate = function(){
+			if (component.get('alias') == 'proc'){
+			    other_component = th.collection.getByAlias('mother');
+			    mother_catalogs = other_component.get('doc').catalogs;
+			    proc_catalogs = component.get('doc').catalogs;
 			}
 			else{
-			    //change component on other side of socket
-			    if (component.get('alias') == 'proc')
-				other = 'mother';
-			    else
-				other = 'proc';
-			    this.socketTransition = true;
+			    other_component = th.collection.getByAlias('proc');
+			    proc_catalogs = other_component.get('doc').catalogs;
+			    mother_catalogs = component.get('doc').catalogs;
 			}
-			var other_model = this.collection.getByAlias(other);
-			var cond = function(index,length){return index-1<0;};
-			var new_other_model = other_model
-			    .cheaperBetter(delta,cond);
-			if (!new_other_model)
-			    new_other_model = other_model
-			    .cheaperBetter(0-delta,cond);
-			console.log(new_other_model);
-			return new_other_model;
+		    };
+		    var mapped = function(){
+			return _(mother_to_proc_mapping)
+			    .select(function(mp){
+					var mother_map = mp[0];
+					var proc_map = mp[1];
+					return _.difference(mother_map, mother_catalogs).length==0
+					    && _.difference(proc_map, proc_catalogs).length==0;
+				    }).length>0;
+		    };
+		    var conds = {
+			2:function(index,length){return index+1>=length;},
+			0:function(index,length){return index-1<0;}
+		    };
+		    separate();
+		    var guard = 30;
+		    while (!mapped()){
+			var new_other = other_component.cheaperBetter(delta,conds[delta+1]);
+			if (!new_other){
+			    delta = 0-delta;
+			    new_other = other_component.cheaperBetter(delta,conds[delta+1]);
+			}
+			other_component = new_other;
+			separate();
+			guard -=1;
+			if (guard==0)
+			    break;
 		    }
-		    else{
-			//all clear. change socket transition to initial
-			this.socketTransition = false;
-			return component;
-		    }
+		    return other_component;
 		},
 		getDescription:function(component){
 		    this.$el.find('#cdescription').css('opacity',0);
