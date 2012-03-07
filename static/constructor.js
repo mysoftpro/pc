@@ -53,7 +53,7 @@ var SateliteView = Backbone
 		    var parent = this.options.parent;
 		    //if switching socket, do not render central view for the component
 		    //on the other side of socket
-		    if (!event_or_silent.silent){			
+		    if (!event_or_silent.silent){
 			var old_central_view = parent.central_view;
 			var new_central_view = new CentralView({
 								   model:this.model,
@@ -87,22 +87,25 @@ var SateliteView = Backbone
 
 		    parent.active_satelite = this;
 		    this.active = true;
+		    var th = this;
 		    parent.satelites = _(parent.satelites)
 			.select(function(v){
-				    return v.model.id!=this.model.id;});
+				    return v.model.id!==th.model.id;});
 		    parent.satelites.push(this);
 
-		    //increase this view
-		    this.options.box_size = parent.active_satelite_size;
-		    this.$el.attr('width',parent.active_satelite_size);
-		    this.$el.attr('height',parent.active_satelite_size);
-		    //shift active view according to its size
-		    var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
-		    var pos = this.$el.position();
-		    this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
-		    this.render();
-		    this.options.box_size = this.options.box_size/2;
-		    this.getDescription(this.model);
+		    if (!event_or_silent.silent){
+			//increase this view
+			this.options.box_size = parent.active_satelite_size;
+			this.$el.attr('width',parent.active_satelite_size);
+			this.$el.attr('height',parent.active_satelite_size);
+			//shift active view according to its size
+			var delta = (parent.active_satelite_size-parent.satelite_box_size)/2;
+			var pos = this.$el.position();
+			this.$el.css({top:pos.top-delta+'px','left':pos.left-delta+'px'});
+			this.render();
+			this.options.box_size = this.options.box_size/2;
+			this.getDescription(this.model);
+		    }
 		},
 		renderCycle:function(){
 		    this.el.width = this.el.width;
@@ -122,7 +125,8 @@ var SateliteView = Backbone
 		    context.clip();
 		    context.fillStyle = "white";
 		    context.fill();
-		    var image_src = this.model.getIcon();
+		    var model = this.model;
+		    var image_src = model.getIcon();
 		    if(image_src.match('no_image')){
 			context.font = "10pt Calibri";
 			context.fillStyle = "black";
@@ -346,9 +350,9 @@ var ModelView = Backbone
 			if (may_be_changed.id!==component.id){
 			    // active view was changed. it need to make active original component
 			    var original_view = _(this.satelites)
-			    	.select(function(view){
+				.select(function(view){
 			    		    return view.model.id==component.id;})[0];
-			    original_view.makeActive({});
+			    original_view.makeActive({});			    
 			}
 		    }
 		},
