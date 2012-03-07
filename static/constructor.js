@@ -335,19 +335,14 @@ var ModelView = Backbone
 		    var component = this.active_satelite.model;
 		    var new_component = component.cheaperBetter(delta, cond, jump);
 		    var clock = this.active_satelite.options.clock;
-		    var new_satel_view = this.makeSatelite(new_component, clock);
-		    // this.satelites = _(this.satelites)
-		    // 	.select(function(view){
-		    // 		    return view.model.id !== component.id;
-		    // 		});
-		    // this.satelites.push(new_satel_view);
+		    var new_satel_view = this.makeSatelite(new_component, clock);		    
 		    new_satel_view.makeActive();
 		    this.componentChanged(new_component, delta);
 		    return new_component;
 		},
 		componentChanged:function(component, delta){
 		    // during checkConfig other components possible will be changed
-		    //this.checkConfig(component, delta);
+		    this.checkConfig(component, delta);
 		    this.recalculate();
 		    this.getDescription(component);
 		},
@@ -355,13 +350,6 @@ var ModelView = Backbone
 		    var alias = component.get('alias');
 		    if (alias=='proc' || alias == 'mother'){
 			var may_be_changed = this.checkSocket(component, delta);
-			if (may_be_changed.id!==component.id){
-			    // active view was changed. it need to make active original component
-			    var original_view = _(this.satelites)
-				.select(function(view){
-			    		    return view.model.id==component.id;})[0];
-			    original_view.makeActive({});
-			}
 		    }
 		},
 		checkSocket:function(component, delta){
@@ -395,28 +383,15 @@ var ModelView = Backbone
 				other = 'proc';
 			    this.socketTransition = true;
 			}
-			var other_view = _(this.satelites)
-			    .select(function(view){
-					return view.model.get('alias')==other;})[0];
-			//if switching socket, do not render central view for the component
-			//on the other side of socket
-			other_view.makeActive();
-			var new_other;
-			if (delta>0){
-			    //try one direction. if nothing returned - try another
-			    new_other = this.makeBetter();
-			    if (!new_other)
-				new_other = this.makeCheaper();
-			}
-			else{
-			    new_other = this.makeCheaper();
-			    if (!new_other)
-				new_other = this.makeBetter();
-			}
-			if (!new_other){
-			    console.log('what da fuck???');
-			}
-			return new_other;
+			var other_model = this.collection.getByAlias(other);
+			var cond = function(index,length){return index-1<0;};
+			var new_other_model = other_model
+			    .cheaperBetter(delta,cond);
+			if (!new_other_model)
+			    new_other_model = other_model
+			    .cheaperBetter(0-delta,cond);
+			console.log(new_other_model);
+			return new_other_model;
 		    }
 		    else{
 			//all clear. change socket transition to initial
