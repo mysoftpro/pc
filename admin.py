@@ -199,7 +199,7 @@ class Tablets(Resource):
                                include_docs=True, key=models.tablets, stale=False),
                 ]).addCallback(self.finish, request)
         return NOT_DONE_YET
-    
+
 
 class Mothers(Resource):
     def finish(self, result, request):
@@ -786,7 +786,7 @@ def clear_cache(choices_only=None):
             try:
                 os.utime(os.path.join(root.static_dir,f), None)
             except:
-                pass    
+                pass
     from pc import views
     views.no_component_added = False
     from pc import models
@@ -867,7 +867,7 @@ class WitForMapping(Resource):
                                include_docs=True, key=models.geforce, stale=False),
                 couch.openView(designID,
                                'catalogs',
-                               include_docs=True, key=models.radeon, stale=False),         
+                               include_docs=True, key=models.radeon, stale=False),
                 ])
         elif key == 'notebooks':
             asus_12 = ["7362","7404","7586"]
@@ -1000,7 +1000,7 @@ class GetDescFromNew(Resource):
 class StoreNewDesc(Resource):
     price_field = 'us_price'
     stock_field = 'new_stock'
-    
+
     def finish(self, doc, desc, name, img, warranty, articul, catalogs):
         descr = doc.get('description',{})
         descr.update({'comments':desc})
@@ -1010,7 +1010,7 @@ class StoreNewDesc(Resource):
         if len(img)>0:
             imgs.insert(0,img)
         descr['imgs'] = imgs
-        
+
         # TODO get and store image!
         if len(warranty)>0:
             doc['warranty_type'] = warranty
@@ -1076,16 +1076,41 @@ class StorePsu(Resource):
 
 
 class Evolve(Resource):
-    def fixNew(self, res):
-        for r in res['rows']:
-            doc = r['doc']
-            doc.update({'description':{'imgs':[r['key']]}})
-            print doc['_id']
+    def fixAmmo(self, previous_doc, doc):
+        print "ahaaaaaaaaaaaaaaaaaaaaaaa"
+        if doc['new_stock'] != previous_doc['new_stock']:
+            doc['new_stock'] = previous_doc['new_stock']
+            if 'stock1' in doc:
+                doc['stock1'] = previous_doc['stock1']
             couch.saveDoc(doc)
+    def fixNew(self, lires):
+        for tu in lires:
+            if tu[0]:
+                doc = tu[1]
+                revs = []
+                for r in doc['_revs_info']:
+                    if r['rev']==doc['_rev']:
+                        continue
+                    if r['status'] != 'available':
+                        continue
+                    revs.append(r['rev'])
+                if len(revs)==0:
+                    continue
+                latest = sorted(revs)[-1]
+                d = couch.openDoc(doc['_id'], revision=latest)
+                d.addCallback(self.fixAmmo, doc)
+
+    def extractRevisions(self, res):
+        li = []
+        for r in res['rows']:
+            li.append(couch.openDoc(r['id'],revs_info=True))
+        d = defer.DeferredList(li)
+        d.addCallback(self.fixNew)
+
     @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
-        d = couch.openView(designID,'new_without_description', include_docs=True)
-        d.addCallback(self.fixNew)
+        d = couch.openView(designID,'new_unique_components')
+        d.addCallback(self.extractRevisions)
         return "ok"
 
 
@@ -1105,7 +1130,7 @@ class AddImage(Resource):
         doc['description']['imgs'] = imgs
         d.addCallback(lambda _doc:couch.saveDoc(_doc))
         d.addCallback(self.finish, request)
-        
+
     def goForImage(self, doc, request):
         from pc.catalog import ImageReceiver
         d = defer.Deferred()
@@ -1118,7 +1143,7 @@ class AddImage(Resource):
 
     def render_GET(self, request):
         print "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyya"
-        _id = request.args.get('_id')[0]        
+        _id = request.args.get('_id')[0]
         d= couch.openDoc(_id)
         d.addCallback(self.goForImage, request)
         return NOT_DONE_YET
