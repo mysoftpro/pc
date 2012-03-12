@@ -395,6 +395,13 @@ class Cart(PCView):
         return user
 
 
+def wrapInTag(text_or_tag, tag='span'):
+    _type = type(text_or_tag)
+    if _type is unicode or _type is str:
+        el = etree.Element(tag)
+        el.text = text_or_tag
+        return el
+    return text_or_tag
 
 class ModelOnModels(ModelInCart):
     def fillInfo(self):
@@ -409,8 +416,8 @@ class ModelOnModels(ModelInCart):
 
     def fillHeader(self, h3):
         h3.text = self.model.title
-        for el in html.fragments_fromstring(self.model.description):
-            self.description_div.append(el)
+        for el in html.fragments_fromstring(self.model.description):            
+            self.description_div.append(wrapInTag(el))
 
     def setModelLink(self):
         link = self.model_div.find('.//a')
@@ -504,7 +511,7 @@ class Computer(PCView):
             d = self.template.top.find('div').find('div')
             d.text = ''
             for el in html.fragments_fromstring(model.description):
-                d.append(el)
+                d.append(wrapInTag(el))
 
         original_viewlet = self.template.root().find('componentviewlet')
 

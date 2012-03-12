@@ -780,6 +780,8 @@ class Comet(Resource):
 class HandlerAndName(object):
     def __init__(self, handler, name):
         self.handler = handler
+        # when use this from Root - here the name is template
+        # when use this from PCTemplateRenderrer - here the name is the name in url
         self.name = name
 
 
