@@ -125,7 +125,7 @@ class Sohotem(MaximusItem):
 
 
 def soho():
-    _file = open('soho.csv')
+    _file = open('/home/aganzha/pc/soho.csv')
     gen = MaximusItem.makeGen(_file)
     def syncOnce(res, generator, opened_file):
         try:

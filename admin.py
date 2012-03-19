@@ -24,6 +24,7 @@ from twisted.web.resource import Resource
 from copy import deepcopy
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
+from pc.used import couch as used_couch
 
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
 
@@ -1075,43 +1076,54 @@ class StorePsu(Resource):
         return NOT_DONE_YET
 
 
-class Evolve(Resource):
-    def fixAmmo(self, previous_doc, doc):
-        print "ahaaaaaaaaaaaaaaaaaaaaaaa"
-        if doc['new_stock'] != previous_doc['new_stock']:
-            doc['new_stock'] = previous_doc['new_stock']
-            if 'stock1' in doc:
-                doc['stock1'] = previous_doc['stock1']
-            couch.saveDoc(doc)
-    def fixNew(self, lires):
-        for tu in lires:
-            if tu[0]:
-                doc = tu[1]
-                revs = []
-                for r in doc['_revs_info']:
-                    if r['rev']==doc['_rev']:
-                        continue
-                    if r['status'] != 'available':
-                        continue
-                    revs.append(r['rev'])
-                if len(revs)==0:
-                    continue
-                latest = sorted(revs)[-1]
-                d = couch.openDoc(doc['_id'], revision=latest)
-                d.addCallback(self.fixAmmo, doc)
-
-    def extractRevisions(self, res):
-        li = []
+class Evolve(Resource):    
+    def clean(self, res):
+        docs = []
         for r in res['rows']:
-            li.append(couch.openDoc(r['id'],revs_info=True))
-        d = defer.DeferredList(li)
-        d.addCallback(self.fixNew)
-
-    @forceCond(noChoicesYet, fillChoices)
+            print r['key'],r['value']
+            docs.append({'_id':r['key'],'_rev':r['value'],"_deleted": True})
+        used_couch.couch.bulkDocs(docs)
     def render_GET(self, request):
-        d = couch.openView(designID,'new_unique_components')
-        d.addCallback(self.extractRevisions)
+        d = used_couch.couch.openView(used_couch.designID,'by_date')
+        d.addCallback(self.clean)
         return "ok"
+
+    # def fixAmmo(self, previous_doc, doc):
+    #     print "ahaaaaaaaaaaaaaaaaaaaaaaa"
+    #     if doc['new_stock'] != previous_doc['new_stock']:
+    #         doc['new_stock'] = previous_doc['new_stock']
+    #         if 'stock1' in doc:
+    #             doc['stock1'] = previous_doc['stock1']
+    #         couch.saveDoc(doc)
+    # def fixNew(self, lires):
+    #     for tu in lires:
+    #         if tu[0]:
+    #             doc = tu[1]
+    #             revs = []
+    #             for r in doc['_revs_info']:
+    #                 if r['rev']==doc['_rev']:
+    #                     continue
+    #                 if r['status'] != 'available':
+    #                     continue
+    #                 revs.append(r['rev'])
+    #             if len(revs)==0:
+    #                 continue
+    #             latest = sorted(revs)[-1]
+    #             d = couch.openDoc(doc['_id'], revision=latest)
+    #             d.addCallback(self.fixAmmo, doc)
+
+    # def extractRevisions(self, res):
+    #     li = []
+    #     for r in res['rows']:
+    #         li.append(couch.openDoc(r['id'],revs_info=True))
+    #     d = defer.DeferredList(li)
+    #     d.addCallback(self.fixNew)
+
+    # @forceCond(noChoicesYet, fillChoices)
+    # def render_GET(self, request):
+    #     d = couch.openView(designID,'new_unique_components')
+    #     d.addCallback(self.extractRevisions)
+    #     return "ok"
 
 
 class AddImage(Resource):
