@@ -234,14 +234,22 @@ class Skin(Template):
         self.selected_skin = None
         cache = globals()['_cached_statics']
         name_to_cache = 'skin.html'
-        if name_to_cache in cache:
-            self.tree = deepcopy(cache[name_to_cache])
-        else:
-            opened_file = open(os.path.join(static_dir, name_to_cache))
-            parser = etree.HTMLParser(encoding='utf-8')
-            cache[name_to_cache] = etree.parse(opened_file, parser)
-            self.tree = deepcopy(cache[name_to_cache])
-            opened_file.close()
+        opened_file = open(os.path.join(static_dir, 
+                                            name_to_cache))
+        parser = etree.HTMLParser(encoding='utf-8')
+        cache[name_to_cache] = etree.parse(opened_file, parser)
+        self.tree = deepcopy(cache[name_to_cache])
+        opened_file.close()
+
+        # if name_to_cache in cache:
+        #     self.tree = deepcopy(cache[name_to_cache])
+        # else:
+        #     opened_file = open(os.path.join(static_dir, 
+        #                                     name_to_cache))
+        #     parser = etree.HTMLParser(encoding='utf-8')
+        #     cache[name_to_cache] = etree.parse(opened_file, parser)
+        #     self.tree = deepcopy(cache[name_to_cache])
+        #     opened_file.close()
 
 
     skins = {'home':'/static/home.css'}
