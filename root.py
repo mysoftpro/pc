@@ -196,36 +196,13 @@ class Template(object):
     def render(self):
         return etree.tostring(self.tree, encoding='utf-8', method="html")
 
+    @property
+    def middle(self):
+        return self.root().xpath('//div[@id="content"]')[0]
 
-    def get_middle(self):
-        return self.root().find('.//middle')
-
-    def set_middle(self, middle):
-        parent = self.get_middle().getparent()
-        # REFACTOR
-        div = etree.Element('div')
-        div.set('id','middle')
-        for el in middle:
-            div.append(el)
-        parent.replace(self.get_middle(), div)
-        # parent.replace(self.get_middle(), middle)
-
-    middle = property(get_middle, set_middle)
-
-
-    def get_top(self):
-        return self.root().find('.//top')
-
-    def set_top(self, top):
-        parent = self.get_top().getparent()
-        # REFACTOR
-        div = etree.Element('div')
-        div.set('id','top')
-        for el in top:
-            div.append(el)
-        parent.replace(self.get_top(), div)
-
-    top = property(get_top, set_top)
+    @property
+    def top(self):
+        return self.root().xpath('//header')[0]
 
 
 
