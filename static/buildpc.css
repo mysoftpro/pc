@@ -1,4 +1,7 @@
 body{
-    background-image: url(/static/worn_dots.png);
-    background-repeat: repeat;
+    /* background-image: url(/static/grid_noise.png); */
+    /* background-repeat: repeat;  */
+}
+header{
+    padding-top:40px;
 }
