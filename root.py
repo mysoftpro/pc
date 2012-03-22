@@ -394,7 +394,9 @@ class CachedStatic(File):
             han = self.hooks[short_name]
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
-            d.addErrback(lambda some: request.finish())
+            def err(some):
+                return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
+            d.addErrback(err)
         else:
             # just an empty snippet
             d = defer.Deferred()
