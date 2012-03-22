@@ -64,13 +64,14 @@ function init(){
 			     var color = 'black';
 			     if (ne['catalogs'])
 				 color="blue";
-			     first_selected.after(_.template('<tr><td id="{{witid}}">{{wittext}}</td><td style="color:{{color}}" id="{{newid}}">{{newtext}}</td><td><input type="submit" value="delete"/></td></tr>',
+			     first_selected.after(_.template('<tr><td id="{{witid}}">{{witid}} {{wittext}}</td><td style="color:{{color}}" id="{{newid}}">{{newid}} {{newtext}} - {{stock}}</td><td><input type="submit" value="delete"/></td></tr>',
 				      {
 					  witid:wi['_id'],
 					  newid:ne['_id'],
 					  wittext:wi['text'],
 					  newtext:ne['text'],
-					  color:color
+					  color:color,
+					  stock:ne['new_stock']
 				      }));
 			     first_selected.next()
 				 .find('input').click(function(e){

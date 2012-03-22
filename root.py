@@ -394,6 +394,7 @@ class CachedStatic(File):
             han = self.hooks[short_name]
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
+            d.addErrback(lambda some: request.finish())
         else:
             # just an empty snippet
             d = defer.Deferred()

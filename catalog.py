@@ -349,16 +349,16 @@ class WitNewMap(Resource):
         'http://newsystem.ru/goods-and-services/catalog/108/9426/?IBLOCK_ID=108&SECTION_ID=9426&PAGEN_1=2':'mothers1',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9475/':'videos',
         'http://newsystem.ru/goods-and-services/catalog/108/9475/?IBLOCK_ID=108&SECTION_ID=9475&PAGEN_1=2':'videos1',
-        'http://www.newsystem.ru/goods-and-services/catalog/108/9689/':'exclusive_cases',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/11334/':'exclusive_cases',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9420/':'game_cases',
-        'http://www.newsystem.ru/goods-and-services/catalog/108/9422/':'simple_cases',
+        'http://www.newsystem.ru/goods-and-services/catalog/108/11338/':'simple_cases',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9463/':'sata_disks',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
-        'http://www.newsystem.ru/goods-and-services/catalog/84/9032/':'soft',
+        'http://www.newsystem.ru/goods-and-services/catalog/84/9031/':'soft',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9413/':'psu',
-        'http://newsystem.ru/goods-and-services/catalog/106/9389/':'tablets',
-        'http://newsystem.ru/goods-and-services/catalog/106/9383/':'notebooks',
-        'http://newsystem.ru/goods-and-services/catalog/106/9383/?IBLOCK_ID=106&SECTION_ID=9383&PAGEN_1=2':'notebooks1',
+        # 'http://newsystem.ru/goods-and-services/catalog/106/9389/':'tablets',
+        # 'http://newsystem.ru/goods-and-services/catalog/106/9383/':'notebooks',
+        # 'http://newsystem.ru/goods-and-services/catalog/106/9383/?IBLOCK_ID=106&SECTION_ID=9383&PAGEN_1=2':'notebooks1',
         }
     def goForNew(self, headers, request):
         first = request.args.get('first', [None])[0]

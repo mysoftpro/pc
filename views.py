@@ -1668,6 +1668,18 @@ class Note(Tablet):
 
 
 
+    def fillNoNote(self):
+        self.template.middle.xpath('//div[@id="maparams"]')[0].text = \
+            u"""Здесь должен быть ноутбук, но сейчас его нет в наличии. Пожалуйста, перейдите
+                на пункт "Ноутбуки Asus" в меню, чтобы посмотреть все ноутбуки которые продаются у нас.
+             """
+        top = self.template.top.xpath('//div[@id="video_top"]')[0]
+        top.getparent().remove(top)
+        right = self.template.middle.xpath('//div[@id="videoimage"]')[0]
+        right.getparent().remove(right)
+
+
+
     def preRender(self):
         from models import gChoices
         current_note = None
@@ -1676,6 +1688,7 @@ class Note(Tablet):
             if note.getNoteHash() == self.name:
                 current_note = note
                 break
+        
         d = defer.Deferred()
         d.addCallback(self.renderNote, current_note)
         d.callback(None)
