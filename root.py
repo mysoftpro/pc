@@ -395,6 +395,8 @@ class CachedStatic(File):
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
             def err(some):
+                print "______________________________"
+                print some
                 return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
             d.addErrback(err)
         else:
