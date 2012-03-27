@@ -356,9 +356,9 @@ class WitNewMap(Resource):
         'http://www.newsystem.ru/goods-and-services/catalog/108/9450/':'ram',
         'http://www.newsystem.ru/goods-and-services/catalog/84/9031/':'soft',
         'http://www.newsystem.ru/goods-and-services/catalog/108/9413/':'psu',
-        # 'http://newsystem.ru/goods-and-services/catalog/106/9389/':'tablets',
-        # 'http://newsystem.ru/goods-and-services/catalog/106/9383/':'notebooks',
-        # 'http://newsystem.ru/goods-and-services/catalog/106/9383/?IBLOCK_ID=106&SECTION_ID=9383&PAGEN_1=2':'notebooks1',
+        'http://newsystem.ru/goods-and-services/catalog/106/9389/':'tablets',
+        'http://newsystem.ru/goods-and-services/catalog/106/9383/':'notebooks',
+        'http://newsystem.ru/goods-and-services/catalog/106/9383/?IBLOCK_ID=106&SECTION_ID=9383&PAGEN_1=2':'notebooks1',
         }
     def goForNew(self, headers, request):
         first = request.args.get('first', [None])[0]
@@ -657,8 +657,15 @@ class NewTarget(object):
         def store(err):
             d = couch.saveDoc(c)
             d.addCallback(lambda x: c['_id'])
+            d.addErrback(self.fuck, c['_id'])
             return d
         return store
+
+    def fuck(self, failure, _id):
+        print "++++++++++++++++++++++++++++++"
+        print failure
+        print _id
+        print ""
 
     def updateComponent(self, c):
         def update(doc):
@@ -671,9 +678,10 @@ class NewTarget(object):
                 doc['price'] = c['us_price']
             if 'stock1' in doc:
                 doc['stock1'] = c['new_stock']
-            if need_save:
+            if need_save:                
                 d = couch.saveDoc(doc)
                 d.addCallback(lambda x: c['_id'])
+                d.addErrback(self.fuck, doc['_id'])
                 return d
             else:
                 return c['_id']
@@ -687,7 +695,8 @@ class NewTarget(object):
                     row['doc']['stock1'] = 0
                     row['doc']['new_stock'] = 0
                     deleted.append(row['doc']['_id'])
-                    couch.saveDoc(row['doc'])
+                    d = couch.saveDoc(row['doc'])
+                    d.addErrback(self.fuck, row['doc']['_id'])
         return ','.join(deleted)
 
     def cleanNewDocs(self, li, external_id):

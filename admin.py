@@ -25,6 +25,8 @@ from copy import deepcopy
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from pc.used import couch as used_couch
+from urllib import unquote_plus, quote_plus
+from cStringIO import StringIO
 
 realm_dir = os.path.join(os.path.dirname(__file__), 'realm')
 
@@ -103,6 +105,7 @@ class AdminGate(Resource):
         self.putChild('delete_wit_new_map',DeleteWitNewMap())
 
         self.putChild('get_new_descriptions',GetNewDescriptions())
+        self.putChild('clone_new_descriptions',CloneNewDescriptipon())
         self.putChild('get_desc_from_new',GetDescFromNew())
         self.putChild('store_new_desc',StoreNewDesc())
 
@@ -951,10 +954,60 @@ class DeleteWitNewMap(Resource):
         return NOT_DONE_YET
 
 
+class CloneNewDescriptipon(Resource):
+    def attach(self, attachments, doc):
+        atts = {}
+        for b,r in attachments:
+            for k,v in r.items():
+                atts.update({k:v.getvalue()})
+        d = couch.addAttachments(doc,atts)
+        d.addCallback(lambda _doc:couch.saveDoc(_doc))
+
+
+    def merge(self, li):
+        from_doc = li[0][1]
+        to_doc = li[1][1]
+        for k,v in from_doc.items():
+            if k in ('new_stock','stock1','_id','_rev','new_link'):
+                continue
+            if 'price' in k:
+                continue
+            to_doc[k] = v
+        to_doc['stock1'] = to_doc['new_stock']
+        to_doc['price'] = to_doc['us_price']
+        to_doc['cloned'] = True
+        defs = []
+        def name_bin(name):
+            def di(bin):
+                return {name:bin}
+            return di
+
+        for att in from_doc.get('_attachments',{}):
+            sio = StringIO()
+            defs.append(couch.openDoc(from_doc['_id'], attachment=att, writer=sio)\
+                            .addCallback(lambda some:{att:sio}))
+        return defer.DeferredList(defs).addCallback(self.attach, to_doc)
+
+    def render_GET(self, request):
+        fr = request.args.get('from')[0]
+        to = request.args.get('to')[0]
+        d = couch.openDoc(fr)
+        d1 = couch.openDoc(to)
+        defer.DeferredList([d,d1]).addCallback(self.merge)
+        return "ok"
+
 class GetNewDescriptions(Resource):
 
     def finish(self, res, request):
-        request.write(simplejson.dumps(res))
+        clean = []
+        for r in res['rows']:
+            doc = r['doc']
+            if doc['new_stock'] == 0:
+                continue
+            # if 'catalogs' not in doc and doc['new_stock'] == 0:
+            #     continue
+            clean.append(r)
+        request.write(simplejson.dumps({'rows':clean}))
         request.finish()
 
     @MIMETypeJSON
@@ -992,8 +1045,6 @@ class GetDescFromNew(Resource):
     def render_GET(self, request):
         link = request.args.get('link')[0]
         d = getNewDescription(link)
-        print "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        print link
         d.addCallback(self.finish, request)
         return NOT_DONE_YET
 
@@ -1076,18 +1127,141 @@ class StorePsu(Resource):
         return NOT_DONE_YET
 
 
-class Evolve(Resource):    
-    def clean(self, res):
-        docs = []
+class Evolve(Resource):
+    # merge new by hash -------------------------------------
+    def makeGen(self, keys):
+        for k,v in keys.items():
+            yield k,v
+
+
+    def attach(self, attachments, doc):
+        atts = {}
+        for b,r in attachments:
+            for k,v in r.items():
+                atts.update({k:v.getvalue()})
+        d = couch.addAttachments(doc,atts)
+        d.addCallback(lambda _doc:couch.saveDoc(_doc))
+        return d
+
+    def merge(self, res):
+        print "merge this"        
+        docs = [r['doc'] for r in res['rows']]
+        print [r['_id'] for r in docs]
+        new_doc = [d for d in docs if 'catalogs' not in d]
+        if len(new_doc)==0:
+            print "no new doc"
+            d = defer.Deferred()
+            d.callback(None)
+            return d
+        new_doc = new_doc[0]
+        clean_docs = sorted([d for d in docs if d['_id'] != new_doc['_id'] and 'catalogs' in d],
+                            lambda x,y: x['_id']>y['_id'])
+        if len(clean_docs)==0:
+            print "no clean docs"
+            d = defer.Deferred()
+            d.callback(None)
+            return d
+        from_doc = clean_docs[-1]
+        for k,v in from_doc.items():
+            if k in ('new_stock','stock1','_id','_rev','new_link'):
+                continue
+            if 'price' in k:
+                continue
+            new_doc[k] = v
+        new_doc['stock1'] = new_doc['new_stock']
+        new_doc['price'] = new_doc['us_price']
+        new_doc['cloned'] = from_doc['_id']
+        defs = []
+        def name_bin(name):
+            def di(bin):
+                return {name:bin}
+            return di
+
+        for att in from_doc.get('_attachments',{}):
+            sio = StringIO()
+            defs.append(couch.openDoc(from_doc['_id'], attachment=att, writer=sio)\
+                            .addCallback(self.nameAndSio(att,sio)))
+        return defer.DeferredList(defs).addCallback(self.attach, new_doc)
+
+    def nameAndSio(self, name,sio):
+        def ret(some):
+            return {name:sio}
+        return ret
+
+
+
+    def mergeOne(self, none, gen):
+        try:
+            ha,ids = gen.next()
+        except StopIteration:
+            return
+        d = couch.openView(designID, 'new_hash', key=ha,include_docs=True)
+        d.addCallback(self.merge)
+        d.addCallback(self.mergeOne, gen)
+        return d
+
+    def mergeByHash(self, res):
+        keys = {}
         for r in res['rows']:
-            print r['key'],r['value']
-            docs.append({'_id':r['key'],'_rev':r['value'],"_deleted": True})
-        used_couch.couch.bulkDocs(docs)
+            if r['key'] in keys:
+                keys[r['key']].append(r['id'])
+            else:
+                keys[r['key']] = [r['id']]
+        gen = self.makeGen(keys)
+        return self.mergeOne(None, gen)
+
+
     def render_GET(self, request):
-        d = used_couch.couch.openView(used_couch.designID,'by_date')
-        d.addCallback(self.clean)
+        d = couch.openView(designID, 'new_hash', stale=False)#, key="421446d47acc151da76678583828c67b"
+        d.addCallback(self.mergeByHash)
         return "ok"
 
+    # # install hash in new -------------------------------------
+    # def installHash(self, res):
+    #     import hashlib
+    #     for r in res['rows']:
+    #         doc = r['doc']
+    #         if 'hash' in doc:
+    #             continue
+    #         if not 'text' in doc or doc['text'] == '':
+    #             continue
+    #         ha = hashlib.md5()
+    #         ha.update(doc['text'].encode('utf-8'))
+    #         doc['hash'] = ha.hexdigest()
+    #         couch.saveDoc(doc)
+
+    # def render_GET(self,request):
+    #     d = couch.openView(designID, 'new_unique_components', include_docs=True)
+    #     d.addCallback(self.installHash)
+    #     return "ok"
+
+    # fix cloned new price    --------------------------------------------
+    # def fix(self, res):
+    #     for r in res['rows']:
+    #         doc = r['doc']
+    #         if 'us_price' in doc:
+    #             doc['price'] = doc['us_price']
+    #             couch.saveDoc(doc)
+
+
+    # def render_GET(self, request):
+    #     d = couch.openView(designID,'fix_price', include_docs=True, stale=False)
+    #     d.addCallback(self.fix)
+    #     return "ok"
+
+    # clean used by date --------------------------------------------------
+    # def clean(self, res):
+    #     docs = []
+    #     for r in res['rows']:
+    #         print r['key'],r['value']
+    #         docs.append({'_id':r['key'],'_rev':r['value'],"_deleted": True})
+    #     used_couch.couch.bulkDocs(docs)
+    # def render_GET(self, request):
+    #     d = used_couch.couch.openView(used_couch.designID,'by_date')
+    #     d.addCallback(self.clean)
+    #     return "ok"
+
+    # restore new components from previous revisions -----------------------
     # def fixAmmo(self, previous_doc, doc):
     #     print "ahaaaaaaaaaaaaaaaaaaaaaaa"
     #     if doc['new_stock'] != previous_doc['new_stock']:
@@ -1154,7 +1328,6 @@ class AddImage(Resource):
         d.addCallback(self.addImage, doc, request)
 
     def render_GET(self, request):
-        print "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyya"
         _id = request.args.get('_id')[0]
         d= couch.openDoc(_id)
         d.addCallback(self.goForImage, request)
