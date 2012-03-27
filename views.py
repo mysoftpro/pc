@@ -1529,6 +1529,8 @@ class Notes(PCView):
 
             # store first letter of the model
             name = note.getNoteBookName()
+            if not name[0] in self.categories:
+                continue
             if not name[0] in models:
                 models.add(name[0])
 
