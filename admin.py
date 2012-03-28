@@ -1128,93 +1128,113 @@ class StorePsu(Resource):
 
 
 class Evolve(Resource):
-    # merge new by hash -------------------------------------
-    def makeGen(self, keys):
-        for k,v in keys.items():
-            yield k,v
-
-
-    def attach(self, attachments, doc):
-        atts = {}
-        for b,r in attachments:
-            for k,v in r.items():
-                atts.update({k:v.getvalue()})
-        d = couch.addAttachments(doc,atts)
-        d.addCallback(lambda _doc:couch.saveDoc(_doc))
-        return d
-
-    def merge(self, res):
-        print "merge this"        
-        docs = [r['doc'] for r in res['rows']]
-        print [r['_id'] for r in docs]
-        new_doc = [d for d in docs if 'catalogs' not in d]
-        if len(new_doc)==0:
-            print "no new doc"
-            d = defer.Deferred()
-            d.callback(None)
-            return d
-        new_doc = new_doc[0]
-        clean_docs = sorted([d for d in docs if d['_id'] != new_doc['_id'] and 'catalogs' in d],
-                            lambda x,y: x['_id']>y['_id'])
-        if len(clean_docs)==0:
-            print "no clean docs"
-            d = defer.Deferred()
-            d.callback(None)
-            return d
-        from_doc = clean_docs[-1]
-        for k,v in from_doc.items():
-            if k in ('new_stock','stock1','_id','_rev','new_link'):
-                continue
-            if 'price' in k:
-                continue
-            new_doc[k] = v
-        new_doc['stock1'] = new_doc['new_stock']
-        new_doc['price'] = new_doc['us_price']
-        new_doc['cloned'] = from_doc['_id']
-        defs = []
-        def name_bin(name):
-            def di(bin):
-                return {name:bin}
-            return di
-
-        for att in from_doc.get('_attachments',{}):
-            sio = StringIO()
-            defs.append(couch.openDoc(from_doc['_id'], attachment=att, writer=sio)\
-                            .addCallback(self.nameAndSio(att,sio)))
-        return defer.DeferredList(defs).addCallback(self.attach, new_doc)
-
-    def nameAndSio(self, name,sio):
-        def ret(some):
-            return {name:sio}
-        return ret
-
-
-
-    def mergeOne(self, none, gen):
-        try:
-            ha,ids = gen.next()
-        except StopIteration:
-            return
-        d = couch.openView(designID, 'new_hash', key=ha,include_docs=True)
-        d.addCallback(self.merge)
-        d.addCallback(self.mergeOne, gen)
-        return d
-
-    def mergeByHash(self, res):
+    def fix(self, res):
         keys = {}
         for r in res['rows']:
             if r['key'] in keys:
-                keys[r['key']].append(r['id'])
+                keys[r['key']].append((r['id'],r['value']))
             else:
-                keys[r['key']] = [r['id']]
-        gen = self.makeGen(keys)
-        return self.mergeOne(None, gen)
-
+                keys[r['key']] = [(r['id'],r['value'])]
+        print "yo"
+        print len(keys)
+        print len(res['rows'])
+        for li in keys.values():
+            if len(li)==1:
+                continue
+            to_del = li[-1]
+            used_couch.couch.deleteDoc(to_del[0],to_del[1])
 
     def render_GET(self, request):
-        d = couch.openView(designID, 'new_hash', stale=False)#, key="421446d47acc151da76678583828c67b"
-        d.addCallback(self.mergeByHash)
+        d = used_couch.couch.openView(used_couch.designID,'by_date', stale=False)
+        d.addCallback(self.fix)
         return "ok"
+    # # merge new by hash -------------------------------------
+    # def makeGen(self, keys):
+    #     for k,v in keys.items():
+    #         yield k,v
+
+
+    # def attach(self, attachments, doc):
+    #     atts = {}
+    #     for b,r in attachments:
+    #         for k,v in r.items():
+    #             atts.update({k:v.getvalue()})
+    #     d = couch.addAttachments(doc,atts)
+    #     d.addCallback(lambda _doc:couch.saveDoc(_doc))
+    #     return d
+
+    # def merge(self, res):
+    #     print "merge this"        
+    #     docs = [r['doc'] for r in res['rows']]
+    #     print [r['_id'] for r in docs]
+    #     new_doc = [d for d in docs if 'catalogs' not in d]
+    #     if len(new_doc)==0:
+    #         print "no new doc"
+    #         d = defer.Deferred()
+    #         d.callback(None)
+    #         return d
+    #     new_doc = new_doc[0]
+    #     clean_docs = sorted([d for d in docs if d['_id'] != new_doc['_id'] and 'catalogs' in d],
+    #                         lambda x,y: x['_id']>y['_id'])
+    #     if len(clean_docs)==0:
+    #         print "no clean docs"
+    #         d = defer.Deferred()
+    #         d.callback(None)
+    #         return d
+    #     from_doc = clean_docs[-1]
+    #     for k,v in from_doc.items():
+    #         if k in ('new_stock','stock1','_id','_rev','new_link'):
+    #             continue
+    #         if 'price' in k:
+    #             continue
+    #         new_doc[k] = v
+    #     new_doc['stock1'] = new_doc['new_stock']
+    #     new_doc['price'] = new_doc['us_price']
+    #     new_doc['cloned'] = from_doc['_id']
+    #     defs = []
+    #     def name_bin(name):
+    #         def di(bin):
+    #             return {name:bin}
+    #         return di
+
+    #     for att in from_doc.get('_attachments',{}):
+    #         sio = StringIO()
+    #         defs.append(couch.openDoc(from_doc['_id'], attachment=att, writer=sio)\
+    #                         .addCallback(self.nameAndSio(att,sio)))
+    #     return defer.DeferredList(defs).addCallback(self.attach, new_doc)
+
+    # def nameAndSio(self, name,sio):
+    #     def ret(some):
+    #         return {name:sio}
+    #     return ret
+
+
+
+    # def mergeOne(self, none, gen):
+    #     try:
+    #         ha,ids = gen.next()
+    #     except StopIteration:
+    #         return
+    #     d = couch.openView(designID, 'new_hash', key=ha,include_docs=True)
+    #     d.addCallback(self.merge)
+    #     d.addCallback(self.mergeOne, gen)
+    #     return d
+
+    # def mergeByHash(self, res):
+    #     keys = {}
+    #     for r in res['rows']:
+    #         if r['key'] in keys:
+    #             keys[r['key']].append(r['id'])
+    #         else:
+    #             keys[r['key']] = [r['id']]
+    #     gen = self.makeGen(keys)
+    #     return self.mergeOne(None, gen)
+
+
+    # def render_GET(self, request):
+    #     d = couch.openView(designID, 'new_hash', stale=False)#, key="421446d47acc151da76678583828c67b"
+    #     d.addCallback(self.mergeByHash)
+    #     return "ok"
 
     # # install hash in new -------------------------------------
     # def installHash(self, res):
