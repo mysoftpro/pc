@@ -1,141 +1,110 @@
-<top>
-  <div id="cart_top">
-    <h1>Корзина</h1>
-    <p class="computers_top">
-      Все корзины анонимны.
-      Они не удаляются с сайта.
-
-      Сохраните ссылку на корзину.
-
-      Отправьте эту ссылку друзьям и знакомым.
-
-      Любой человек
-      может заказать в нашем магазине собранный вами компьютер.
-    </p>
-    <table style="float:left;">
-      <tr>
-        <td>
-          <strong class="red">Сссылка на эту корзину:</strong>
-        </td>
-        <td colspan="2">
-          <input id="cartlink" width="20" type="text"/>
-        </td>
-      </tr>
-      <tr>
-        <td><span id="ya_share_cart"></span></td>
-        <td><input id="email_cart" type="text" class="email" value="введите email" name="email"></td>
-        <td><a id="emailbutton_cart" class="emailbutton" href="">отправить</a></td>
-      </tr>
-    </table>
-    <div id="cartcall">
-      Чтобы купить любой товар в нашем магазине, просто <strong class="red">позвоните нам</strong>
-      и назовите его номер. Доставка по Калининграду бесплатно.
-      Чтобы посмотреть описание компонентов, кликайте на их название.
-      Чтобы изменить конфигурацию компьютера, кликайте его иконку.
-    </div>
-    <div style="clear:both;"></div>
+<header>
+<h1>Корзина</h1>
+</header>
+<div id="content">
+  <div id="models" style="margin-top:10px;">
   </div>
-</top>
-<middle>
+
   <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models">
-    </div>
-    <div style="clear:both;"></div>
-  </div>
   <script type="text/javascript">
     var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
     '/static/jquery.mousewheel.js','/static/jScrollPane.js',
     '/static/guider.js','/static/dragdealer.js'];
-    var _next = ['/static/cart.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
+    var _next = ['/static/cart.js','/static/guides.js','/static/jquery.observehashchange.min.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <div id="toppopup">
+  <div id="modalComment" class="modal hide fade" style="display: none; ">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>Напишите комментарий, пожелание или просьбу</h3>
+    </div>
+    <div class="modal-body">
+      <form class="well">
+	<label>Текст комментария</label>
+	<textarea class="span3"></textarea>
+	<label>Имя</label>
+	<input type="text" name="name"/>
+	<label>Email</label>
+	<input type="text" name="email"/>
+      </form>
+      <p>
+	Ответ можно посмотреть на этой странице
+	Если хотите получить уведомление об ответе, укажите email.    
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Закрыть</a>
+      <a href="#" id="sendComment" class="btn btn-primary">Отправить</a>
+    </div>
   </div>
-</middle>
+</div>
 
 <model>
-<div class="computeritem">
-  <div class="info"></div>
-  <h2 class="section">
-    <a class="modellink" href="/computer/name">
-      Пинг
-    </a>
-    <span class="modelprice">
-      12000 р.
-    </span>
-  </h2>
-</div>
-
-<div class="cart_description">
-  <h3></h3>
-</div>
+      <div class="span3">
+        <div class="thumbnail">
+          <a class="modelicon">
+            <img src="/static/sample.jpg" style="max-width:200px;max-height:200px;"/>
+          </a>
+          <div class="caption">
+            <div class="row-fluid">
+              <h3 class="span5"><a class="modellink"  href=""></a></h3>
+              <div class="span3" style="margin-top:5px;"><span class="label label-info"></span></div>
+              <div class="span3" style="margin-top:5px;"><span class="label"></span></div>
+	    </div>
+            <button class="btn btn-mini cartbtn"><i class="icon icon-edit"></i> Изменить</button>
+            <button class="btn btn-mini cartbtn"><i class="icon icon-check"></i> Проверить</button>
+            <button class="btn btn-mini cartbtn"><i class="icon icon-trash"></i> Удалить</button>
+          </div>
+        </div>
+        <div class="info"></div>
+      </div>
+      <div class="span9">
+        <div class="row-fluid">
+          <h3 class="span10"></h3>
+          <button class="btn span2 btn-mini"><i class="icon icon-pencil"></i>переименовать</button>
+        </div>
+        <table class="table table-striped table-bordered table-condensed">
+        </table>
+      </div>
 </model>
 
 
 
-
-
-<top_cart>
-
-
-
-</top_cart>
-<model_icon>
-  <a class="modelicon" name="icon">
-  <span class="rollover" style="opacity: 0;"></span>
-  <span class="gallery-shadow"></span>
-  <img src="/static/sample.jpg"></a>
-</model_icon>
-
-
 <set>
-  <div class="computeritem">
-    <div class="info"></div>
-    <h2 class="section wide_section">
-      <a class="modellink" href="/computer/name">
-	Пинг
+    <div class="span3">
+      <div class="thumbnail">
+        <a class="modelicon">
+        <img src="/static/sample.jpg" style="max-width:200px;max-height:200px;"/>
       </a>
-      <span class="modelprice">
-	12000 р.
-      </span>    
-    </h2>
-  </div>
-  <div class="cart_description set_description">
-    <h3></h3>
-  </div>
+      </div>
+      <div class="info"></div>
+      <h2 class="section wide_section">
+        <a class="modellink" href="/computer/name">
+          Пинг
+        </a>
+        <span class="modelprice">
+          12000 р.
+        </span>
+      </h2>
+    </div>
+    <div class="span9">
+      <h3></h3>
+    </div>
 </set>
 
 
 
 <cart_extra>
-  <div class="small_square_button small_cart">Проверить</div>
-  <div class="small_square_button small_reset">Удалить</div>
-  <a target="_blank" class="cart_extra_link pdf_link">счет на оплату по безналу</a>
-  <a target="_blank" class="cart_extra_link credit_link">оформить кредит</a>
-  <div style="clear:both"></div>
+  <button class="btn-mini bill"><i class="icon icon-file"></i> Счет на безнал оплату</button>
+  <!-- <button class="btn-mini"><i class="icon icon-home"></i> Заявка на кредит в Хоум Кредит Банк</button> -->
 </cart_extra>
 
 
 <cart_comment>
-<div class="faqrecord">
-  <div class="faqauthor">builder</div>
-  <div class="faqdate">2011,11,18</div>
-  <div style="clear: both;"></div>
-  <div class="faqbody">
+  <div class="faqrecord well">    
+    <p></p>
+    <i class="icon icon-user"></i><span class="faqauthor"></span>
+    <span class="faqdate badge">2011,11,18</span>
+    <button class="comment btn btn-mini"><i class="icon icon-pencil"></i> комментировать</button>
   </div>
-  <div class="faqlinks"><a name="answer">комментировать</a></div>
-</div>
 </cart_comment>
-<cart_comment_form>
-  <div id="faq_top" style="display:none;opacity:0.0;">
-    <textarea class="computers_top" style="width:730px;">Напишите здесь вопрос, пожелание или просьбу. Что угодно.
-    </textarea>
-    <ul><li><input type="text" value="имя" class="computers_top" name="name"></li>
-      <li><input type="text" value="email" class="computers_top" name="email"></li>
-    </ul><em>Если хотите получить уведомление об ответе, укажите email.
-      Ответ можно посмотреть на этой странице.</em>
-    <span class="sendfaq">Отправить</span>
-    <div style="clear:both;"></div>
-  </div>
-</cart_comment_form>

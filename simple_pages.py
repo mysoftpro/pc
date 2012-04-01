@@ -18,10 +18,15 @@ def simplePage(template, skin, request):
     if request.path in simple_titles:
         title = skin.root().xpath('//title')[0]
         title.text = simple_titles[request.path]
-    skin.top = template.top
-    skin.middle = template.middle
-    skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
-    skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+
+    # skin.top = template.top
+    # skin.middle = template.middle
+    # skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 190px;')
+    # skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_how')
+    for el in template.top:
+        skin.top.append(el)
+    for el in template.middle:
+        skin.middle.append(el)
     d = defer.Deferred()
     d.addCallback(lambda some:skin.render())
     d.callback(None)
@@ -70,8 +75,11 @@ def renderPartPage(doc, header, template, skin):
 
     title = skin.root().xpath('//title')[0]
     title.text = header
-    skin.top = template.top
-    skin.middle = template.middle
+    for el in template.top:
+        skin.top.append(el)
+    for el in template.middle:
+        skin.middle.append(el)
+    
     return skin
 
 def partPage(template, skin, request):

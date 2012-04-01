@@ -10,15 +10,11 @@ var localCart = {
     },
     addItem:function(e){
         var target = $(e.target);
-        var _id;
-        var tag=  this.getTag(target);
-        while (tag !== 'ul'){
-            if (tag == 'li')
-                _id = target.attr('id');
-            target = target.parent();
-            tag = this.getTag(target);
-        }
-        var catalog = target.attr('id');
+        var _id = target.parent().prev().prev().attr('id');
+	var table = target.parent().parent().parent();
+	if (this.getTag(table)=='tbody')
+	    table = table.parent();
+	var catalog = table.attr('id');
         this.items[catalog] = _id;
         this.renderItem(catalog);
     },
@@ -47,22 +43,16 @@ var localCart = {
 (function init(){
      localCart.price = price;
      localCart.items[tablet_catalog] = _id;
-     var uls = $('ul.chipVendors');
-     uls.find('li').click(function(e){
-                                     var target = $(e.target);
-                                     var tag = target[0].tagName.toLowerCase();
-                                     if(tag=='span')
-                                         return;
-                                     var guard = 10;
-                                     while(tag!=='li'){
-                                    target = target.parent();
-                                         tag = target[0].tagName.toLowerCase();
-                                     }
+     var uls = $('table.chipVendors');
+     var tds = _(uls.find('tr').toArray()).map(function(tr){return $(tr).find('td').first();});
+     _(tds).each(function(td){
+		     $(td).click(function(e){                                    
                                      showComponent({preventDefault:function(){},
-                                               target:{id:'_'+target[0].id}});
+						    target:{id:'_'+e.target.id}});
                                  });
+		     });		     
      $('.videoadd').click(function(e){localCart.addItem(e);});
-         $('#tocart').click(function(){			   
+     $('#tocart').click(function(){			   
 			   $.ajax({
 				      url:'/saveset',
 				      data:{data:JSON.stringify(localCart.items)},

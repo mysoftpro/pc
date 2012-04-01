@@ -8,43 +8,36 @@ function init(){
     var container = $('#maparams');
     var articule = _(document.location.href
 		     .split('?')[0].split('/')).last();
-    function fillHtml(url, active, inactive){
-	return function(e){
-	$.ajax({
-		   url:url,
-		   data:{'art':articule},
-		   success:function(html){
-		       if (html=='')
-			   html = 'нет отзывов';
-		       container.html(html);
-		       active.css('background-position', '0px 1px');
-		       inactive.css('background-position', '0px -91px');
-		   }
-	       });
-	};
-    }
-    comments.click(fillHtml('/videoComments', comments, specs));
-    specs.click(fillHtml('/videoSpecs', specs, comments));
+    // function fillHtml(url, active, inactive){
+    // 	return function(e){
+    // 	$.ajax({
+    // 		   url:url,
+    // 		   data:{'art':articule},
+    // 		   success:function(html){
+    // 		       if (html=='')
+    // 			   html = 'нет отзывов';
+    // 		       container.html(html);
+    // 		       active.css('background-position', '0px 1px');
+    // 		       inactive.css('background-position', '0px -91px');
+    // 		   }
+    // 	       });
+    // 	};
+    // }
+    // comments.click(fillHtml('/videoComments', comments, specs));
+    // specs.click(fillHtml('/videoSpecs', specs, comments));
 
 
-    $('#psu_list li').click(function(e){
+    $('#psu_list').find('td').click(function(e){
 				var target = $(e.target);
-				var tag = target[0].tagName.toLowerCase();
-				if(tag=='span')
-				    return;
-				var guard = 10;
-				while(tag!=='li'){
-				    target = target.parent();
-				    tag = target[0].tagName.toLowerCase();
-				}
+				if (!target.attr('id'))return;
 				showComponent({preventDefault:function(){},
-					       target:{id:'_'+target[0].id}});
+					       target:{id:'_'+target.attr('id')}});
 			    });
     $('#videoname').data('_id', _id);
     $('.videoadd').click(function(e){
 			     e.preventDefault();
 			     var target = $(e.target);
-			     var psu_id = target.parent().attr('id');
+			     var psu_id = target.parent().parent().children().first().attr('id');
 			     var psu = psus[psu_id];
 			     var power_div = $('#powername');
 			     if (power_div.length==0){

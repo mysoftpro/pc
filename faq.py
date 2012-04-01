@@ -62,26 +62,26 @@ class Faq(object):
             faq_viewlet = deepcopy(self.template.root().find('faq').find('div'))
             if 'title' in r['doc']:
                 title_from_blog = r['doc']['title']
-                ti = faq_viewlet.xpath('//h3[@class="faqtitle"]')[0]
+                ti = faq_viewlet.xpath('//h3')[0]
                 ti.text = r['doc']['title']
                 ti.set('style','display:block')
             # else:
             faq_viewlet.set('id',r['doc']['_id'])
-            author = faq_viewlet.xpath('//div[@class="faqauthor"]')[0]
+            author = faq_viewlet.xpath('//span[@class="faqauthor"]')[0]
             if 'name' in r['doc']:
                 author.text = r['doc']['name']
             else:
                 author.text = r['doc']['author']
             _date = r['doc']['date']
             _date.reverse()
-            faq_viewlet.xpath('//div[@class="faqdate"]')[0].text = u'.'.join(_date)
+            faq_viewlet.xpath('//span[@class="faqdate"]')[0].text = u'.'.join(_date)
             tag_container = faq_viewlet.xpath('//div[@class="faqtags"]')[0]
             for tag in r['doc'].get('tags',[]):
                 a = etree.Element('a')
                 a.set('href','/blog?tag='+tag)
                 a.text = tag
                 tag_container.append(a)
-            text_field = faq_viewlet.xpath('//div[@class="faqbody"]')[0]
+            text_field = faq_viewlet.xpath('//div[@class="faqbody well"]')[0]
             text_field.text = ''
             if r['doc']['type'] == 'blog' and 'parent' not in r['doc']:
                 for el in html.fragments_fromstring(r['doc']['txt']):
@@ -102,8 +102,10 @@ class Faq(object):
                 current_record.append(faq_viewlet)
         if i==1:
             title.text = title_from_blog
-        self.skin.top = self.template.top
-        self.skin.middle = self.template.middle
+        for el in self.template.top:
+            self.skin.top.append(el)
+        for el in self.template.middle:
+            self.skin.middle.append(el)        
         return self.skin.render()
 
 
@@ -112,7 +114,7 @@ class Blog(Faq):
     title = u'Блог'
     def fillTheTop(self):
         super(Blog, self).fillTheTop()
-        form = deepcopy(self.template.root().xpath('//div[@id="faq_top"]')[0])
+        form = deepcopy(self.template.root().xpath('.//form')[0])
         form.set('style','display:none')
         self.template.top.append(form)
 

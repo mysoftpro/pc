@@ -1,36 +1,31 @@
-<top>
-  
-</top>
-<middle>
+<header>
+</header>
+<div id="content">
   <div id="faq"></div>
   <div id="faqbottom"></div>
   <script type="text/javascript">
     scripts['next'] = {'top':['/static/jquery.cookie.min.js','/static/waypoints.min.js'],'next':{'top':['/static/faq.js']}};
   </script>
-</middle>
+</div>
 <faq>
   <div class="faqrecord">
     <h3 class="faqtitle"></h3>
-    <div class="faqauthor"></div>
-    <div class="faqdate"></div>
+    <div><i class="icon icon-user"></i>
+      <span class="faqauthor"></span><span style="margin-left:5px;" class="faqdate"></span>
+    </div>
     <div class="faqtags"></div>
     <div style="clear:both;"></div>
-    <div class="faqbody"></div>
-    <div class="faqlinks"><a name="answer">комментировать</a></div>
+    <div class="faqbody well"></div>
+    <div class="faqlinks"><span class="btn postAnswer">комментировать</span></div>
   </div>
 </faq>
 <faqtop>
-  <div id="faq_top">
-    <textarea class="computers_top">Напишите здесь вопрос, пожелание или просьбу. Что угодно.</textarea>
-    <ul>
-      <li><input name="name" class="computers_top" type="text" value="имя"></li>
-      <li><input name="email" class="computers_top" type="text" value="email"></li>
-    </ul>
-    <em>Если хотите получить уведомление об ответе, укажите email.
-      Ответ можно посмотреть на этой странице.</em>
-    <span class="sendfaq">Отправить</span>
-    <div style="clear:both;"></div>
-  </div>
+  <form class="well form-inline" id="faqtop">
+    <input type="text" name="txt" class="input-large" placeholder="Текст" style="width:500px;">
+    <input type="text" name="name" class="input-small" placeholder="Имя">
+    <input type="text" name="email" class="input-small" placeholder="email">
+    <a class="btn sendfaq">Отправить</a>
+  </form>
 </faqtop>
 <blogtop>
   <h2>Люди и компьютеры</h2>
@@ -38,5 +33,5 @@
     <a id="rss" href="/rss"></a>
     Здесь блог, в котором мы собираем околокомпьютерные новости. Мы также пишем сюда статьи про
     железо, которым жалко посвящать целую страницу.
-  </p>  
+  </p>
 </blogtop>

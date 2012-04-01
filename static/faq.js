@@ -2,13 +2,9 @@ _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
     ,evaluate: /\[\[(.+?)\]\]/g
 };
-var ta_initial = "Напишите здесь вопрос, пожелание или просьбу. Что угодно.";
-var taa_initial = "Напишите здесь комментарий.";
-var email_initial = "email";
-var name_initial = "имя";
 
-var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><h3 class="faqtitle"></h3><div class="faqauthor">{{author}}</div><div class="faqdate">{{date}}</div><div class=\"faqtags\">{{tags}}</div><div style="clear:both;"></div><div class="faqbody">{{body}}</div>{{links}}</div>');
-var link_template = '<div class="faqlinks"><a name="answer">комментировать</a></div>';
+var faq_template = _.template('<div style="opacity:0" class="{{klass}}"><h3 class="faqtitle"></h3><div><i class="icon icon-user"></i><span class="faqauthor">{{author}}</span><span style="margin-left:5px;" class="faqdate">{{date}}</span></div><div class=\"faqtags\">{{tags}}</div><div class="faqbody well">{{body}}</div>{{links}}</div>');
+var link_template = '<div class="faqlinks"><span class="btn postAnswer">комментировать</span></div>';
 
 function makeTags(doc){
     var retval = '';
@@ -21,19 +17,50 @@ function makeTags(doc){
 }
 
 function init(){
-    var area = $('#faq_top textarea');
-    var email = $('#faq_top input[name="email"]');
-    var name = $('#faq_top input[name="name"]');
-    var clear = function(txt){
-        return function(e){
-            var target = $(e.target);
-            if (target.val() == txt)
-                target.val('');
+    function sendSuccess(data, to_send, target, parent){
+        var d = new Date();
+        var _date = d.getDate()+'.';
+        _date +=+d.getMonth()+1+'.';
+        _date +=+d.getFullYear()+'';
+        var middle = $('#faq');
+        var author = $.cookie('pc_user');
+        if (to_send['name'])
+            author = to_send['name'];
+
+        var before_append = function(_html){
+            middle.children().first().before(_html);
         };
-    };
-    area.click(clear(ta_initial));
-    email.click(clear(email_initial));
-    name.click(clear(name_initial));
+        var after_append = function(){return middle.children()
+                                      .first();};
+        var klass = 'faqrecord';
+        var links = link_template;
+        if (parent){
+	    links = '';
+            klass = 'faqrecord fanser';
+            before_append = function(_html){
+                target.parent().find('.faqlinks').after(_html);
+            };
+            after_append = function (){
+                $('#faqanswer').hide();
+                var next = target
+                    .parent()
+                    .find('.faqlinks').next();
+                return next;
+            };
+        }
+        before_append(faq_template(
+                          {'body':to_send['txt'],
+                           'author':author,
+                           'date':_date,
+                           'links':links,
+                           'klass':klass,
+			   'tags':''}));
+        var aa = after_append();
+        aa.attr('id',data).animate({'opacity':'1.0'},500);
+        if (!parent){
+            aa.find('a').click(postAnswer);
+        }
+    }
     function send(e){
         var target = $(e.target);
         while (!target.attr('id') &&
@@ -43,111 +70,55 @@ function init(){
         }
         var _area,_email,_name;
         var parent;
-        if (target.attr('id')=='faq_top'){
-            _area = area;
-            _email = email;
-            _name = name;
-        }
-        else{
-            _area = target.find('textarea');
-            _email = target.find('input[name="email"]');
-            _name = target.find('input[name="name"]');
-            parent = target.parent().attr('id');
-        }
-        var to_send = {txt:_area.val()};
+        _area = target.find('input[name="txt"]');
+        _email = target.find('input[name="email"]');
+        _name = target.find('input[name="name"]');
+        parent = target.parent().attr('id');
+
+        //}
+        var to_send = {txt:_area.val(),name:_name.val(),email:_email.val()};
         var path = document.location.href.split('?')[0];
-        if (path.match('blog'))
+        if (parent)
+            to_send['parent'] =parent;
+	if (path.match('blog'))
             to_send['type']='blog';
         else
             to_send['type']='faq';
-        if (to_send['txt'] == ta_initial || to_send['txt'].length==0
-            || to_send['txt']==taa_initial)
-            _area.css('border-color','red');
-        else{
-            _area.css('border-color','#444');
-            var emailval = _email.val();
-            if (emailval!==email_initial)
-                to_send['email'] = emailval;
-            var nameval = _name.val();
-            if (nameval!==name_initial)
-                to_send['name'] = nameval;
-            if (parent)
-                to_send['parent'] =parent;
-            $.ajax({
-                       url:'/storefaq',
-                       data:to_send,
-                       type:'post',
-                       success:function(data){
-                           var d = new Date();
-                           var _date = d.getDate()+'.';
-                           _date +=+d.getMonth()+1+'.';
-                           _date +=+d.getFullYear()+'';
-                           var middle = $('#faq');
-                           var author = $.cookie('pc_user');
-                           if (to_send['name'])
-                               author = to_send['name'];
-
-                           var before_append = function(_html){
-                               middle.children().first().before(_html);
-                           };
-                           var after_append = function(){return middle.children()
-                                                         .first();};
-                           var klass = 'faqrecord';
-                           var links = link_template;
-                           if (parent){
-                               links = '';
-                               klass = 'faqrecord fanser';
-                               before_append = function(_html){
-                                   target.parent().find('.faqlinks').after(_html);
-                               };
-                               after_append = function (){
-                                   $('#faqanswer').hide();
-                                   var next = target
-                                       .parent()
-                                       .find('.faqlinks').next();
-                                   return next;
-                               };
-                           }
-                           before_append(faq_template(
-                                             {'body':to_send['txt'],
-                                              'author':author,
-                                              'date':_date,
-                                              'links':links,
-                                              'klass':klass}));
-                           var aa = after_append();
-                           aa.attr('id',data).animate({'opacity':'1.0'},500);
-                           if (!parent){
-                               aa.find('a').click(postAnswer);
-                           }
-                       }
-                   });
-        }
+        
+        $.ajax({
+                   url:'/storefaq',
+                   data:to_send,
+                   type:'post',
+                   success:function(data){sendSuccess(data, to_send, target, parent);}
+               });
+        //}
+	//zz
     };
+    
     $('.sendfaq').click(send);
 
-    var form = $('#faq_top').html();
+    var form = $('form').html();
     var answer  =$(document
                    .createElement('div'))
         .attr('id','faqanswer')
         .html(form);
-    answer.find('textarea').val(taa_initial).click(clear(taa_initial));
-    answer.find('input[name="email"]').click(clear(email_initial));
-    answer.find('input[name="name"]').click(clear(name_initial));
+
     answer.css({'opacity':'0'});
     function postAnswer(e){
+
         var target = $(e.target);
         var pa = target.parent().parent();
         answer.animate({'opacity':'0'},400);
         answer.find('.sendfaq').unbind('click')
             .click(send);
         _.delay(function(){
-                    pa.find('.faqlinks').after(answer);
+                    pa.css('margin-bottom','5px').find('.faqlinks').after(answer);
                     answer.show()
                         .animate({'opacity':'1.0'},
                                  400);},500);
 
     }
-    $('.faqlinks a[name="answer"]').click(postAnswer);
+    $('.faqlinks .postAnswer').click(postAnswer);
     function moreRecords(event, direction){
         if (direction == 'up')return;
         $.fn.waypoint('destroy');
@@ -201,7 +172,7 @@ function init(){
                                                          'klass':'faqrecord',
                                                         'tags':makeTags(doc)}));
                                          after = after.next();
-                                         after.find('a[name="answer"]').click(postAnswer);
+                                         after.find('.postAnswer').click(postAnswer);
                                          if (doc['title'])
                                              after
                                              .find('h3').text(doc['title'])

@@ -26,9 +26,9 @@ class ModelInCart(object):
         self.tree = tree
         self.request = request
         self.model = model
-        self.icon = deepcopy(self.tree.find('model_icon').find('a'))
         self.container = container
         self.getSnippetDivs()
+        self.icon = self.model_div.xpath('.//a[@class="modelicon"]')[0]
 
     def getSnippetDivs(self):
         self.model_snippet = deepcopy(self.tree.find('model'))
@@ -38,13 +38,12 @@ class ModelInCart(object):
 
 
     def setModelLink(self):
-
         if not self.model.isPromo:
             self.icon.set('href','/computer/'+self.model._id)
         else:
             self.icon.set('href','/promotion/'+self.model.parent)
 
-        link = self.model_div.find('.//a')
+        link = self.model_div.xpath('//a[@class="modellink"]')[0]
         link.text = self.model._id[0:-3]
         strong= etree.Element('strong')
 
@@ -72,7 +71,7 @@ class ModelInCart(object):
             info.set('class', info.get('class')+ ' empty_info')
 
     def set_price(self):
-        price_span = self.model_div.find('.//span')
+        price_span = self.model_div.xpath('.//span')[0]
         price_span.set('id',self.model._id)
         total = self.model.total
         if self.model.ourPrice:
@@ -80,50 +79,49 @@ class ModelInCart(object):
         price_span.text = unicode(total) + u' р'
 
 
+    def set_date(self):
+        date_span = self.model_div.xpath('.//span')[1]
+        date_span.text = '.'.join(reversed(self.model.date))
+
+
+
+    def makeBadge(self, text, klass):
+        badge =etree.Element('span')
+        badge.set('class','badge '+klass)
+        badge.text = text
+        br1 = etree.Element('br')
+        br2 = etree.Element('br')
+        caption = self.model_div.xpath('.//div[@class="caption"]')[0]
+        caption.append(br1)
+        caption.append(br2)
+        caption.append(badge)
 
 
     def fillModelDiv(self):
-        if self.model.processing:
-            header = self.model_div.find('h2')
-            header.set('class', header.get('class')+ ' processing')
-
-
 
         self.fillInfo()
         self.setModelLink()
 
         self.set_price()
-
-        # self.icon.find('img').set('src',self.getCaseIcon())
+        self.set_date()
         self.setIcon()
-        self.model_div.insert(0,self.icon)
-        self.container.append(self.model_div)
+        
+        if not self.author:
+            for b in self.model_div.xpath('.//button'):
+                b.getparent().remove(b)
+        if self.model.processing:
+            self.makeBadge(u'Ваш компьютер уже собирают','badge-success')
+        if self.model.checkRequired:
+            if self.model.checkPerformed:
+                self.makeBadge(u'Проверено!','badge-warning')
+            else:
+                self.makeBadge(u'Ожидает проверки','badge-info')
+        return self.model_div
 
-    #will be overriden by subclasses
+
     def setIcon(self):
-        self.icon.find('img').set('src',self.model.case.getComponentIcon())
-
-    def renderComponent(self, component):
-        li = etree.Element('li')
-        li.text = component.text
-        count = self.model.getComponentCount(component)
-        if count>1:
-           li.text+=' '+str(count) + u' шт'
-
-        if not 'promo' in self.model:
-            strong = etree.Element('strong')
-            strong.text = unicode(component.makePrice())+ u' р'
-            li.append(strong)
-        li.set('id',self.model._id+'_'+component._id)
-        if component.old_code and not self.model.isPromo:
-            a = etree.Element('a')
-            a.text = u'Посмотреть старый компонент'
-            a.set('href', '')
-            a.set('class', 'showOldComponent')
-            a.set('id', self.model._id+'_'+component.old_code)
-            li.append(a)
-        return li
-
+        self.icon.find('img').set('src',self.model.getComponentForIcon().getComponentIcon())
+        
 
     def fillHeader(self, h3):
         if self.model.name:
@@ -144,27 +142,47 @@ class ModelInCart(object):
             span.text = u'Пользовательская конфигурация'
             h3.append(span)
 
-        _date = self.model.date
-        _date.reverse()
-        span = etree.Element('span')
-        span.text = ('.').join(_date)
-        h3.append(span)
 
-        if self.author:
-            a = etree.Element('a')
-            a.text = u'переименовать'
-            a.set('href', '')
-            h3.append(a)
+        # span = etree.Element('span')
+        # span.text = ('.').join(_date)
+        # span.set('class','badge cart_header')
+        # h3.append(span)
+
+        if not self.author:            
+            pa = h3.getparent()
+            pa.remove(pa.find('button'))            
 
 
     def fillComponentsList(self):
-        ul = etree.Element('ul')
-        ul.set('class','description')
+        table = self.description_div.find('table')
+        for component in self.model.getComponents():
+            tr = etree.Element('tr')
+            td1 = etree.Element('td')
+            td1.text = component.text
+            td1.set('id',self.model._id+'_'+component._id)
+            tr.append(td1)
 
-        for c in self.model.getComponents():
-            ul.append(self.renderComponent(c))
+            td2 = etree.Element('td')
+            count = self.model.getComponentCount(component)
+            td2.text = str(count) + u' шт'
+            tr.append(td2)
 
-        self.description_div.append(ul)
+            td3 = etree.Element('td')
+            if not 'promo' in self.model:                
+                td3.text = unicode(component.makePrice())+ u' р'
+            tr.append(td3)            
+            td4 = etree.Element('td')
+            if component.old_code and not self.model.isPromo:
+                a = etree.Element('a')
+                a.text = u'Посмотреть старый компонент'
+                a.set('href', '')
+                a.set('class', 'showOldComponent')
+                a.set('id', self.model._id+'_'+component.old_code)
+                td4.append(a)
+            tr.append(td4)
+            table.append(tr)
+        return table
+
 
 
     def fillExtra(self):
@@ -181,8 +199,7 @@ class ModelInCart(object):
 
     def fillDescriptionDiv(self):
         self.fillComponentsList()
-
-        h3 = self.description_div.find('h3')
+        h3 = self.description_div.xpath('.//h3')[0]
 
         self.fillHeader(h3)
 
@@ -190,93 +207,31 @@ class ModelInCart(object):
 
         comments_len = len(self.model.comments)
         if comments_len>0:
-            last_index = comments_len-1
+            # last_index = comments_len-1
             i=0
             for comment in self.model.comments:
                 comments = deepcopy(self.tree.find('cart_comment'))
-                if not self.author and i==0:
-                    comments.find('div').set('style', 'margin-top:40px')
-                comments.xpath('//div[@class="faqauthor"]')[0].text = comment.author
+                # if not self.author and i==0:
+                #     comments.find('div').set('style', 'margin-top:40px')
+                comments.xpath('//span[@class="faqauthor"]')[0].text = comment.author
                 comment.date.reverse()
-                comments.xpath('//div[@class="faqdate"]')[0].text = '.'.join(comment.date)
-                comments.xpath('//div[@class="faqbody"]')[0].text = comment.body
-                links = comments.xpath('//div[@class="faqlinks"]')[0]
-                if i!=last_index:
-                    links.remove(links.find('a'))
+                comments.xpath('//span[@class="faqdate badge"]')[0].text = '.'.join(comment.date)
+                comments.xpath('//p')[0].text = comment.body
+                # links = comments.xpath('//div[@class="faqlinks"]')[0]
+                # if i!=last_index:
+                #     links.remove(links.find('a'))
                 i+=1
                 self.description_div.append(comments.find('div'))
-        self.container.append(self.description_div)
-
+        return self.description_div
 
     def render(self):
-        self.fillModelDiv()
-        self.fillDescriptionDiv()
+        d = etree.Element('div')
+        d.set('class','row-fluid model_in_cart')
+        d.set('id', self.model._id)
+        d.append(self.fillModelDiv())
+        d.append(self.fillDescriptionDiv())
+        self.container.append(d)
 
-
-class SetInCart(ModelInCart):
-
-    def fillExtra(self):
-        if self.author and not self.model.processing:
-            extra = deepcopy(self.tree.find('cart_extra'))
-            for el in extra:
-                # TODO has the exactly same method allready. refacotor!
-                if el.tag == 'a' and 'class' in el.attrib and 'pdf_link' in el.attrib['class']:
-                    el.set('href', '/bill.pdf?id='+self.model._id)
-                if el.tag == 'a' and 'class' in el.attrib and 'credit_link' in el.attrib['class']:
-                    el.set('href', '/credit_form/'+self.model._id)
-                if el.text!=u'Проверить':
-                    self.description_div.append(el)
-
-    def getSnippetDivs(self):
-        self.model_snippet = deepcopy(self.tree.find('set'))
-        divs = self.model_snippet.findall('div')
-        self.model_div = divs[0]
-        self.description_div = divs[1]
-
-    def setModelLink(self):
-        main_component = self.model.getComponentForIcon()
-        url = main_component.url
-
-        self.icon.set('href',url)
-
-        link = self.model_div.find('.//a')
-        link.text = self.model._id[0:-3]
-        strong= etree.Element('strong')
-
-        strong.text = self.model._id[-3:]
-        link.append(strong)
-
-        link.set('href',url)
-
-
-    def setIcon(self):
-        self.icon.find('img').\
-            set('src',
-                self.model.getComponentForIcon().\
-                    getComponentIcon())
-
-
-
-class NotebookInCart(SetInCart):
-    """ Legacy. no it is Set, not notebook!"""
-
-    def set_price(self):
-        price_span = self.model_div.find('.//span')
-        price_span.set('id',self.model._id)
-        price_span.text = unicode(makeNotePrice(self.model.components[0].component_doc)['price']) +\
-            u' р'
-
-    def setModelLink(self):
-        url = '/notebook'
-        self.icon.set('href',url)
-
-        link = self.model_div.find('.//a')
-        link.text = self.model._id[0:-3]
-        strong= etree.Element('strong')
-
-        strong.text = self.model._id[-3:]
-        link.append(strong)
-        link.set('href',url)
 
 
 
@@ -301,25 +256,32 @@ class PCView(object):
     def noResource(self, fail=None):
         return NoResource().render(self.request)
 
+    menu = None
+
+
+    def _render(self, some):
+        for el in self.template.top:
+            self.skin.top.append(el)
+        for el in self.template.middle:
+            self.skin.middle.append(el)
+        title = self.skin.root().xpath('//title')[0]
+        title.text = self.title
+        if self.menu is not None:
+            self.skin.root().xpath('//li[@id="'+self.menu+'"]')[0].set('class','active')
+        self.postRender()
+        return self.skin.render()
+
     @forceCond(noChoicesYet, fillChoices)
     def render(self):
         d = self.preRender()
         if self.force_no_resource:
             return self.noResource()
-        def _render(some):
-            self.skin.top = self.template.top
-            self.skin.middle = self.template.middle
-            title = self.skin.root().xpath('//title')[0]
-            title.text = self.title
-            self.postRender()
-            return self.skin.render()
-        d.addCallback(_render)
+        d.addCallback(self._render)
         return d
 
 
 class Cart(PCView):
     title = u'Корзина'
-
     def fixCookies(self, user, total):
         if user.isValid(self.request):
             pcCartTotal(self.request, user.user, total=total)
@@ -348,8 +310,11 @@ class Cart(PCView):
             view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
-        cart_form = deepcopy(self.tree.find('cart_comment_form'))
-        models_div.append(cart_form.find('div'))
+        # cart_form = deepcopy(self.tree.find('cart_comment_form'))
+        # models_div.append(cart_form.find('div'))
+        comment = deepcopy(self.tree.find('cart_comment'))
+        comment.set('style','display:none')
+        self.template.middle.append(comment)
         return user
 
     # TODO! it must be 1 method. and multiple classes for all types!!!!!!
@@ -378,7 +343,8 @@ class Cart(PCView):
         total.update({'notebooks':0})
         for m in user.getUserNotebooks():
             total['notebooks']+=1
-            view = NotebookInCart(self.request, m, self.tree,
+            # SetInCart
+            view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
         return user
@@ -389,7 +355,8 @@ class Cart(PCView):
         total.update({'sets':0})
         for m in user.getUserSets():
             total['sets']+=1
-            view = SetInCart(self.request, m, self.tree,
+            #SetInCart
+            view = ModelInCart(self.request, m, self.tree,
                                models_div, user.isValid(self.request) and m.isAuthor(user))
             view.render()
         return user
@@ -416,7 +383,7 @@ class ModelOnModels(ModelInCart):
 
     def fillHeader(self, h3):
         h3.text = self.model.title
-        for el in html.fragments_fromstring(self.model.description):            
+        for el in html.fragments_fromstring(self.model.description):
             self.description_div.append(wrapInTag(el))
 
     def setModelLink(self):
@@ -444,24 +411,67 @@ class ModelOnModels(ModelInCart):
 
 
 
-class Computers(Cart):
+class Computers(PCView):
     title = u'Модели компьютеров'
+    menu = 'mdesktops'
+    def makeLine(self):
+        line = etree.Element('div')
+        line.set('class',"row-fluid cline")
+        return line
     def renderComputers(self, res):
-        models_div = self.getModelsDiv()
-        models=  []
-        for row in res['rows']:
-            if row['doc'] is None:
-                continue
-            models.append(Model(row['doc']))
-        json_prices = {}
-        for model in sorted(models, lambda m1,m2: m2.order-m1.order):
-            json_prices.update({model._id:model.cat_prices})
-            json_prices[model._id]['total'] = model.total
-            view = ModelOnModels(self.request, model, self.tree,
-                                 models_div, False)
-            view.render()
-            view.postRender()
-        self.template.middle.find('script').text = 'var prices=' + simplejson.dumps(json_prices) + ';'
+        model_viewlet = self.template.root().find('model').find('div')
+        line = self.makeLine()
+        pops = []
+        pops_max = 0
+        for i,row in enumerate(sorted(res['rows'],
+                                      lambda r1,r2:r2['doc']['order']-r1['doc']['order'])):
+            model = Model(row['doc'])
+            model_div = deepcopy(model_viewlet)
+
+            links = model_div.xpath('.//a')
+            for l in links:
+                l.set('href','/computer/'+model.get('_id'))
+            links[0].text = model.get('name')
+
+            model_div.xpath('//h4')[0].text = model.get('title')
+            model_div.xpath('//p')[0].text = model.get('description')\
+                .replace('ul','')\
+                .replace('li','')\
+                .replace('<','')\
+                .replace('>','')\
+                .replace('/','')\
+                .replace('br','')
+            pop = model_div.xpath('//div[@id="mpopularity"]')[0]
+            pop_count = model.get('hits')
+            pops.append((pop_count,pop))
+            if pop_count>pops_max:
+                pops_max = pop_count
+            price_span = model_div.xpath('//span[@id="mprice"]')[0]
+            price_span.text = unicode(model.total)+u' р.'
+            del price_span.attrib['id']
+
+            proc_span = model_div.xpath('//span[@id="mproc"]')[0]
+            pav = model.buildProcAndVideo()
+            proc_span.text = pav['brand']+' '+str(pav['cores'])+' cores '+pav['cache']+' cache'
+            del proc_span.attrib['id']
+
+            icon = model_div.xpath('//img')[0]
+            icon.set('src',model.case.getComponentIcon(default=''))
+
+            line.append(model_div)
+            if (i+1)%3==0:
+                self.template.middle.append(line)
+                line = self.makeLine()
+
+
+        for count,div in pops:
+            icons_count = count*5/pops_max+1
+            if icons_count>5:icons_count=5
+            for i in xrange(icons_count):
+                ic = etree.Element('i')
+                ic.set('class', "icon icon-user")
+                div.append(ic)
+
 
     def preRender(self):
         d = couch.openView(designID,'models',include_docs=True,stale=False)
@@ -489,8 +499,7 @@ class Computer(PCView):
         _uuid = ''
         author = ''
         parent = ''
-        h2 =self.template.top.find('div').find('h2')
-        # only original models have length
+        h2 =self.template.top.xpath('//h1')[0]
 
         if model.ours:
             h2.text = model.name
@@ -508,10 +517,14 @@ class Computer(PCView):
             parent = model.parent
 
         if model.description:
-            d = self.template.top.find('div').find('div')
-            d.text = ''
-            for el in html.fragments_fromstring(model.description):
-                d.append(wrapInTag(el))
+            d = self.template.top.xpath('//p')[0]
+            d.text = model.description\
+                .replace('ul','')\
+                .replace('li','')\
+                .replace('<','')\
+                .replace('>','')\
+                .replace('/','')\
+                .replace('br','')
 
         original_viewlet = self.template.root().find('componentviewlet')
 
@@ -526,8 +539,9 @@ class Computer(PCView):
             if 'font' in row['doc']['text']:
                 row['doc']['text'] = re.sub('<font.*</font>', '',row['doc']['text'])
                 row['doc'].update({'featured':True})
-            option.text = row['doc']['text']
 
+            option.text = re.sub('<font.*</font>', '',row['doc']['text'])
+            option.text = re.sub('<font.*>', '',option.text)
             option.text +=u' ' + unicode(price) + u' р'
 
             option.set('value',row['id'])
@@ -578,31 +592,46 @@ class Computer(PCView):
                 _cleaned_doc.update({'count':counted[_id]})
             components_json.update({_id:_cleaned_doc})
 
+        ammo_buttons = self.template.root().find('ammo_buttons').find('div')
 
         def fillViewlet(_name, _doc):
             tr = viewlet.find("tr")
             tr.set('id',_name)
             body = viewlet.xpath("//td[@class='body']")[0]
             body.set('id',_doc['_id'])
-            body.text = re.sub('<font.*</font>', '',_doc['text'])
+            select = viewlet.xpath("//select")[0]
+            select.set('id','s'+_doc['_id'])
+            from pc import models
+            if _name == models.ram or \
+                _name == models.hdd or\
+                _name == models.video:
+                viewlet.xpath("//td[@class='ammo']")[0].append(deepcopy(ammo_buttons))
+            if _name == models.mother or \
+                    _name == models.ram or \
+                    _name == models.proc or\
+                    _name == models.video:
+                span = etree.Element('span')
+                span.text = '2.9'
+                span.set('class','badge badge-success')
+                viewlet.xpath("//td[@class='performance']")[0].append(span)
 
             #zzz
-            descr = etree.Element('div')
-            descr.set('class','description')
-            descr.text = ''
+            # descr = etree.Element('div')
+            # descr.set('class','description')
+            # descr.text = ''
 
-            manu = etree.Element('div')
-            manu.set('class','manu')
-            manu.text = ''
+            # manu = etree.Element('div')
+            # manu.set('class','manu')
+            # manu.text = ''
 
 
-            clear = etree.Element('div')
-            clear.set('style','clear:both;')
-            clear.text = ''
-            descr.append(manu);
-            # descr.append(our)
-            descr.append(clear)
-            return descr
+            # clear = etree.Element('div')
+            # clear.set('style','clear:both;')
+            # clear.text = ''
+            # descr.append(manu);
+            # # descr.append(our)
+            # descr.append(clear)
+            # return descr
         from pc.models import gChoices
         for name,code in model.get('items',{}).items():
             component_doc = None
@@ -623,7 +652,7 @@ class Computer(PCView):
                 component_doc.pop('replaced')
 
             viewlet = deepcopy(original_viewlet)
-            descr = fillViewlet(name, component_doc)
+            fillViewlet(name, component_doc)
 
             price = Model.makePrice(component_doc)
 
@@ -633,7 +662,8 @@ class Computer(PCView):
             cleaned_doc['count'] = count
 
             model_json.update({cleaned_doc['_id']:cleaned_doc})
-            viewlet.xpath('//td[@class="component_price"]')[0].text = unicode(price*count) + u' р'
+            viewlet.xpath('//td[@class="component_price"]')[0].find('span')\
+                .text = unicode(price*count) + u' р'
 
             ch = gChoices[name]
             options = []
@@ -655,18 +685,18 @@ class Computer(PCView):
 
             select = viewlet.xpath("//td[@class='component_select']")[0].find('select')
             appendOptions(options, select)
-            viewlets.append((parts[name],viewlet,descr))
+            viewlets.append((parts[name],viewlet))# ,descr
 
 
-        components_container = self.template.middle.xpath('//table[@id="components"]')[0]
-        description_container = self.template.middle.xpath('//div[@id="descriptions"]')[0]
+        components_container = self.template.middle.xpath('//table[@id="ccomponents"]')[0]
+        # description_container = self.template.middle.xpath('//div[@id="descriptions"]')[0]
 
         import pc.models
         pc.models.no_component_added=True
 
         for viewlet in sorted(viewlets, lambda x,y: x[0]-y[0]):
             components_container.append(viewlet[1].find('tr'))
-            description_container.append(viewlet[2])
+            # description_container.append(viewlet[2])
         processing = False
         if 'processing' in model and model['processing']:
             processing = True
@@ -696,22 +726,14 @@ class Computer(PCView):
         # title = self.skin.root().xpath('//title')[0]
         self.title = u' Изменение конфигурации компьютера '+h2.text
 
-    def postRender(self):
-        self.skin.root().xpath('//div[@id="gradient_background"]')[0].set('style','min-height: 300px;')
-        self.skin.root().xpath('//div[@id="middle"]')[0].set('class','midlle_computer')
 
 
 
 class Index(PCView):
     title = u'Компьютерный магазин Билд. Компьютеры в любой конфигурации. Большой выбор процессоров, материнских плат и видеокарт.'
-    imgs = ['static/comp_icon_1.png',
-        'static/comp_icon_2.png',
-        'static/comp_icon_3.png',
-        'static/comp_icon_4.png'
-        ]
 
     @classmethod
-    def lastUpdateTime(self):
+    def lastUpdateTime(cls):
         now = datetime.now()
         hour = now.hour+8
         retval = ''
@@ -731,62 +753,42 @@ class Index(PCView):
             if now.minute<14:
                 hour-=1
             retval = '.'.join((da,mo,str(now.year))) +\
-                ' '+str(hour)+':15'
+                ' '+str(hour-1)+':15'
         return retval
 
 
-    def renderIndex(self, result):
-        models = sorted([Model(row['doc']) for row in result['rows']],
-                        lambda x,y: x.order-y.order)
-        div = self.template.middle.xpath('//div[@id="computers_container"]')[0]
-        json_prices = {}
-        json_procs_and_videos = {}
-        i = 0
-        for m in models:
-            model_snippet = self.tree.find('model')
-            snippet = deepcopy(model_snippet.find('div'))
-            snippet.set('style',"background-image:url('" + self.imgs[i] + "')")
-            a = snippet.find('.//a')
-            a.set('href','/computer/%s' % m._id)
-            a.text=m.name
-            price_span = snippet.find('.//span')
-            price_span.set('id',m._id)
-            price_span.text = unicode(m.total) + u' р'
-            json_procs_and_videos.update({m._id:m.buildProcAndVideo()})
-            json_prices.update({m._id:m.cat_prices})
-            json_prices[m._id]['total'] = m.total
-            div.append(snippet)
-            i+=1
-            if i==len(self.imgs): i=0
-        self.template.middle.find('script').text = 'var prices=' + \
-            simplejson.dumps(json_prices) + ';'+\
-            'var procs_videos=' + simplejson.dumps(json_procs_and_videos) + ';'
-        last_update = self.template.middle.xpath('//span[@id="last_update"]')[0]
-        last_update.text = self.lastUpdateTime()
-
-
+    def updateTime(self, some):
+        self.template.middle.xpath('//span[@id="update_time"]')[0].text = self.lastUpdateTime()
 
     def preRender(self):
-        d = couch.openView(designID,'models',include_docs=True,stale=False)
-        d.addCallback(self.renderIndex)
+        d = defer.Deferred()
+        d.callback(None)
+        d.addCallback(self.updateTime)
         return d
 
 
 class VideoCards(PCView):
     title=u'Лучшие видеокарты NVidia GeForce и ATI Radeon для апгрейда'
 
+    def makeRow(self):
+        row = etree.Element('div')
+        row.set('class','row-fluid')
+        return row
     def renderChips(self, chips):
 
-        container = self.template.middle.xpath('//div[@id="models"]')[0]
+        container = self.template.middle.xpath('//div[@id="content"]')[0]
 
         vendors = set()
-
+        
+        row= self.makeRow()
+        i = 0
         for chipname in chips:
             viewlet = deepcopy(self.template.root().find('chip'))
+            
             chip_div = etree.Element('div')
-            chip_div.set('class', 'chip')
+            chip_div.set('class', 'chip span4')
             # zzz
-            chip_title = viewlet.xpath('//h2[@class="chipname"]')[0]
+            chip_title = viewlet.xpath('//h3[@class="chipname"]')[0]
             chip_title.text = u'Видеокарта '
             br = etree.Element('br')
             _name = chipname
@@ -799,12 +801,13 @@ class VideoCards(PCView):
             chip_image = viewlet.xpath('//img[@class="video_image"]')[0]
             chip_image.set('alt', _name)
 
-            chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
+            # chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
 
             from pc.models import gChoices_flatten as choices
 
             image_was_set = False
             rate_was_set = False
+            has_vendors = False
             for _id in chips[chipname]:
                 if _id not in choices:
                     continue
@@ -819,11 +822,17 @@ class VideoCards(PCView):
                         image_was_set = True
                 if not rate_was_set:
                     video_img = viewlet.xpath('//div[@class="modelicon videoicon"]')[0]
+                    br = etree.Element('br')
+                    video_img.append(br)
                     rate = video_card.rate
+                    span = etree.Element('span')
+                    span.set('class','badge')
+                    span.text = u'Рейтинг'
+                    video_img.append(span)
                     while rate>0:
-                        d = etree.Element('div')
-                        d.set('class', 'video_rate')
-                        video_img.append(d)
+                        star = etree.Element('i')
+                        star.set('class', 'icon icon-star')
+                        video_img.append(star)
                         rate-=1
                     rate_was_set = True
 
@@ -835,42 +844,44 @@ class VideoCards(PCView):
                 viewlet.xpath('//td[@class="year"]')[0].text = unicode(video_card.year)
                 viewlet.xpath('//td[@class="memory"]')[0].text = unicode(video_card.memory)
                 viewlet.xpath('//td[@class="memory_ammo"]')[0].text = unicode(video_card.memory_ammo)
-                ve = etree.Element('li')
-                ve.set('id', video_card._id)
-                link = etree.Element('a')
-                span = etree.Element('span')
-                strong = etree.Element('strong')
-                span.text = video_card.vendor
-                strong.text = unicode(video_card.makePrice())
-                strong.tail = u' р'
-                link.text = u'На страницу товара'
-                link.set('href','/videocard/'+quote_plus(video_card.hid))
-                ve.append(span)
-                ve.append(strong)
-                ve.append(link)
-                chip_vendors.append(ve)
-            if len(chip_vendors)>0:
+
+                vendor_row = deepcopy(self.tree.find('vendor_row').find('div'))
+                vendor_row.set('id',video_card._id)
+                vendor_row.find('button').text = video_card.vendor
+                vendor_row.find('span').text = unicode(video_card.makePrice())+u' рублей'
+                vendor_row.find('a').set('href','/videocard/'+quote_plus(video_card.hid))
+
+                viewlet.append(vendor_row)
+                has_vendors = True
+
+            if has_vendors>0:
                 for el in viewlet:
                     chip_div.append(el)
-                container.append(chip_div)
+                
+                row.append(chip_div)
+                i+=1
+                if i%3==0:
+                    container.append(row)
+                    row= self.makeRow()
+                
         self.template.middle.find('script').text = 'var vendors='+simplejson.dumps(list(vendors))+';'
-        vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]
-        row = etree.Element('tr')
-        vendors_boxes.append(row)
-        vendor_td = self.template.root().find('vendor_td').find('td')
-        i = 0
-        for v in vendors:
-            if i==4:
-                row = etree.Element('tr')
-                vendors_boxes.append(row)
-            td = deepcopy(vendor_td)
-            inp = td.find('input')
-            inp.set('id', v.replace(' ','_'))
-            label = td.find('label')
-            label.set('for',v.replace(' ','_'))
-            label.text = v
-            row.append(td)
-            i+=1
+        # vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]
+        # row = etree.Element('tr')
+        # vendors_boxes.append(row)
+        # vendor_td = self.template.root().find('vendor_td').find('td')
+        # i = 0
+        # for v in vendors:
+        #     if i==4:
+        #         row = etree.Element('tr')
+        #         vendors_boxes.append(row)
+        #     td = deepcopy(vendor_td)
+        #     inp = td.find('input')
+        #     inp.set('id', v.replace(' ','_'))
+        #     label = td.find('label')
+        #     label.set('for',v.replace(' ','_'))
+        #     label.text = v
+        #     row.append(td)
+        #     i+=1
 
     def groupChips(self, res):
         chips = {}
@@ -912,28 +923,28 @@ class VideocardView(PCView):
                 appr_psus.append(psu)
 
 
-        psu_list = self.template.middle.xpath('//ul')[0]
+        psu_list = self.template.middle.xpath('//table[@id="psu_list"]')[0]
         for psu in sorted(appr_psus, lambda p1,p2: p1.makePrice()-p2.makePrice()):
             json_psus[psu._id] = {'_id':psu._id,'name':psu.text,'price':psu.makePrice()}
-            li = etree.Element('li')
-            li.set('id', psu._id)
+            tr = etree.Element('tr')
+            td1 = etree.Element('td')
+            td2 = etree.Element('td')
+            td3 = etree.Element('td')
+            
+            td1.set('id', psu._id)            
+            td1.text = psu.text.replace(u'Блок питания', '')
 
-            em = etree.Element('em')
-            em.text = psu.text.replace(u'Блок питания', '')
+            td2.text = unicode(psu.makePrice())+u' р.'
 
-            strong = etree.Element('strong')
-            strong.text = unicode(psu.makePrice())+u' р.'
+            btn = etree.Element('button')
+            btn.text = u'добавить к заказу'
+            btn.set('class','btn btn-mini videoadd')
+            td3.append(btn)
 
-
-            span = etree.Element('span')
-            span.set('class','videoadd')
-            span.text = u'добавить к заказу'
-
-            li.append(em)
-            li.append(strong)
-            li.append(span)
-
-            psu_list.append(li)
+            tr.append(td1)
+            tr.append(td2)
+            tr.append(td3)
+            psu_list.append(tr)
         self.script.text += 'var psus='+simplejson.dumps(json_psus)+';'
 
     def fillNoCard(self):
@@ -946,9 +957,9 @@ class VideocardView(PCView):
         right = self.template.middle.xpath('//div[@id="videoimage"]')[0]
         right.getparent().remove(right)
 
-    def renderCard(self, tuple_res):
-        res = tuple_res[0]
-        user = tuple_res[1]
+    def renderCard(self, res):
+        # res = tuple_res[0]
+        # user = tuple_res[1]
         if len(res['rows'])==0:
             self.force_no_resource = True
             self.fillNoCard()
@@ -962,12 +973,14 @@ class VideocardView(PCView):
             return
         card = VideoCard(models.gChoices_flatten[res['id']])
         self.title = card.text
-        self.template.top.find('h1').text = card.text
-        maparams = self.template.middle.xpath('//div[@id="maparams"]')[0]
+        self.template.top.find('h1').text = card.vendor + ' '+card.chip
+        self.template.top.find('h3').text = card.text
+        maparams = self.template.middle.xpath('//div[@id="specs"]')[0]
 
         for el in html.fragments_fromstring(card.marketParams):
             if type(el) is str or type(el) is unicode: break
             maparams.append(el)
+        maparams.find('table').set('class','table-striped table-bordered table-condensed') 
         if card.youtube:
             d = etree.Element('div')
             d.set('id','youtube')
@@ -979,20 +992,20 @@ class VideocardView(PCView):
         videoimage.set('alt', card.description.get('name', ''))
         videoimage.set('src', card.getComponentIcon())
 
-        ol = self.template.top.xpath('.//div[@id="cart_to_computer"]')[0].find('ol')
-        dump = simplejson.dumps({'video':card._id})
-        for li in ol:
-            a = li.find('a')
-            a.set('href',a.get('href')+dump)
+        # ol = self.template.top.xpath('.//div[@id="cart_to_computer"]')[0].find('ol')
+        # dump = simplejson.dumps({'video':card._id})
+        # for li in ol:
+        #     a = li.find('a')
+        #     a.set('href',a.get('href')+dump)
 
-        if user is not None and 'models' in user:
-            for m in user['models']:
-                li = etree.Element('li')
-                a = etree.Element('a')
-                a.text = m
-                a.set('href','/computer/'+m+'?data='+dump)
-                li.append(a)
-                ol.append(li)
+        # if user is not None and 'models' in user:
+        #     for m in user['models']:
+        #         li = etree.Element('li')
+        #         a = etree.Element('a')
+        #         a.text = m
+        #         a.set('href','/computer/'+m+'?data='+dump)
+        #         li.append(a)
+        #         ol.append(li)
 
         videocons = self.template.middle.xpath('//span[@id="videocons"]')[0]
         videocons.text = str(card.power) +u' Вт'
@@ -1023,28 +1036,42 @@ class VideocardView(PCView):
         self.script.text += 'var _id="'+card._id+'";var price='+str(card.makePrice())+';'
         self.script.text += 'var video_catalog='+video_catalog+';var power_catalog='+power_catalog+';'
 
-    def prepareCardsAndUser(self, lires):
-        cards = lires[0][1]
-        user = None
-        if lires[1][0]:
-            user = lires[1][1]
-        return (cards,user)
+        d = getMarket(card)
+        d.addCallback(self.done)
+        return d
+
+    def done(self, lires):
+        comments = self.template.middle.xpath('//div[@id="comments"]')[0]
+        for tu in lires:
+            if tu[0]:
+                for el in tu[1]:
+                    comments.append(el)
+
+
+    # def prepareCardsAndUser(self, lires):
+    #     cards = lires[0][1]
+    #     user = None
+    #     if lires[1][0]:
+    #         user = lires[1][1]
+    #     return (cards,user)
 
     def preRender(self):
         """ here the name is articul. or doc['_id'] with replaced _new replaced by _
         (see hid property and articul.map.js)"""
         d = couch.openView(designID, 'video_articul', key=unquote_plus(self.name), stale=False)
-        retval = d
-        if self.request.getCookie('pc_cart') is not None:
-            d1 = couch.openDoc(self.request.getCookie('pc_user'))
-            li = defer.DeferredList((d,d1))
-            li.addCallback(self.prepareCardsAndUser)
-            li.addCallback(self.renderCard)
-            retval = li
-        else:
-            d.addCallback(lambda res:(res,None))
-            d.addCallback(self.renderCard)
-        return retval
+        d.addCallback(self.renderCard)
+        return d
+        # retval = d
+        # if self.request.getCookie('pc_cart') is not None:
+        #     d1 = couch.openDoc(self.request.getCookie('pc_user'))
+        #     li = defer.DeferredList((d,d1))
+        #     li.addCallback(self.prepareCardsAndUser)
+        #     li.addCallback(self.renderCard)
+        #     retval = li
+        # else:
+        #     d.addCallback(lambda res:(res,None))
+        #     d.addCallback(self.renderCard)
+        # return retval
 
 class MarketForVideo(Resource):
 
@@ -1082,29 +1109,29 @@ class MarketForVideo(Resource):
         d.addCallback(self.getMarketComments, request)
         return NOT_DONE_YET
 
-class SpecsForVideo(Resource):
-    def fail(self, request):
-        request.write('')
-        request.finish()
-        return ""
+# class SpecsForVideo(Resource):
+#     def fail(self, request):
+#         request.write('')
+#         request.finish()
+#         return ""
 
-    def getSpecs(self, res, request):
-        if len(res['rows'])==0:
-            return self.fail(request)
-        row = res['rows'][0]
-        if not 'doc' in row:
-            return self.fail(request)
-        card = VideoCard(row['doc'])
-        request.write(card.marketParams.encode('utf-8'))
-        request.finish()
+#     def getSpecs(self, res, request):
+#         if len(res['rows'])==0:
+#             return self.fail(request)
+#         row = res['rows'][0]
+#         if not 'doc' in row:
+#             return self.fail(request)
+#         card = VideoCard(row['doc'])
+#         request.write(card.marketParams.encode('utf-8'))
+#         request.finish()
 
-    def render_GET(self, request):
-        art = request.args.get('art', [None])[0]
-        if art is None:
-            return self.fail(request)
-        d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(art), stale=False)
-        d.addCallback(self.getSpecs, request)
-        return NOT_DONE_YET
+#     def render_GET(self, request):
+#         art = request.args.get('art', [None])[0]
+#         if art is None:
+#             return self.fail(request)
+#         d = couch.openView(designID, 'video_articul', include_docs=True, key=unquote_plus(art), stale=False)
+#         d.addCallback(self.getSpecs, request)
+#         return NOT_DONE_YET
 
 
 def getNoteBookName(doc):
@@ -1300,32 +1327,39 @@ class CreditForm(PCView):
 
 class Tablets(PCView):
     title=u'Планшетные компьютеры c ОС Android'
+    def makeRow(self):
+        container = etree.Element('div')
+        container.set('class', 'row-fluid')
+        return container
+
     def renderTablets(self, res):
-        parent = self.template.middle.xpath('//div[@id="models"]')[0]
-        viewlet = self.tree.find('tablet')
+        content = self.template.middle.xpath('//div[@id="content"]')[0]
+        container = self.makeRow()        
+        i = 0
         for r in res['rows']:
             tab = TabletOb(r['doc'])
-            container = deepcopy(viewlet)
+            viewlet = deepcopy(self.template.root().find('tablet'))
+            viewlet = deepcopy(viewlet)
             chip_div = etree.Element('div')
-            chip_div.set('class', 'chip tablet')
+            chip_div.set('class', 'chip tablet span4 row-fluid')
             br = etree.Element('br')
-            chip_title = container.xpath('//h2[@class="chipname"]')[0]
+            chip_title = viewlet.xpath('//h3[@class="chipname"]')[0]
             chip_title.text = u'Планшетный компьютер'
             br.tail = tab.vendor +' '+tab.model
             chip_title.append(br)
 
-            container.xpath('//td[@class="t_screen"]')[0].text = tab.screen
-            container.xpath('//td[@class="t_memory"]')[0].text = tab.memory
-            container.xpath('//td[@class="t_flash"]')[0].text = tab.flash
-            container.xpath('//td[@class="t_os"]')[0].text = tab.os
-            container.xpath('//td[@class="t_resolution"]')[0].text = tab.resolution
+            viewlet.xpath('//td[@class="t_screen"]')[0].text = tab.screen
+            viewlet.xpath('//td[@class="t_memory"]')[0].text = tab.memory
+            viewlet.xpath('//td[@class="t_flash"]')[0].text = tab.flash
+            viewlet.xpath('//td[@class="t_os"]')[0].text = tab.os
+            viewlet.xpath('//td[@class="t_resolution"]')[0].text = tab.resolution
             icon = tab.getComponentIcon(default=None)
 
             if icon is not None:
-                image = container.xpath('//img')[0]
+                image = viewlet.xpath('//img')[0]
                 image.set('src', icon)
 
-            video_img = container.xpath('//div[@class="modelicon videoicon"]')[0]
+            video_img = viewlet.xpath('//div[@class="modelicon videoicon"]')[0]
             rate = tab.rank
             while rate>0:
                 d = etree.Element('div')
@@ -1333,26 +1367,22 @@ class Tablets(PCView):
                 video_img.append(d)
                 rate-=1
 
-            chip_vendors = container.xpath('//ul[@class="chipVendors"]')[0]
-            ve = etree.Element('li')
-            ve.set('id', tab._id)
-            link = etree.Element('a')
-            span = etree.Element('span')
-            strong = etree.Element('strong')
-            span.text = u'Подробней'
-            strong.text = unicode(tab.makePrice())
-            strong.tail = u' р'
-            link.text = u'На страницу товара'
+            chip_vendors = viewlet.xpath('//div[@class="chipVendors"]')[0]
+            # ve = etree.Element('li')
+            # ve.set('id', tab._id)
+            chip_vendors.set('id', tab._id)
+            chip_vendors.find('span').text = unicode(tab.makePrice())+u' рублей'
             href = '/tablet/'+tab.vendor+'_'+tab.model
-            link.set('href',href.replace(' ','_'))
-            ve.append(span)
-            ve.append(strong)
-            ve.append(link)
-            chip_vendors.append(ve)
+            chip_vendors.find('a').set('href',href.replace(' ','_'))
 
-            for el in container:
+
+            for el in viewlet:
                 chip_div.append(el)
-            parent.append(chip_div)
+            container.append(chip_div)
+            i+=1
+            if i%3==0:
+                content.append(container)
+                container = self.makeRow()
 
     def preRender(self):
         from pc import models
@@ -1398,7 +1428,7 @@ class Tablet(PCView):
             img = etree.Element('img')
             img.set('src','/image/'+tab._id+'/'+i+'.jpg')
             additional.insert(0,img)
-        uls = additional.findall('ul')
+        uls = additional.findall('table')
         bindings = {}
         self.installRouters(uls[0],bindings)
         self.installSDs(uls[1],bindings)
@@ -1432,25 +1462,29 @@ class Tablet(PCView):
             price = router.makePrice()
             if price<200:continue
 
-            json_routers[router._id] = {'_id':router._id,'name':router.text,'price':router.makePrice()}
-            li = etree.Element('li')
-            li.set('id', router._id)
-
-            em = etree.Element('em')
-            em.text = router.text.replace(u'Маршрутизатор', '')
-
-            strong = etree.Element('strong')
-            strong.text = unicode(price)+u' р.'
-
-
-            span = etree.Element('span')
-            span.set('class','videoadd')
-            span.text = u'добавить к заказу'
-
-            li.append(em)
-            li.append(strong)
-            li.append(span)
-            router_list.append(li)
+            json_routers[router._id] = {'_id':router._id,'price':router.makePrice()}
+            tr = etree.Element('tr')
+            td1 = etree.Element('td')
+            td1.set('id', router._id)
+            td1.text = router.text.replace(u'Маршрутизатор', '')            
+            td1.text = re.sub('<font.*</font>', '',td1.text)
+            td1.text = re.sub('<font.*>', '',td1.text)
+            td1.text = td1.text.replace(u'РАСПРОДАЖА!!','')
+            
+            json_routers[router._id]['name'] = td1.text
+            
+            td2 = etree.Element('td')
+            td2.text = unicode(price)+u' р.'
+            
+            td3 = etree.Element('td')
+            btn = etree.Element('button')
+            btn.set('class','btn btn-mini videoadd')
+            btn.text = u'добавить к заказу'
+            td3.append(btn)
+            tr.append(td1)
+            tr.append(td2)
+            tr.append(td3)
+            router_list.append(tr)
         bindings.update({router_catalog:json_routers})
 
 
@@ -1468,24 +1502,27 @@ class Tablet(PCView):
             if price<200:continue
 
             json_sds[sd._id] = {'_id':sd._id,'name':sd.text,'price':sd.makePrice()}
-            li = etree.Element('li')
-            li.set('id', sd._id)
 
-            em = etree.Element('em')
-            em.text = sd.text.replace(u'Маршрутизатор', '')
+            tr = etree.Element('tr')
+            td1 = etree.Element('td')
+            td1.set('id', sd._id)
+            td1.text = sd.text.replace(u'Маршрутизатор', '')            
+            td1.text = re.sub('<font.*</font>', '',td1.text)
+            td1.text = re.sub('<font.*>', '',td1.text)
+            td1.text = td1.text.replace(u'РАСПРОДАЖА!!','')
 
-            strong = etree.Element('strong')
-            strong.text = unicode(price)+u' р.'
-
-
-            span = etree.Element('span')
-            span.set('class','videoadd')
-            span.text = u'добавить к заказу'
-
-            li.append(em)
-            li.append(strong)
-            li.append(span)
-            sd_list.append(li)
+            td2 = etree.Element('td')
+            td2.text = unicode(price)+u' р.'
+            
+            td3 = etree.Element('td')
+            btn = etree.Element('button')
+            btn.text = u'добавить к заказу'
+            btn.set('class','btn btn-mini videoadd')
+            td3.append(btn)
+            tr.append(td1)
+            tr.append(td2)
+            tr.append(td3)
+            sd_list.append(tr)
         bindings.update({sds_catalog:json_sds})
 
 
@@ -1513,24 +1550,31 @@ class Notes(PCView):
             elif p>third:
                 r['doc']['rate'] = 4
 
-
+    def makeRow(self):
+        container = etree.Element('div')
+        container.set('class', 'row-fluid')
+        return container
 
     def renderNotebooks(self, result):
-        container = self.template.middle.xpath('//div[@id="models"]')[0]
+        content = self.template.middle.xpath('//div[@id="content"]')[0]
+        container = self.makeRow()
         models = set()
         self.normalizeRate(result['rows'])
+        i = 0
         for r in result['rows']:
             note = NoteOb(r['doc'])
             viewlet = deepcopy(self.template.root().find('chip'))
             chip_div = etree.Element('div')
-            chip_div.set('class', 'chip notes')
+            chip_div.set('class', 'chip notes span4 row-fluid')
             chip_title = viewlet.xpath('//h2[@class="chipname"]')[0]
             chip_title.text = u'Ноутбук '
 
             # store first letter of the model
             name = note.getNoteBookName()
+
             if not name[0] in self.categories:
                 continue
+
             if not name[0] in models:
                 models.add(name[0])
 
@@ -1542,21 +1586,13 @@ class Notes(PCView):
             chip_image.set('src',note.getComponentIcon(default=''))
             chip_image.set('alt', name)
 
-            chip_vendors = viewlet.xpath('//ul[@class="chipVendors"]')[0]
-            ve = etree.Element('li')
-            ve.set('id', note._id)
-            link = etree.Element('a')
-            span = etree.Element('span')
-            strong = etree.Element('strong')
-            span.text = u'Подробнее'
-            strong.text = unicode(note.makePrice())
-            strong.tail = u' р'
-            link.text = u'На страницу '+name
-            link.set('href','/notebook/'+quote_plus(note.getNoteHash().encode('utf-8')))
-            ve.append(span)
-            ve.append(strong)
-            ve.append(link)
-            chip_vendors.append(ve)
+            chip_vendors = viewlet.xpath('//div[@class="chipVendors"]')[0]
+            # ve = etree.Element('li')
+            # ve.set('id', note._id)
+            chip_vendors.set('id', note._id)
+            chip_vendors.find('span').text = unicode(note.makePrice())+u' рублей'
+            chip_vendors.find('a').set('href','/notebook/'+quote_plus(note.getNoteHash().encode('utf-8')))
+
             viewlet.xpath('//td[@class="note_display_size"]')[0].text = note.display_size
             viewlet.xpath('//td[@class="note_proc_vendor"]')[0].text = note.procVendor
             viewlet.xpath('//td[@class="note_proc"]')[0].text = note.proc
@@ -1565,11 +1601,15 @@ class Notes(PCView):
             viewlet.xpath('//td[@class="note_video"]')[0].text = note.video
             viewlet.xpath('//td[@class="note_os"]')[0].text = note.os
             rate = note.rate
-            star_container = viewlet.xpath('//div[@class="modelicon videoicon"]')[0]
+            star_container = viewlet.xpath('//div[@class="stars"]')[0]
+            span = etree.Element('span')
+            span.set('class','badge')
+            span.text = u'Рейтинг'
+            star_container.append(span)
             while rate>0:
-                d = etree.Element('div')
-                d.set('class', 'video_rate')
-                star_container.append(d)
+                icon = etree.Element('i')
+                icon.set('class','icon icon-star')
+                star_container.append(icon)
                 rate-=1
             if note.get('old_price',False):
                 spec = etree.Element('div')
@@ -1580,25 +1620,11 @@ class Notes(PCView):
                 chip_div.append(el)
 
             container.append(chip_div)
-
-        self.template.middle.find('script').text = 'var vendors='+simplejson.dumps(list(models))+';'
-        vendors_boxes = self.template.top.xpath('//table[@id="video_vendor_list"]')[0]
-        row = etree.Element('tr')
-        vendors_boxes.append(row)
-        vendor_td = self.template.root().find('vendor_td').find('td')
-        i = 0
-        for v in models:
-            if i%2==0:
-                row = etree.Element('tr')
-                vendors_boxes.append(row)
-            td = deepcopy(vendor_td)
-            inp = td.find('input')
-            inp.set('id', v.replace(' ','_'))
-            label = td.find('label')
-            label.set('for',v.replace(' ','_'))
-            label.text = v+' '+self.categories[v]
-            row.append(td)
             i+=1
+            if i%3==0:
+                content.append(container)
+                container = self.makeRow()
+
 
 
     categories = {'P':u'Бизнес',
@@ -1624,10 +1650,10 @@ class Notes(PCView):
 
 class Note(Tablet):
     """ notebook will be saved as Set. from now storing in user['notebooks'] is legacy"""
-    title = u'Ноутбук'
+    title = u'Ноутбук Asus'
     max_routers = 100
     def renderNote(self, none, note):
-        self.template.top.find('h1').text = note.text
+        self.template.top.find('h3').text = note.text
         self.title = note.text
 
 
@@ -1637,7 +1663,6 @@ class Note(Tablet):
             container.append(el)
         br = etree.Element('br')
         container.append(br)
-        # ttt!
         for el in html.fragments_fromstring(note.description.get('comments','')):
             if type(el) is unicode or type(el) is str:
                 if container[-1].tail is None:
@@ -1651,7 +1676,7 @@ class Note(Tablet):
             img = etree.Element('img')
             img.set('src','/image/'+note._id+'/'+i+'.jpg')
             additional.insert(0,img)
-        uls = additional.findall('ul')
+        uls = additional.findall('table')
         bindings = {}
         self.installRouters(uls[0],bindings)
 
@@ -1683,6 +1708,7 @@ class Note(Tablet):
 
 
     def preRender(self):
+
         from models import gChoices
         current_note = None
         for r in gChoices[notes]['rows']:
@@ -1690,11 +1716,12 @@ class Note(Tablet):
             if note.getNoteHash() == self.name:
                 current_note = note
                 break
-        
+
         d = defer.Deferred()
         d.addCallback(self.renderNote, current_note)
         d.callback(None)
         return d
+
 
 
 class Constructor(PCView):
@@ -1709,7 +1736,7 @@ class Constructor(PCView):
                     if el[0]:
                         for ch in el[1][1]['rows']:
                             price = Model.makePrice(ch['doc'])
-                            simple_choices[name].append(cleanDoc(ch['doc'], price, 
+                            simple_choices[name].append(cleanDoc(ch['doc'], price,
                                                                  clean_text=False,
                                                                  imgs=True))
 
@@ -1720,7 +1747,7 @@ class Constructor(PCView):
                                                          clean_text=False,
                                                          imgs=True))
         return simple_choices
-                    
+
     def renderModel(self,doc):
         model = Model(doc)
         uuid = '';
@@ -1751,7 +1778,7 @@ class Constructor(PCView):
                             ';var mother_to_proc_mapping=',
                             simplejson.dumps(mother_to_proc_mapping),
                            ';var parts_names=',simplejson.dumps(parts_names)))
-        
+
     def preRender(self):
         name = self.name
         if name is None:

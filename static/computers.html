@@ -1,79 +1,50 @@
-<top>
-<a name="game"></a><a name="home"></a><a name="admin"></a><a name="work"></a>
-  <div id="models_top">
-    <h1>Модели компьютеров</h1>
-    <div class="computers_top">
-      <div style="float:left;">Вы можете сравнить компоненты разных моделей, кликнув на значок</div>
-      <div style="float:left;background-image:url('/static/build_icons.png');background-position:0px -385px;margin-left:5px;width:16px;height:16px;"></div>
-      <div style="clear:both;"></div>
-      <span>
-	В каждой модели можно поменять любые компоненты прямо на сайте.
-	 Кликайте на название компьютера.</span>
-    </div>
-    <div  id="pricetext" style="padding-left:0px;">
-      <em>Цена включает:</em>
-      <input checked="checked" type="checkbox" id="idisplay"/>
-      <label for="idisplay">монитор</label>
-      <input checked="checked" type="checkbox" id="isoft"/>
-      <label for="isoft">Windows с установкой</label>
-      <input checked="checked" type="checkbox" id="iaudio"/>
-      <label for="iaudio">аудио систему</label>
-      <input checked="checked" type="checkbox" id="iinput"/>
-      <label for="iinput">мышь и клавиатуру</label>
-    </div>
-  </div>
-  </div>
-</top>
-<middle>
-  <div id="categories">
-    <a id="all" title="все компьютеры" href="/computer">все</a>
-    <a id="home" title="домашние компьютеры" href="?cat=home"></a>
-    <a id="work" title="компьютеры для работы" href="?cat=work"></a>
-    <a id="admin" title="компьютеры для айтишников" href="?cat=admin"></a>
-    <a id="game" title="игровые компьютеры" href="?cat=game"></a>
-  </div>
-  <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models">
-    </div>
-    <div style="clear:both;"></div>
-  </div>
-  <script type="text/javascript">
-    var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
-    '/static/jquery.mousewheel.js','/static/jScrollPane.js',
-    '/static/guider.js','/static/dragdealer.js'];
-    var _next = ['/static/computers.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
+<header>
+  <h1>Модели компьютеров</h1>
+
+  <p>
+    В каждой модели можно поменять любые компоненты прямо на сайте.
+    Кликайте на названии компьютера или корпус.
+  </p>
+</header>
+
+<div id="content">
+
+<script type="text/javascript"></script>
+<script type="text/javascript">
+    var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js'];
+    var _next = [];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <div id="toppopup">   
-  </div>
-</middle>
+</div>
+
+
 
 <model>
-<div class="computeritem">
-  <div class="info"></div>
-  <h2 class="section">
-    <a class="modellink" href="/computer/name">
-      Пинг
-    </a>
-    <span class="modelprice">
-      12000 р.
-    </span>
-  </h2>
-</div>
-
-<div class="computers_description">
-  <h3></h3>
-
-</div>
+  <div class="span4">
+    <div class="row-fluid">
+      <div class="span5">
+	<h3><a href="">Рейтрейс</a></h3>
+	<a href="">
+	  <img style="max-width:200px;max-height:200px;"
+	       src="http://buildpc.ru/image/new_109655/HAF-932-Black-Edition.jpg"/>
+	</a>
+      </div>
+      <div class="span6" style="margin-top:30px;">
+	<h4>Ракета прогресс</h4>
+	<p>
+	  Пристегните ремни.
+	  Две видеокарты, работающие параллельно.
+	  Попробуйте нагрузить его
+	</p>
+	<div style="margin-top:6px;" id="mpopularity">
+	  <!-- <i class="icon icon-user"></i> -->
+	  <!-- <i class="icon icon-user"></i> -->
+	  <!-- <i class="icon icon-user"></i> -->
+	</div>
+	<span class="label label-info" id="mproc" >Core i7 6Mb cache</span>
+	<br/>
+	<span class="label label-success" id="mprice">23500 р.</span>
+      </div>
+    </div>
+  </div>
 </model>
-
-
-<model_icon>
-  <a class="modelicon" name="icon">
-  <span class="rollover" style="opacity: 0;"></span>
-  <span class="gallery-shadow"></span>
-  <img src="/static/sample.jpg"></a>
-</model_icon>
-
-

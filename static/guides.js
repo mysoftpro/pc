@@ -26,7 +26,7 @@ function showDescription(_id){
                              var img_name = data['imgs'][i];
                              var ext = '.jpg';
                              var path = data['imgs'][i];
-                             if (path.match('jpeg')){
+                             if (path.match('jpeg')||path.match('png')){
                                  ext = '';
                                  path = encodeURIComponent(path);
                              }
@@ -69,53 +69,19 @@ function getBackgroundPos(el){
     return bpos;
 }
 
-function setFilterByOption(e){
+function setFilterByOption(e){    
     var target = $(e.target);
-    var pa = target.parent();
-    var guard= 10;
-    while (pa[0].tagName.toLowerCase() != 'table'){
-        pa = pa.parent();
-        guard-=1;
-        if (guard==0) break;
-    }
-
-    var all = pa.find('input').toArray();
-    var all_unchecked = _(all).select(function(el){return $(el).prop('checked');}).length==0;
-    var _id = pa.parent().attr('class').replace('filter_list ', '');
-    var filter = $('#'+_id);
-    var filter_css = getBackgroundPos(filter).split(' ');
-    if(all_unchecked){
-        var other = filter.next();
-        if (other[0].tagName.toLowerCase()!=='div')
-            other = filter.prev();
-        var css = getBackgroundPos(other).split(' ');
-        if (css[0]=='0px' || css[0]=='0'){
-            //its ok. shadow filter
-            filter.css('background-position','58px '+filter_css[1]);
-        }
-        else{
-            // something must be switched on!
-            target.prop('checked',true);
-            return;
-        }
-    }
-    else{
-        if (filter_css[0]!=='0px' && filter_css[0]!=='0')
-            filter.css('background-position','0px '+filter_css[1]);
-    }
-
-    var codes = target.attr('name').split(',');
+    //var codes = target.attr('name').split(',');
+    //old code use brands. now it is easieser
+    var codes = _(target.data('codes')).chain().values().flatten().value();
     setGlobalArray(filtered_procs, _(filtered_procs).difference(codes));
-    //filtered_procs = _(filtered_procs).difference(codes);
     if (!target.prop('checked')){
         setGlobalArray(filtered_procs, _(filtered_procs).union(codes));
-        //filtered_procs = _(filtered_procs).union(codes);
-    }
+    }    
     _(codes).each(function(code){
-                      var select = jgetSelectByRow($('#' + parts['proc']));//$('#7399').find('select');//
+                      var select = jgetSelectByRow($('#' + parts['proc']));
                       var op = jgetOption(select, code);
                       op.prop('disabled',!target.prop('checked'));
-                      select.trigger("liszt:updated");
                   });
 
     var filtered_catalogs = _(filtered_procs).chain()
@@ -160,20 +126,13 @@ function setFilterByOption(e){
                    .map(function(com){return com['_id'];})
                   .value());
 
-    // filtered_mothers=mother_cats_to_filter
-    //  .map(function(cat){
-    //           return filterByCatalogs(_(choices).values(),cat, true);
-    //       })
-    //  .flatten()
-    //  .map(function(com){return com['_id'];});
 
     var mother_select = jgetSelectByRow($('#' + parts['mother']));
     mother_select.find('option').prop('disabled',false);
     _(filtered_mothers).each(function(code){
                                  jgetOption(mother_select, code).prop('disabled',true);
                              });
-    mother_select.trigger("liszt:updated");
-    // TODO refactor that #2
+
     var currentProc = code('proc');
     if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
         jgetProcBody().parent().find('.better').click();
@@ -188,14 +147,6 @@ function setFilterByOption(e){
             jgetMotherBody().parent().find('.cheaper').click();
         }
     }
-    // TODO refactor that #2
-    // var currentMother = code('mother');
-    // if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
-    //  jgetMotherBody().parent().find('.better').click();
-    //  if (_(filtered_procs).select(function(c){return c== currentProc;}).length>0){
-    //      jgetMotherBody().parent().find('.cheaper').click();
-    //  }
-    // }
 }
 
 function installProcFilters(){
@@ -224,87 +175,46 @@ function installProcFilters(){
                          install(key, intel, intel_proc_catalogs);
                          install(key, amd, amd_proc_catalogs);
                      });
-    _($('#proc_filter div').toArray())
+    _($('#proc_filter input').toArray())
         .each(function(d, i){
                   var div = $(d);
-                  div
-                      .hover(function(e){
-                                 var _id = div.attr('id');
-                                 $('.filter_list').hide();
-                                 var this_list = $('.'+_id);
-                                 if (this_list.length==0){
-                                     var rows = '';
-                                     function install(ob){
-                                         rows = _(ob)
-                                             .chain()
-                                             .keys()
-                                             .map(function(key){
-                                                      var codes = ob[key];
-                                                      return proc_filter_template_row(
-                                                          {code:codes.join(','),
-                                                           Brand:key});
-                                                  }).value().join('');
-                                     }
-                                     if(_id=='vamd'){
-                                         install(amd);
-                                     }
-                                     else if (_id=='vintel'){
-                                         install(intel);
-                                     }
-                                     var target = $(e.target);
-                                     var parent = target.parent();
-                                     parent.after(proc_filter_template({klass:_id,
-                                                                      rows:rows
-                                                                     }));
-                                     parent.next().find('input').change(setFilterByOption);
-                                 }
-                                 else
-                                     $('.'+_id).show();
-                             });
-                  function switchAll(all){
+
+                  var _id = div.attr('id');
+		  if(_id=='vamd'){
+                      //install(amd);
+		      div.data('codes',amd);
+                  }
+                  else if (_id=='vintel'){
+                      //install(intel);
+		      div.data('codes',intel);
+                  }
+                          
+                  function switchAll(){
                       return function (e){
                           var _id = div.attr('id');
-                          var bpos = getBackgroundPos(div);
-                          var splitted = bpos.split(' ');
-                          if (splitted[0] == '0px' || splitted[0] == '0'){
-                              // can switch off only if other is not switchet off
-                              var other;
-                              if (i%2==0) other = function(el){return el.next();};
-                              else other = function(el){return el.prev();};
-                              var other_bpos = getBackgroundPos(other(div));
-                              var other_splitted = other_bpos.split(' ');
-                              if (other_splitted[0]!=='0px' && other_splitted[0]!=='0')
-                                  return;
-                              div.css({'background-position':'58px '+splitted[1]});
-                              div.attr('title', div.attr('title').replace('Исключить','Включить'));
-                              // TODO refactor#1
-                              if (all){
-                                  var inps = $('.'+_id).find('input').toArray();
-                                  _(inps).each(function(el){
-                                                var inpt = $(el);
-                                                if (inpt.prop('checked'))
-                                                    inpt.click();
-                                            });
+                          var checked = $(e.target).is(':checked');
+                          var other;
+                          if (i%2==0)
+                              other = function(el){
+                                      return el.parent().next().find('input').first();
+                              };
+                          else
+                              other = function(el){
+                                  return el.parent().prev().find('input').first();
+                              };
 
-                              }
+                          if (!checked){
+                              if (!other(div).is(':checked'))
+                                  return;
+                              other(div).attr('disabled','disabled');			      
                           }
                           else{
-                              div.css({'background-position':'0px '+splitted[1]});
-                              div.attr('title', div.attr('title').replace('Включить','Исключить'));
-                              // TODO refactor#1
-                              if (all){
-                                  var inps = $('.'+_id).find('input').toArray();
-                                  _(inps).each(function(el){
-                                                var inpt = $(el);
-                                                if (!inpt.prop('checked'))
-                                                    inpt.click();
-                                            });
-
-                              }
+                              other(div).removeAttr('disabled');                            
                           }
+			  setFilterByOption(e);
                       };
                   }
-                  div.click(switchAll(true));
+                  div.click(switchAll());
               });
 };
 
@@ -327,7 +237,7 @@ var catalogsForVendors = {
 
 function makeMask(action, _closing){
     function _makeMask(e){
-	var iframe = $('iframe');
+        var iframe = $('iframe');
         if (e)
             e.preventDefault();
         var maskHeight = $(document).height();
@@ -350,11 +260,11 @@ function makeMask(action, _closing){
         details.css('left', _left);
 
         action();
-        details.prepend('<div id="closem"></div><div style="clear:both;"></div>');
+        details.prepend('<button class="btn" id="closem" style="float:right"><i class="icon icon-remove-sign"></i> закрыть</button>');
         $('#closem').click(function(e){$('#mask').click();});
-	iframe.hide();
+        iframe.hide();
         function closing(){
-	}
+        }
         details.fadeIn(600, closing);
         masked = true;
         $('#mask').click(function () {
@@ -362,7 +272,7 @@ function makeMask(action, _closing){
                              details.hide();
                              masked = false;
                              iframe.show();
-			     _closing();
+                             _closing();
                          });
 
         $(document.documentElement).keyup(function (event) {
@@ -378,44 +288,12 @@ function makeMask(action, _closing){
 var filled_selects_helps = {
 };
 
-var showYa = function (_id, _link){
-    new Ya.share({
-                     element: _id,
-                     elementStyle: {
-                         'type': 'none',
-                         'border': false,
-                         'quickServices': ['vkontakte', 'odnoklassniki','facebook','twitter','lj','moimir','moikrug','liveinternet']
-                     },
-                     link:_link,
-                     title: 'buildpc.ru Просто купить компьютер',
-                     serviceSpecific: {
-                         twitter: {
-                             title: 'buildpc.ru Просто купить компьютер'
-                         }
-                     }
-                 });
-};
-
 var init = function(){
     //hideAllMessages();
     $('#tips').click(function(e){
-                         e.preventDefault();
+                         e.preventDefault();                         
                          guider.createGuider({
-                                                 attachTo: "#proc_filter",
-                                                 description: "Можно ограничить выбор процессора производителем. Или определенными брендами",
-                                                 id: "mother",
-                                                 position: 11,
-                                                 width: 160
-                                             }).show();
-                         guider.createGuider({
-                                                 attachTo: "#proclock",
-                                                 description: "Если вы точно знаете какой процессор или материнская плата вам нужна, можно зафиксировать выбор. При нажатии кнопок Дешевле и Лучше не будет происходить замены этого компонента. Выбор материнской платы ограничится соответствующим процессору сокетом.",
-                                                 id: "mother",
-                                                 position: 7,
-                                                 width: 360
-                                             }).show();
-                         guider.createGuider({
-                                                 attachTo: "#7388",
+                                                 attachTo: "#mother",
                                                  description: "Список доступных компонентов. Описание компонента смотрите ниже на странице.",
                                                  id: "mother",
                                                  position: 6,
@@ -449,8 +327,8 @@ var init = function(){
 
 
                          guider.createGuider({
-                                                 attachTo: "#component_title",
-                                                 description: "На этой вкладке описание компонента от поставщика.",
+                                                 attachTo: "#cdescription",
+                                                 description: "Здесь описание компонента от поставщика.",
                                                  id: "descritpion",
                                                  position: 11,
                                                  width: 300
@@ -549,64 +427,64 @@ function getUserNameAndTitle(){
                                        });
 }
 function renameUserModel(){
-    _($('h3 a').toArray())
+    _($('h3.span10').toArray())
         .each(function(_el){
-                  var el = $(_el);
-                  var pa = el.parent();
+                  var el = $(_el).next();
+                  var pa = el.prev();
                   var save = function(e){
-                               e.preventDefault();
-                               var texts = [];
-                               var to_delete = [];
+                      e.preventDefault();
+                      var texts = [];
+                      var to_delete = [];		      
+                      var spans = pa.find('span').toArray();
+		      //spans.pop();//pop date
+                      _(spans).each(function(span){
+                                        var sp = $(span);
+                                        texts.push({klass:sp.attr('class'), text:sp.text()});
+                                        sp.remove();
+                                    });
 
-                               var spans = pa.find('span').toArray();
-                               spans.pop();//pop date
-                               _(spans).each(function(span){
-                                                 var sp = $(span);
-                                                 texts.push({klass:sp.attr('class'), text:sp.text()});
-                                                 sp.remove();
-                                         });
-
-                               _(texts.reverse())
-                                   .each(function(ob){
-                                             pa.prepend(_.template('<input class="{{klass}}" value="{{value}}"/>',
-                                                                   {
-                                                                       value:ob['text'],
-                                                                       klass:ob['klass']
-                                                                   }));
-                                         });
-                               el.text('сохранить');
-                               el.unbind('click')
-                                   .click(function(e){
-                                              e.preventDefault();
-                                              var name = pa.find('.customName');
-                                              var title = pa.find('.customTitle');
-                                              var na = '',ti = '';
-                                              if (name.length>0)na = name.val();
-                                              if (title.length>0)ti = title.val();
-                                              $.ajax({
-                                                         url:'/store_model_name',
-                                                         data:{
-                                                             name:na,
-                                                             title:ti,
-                                                             uuid:pa.parent()
-                                                                 .prev()
-                                                                 .find('.modelprice').attr('id')
-                                                         },
-                                                         success:function(){
-                                                             if (title.length>0){
-                                                                 pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
-                                                                                       {klass:title.attr('class'), val:ti}));
-                                                                 title.remove();
-                                                             }
-                                                             pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
-                                                                                   {klass:name.attr('class'), val:na}));
-                                                             name.remove();
-                                                             el.text('переименовать');
-                                                             el.unbind('click').click(save);
-                                                         }
-                                                     });
-                                          });
-                           };
+                      _(texts.reverse())
+                          .each(function(ob){
+                                    pa.prepend(_.template('<input class="{{klass}}" value="{{value}}"/>',
+                                                          {
+                                                              value:ob['text'],
+                                                              klass:ob['klass']
+                                                          }));
+                                });
+                      el.text('сохранить');
+                      el.unbind('click')
+                          .click(function(e){
+                                     e.preventDefault();
+                                     var name = pa.find('.customName');
+                                     var title = pa.find('.customTitle');
+                                     var na = '',ti = '';
+                                     if (name.length>0)na = name.val();
+                                     if (title.length>0)ti = title.val();
+                                     $.ajax({
+                                                url:'/store_model_name',
+                                                data:{
+                                                    name:na,
+                                                    title:ti,
+                                                    uuid:pa.parent()
+                                                        .parent()
+                                                        .parent()
+							.attr('id')
+                                                },
+                                                success:function(){
+                                                    if (title.length>0){
+                                                        pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
+                                                                              {klass:title.attr('class'), val:ti}));
+                                                        title.remove();
+                                                    }
+                                                    pa.prepend(_.template('<span class="{{klass}}">{{val}}</span>',
+                                                                          {klass:name.attr('class'), val:na}));
+                                                    name.remove();
+                                                    el.text('переименовать');
+                                                    el.unbind('click').click(save);
+                                                }
+                                            });
+                                 });
+                  };
                   el.click(save);
               });
 
@@ -655,7 +533,7 @@ function lockUnlock(){
                                                     lockob.active_filter = el;
                                                 el.hide();
                                             });
-        select.trigger("liszt:updated");
+        //select.trigger("liszt:updated");
         var ch = row.find('.cheaper');
         lockob.cheaper_styles.opacity =ch.css('opacity');
         lockob.cheaper_styles.cursor = ch.css('cursor');
@@ -698,7 +576,7 @@ function lockUnlock(){
                               other_ob.filtered.push(op.val());
                           }
                       });
-            other_select.trigger("liszt:updated");
+            //other_select.trigger("liszt:updated");
         }
     }
     function restoreSelect(lock){
@@ -716,7 +594,7 @@ function lockUnlock(){
                                          });
         var row = $(lockob.id);
         var select = jgetSelectByRow(row);
-        select.trigger("liszt:updated");
+        //select.trigger("liszt:updated");
         var ch = row.find('.cheaper');
         ch.css(lockob.cheaper_styles);
         var be = row.find('.better');
@@ -736,7 +614,7 @@ function lockUnlock(){
                                         $(op).prop('disabled', false);
                                                });
             lockob.other_opts_disabled = [];
-            jgetSelectByRow($(other_ob['id'])).trigger("liszt:updated");
+            //jgetSelectByRow($(other_ob['id'])).trigger("liszt:updated");
             var put_back = [];
             while(other_ob.filtered.length>0){
                 put_back.push(other_ob.filtered.pop());

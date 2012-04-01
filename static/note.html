@@ -1,30 +1,30 @@
-<top>
-    <h1 id="videoheader">Ноутбук Asus</h1>
-    <div class="computers_top" id="video_top" style="margin-bottom:15px;height:55px;">
-    <div id="tocart" class="square_button">В корзину</div>
-    <table id="videoprice">
+<header>
+  <h1 id="videoheader">Ноутбук Asus</h1>
+  <h3></h3>
+  <div class="row-fluid" id="video_top">
+    <table id="videoprice" class="span9 table table-striped table-bordered table-condensed" 
+	   style="margin-top:5px;">
       <tr><td><div id="videoname"></div></td><td>1 шт</td><td>15200 р.</td></tr>
       <tr><td>Итого</td><td></td><td>15200 р.</td></tr>
     </table>
-    <div style="clear:both;"></div>
-    </div>
-</top>
-<middle>
-  <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models">
-      <div id="maparams"></div>
-      <div id="videoimage">
-	<div class="chipname videofeatures">
-	  Возможно Вам понадобится WiFi маршрутизатор для подключения ноутбука
-	  к домашней сети.
-	  <div id="videopower"></div>
-	</div>
-	<ul class="chipVendors" id=""></ul>	
-      </div>
-    </div>
-    <div style="clear:both;"></div>
+    <div id="tocart" class="btn btn-primary btn-large span2">В корзину</div>
   </div>
+
+</header>
+<div id="content">
+  <div class="row-fluid">
+    <div id="maparams" class="span6"></div>
+    <div id="videoimage" class="span6">
+      <div class="chipname videofeatures">
+	Возможно Вам понадобится WiFi маршрутизатор для подключения ноутбука
+	к домашней сети.
+      </div>
+      <table class="chipVendors table table-striped table-bordered table-condensed">
+	
+      </table>
+    </div>
+  </div>
+  <script type="text/javascript"></script>
   <script type="text/javascript">
     var _top = ['/static/jquery.cookie.min.js',
     '/static/jquery.mousewheel.js','/static/jScrollPane.js',
@@ -32,9 +32,4 @@
     var _next = ['/static/tablet.js','/static/guides.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <script type="text/javascript">
-    head.ready(function(){$('#maparams').find('br').first().after('<h3>Автоматический перевод</h3>')});
-  </script>
-  <div id="toppopup">
-  </div>
-</middle>
+</div>

@@ -356,8 +356,7 @@ var ModelView = Backbone
 			    var view_to_change = _(this.satelites)
 				.select(function(view){
 					    return view.model.get('alias') == changed_alias;
-					})[0];
-			    console.log(view_to_change);
+					})[0];			    
 			    view_to_change.$el.remove();
 			    var new_satel_view = view_to_change
 				.options.parent

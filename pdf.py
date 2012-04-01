@@ -77,7 +77,7 @@ def main():
         story.append(title)
         story.append(link)
         story.append(phone)
-        story.append(warning)
+        # story.append(warning)
 
         story.append(Spacer(10,10))
 

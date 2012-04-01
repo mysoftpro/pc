@@ -191,8 +191,7 @@ function init(){
 			     sending = true;
 			     save();
 			 }
-			 if (validate()){
-			     console.log(1);
+			 if (validate()){			     
 			     $.ajax({
 					url:'/sendCreditApp',
 					data:{orderid:$('#orderid').val()},

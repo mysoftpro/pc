@@ -1,16 +1,8 @@
 (function init(){
-     var chipvendors = $('.chipVendors li');
+     var chipvendors = $('.chipVendors button');
      chipvendors.click(function(e){
-                           var target = $(e.target);
-                           var tag = target[0].tagName.toLowerCase();
-                           if(tag=='a')
-                               return;
-                           var guard = 10;
-                           while(tag!=='li'){
-                               target = target.parent();
-                               tag = target[0].tagName.toLowerCase();
-                           }
+                           var target = $(e.target);                           
                            showComponent({preventDefault:function(){},
-                                          target:{id:'_'+target[0].id}});
+                                          target:{id:'_'+target.parent().attr('id')}});
                        });
  }());

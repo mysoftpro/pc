@@ -1,208 +1,139 @@
-<top>
+<header>
   <h1>Как пользоваться сайтом для выбора компьютера</h1>
-  <p class="computers_top">
+  <p class="well">
     Если вы хотите узнать, по каким параметрам выбирают компьютер,
-    читайте подробней <a href="/howtochoose">о выборе компьютера</a>.
+    читайте подробней <a href="/howtochoose">о выборе компьютера</a>.<br/>
     Все рекомендации, также можно читать на отдельных страницах "Как выбирать":
     <a href="/motherboard" id="hmotherboard"> материнскую плату</a>,
     <a href="/processor" id="hprocessor"> процессор</a>,
     <a href="/video" id="hvideo"> видеокарту</a>.
   </p>
-</top>
+</header>
 
-<middle>
-  <div id="how">
-    <div>
-      <div class="sentence">Как пользоваться страницей моделей компьютеров. 
-	<span>Видео. 2 минуты.</span></div>
-      <iframe width="560" height="315" src="http://www.youtube.com/embed/Th2KBCh7NZk" frameborder="0" allowfullscreen></iframe>      
-    </div>
-    <div class="sentence">
-      Компьютеры удобно сравнивать между собой на <a href="computer">странице всех моделей</a>.
-    </div>
-    <div class="sentence">
-      Кроме текстового описания, можно посмотреть все компоненты компьютера с ценами,
-      кликнув на значок <img src="/static/short_info.png" alt="info icon"/>
-    </div>
-    <div id="howguider">
-      Окошко с компонентами компьютера
-    </div>
-    <div class="sentence" style="margin-top:50px;">
-      Можно открыть <span>несколько таких окошек</span> и посмотреть,
-      чем один компьютер отличается от другого.
-    </div>
+<div id="content">  
+    
+  <p>
+    Чтобы перейти к компьютеру, кликайте его название на странице <a href="/computer">десктопов
+  </p>
+    
 
-    <div class="sentence_float" style="width:600px">
-      Под каждым компьютером есть <span>слайдер</span>.
-      Его можно подвигать туда-сюда, чтобы установить <span>нужную вам цену</span>.
-      Пока вы двигаете слайдер, происходит авто замена материнской платы, процессора и видеокарты,
-      так чтобы цена изменилась в нужную вам сторону.
-    </div>
-    <div class="sentence_right" style="margin-top:32px;">
-      <div class="dragdealer rounded-cornered" id="sliderping" title="Управление ценой"><div class="red-bar handle" style="left: 0px;"><div class="dragfiller"></div></div></div>
-    </div>
-    <div style="clear:both;"></div>
+  <h3>Как пользоваться страницей изменения конфигурации. Видео. 2 минуты.</h3>
+  <p>
+    <iframe width="560" height="315" 
+	    src="http://www.youtube.com/embed/cSH4ZV6tvDo" 
+	    frameborder="0" allowfullscreen>
+    </iframe>
+  </p>
 
-    <div class="sentence">
-      После установки цены можно снова кликнуть на <img alt="info icon" src="/static/short_info.png">
-      и посмотреть на новый состав компьютера.
+  <div class="row-fluid">
+    <div class="span6">
+      <p>
+	Все компьютеры укомплектованы таким образом, чтобы вы могли начать
+	сразу  его использовать.    
+	Но некоторые компоненты, возможно, не нужны вам.
+	Исключайте их с помощью чекбоксов.
+      </p>
     </div>
-
-    <div class="sentence_float">
-      Чтобы перейти к компьютеру, кликайте его название:
-    </div>
-    <h2 class="section inline">
-      <a href="/computer/scroll" class="modellink">Скролл</a>
-      <span id="scroll" class="modelprice">34000 р</span>
-    </h2>
-    <div style="clear:both;"></div>
-    <div>
-      <div class="sentence">Как пользоваться страницей изменения конфигурации. 
-	<span>Видео. 2 минуты.</span></div>
-      <iframe width="560" height="315" 
-	      src="http://www.youtube.com/embed/cSH4ZV6tvDo" 
-	      frameborder="0" allowfullscreen>
-      </iframe>
-    </div>
-    <div class="sentence">
-      Здесь уже гораздо больше опций.<br/>
-      Все компьютеры укомплектованы таким образом, чтобы вы могли начать
-      <span>сразу  его использовать</span>.
-    </div>
-    <div class="sentence_float">
-      Но некоторые компоненты, возможно, не нужны вам.
-      Исключайте их.
-    </div>
-    <table id="options" style="float:right;margin-right:30px;margin-top:20px;">
-      <tbody><tr><td style="width:70px;">
-            <input type="checkbox" checked="" value="odispl" id="odispl">
-            <label for="odispl">монитор</label>
-          </td>
-          <td style="width:70px;">
-            <input type="checkbox" checked="" value="osoft" id="osoft">
-            <label for="osoft">Windows</label>
-          </td>
-          <td style="width:80px;">
-            <input type="checkbox" checked="" value="oaudio" id="oaudio">
-            <label for="oaudio">колонки</label>
-          </td>
-          <td style="width:75px;">
-            <input type="checkbox" checked="" value="omouse" id="omouse">
-            <label for="omouse">мышь</label>
-          </td>
-          <td style="width:95px;">
-            <input type="checkbox" checked="" value="okbrd" id="okbrd">
-            <label for="okbrd">клавиатура</label>
-          </td>
-
-        </tr>
-        <tr>
-          <td colspan="2">
-            <input type="checkbox" checked="" value="odvd" id="odvd">
-            <label for="odvd">DVD RW: <span id="dvdprice">800 р</span></label>
-          </td>
-          <td colspan="2">
-            <input type="checkbox" checked="" value="oinstalling" id="oinstalling">
-            <label for="oinstalling">Установка windows: <span id="installprice">800 р</span></label>
-          </td>
-          <td colspan="1">
-            <input type="checkbox" checked="" value="obuild" id="obuild">
-            <label for="obuild">Сборка: <span id="buildprice">800 р</span></label>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div style="clear:both;"></div>
-
-
-    <div class="sentence_float" >
-      <a href="/computer/render">На странице компьютера</a> все основные компоненты собраны в таблицу.
-    </div>
-    <select id="hselect">
-      <option selected="selected">Каждый компонент - это раскрывающийся список</option>
-      <option>Можете выбирать любой</option>
-    </select>
-    <div style="clear:both;"></div>
-    <div class="sentence_float" style="margin-bottom:130px;">Возможно вам покажется удобней использовать кнопки справа</div>
-    <div class="sentence_right">
-      <div class="sentence">
-        <table><tr><td class="controls cheaper" style="height:31px;"><a>дешевле</a></td><tr></table>
-        выбирает ближайший компонент с меньшей ценой.
-      </div>
-
-      <div class="sentence">
-        <table><tr><td class="controls better" style="height:31px;"><a>лучше</a></td><tr></table>
-        выбирает ближайший компонент с большей ценой.
-      </div>
-
-      <div class="sentence">
-        <table><tr><td class="controls reset" style="height:31px;"> <a href="?skin=home">сбросить </a></td></tr></table>
-        выбирает изначально установленный компонент.
+    <div class="span6">
+      <div class="controls" id="options">
+	<label class="checkbox inline">
+	  <input type="checkbox" value="odispl" checked="" id="odispl"> Монитор
+	</label>
+	<label class="checkbox inline">
+	  <input type="checkbox" value="osoft" checked="" id="osoft"> Windows
+	</label>
+	<label class="checkbox inline">
+	  <input type="checkbox" id="oaudio" value="oaudio" checked=""> Колонки
+	</label>
+	
+	<label class="checkbox inline">
+	  <input type="checkbox" id="okbrd" value="okbrd" checked=""> Клава
+	</label>
+	
+	<label class="checkbox inline">
+	  <input type="checkbox" id="omouse" value="omouse" checked=""> Мышь
+	</label>
+	
       </div>
     </div>
+  </div>
+  
+  <div class="row-fluid">
+    <div class="span6">
+      <p style="margin-top:11px;">
+	Все основные компоненты собраны в таблицу.
+	Слева от компонента знак вопроса. Если кликнуть на него, под таблицей появится 
+	описание компонента.
+      </p>
+    </div>
+    <div class="span6">
+      <span class="label ">?</span>
+      <select style="width:500px;margin-top:11px;">
+	<option selected="selected">Каждый компонент - это раскрывающийся список</option>
+	<option>Можете выбирать любой</option>
+      </select>
+    </div>
+  </div>
+    
 
-    <div class="sentence_float" style="max-width:400px;margin-bottom:20px;">
-      Некоторые компоненты могут состоять из нескольких элементов.
-      Кликайте <strong>+</strong> и <strong>-</strong>, чтобы изменить количество этих элементов.
+  <div class="row-fluid">
+    <div class="span6">
+      <p style="margin-top:11px;">
+	Возможно вам покажется удобней использовать кнопки справа.	
+	"Дешевле" выбирает ближайший компонент с меньшей ценой.
+	"Лучше" выбирает ближайший компонент с большей ценой.
+	"Сбросить" выбирает изначально установленный компонент.
+      </p>
     </div>
-    <div style="float:right;margin-right:40px;margin-top:30px;">
-      <span class="ramcount">1 шт.</span>
-      <span class="incram">+1шт</span>
-      <span class="decram">-1шт</span>
+    <div class="span6">
+      <div class="btn-group">
+	  <button class="btn cheaper"><i class="icon icon-arrow-down"></i>Дешевле</button>
+	  <button class="btn better"><i class="icon icon-arrow-up"></i>Лучше</button>
+	  <button class="btn reset">Сбросить</button>
+	</div>
     </div>
-    <div style="clear:both;"></div>
+  </div>
 
-    <div class="sentence">
-      <div style="float:left;margin-top:15px;">
-        Кнопками "дешевле" и "лучше" можно автоматически выбирать компоненты.
-        Наше приложение выбирает замену для компонента,
-        который по его оценке не соответсвует остальным компонентам компьютера.
-        Описание их работы можно прочитать на страничке
-        <a href="/howtochoose">как выбирать компьютер</a>
-      </div>
-      <div style="margin-right:70px;" class="large_button" id="gbetter">лучше</div>
-      <div class="large_button" id="gcheaper">дешевле</div>
+  <div class="row-fluid">
+    <div class="span6">
+      <p style="margin-top:11px;">
+	Некоторые компоненты могут состоять из нескольких элементов.
+	Кликайте <strong>+</strong> и <strong>-</strong>, чтобы изменить количество этих элементов.
+	Эти кнопки могут быть недоступны. Если, например, материнская имеет 2 слота памяти,
+	то больше количество плашек памяти заказать не получится.
+      </p>
     </div>
-    <div style="clear:both;"></div>
+    <div class="span6">
+      <div class="row-fluid">
+	<div class="span1" style="margin-top:-2px;"><span class="label">1шт</span></div>
+	<div class="btn-group span21">
+	  <button class="btn btn-mini disabled">-</button>
+	  <button class="btn btn-mini disabled">+</button>
+	</div>
+      </div>      
+    </div>
+  </div>
+      
+  <p>  
+    Кнопками "дешевле" и "лучше" вверху страницы можно автоматически выбирать компоненты.
+    Наше приложение выбирает замену для компонента,
+    который по его оценке не соответсвует остальным компонентам компьютера.
+    Описание их работы можно прочитать на страничке
+    <a href="/howtochoose#choose">как выбирать компьютер</a>.
+    Также вверху имеется индикатор производительности, который показывает
+    насколько хорошо Ваш компьютер будет работать в популярных приложениях.    
+  </p>
+    
 
-    <div class="sentence">
-      <div id="vendors" style="position:inherit;float:left">
-        <p>фильтры</p>
-        <div style="background-position: 0px -1px;" id="vamd"></div>
-        <div style="" id="vintel"></div>
-        <div id="vnvidia" style="background-position: 0px 58px;"></div>
-        <div id="vati" style="background-position: 0px 149px;"></div>
-      </div>
-      <div style="float:right;max-width:800px;margin-top:25px;">
-        Слева на странице находятся кнопки фильтров. Этими кнопками можно исключить производителя
-        процессоров и видеокарт. Но только одного из них.
-        После исключения, кнопки 'дешевле' и
-        'лучше' (и большие и маленькие) начинают перебирать только
-        компоненты оставшегося производителя.
-	Чтобы выключить фильтр нажмите на кнопку еще раз.
-	Чтобы исключить друго производителя, включите сначала 
-	того производителя, которого вы уже исключили.
-      </div>
-      <div style="clear:both;"></div>
-    </div>
-
-    <div class="sentence">
-      <div style="margin-top:20px;float:left;width:635px;">
-        Каждый раз, когда вы выбираете какой-нибудь компонент компьютера,
-        внизу под таблицей появляется его описание и, возможно, наши рекомендации.
-      </div>
-      <div id="component_title" class="component_tab active">Аудиосистема</div>
-      <div id="ourcomments" class="component_tab inactive" style="width:auto;">Как выбирать</div>
-    </div>
-    <div style="clear:both;"></div>
-    <p class="computers_top">
-      Все рекомендации, также можно читать на отдельных страницах "Как выбирать":
-      <a href="/motherboard" id="hmotherboard"> материнскую плату</a>,
-      <a href="/processor" id="hprocessor"> процессор</a>,
-      <a href="/video" id="hvideo"> видеокарту</a>.
-    </p>
+  <p>   
+      Слева на странице находятся чекбоксы фильтров. Этими кнопками можно исключить производителя
+      процессоров. Но только одного из них.
+      После исключения, кнопки 'дешевле' и
+      'лучше' (и большие и маленькие) начинают перебирать только
+      компоненты оставшегося производителя.      
+  </p>            
   <script type="text/javascript">
     scripts['next'] = {'top':["/static/jquery.cookie.min.js","/static/guider.js","/static/chosen.jquery.js"],
     'next':{'top':["/static/how.js"]}};
   </script>
-</middle>
+</div>

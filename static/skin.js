@@ -53,7 +53,7 @@ function makeAuthMask(action, _closing){
 
 function CartAndContacts(){
     var cart = $.cookie('pc_cart');
-    var faq = $('#faqli a');
+    //var faq = $('#faqli a');
     if (cart){
 	var link = $.cookie('pc_user');
 	if (document.location.href.match('skin')){
@@ -67,106 +67,104 @@ function CartAndContacts(){
 		}
 	    }
 	}
-	var cart_template= _.template('<li style="{{style}}"><a id="cart" href="/cart/{{link}}">Корзина({{ammo}})</a></li>');
-	var style = 'width:0';
-	if ($.browser.msie || $.browser.opera)
-	    style = 'width:94';
+	var cart_template= _.template('<li {{klass}}><a id="cart" href="/cart/{{link}}">Корзина({{ammo}})</a></li>');
 	if ($('#cart').length==0){
-	    $('#main_menu').append(cart_template({style:style, link:link,ammo:cart}));
-	    $('#cart').parent().animate({'width':'94px'},400);
+	    var klass="";
+	    if (document.location.href.match('cart'))
+		klass='class="active"';
+	    $('#main_menu').append(cart_template({klass:klass,link:link,ammo:cart}));
 	}
-
     }
-    if (!document.location.href.match('faq'))
-	_.delay(function(){
-		    faq.animate({opacity:'1'},300);
-		}, 800);
+    // if (!document.location.href.match('faq'))
+    // 	_.delay(function(){
+    // 		    faq.animate({opacity:'1'},300);
+    // 		}, 800);
 
-    function swapPhone(text){
-	return function(e){
-	    e.preventDefault();
-	    $('#phone').html(text);};
-    }
+    // function swapPhone(text){
+    // 	return function(e){
+    // 	    e.preventDefault();
+    // 	    $('#phone').html(text);};
+    // }
 
-    $('#beeline').click(swapPhone('8 (909) 792-22-39'));
-    $('#mts').click(swapPhone('8 (911) 462-42-52'));
-    $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
-    $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
-    $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Мы Вконтакте</a>'));
-    $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850" style="font-size:20px;">Мы в одноклассинках</a>', {'font-size': '14px !important'}));
-    $('#twitter').click(swapPhone('<a target="_blank" href="http://twitter.com/buildpc_ru">Мы в Твитере</a>'));
-    $('#facebook').click(swapPhone('<a target="_blank" href="http://www.facebook.com/pages/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D0%91%D0%B8%D0%BB%D0%B4/212619472150153?sk=wall">Мы в Фейсбук</a>'));
+    // $('#beeline').click(swapPhone('8 (909) 792-22-39'));
+    // $('#mts').click(swapPhone('8 (911) 462-42-52'));
+    // $('#emailc').click(swapPhone('<a href="mailto:inbox@buildpc.ru">inbox@buildpc.ru</a>'));
+    // $('#skype').click(swapPhone('<a href="skype:buildpc.ru">buildpc.ru</a>'));
+    // $('#vkontakte').click(swapPhone('<a target="_blank" href="http://vkontakte.ru/club32078563">Мы Вконтакте</a>'));
+    // $('#odnoklassniki').click(swapPhone('<a target="_blank" href="http://www.odnoklassniki.ru/group/50628007624850" style="font-size:20px;">Мы в одноклассинках</a>', {'font-size': '14px !important'}));
+    // $('#twitter').click(swapPhone('<a target="_blank" href="http://twitter.com/buildpc_ru">Мы в Твитере</a>'));
+    // $('#facebook').click(swapPhone('<a target="_blank" href="http://www.facebook.com/pages/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D0%91%D0%B8%D0%BB%D0%B4/212619472150153?sk=wall">Мы в Фейсбук</a>'));
 }
 
 
-var expands = {'howtochose':{'urls':[
-				   {url:'/howtouse',title:"Как пользоваться сайтом"},
-				   {url:'/howtochoose',title:'Как выбирать компьютер'},
-				   {url:'/processor',title:'Как выбирать процессор'},
-				   {url:'/motherboard',title:'Как выбирать материнскую плату'},
-				   {url:'/video',title:'Как выбирать видеокарту'}
-			       ],
-			       'lock':undefined
-			      },
-	       'computers':{'urls':[
-				   {url:'/computer',title:"12 моделей десктопов"},
-				   {url:'/notebook',title:'Ноутбуки Asus'},
-				   {url:'/tablet',title:'Планшеты'}
-			       ],
-			       'lock':undefined
-			      },
-	       'more':{'urls':[			   
-			   {url:'/warranty',title:'Гарантии'},
-			   {url:'/support',title:'Поддержка'},
-			   {url:'/used',title:'Барахолка'},
-			   {url:'/blog',title:'Блог'},			   
-			   {url:'/about',title:"Про магазин"}
+// var expands = {'howtochose':{'urls':[
+// 				   {url:'/howtouse',title:"Как пользоваться сайтом"},
+// 				   {url:'/howtochoose',title:'Как выбирать компьютер'},
+// 				   {url:'/processor',title:'Как выбирать процессор'},
+// 				   {url:'/motherboard',title:'Как выбирать материнскую плату'},
+// 				   {url:'/video',title:'Как выбирать видеокарту'}
+// 			       ],
+// 			       'lock':undefined
+// 			      },
+// 	       'computers':{'urls':[
+// 				   {url:'/computer',title:"12 моделей десктопов"},
+// 				   {url:'/notebook',title:'Ноутбуки Asus'},
+// 				   {url:'/tablet',title:'Планшеты'}
+// 			       ],
+// 			       'lock':undefined
+// 			      },
+// 	       'more':{'urls':[
+// 			   {url:'/warranty',title:'Гарантии'},
+// 			   {url:'/support',title:'Поддержка'},
+// 			   {url:'/used',title:'Барахолка'},
+// 			   {url:'/blog',title:'Блог'},
+// 			   {url:'/about',title:"Про магазин"}
 
-		       ],
-		       'lock':undefined
-		      }};
+// 		       ],
+// 		       'lock':undefined
+// 		      }};
 
-var etempate = _.template('<div><a href={{url}}>{{title}}</a></div>');
+//var etempate = _.template('<div><a href={{url}}>{{title}}</a></div>');
 
-function expandMenu(link){
-    $('.expanded').remove();
-    var div = $(document.createElement('div'));
-    div.html('');
-    div.attr('class','expanded');
+// function expandMenu(link){
+//     $('.expanded').remove();
+//     var div = $(document.createElement('div'));
+//     div.html('');
+//     div.attr('class','expanded');
 
-    var expas = expands[link.attr('id')];
-    if (!expas)return;
-    _(expas['urls'])
-	.each(function(el){
-		  div.append(etempate(el));
-	      });
-    div.attr('id',link.attr('id')+'expandable');
-    link.after(div);
-    var _splitted = link.attr('href').split('?');
-    if (_splitted.length>1 && _splitted[1]!=="")
-	_(div.find('a').toArray()).each(function(l){
-					    var li = $(l);
-					    var hr = li.attr('href');
-					    li.attr('href',hr+'?'+_splitted[1]);
-					});
-    div.animate({'opacity':'1.0'},400);
+//     var expas = expands[link.attr('id')];
+//     if (!expas)return;
+//     _(expas['urls'])
+// 	.each(function(el){
+// 		  div.append(etempate(el));
+// 	      });
+//     div.attr('id',link.attr('id')+'expandable');
+//     link.after(div);
+//     var _splitted = link.attr('href').split('?');
+//     if (_splitted.length>1 && _splitted[1]!=="")
+// 	_(div.find('a').toArray()).each(function(l){
+// 					    var li = $(l);
+// 					    var hr = li.attr('href');
+// 					    li.attr('href',hr+'?'+_splitted[1]);
+// 					});
+//     div.animate({'opacity':'1.0'},400);
 
-    function hideexpa(delta){
-	_.delay(function(e){
-		    if (expas['lock'])return;
-		    div.animate({'opacity':'0.0'},400,function(){div.remove();});
-	    }, delta);
-    }
+//     function hideexpa(delta){
+// 	_.delay(function(e){
+// 		    if (expas['lock'])return;
+// 		    div.animate({'opacity':'0.0'},400,function(){div.remove();});
+// 	    }, delta);
+//     }
 
-    div.mouseenter(function(e){
-		       expas['lock']=true;
-		   });
-    div.mouseleave(function(e){
-			expas['lock']=false;
-			hideexpa(300);
-		   });
-    hideexpa(3000);
-}
+//     div.mouseenter(function(e){
+// 		       expas['lock']=true;
+// 		   });
+//     div.mouseleave(function(e){
+// 			expas['lock']=false;
+// 			hideexpa(300);
+// 		   });
+//     hideexpa(3000);
+// }
 function ask(e){
     e.preventDefault();
     var target = $(e.target);
@@ -189,8 +187,8 @@ function ask(e){
 	       success:function(_data){
 		   var data = eval('('+_data+')');
 		   var div = $(document.createElement('div'));
-		   div.html('<div class="closeg" style="padding:0;"></div>'+data['rows'][0]['doc']['txt']);
-		   div.attr('class','expanded askresponse');
+		   div.html('<button class="btn closeg" style="float:right"><i class="icon icon-remove-sign"></i> закрыть</button></div><div style="clear:both;">'+data['rows'][0]['doc']['txt']+'</div>');
+		   div.attr('class','expanded askresponse well');
 		   target.after(div);
 		   div.animate({'opacity':'1.0'},300);
 		   div.find('.closeg').click(function(){div.remove();});
@@ -262,42 +260,42 @@ var init = function(){
 
     $('.ask').click(ask);
 
-    $('.expandable').click(function(e){
-			       expandMenu($(e.target).next());
-			   });
-    $('.expandable').next().click(function(e){
-				      e.preventDefault();
-				      expandMenu($(e.target));
-				  });
-    var gwidth = $(window).width();
-    if (gwidth <= 1010){
-	$('#vendors').remove();$('#rank').remove();$('#themes').remove();$('#proc_filter').remove();
-	$('.pciex').remove();$('.lockable').remove();
-	return;
-    }
+    // $('.expandable').click(function(e){
+    // 			       expandMenu($(e.target).next());
+    // 			   });
+    // $('.expandable').next().click(function(e){
+    // 				      e.preventDefault();
+    // 				      expandMenu($(e.target));
+    // 				  });
+    // var gwidth = $(window).width();
+    // if (gwidth <= 1010){
+    // 	$('#vendors').remove();$('#rank').remove();$('#themes').remove();$('#proc_filter').remove();
+    // 	$('.pciex').remove();$('.lockable').remove();
+    // 	return;
+    // }
 
-    if (gwidth <= 1150)
-	$('#rank').remove();
+    // if (gwidth <= 1150)
+    // 	$('#rank').remove();
 
-    var astro = $('#astro');
-    var autumn = $('#autumn');
+    // var astro = $('#astro');
+    // var autumn = $('#autumn');
 
-    var splitted = document.location.search.split('?')[1];
-    if (splitted==undefined){
-	$('#autumn').attr('href','?'+'skin=home');
-	$('#astro').attr('href','?'+'skin=astro');
-	return;
-    }
-    var pairs = splitted.split('&');
-    var pairs_filtered = [];
-    for (var i=0;i<pairs.length;i++){
-	var spli = pairs[i].split('=');
-	if (spli[0]=='skin')continue;
-	pairs_filtered.push(pairs[i]);
-    }
-    var joined = pairs_filtered.join('&');
-    astro.attr('href','?'+joined+'&skin=astro');
-    autumn.attr('href','?'+joined+'&skin=home');
+    // var splitted = document.location.search.split('?')[1];
+    // if (splitted==undefined){
+    // 	$('#autumn').attr('href','?'+'skin=home');
+    // 	$('#astro').attr('href','?'+'skin=astro');
+    // 	return;
+    // }
+    // var pairs = splitted.split('&');
+    // var pairs_filtered = [];
+    // for (var i=0;i<pairs.length;i++){
+    // 	var spli = pairs[i].split('=');
+    // 	if (spli[0]=='skin')continue;
+    // 	pairs_filtered.push(pairs[i]);
+    // }
+    // var joined = pairs_filtered.join('&');
+    // astro.attr('href','?'+joined+'&skin=astro');
+    // autumn.attr('href','?'+joined+'&skin=home');
 
 };
 init();

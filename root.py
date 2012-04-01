@@ -18,7 +18,7 @@ from pc.models import\
     NamesFor, ParamsFor, promotion, upgrade_set, Model, notes, UserForCredit,\
     UserForSaving,ModelForSaving, Note as NoteOb
 from pc.views import Cart, Computers, Computer, Index, VideoCards, VideocardView as Videocard,\
-   MarketForVideo,SpecsForVideo,NoteBooks,CreditForm,Tablets,Tablet,Notes, Note, Constructor
+   NoteBooks,CreditForm,Tablets,Tablet,Notes, Note, Constructor#MarketForVideo,SpecsForVideo,
 from pc.catalog import XmlGetter, WitNewMap
 from twisted.web import proxy
 from twisted.web.error import NoResource
@@ -196,36 +196,13 @@ class Template(object):
     def render(self):
         return etree.tostring(self.tree, encoding='utf-8', method="html")
 
+    @property
+    def middle(self):
+        return self.root().xpath('//div[@id="content"]')[0]
 
-    def get_middle(self):
-        return self.root().find('.//middle')
-
-    def set_middle(self, middle):
-        parent = self.get_middle().getparent()
-        # REFACTOR
-        div = etree.Element('div')
-        div.set('id','middle')
-        for el in middle:
-            div.append(el)
-        parent.replace(self.get_middle(), div)
-        # parent.replace(self.get_middle(), middle)
-
-    middle = property(get_middle, set_middle)
-
-
-    def get_top(self):
-        return self.root().find('.//top')
-
-    def set_top(self, top):
-        parent = self.get_top().getparent()
-        # REFACTOR
-        div = etree.Element('div')
-        div.set('id','top')
-        for el in top:
-            div.append(el)
-        parent.replace(self.get_top(), div)
-
-    top = property(get_top, set_top)
+    @property
+    def top(self):
+        return self.root().xpath('//header')[0]
 
 
 
@@ -234,14 +211,22 @@ class Skin(Template):
         self.selected_skin = None
         cache = globals()['_cached_statics']
         name_to_cache = 'skin.html'
-        if name_to_cache in cache:
-            self.tree = deepcopy(cache[name_to_cache])
-        else:
-            opened_file = open(os.path.join(static_dir, name_to_cache))
-            parser = etree.HTMLParser(encoding='utf-8')
-            cache[name_to_cache] = etree.parse(opened_file, parser)
-            self.tree = deepcopy(cache[name_to_cache])
-            opened_file.close()
+        opened_file = open(os.path.join(static_dir, 
+                                            name_to_cache))
+        parser = etree.HTMLParser(encoding='utf-8')
+        cache[name_to_cache] = etree.parse(opened_file, parser)
+        self.tree = deepcopy(cache[name_to_cache])
+        opened_file.close()
+
+        # if name_to_cache in cache:
+        #     self.tree = deepcopy(cache[name_to_cache])
+        # else:
+        #     opened_file = open(os.path.join(static_dir, 
+        #                                     name_to_cache))
+        #     parser = etree.HTMLParser(encoding='utf-8')
+        #     cache[name_to_cache] = etree.parse(opened_file, parser)
+        #     self.tree = deepcopy(cache[name_to_cache])
+        #     opened_file.close()
 
 
     skins = {'home':'/static/home.css'}
@@ -363,8 +348,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        if _name is not None and "js" in _name and "min." not in _name:
-            _content = jsmin(_content)
+        # if _name is not None and "js" in _name and "min." not in _name:
+        #     _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -394,11 +379,12 @@ class CachedStatic(File):
             han = self.hooks[short_name]
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
-            def err(some):
-                print "______________________________"
-                print some
-                return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
-            d.addErrback(err)
+            # def err(some):
+            #     print "______________________________"
+            #     print some
+            #     return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
+            # d.addErrback(err)
+
         else:
             # just an empty snippet
             d = defer.Deferred()
@@ -557,8 +543,8 @@ class Root(Resource):
         self.putChild('bill.pdf', PdfBill())
         self.putChild('oauth',OAuth())
         self.putChild('openid',OpenId())
-        self.putChild('videoComments', MarketForVideo())
-        self.putChild('videoSpecs', SpecsForVideo())
+        # self.putChild('videoComments', MarketForVideo())
+        # self.putChild('videoSpecs', SpecsForVideo())
         self.putChild('saveset', SaveSet())
         self.putChild('credit_uploader', CreditUploader())
         self.putChild('deleteCreditAttachment', DeleteCreditAttachment())
@@ -1076,9 +1062,9 @@ class Delete(Resource):
                           or ('merged_docs' in _user and _model['author'] in _user['merged_docs']))\
                           and 'pc_key' in _user and\
                           request.getCookie('pc_key') == _user['pc_key']
-            not_processing = not 'processing' in _model \
-                    or not _model['processing']
-            if same_author and not_processing:
+            processing = 'processing' in _model and _model['processing']
+            if same_author and not processing:
+                print uuid,_model['_rev']
                 couch.deleteDoc(uuid,_model['_rev'])
 
                 #TODO! rename. it is not a model!
@@ -1475,6 +1461,7 @@ class StoreUsed(Resource):
         text = request.args.get('text',[None])[0]
         subj = request.args.get('subj',[None])[0]
         author = request.getCookie('pc_user')
+        print (price,phone,text,subj,author)
         if price is None or phone is None or text is None or author is None or subj is None:
             return "fail"
         doc = {'category':None, 'dep':'pc','params':'','external_id':base36.gen_id(),

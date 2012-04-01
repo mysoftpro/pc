@@ -1,8 +1,6 @@
 (function init(){
      _($('.ad_phone').toArray()).each(function(_el){
-                                          var el = $(_el);
-					  var title = el.parent().find('div').first();
-					  title.text(title.text().replace('|',''));
+                                          var el = $(_el);					  
                                           var phone = el.text();
                                           var real_phone = '';
                                           _(phone.split(':'))
@@ -32,40 +30,14 @@
                                           }
                                           el.text(real_phone);
                                       });
-
-     var price_text = 'цена';
-     var phone_text = 'телефон';
-     var subj_text = 'Напишите здесь заголовок Вашего объявления';
-     var area_text = 'Напишите здесь текст Вашего объявления';
-
-     var form = $('#faq_top');
+     
+     var form = $('form');
      var phone = form.find('input[name="phone"]');
      var price = form.find('input[name="price"]');
-     var area =  form.find('textarea');
+     var area =  form.find('input[name="txt"]');
      var subj =  form.find('input[name="subj"]');
-     phone.click(function(e){
-                    var t = $(e.target);
-                    if (t.val()==phone_text)
-                        t.val('');
-                });
-
-     price.click(function(e){
-                    var t = $(e.target);
-                    if (t.val()==price_text)
-                        t.val('');
-                });
-
-     area.click(function(e){
-                    var t = $(e.target);
-                    if (t.val()==area_text)
-                        t.val('');
-                });
-     subj.click(function(e){
-                    var t = $(e.target);
-                    if (t.val()==subj_text)
-                        t.val('');
-                });
-     form.find('.sendfaq').click(function(e){
+     form.find('#send').click(function(e){
+				     e.preventDefault();
                                      $.ajax({
                                                 url:'/storeUsed',
                                                 data:{'price':price.val(),

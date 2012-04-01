@@ -1,38 +1,41 @@
-<top>
-  <div id="used_tags">
-    Часто <br/> встречающиеся <br/>слова:
-  </div>
-  <div id="faq_top">
-    <input name="subj" class="computers_top" style="width:400px;margin-top:20px;margin-bottom:-10px;" type="text" value="Напишите здесь заголовок Вашего объявления">
-    <textarea class="computers_top">Напишите здесь текст Вашего объявления</textarea>
-    <ul>
-      <li><input name="phone" class="computers_top" type="text" value="телефон"></li>
-      <li><input name="price" class="computers_top" type="text" value="цена"></li>
-    </ul>
-    <em> Ваше объявление в ближайшее время появится на этой странице.</em>
-    <span class="sendfaq">Отправить</span>
-    <div style="clear:both;"></div>
-  </div>
-</top>
-<middle>
+<header>
+  <h1>Частные объявления</h1>
+  <form class="well form-inline">
+    <input type="text" name="subj" class="input-large" placeholder="Заголовок">
+    <input type="text" name="txt" class="input-large" placeholder="Текст">
+    <input type="text" name="phone" class="input-small" placeholder="Телефон">
+    <input type="text" name="price" class="input-small" placeholder="Цена">
+    <a class="btn" id="send">Отправить</a>
+  </form>
   <a name="top"></a>
-  <div id="faq"></div>
+</header>
+<div id="content">  
+  <div class="row-fluid">
+    <div id="used_tags" class="span2 well">
+      Часто <br/> встречающиеся <br/>слова:
+    </div>
+    <div id="faq" class="span8">
+    </div>
+  </div>
+      
+
   <script type="text/javascript">
     scripts['next'] = {'top':['/static/jquery.cookie.min.js','/static/waypoints.min.js'],'next':{'top':['/static/used.js']}};
   </script>
-  <div id="used_pager">
-    <a style="margin-right:690px;" href=""></a>
-    <a href="#top">наверх^</a>
-    <a href="">дальше &gt;&gt;</a>
+  <div id="used_pager" class="row">
+    <a href="#top" class="btn span1 offset8"><i class="icon icon-arrow-up"></i>наверх</a>
+    <a href="" class="btn span1"><i class="icon icon-arrow-right"></i>дальше</a>
   </div>
-</middle>
+</div>
 <ad>
   <div class="ad">
-    <div class="ad_subject"></div>
-    <div class="ad_body"></div>
-    <div class="ad_meta">
-      <div class="ad_price"></div>
-      <div class="ad_date"></div>
+    <h4></h4>
+    <div class="row-fluid">
+      <p class="span8"></p>
+      <div class="ad_meta span4">
+	<div class="ad_price"><span class="label"></span></div>
+	<div class="ad_date"></div>
+      </div>
     </div>
     <div class="ad_phone"></div>
   </div>

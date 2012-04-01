@@ -1,45 +1,38 @@
-<top>
-    <h1 style="margin-bottom:50px">Планшетные компьютеры c ОС Android</h1>
-</top>
-<middle>
+<header>
+  <h1>Планшетные компьютеры</h1>
+</header>
+<div id="content">
   <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models">
-    </div>
-    <div style="clear:both;"></div>
-  </div>
   <script type="text/javascript">
-    var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
-    '/static/jquery.mousewheel.js','/static/jScrollPane.js',
-    '/static/guider.js','/static/dragdealer.js'];
-    var _next = ['/static/tablets.js','/static/guides.js','http://yandex.st/share/share.js'];
+    var _top = ['/static/jquery.cookie.min.js','/static/guider.js'];
+    var _next = ['/static/tablets.js','/static/guides.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
-  </script>
-  <div id="toppopup">
-  </div>
-</middle>
+  </script>  
+</div>
+
 
 <tablet>
   <div style="float:left;max-width:160px;overflow:visible;">
-  <h2 class="chipname"></h2>
+  <h3 class="chipname"></h3>
   <table>
-        <tr><td>Экрана</td><td class="t_screen">7"</td></tr>
+	<tr><td>Экрана</td><td class="t_screen">7"</td></tr>
 	<tr><td>ОЗУ</td><td class="t_memory">256Mb</td></tr>
 	<tr><td>Флэш</td><td class="t_flash">4Gb</td></tr>
-	<tr><td>ОС</td><td style="font-size:12px;" class="t_os">Android 2.1</td></tr>	
+	<tr><td>ОС</td><td style="font-size:12px;" class="t_os">Android 2.1</td></tr>
 	<tr><td style="font-size:12px;">Разрешение</td><td style="font-size:12px;" class="t_resolution">800 x 480</td></tr>
     <tr><td></td></tr>
   </table>
   </div>
 
   <div class="modelicon videoicon">
-    <span class="rollover" style="opacity: 0;"></span>
-    <span class="gallery-shadow"></span>
-    <img class="video_image" alt="component_image" src="" style="">
+    <img class="video_image" alt="component_image" src="" style="max-width:200px;max-height:200px;">
   </div>
   <div style="clear:both;"></div>
-  <ul class="chipVendors"></ul>
-
+  <div class="chipVendors">
+    <button class="btn btn-mini">Подробней</button>
+    <span class="label label-info"></span>
+    <a href="" style="line-height:18px;vertical-align:bottom;">На страницу товара</a>
+  </div>
 </tablet>
 
 

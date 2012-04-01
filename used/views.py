@@ -36,7 +36,7 @@ class Used(PCView):
     skip = 0
     def renderAds(self, li_res):
         viewlet = self.tree.find('ad').find('div')
-        container = self.template.middle.find('div')
+        container = self.template.middle.xpath('.//div[@id="faq"]')[0]
         # last_key = None
         res = li_res[0][1]
         for r in res['rows']:
@@ -45,21 +45,20 @@ class Used(PCView):
             match_phone = re.match('[0-9+\(\) -]*',doc['phone'])
             if match_phone is None:
                 continue
-            if doc['_id'] == 'a5cb8d7fc44c7bd5fd217709fa0252e6':
-                print match_phone.group()
             real_phone = match_phone.group()
             view = deepcopy(viewlet)
             view.set('id',doc['_id'])
-            view.xpath('//div[@class="ad_subject"]')[0].text = doc['subj']\
+            view.xpath('//h4')[0].text = doc['subj']\
                 .replace(u'Продам','')\
-                .replace(u'Куплю',' ')
-            view.xpath('//div[@class="ad_body"]')[0].text = doc['text'].replace('_','')
+                .replace(u'Куплю',' ')\
+                .replace(u'|','')
+            view.xpath('.//p')[0].text = doc['text'].replace('_','')
             price = doc['price']
             if u'р' not in price:
                 price += u' руб.'
             if u'Цена' not in price:
                 price = u'Цена: '+ price
-            view.xpath('//div[@class="ad_price"]')[0].text = price
+            view.xpath('//div[@class="ad_price"]')[0].find('span').text = price
             view.xpath('//div[@class="ad_date"]')[0].text = '.'.join(reversed(doc['date']))
             phone = ''
 
@@ -76,17 +75,22 @@ class Used(PCView):
         if self.tag is not None:
             next.set('href',unicode(next.get('href'))+u'&tag='+self.tag)
         if self.skip > 0:
-            previous_link = pager_links[0]
-            previous_link.text = u'<< назад'
+            previous_link = etree.Element('a')
+            previous_link.set('class','btn span1')
+            icon = etree.Element('i')
+            icon.set('class','icon-arrow-left')                                    
+            icon.tail = u'назад'
             previous_link.set('href','?skip='+str(self.skip-self.items_on_page))
+            previous_link.append(icon)
             if self.tag is not None:
                 previous_link.set('href',
                                   unicode(previous_link.get('href'))+u'&tag='+self.tag)
+            pager_links[0].getparent().insert(0,previous_link)
         if len(res['rows'])<self.items_on_page:
             next.getparent().remove(next)
 
         tag_res = li_res[1][1]
-        tag_container = self.template.top.xpath('div[@id="used_tags"]')[0]
+        tag_container = self.template.middle.xpath('.//div[@id="used_tags"]')[0]
         for row in sorted(tag_res['rows'], lambda row1,row2:row2['value']-row1['value']):
             if row['value'] <10:break
             a = etree.Element('a')

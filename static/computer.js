@@ -4,16 +4,16 @@ _.templateSettings = {
 };
 
 var exclusive_case = "10837";
-function checkPsuForCase(old_component, new_component){    
+function checkPsuForCase(old_component, new_component){
     if (old_component.catalogs[2]!=exclusive_case && new_component.catalogs[2]==exclusive_case){
 	var video_component = new_model[code('video')];
 	checkPsuForVideo(video_component, 'forced');
     }
     var psu_row = $('#' + parts['psu']);
     var psu_select = jgetSelectByRow(psu_row);
-    if (new_component.catalogs[2]==exclusive_case){	
+    if (new_component.catalogs[2]==exclusive_case){
 	psu_select.find('option').first().prop('disabled', true);
-	psu_select.trigger("liszt:updated");	
+	//psu_select.trigger("liszt:updated");
 	if (psu_select.val().match('no')){
 	    //zzz
 	    psu_row.find('.better').click();
@@ -21,7 +21,7 @@ function checkPsuForCase(old_component, new_component){
     }
     else{
 	psu_select.find('option').first().prop('disabled', false);
-	psu_select.trigger("liszt:updated");
+	//psu_select.trigger("liszt:updated");
     }
 }
 function checkPsuForVideo(new_component, forced){
@@ -60,17 +60,16 @@ function getPartName(_id){
 	    return may_be_name;
     }
 }
-
-function blink($target, bcolor){
-    var color = '#7B9C0A';
-    var skin = $.cookie('pc_skin');
-    if (skin && skin.match('home') || document.location.search.match('skin=home')){
-	color = '#ffba62';
-	bcolor = '#ddd';
+function getPart(_id){
+    var cats = getCatalogs(choices[_id]);
+    for (var i=0;i<cats.length;i++){
+	if (parts_names[cats[i]])
+	    return cats[i];
     }
-    $target.css('background-color',color);
-    _.delay(function(e){$target.css('background-color',bcolor);},200);
 }
+
+
+
 
 function _jgetLargePrice(){
     return $('#large_price');
@@ -125,25 +124,12 @@ var gwi = $(window).width();
 
 function showRank(pins){
     var minpin = pins.sort(function(x,y){return x-y;})[0];
-    var wi = (Math.log(minpin)/2*112-52)*1.8;
+    var wi = Math.log(minpin)/Math.log(10)*110;
     var rank = $('#rank');
-    if (rank.length==0 && gwi>1150){
-	$('body').append(_.template('<div id="rank"><ul><li><span id="rslow">Хорошо</span><span id="rnormal">Отлично</span><span id="rfast">Супер</span></li><li><div id="chrome" class="softbrand">Google Chrome</div><div class="rank"></div></li><li><div id="excel" class="softbrand">MS Excel</div><div class="rank"></div></li><li><div id="photoshop" class="softbrand">Adobe Photoshop</div><div class="rank"></div></li><li><div id="startcraft" class="softbrand">Starcraft 2</div><div class="rank"></div></li><li><div id="warfare" class="softbrand">Modern Warfare 3</div><div class="rank"></div></li></ul></div>'));
-	rank = $('#rank');
-    }
-    //var novideo = jgetSelectByRow($('#' + parts['video'])).val().match('no');
-    var divs = rank.find('.rank').toArray().reverse();
-    _(divs).each(function(div, i){
-		     var dwi = (i+1)*wi;
-		     if (i==4 || i==3){
-			 dwi = dwi*i/1.5;
-		     }
-		     if (i==1){
-			 dwi = dwi/1.2;
-		     }
-		     if (dwi>112)
-			 dwi = 112;
-		     $(div).css('width', dwi+'px');
+    var divs = rank.find('.bar').toArray().reverse();
+    _(divs.reverse()).each(function(div, i){
+		     var rate = (4-i)*10+wi;
+		     $(div).css('width', rate+'%');
 		 });
 }
 function calculatePin(component){
@@ -217,7 +203,6 @@ function recalculate(){
     var old_tottal = parseInt(jgetLargePrice().text());
     if (tottal != old_tottal){
 	lp.text(tottal);
-	blink(lp, '#222');
     }
 
     var pin = jgetLargePin();
@@ -225,7 +210,6 @@ function recalculate(){
     var new_pin = pins.sort(function(x1,x2){return x1-x2;})[0];
     if (new_pin != old_pin){
 	pin.text(new_pin);
-	blink(pin, '#222');
     }
 }
 
@@ -338,9 +322,7 @@ function checkAvailableSlots(name){
 
 
 function setPriceAndPin(body,component){
-    var will_blink = true;
     if (!component){
-	will_blink = false;
 	component = new_model[jgetSelect(body).val()];
     }
 
@@ -349,71 +331,67 @@ function setPriceAndPin(body,component){
     if (component['count'])
 	mult = component['count'];
     var pr = jgetPrice(body);
-    pr.text(component.price*mult + ' р');
-    if (will_blink){
-	if ($.cookie('pc_skin') && $.cookie('pc_skin')=='home')
-	    blink(pr, 'white');
-	else
-	    blink(pr, '#404040');
-    }
-	
+    pr.html('<span class="badge">'+component.price*mult + ' р</span>');
+
     var pin = calculatePin(component);
     if (pin != 8){
-	jgetPin(body).text(pin);
+	jgetPin(body).html('<span class="badge badge-success">'+pin+'</span>');
     }
 }
 
 function componentChanged(maybe_event){
+    var target = $(maybe_event.target);
+    var new_id = target.val();
+    var body = jgetBody(target);
+    var select = jgetSelect(body);
+    var new_option = jgetOption(select, new_id);
+    var new_name = new_option.text().replace(/[0-9 ]+р/,'');
+    if (new_name.match('нет'))
+	new_name = 'нет';
 
-	var target = $(maybe_event.target);
-	var new_id = target.val();
-	var body = jgetBody(target);
-	var select = jgetSelect(body);
-	var new_option = jgetOption(select, new_id);
-	var new_name = new_option.text().replace(/[0-9 ]+р/,'');
-	if (new_name.match('нет'))
-	    new_name = 'нет';
+    var new_component = choices[target.val()];
 
-	var new_component = choices[target.val()];
+    var new_cats = getCatalogs(new_component);
 
-	var new_cats = getCatalogs(new_component);
+    var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
+    var old_id = old_component['_id'];
 
-	var old_component = filterByCatalogs(_(new_model).values(), new_cats)[0];
-	var old_id = old_component['_id'];
+    delete new_model[old_id];
+    new_model[new_id] = new_component;
 
-	delete new_model[old_id];
-	new_model[new_id] = new_component;
+    fillOmitOptions(new_component,old_component);
 
-	fillOmitOptions(new_component,old_component);
+    recalculate();
+    // if (new_component.count){
+    //     body.text(new_name.substring(0,60));
+    // }
+    // else{
+    //     body.text(new_name.substring(0,80));
+    // }
+    body.text(new_name.substring(0,80));
 
-	recalculate();
-	if (new_component.count){
-	    body.text(new_name.substring(0,60));
-	}
-	else{
-	    body.text(new_name.substring(0,80));
-	}
+    setPriceAndPin(body,new_component);
 
-	setPriceAndPin(body,new_component);
+    setPerifery(new_id, false);
+    setPerifery(old_id, true);
 
-	setPerifery(new_id, false);
-	setPerifery(old_id, true);
-
-	updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
-	if (isMother(body)){
-	    switchNoVideo(new_component);
-	    installCounters();
-	}
-	else if (isVideo(body)){
-	    checkPsuForVideo(new_component);
-	}
-	else if (isPsu(body)){
-	    var video_component = new_model[code('video')];
-	    checkPsuForVideo(video_component);
-	}
-	else if (isCase(body)){
-	    checkPsuForCase(old_component, new_component);
-	}
+    updateDescription(new_id, body.attr('id'), maybe_event['no_desc']);
+    if (isMother(body)){
+	switchNoVideo(new_component);
+	installCounters();
+    }
+    else if (isVideo(body)){
+	checkPsuForVideo(new_component);
+	// why fucker it was not here before????????????????????
+	checkAvailableSlots('video');
+    }
+    else if (isPsu(body)){
+	var video_component = new_model[code('video')];
+	checkPsuForVideo(video_component);
+    }
+    else if (isCase(body)){
+	checkPsuForCase(old_component, new_component);
+    }
 }
 
 
@@ -431,14 +409,7 @@ function _jgetBodyByIndex(index){
 var jgetBodyByIndex = _.memoize(_jgetBodyByIndex, function(index){return index;});
 
 function updateDescription(new_id, body_id, does_not_show){
-    var index = 0;
-    var bodies = jgetBodies();
-    for (var i=0,l=bodies.length;i<l;i++){
-	if (jgetBodyByIndex(i).attr('id') == body_id){
-	    index = i;
-	    break;
-	}
-    }
+
     if (new_id.match('no'))
 	descriptions_cached[new_id] = '';
     if (descriptions_cached[new_id] == undefined){
@@ -446,13 +417,12 @@ function updateDescription(new_id, body_id, does_not_show){
 		   url:'/component',
 		   data:{'id':new_id},
 		   success:function(data){
-		       data['title'] = getPartName(body_id);
-		       changeDescription(index, new_id, !does_not_show, data);
+		       changeDescription(new_id, !does_not_show, data);
 		   }
 	       });
     }
     else{
-	changeDescription(index, new_id, !does_not_show);
+	changeDescription(new_id, !does_not_show);
     }
 }
 
@@ -472,28 +442,34 @@ function _jgetDescriptions(){
 var jgetDescriptions = _.memoize(_jgetDescriptions, function(){return 0;});
 
 
-function _jgetDescrByIndex(index){
-    return $(jgetDescriptions().children().get(index));
-}
+// function _jgetDescrByIndex(index){
+//     return $(jgetDescriptions().children().get(index));
+// }
 
-var jgetDescrByIndex = _.memoize(_jgetDescrByIndex, function(index){return index;});
-
-
+// var jgetDescrByIndex = _.memoize(_jgetDescrByIndex, function(index){return index;});
 
 
-var img_template = '<img src="/image/{{id}}/{{name}}{{ext}}" align="right"/>';
 
-function changeDescription(index, _id, show, data){
+
+var img_template = _.template('<div style="float:left;width:20%;"><img src="/image/{{id}}/{{name}}{{ext}}"/></div>');
+var text_template = _.template('<div style="float:left;width:80%;">{{text}}</div>');
+var title_template = _.template('<li class="active" id="{{_id}}"><a href="">{{name}}</a></li>');
+
+var leftmost_pos = $('.feature').last().position().left;
+
+function changeDescription(_id, show, data){
+
     var hidden_container = $('#hidden_description_container');
     if (hidden_container.length==0){
 	$('body').append('<div style="display:none" id="hidden_description_container"></div>');
 	hidden_container = $('#hidden_description_container');
     }
-    var descrptions = jgetDescriptions();
-    var descr = jgetDescrByIndex(index);
+    //var descrptions = jgetDescriptions();
+    var no_text = 'к сожалению описание не предоставлено поставщиком';
     if (!descriptions_cached[_id]){
 	var _text = '';
 	var _name = getPartName(_id);
+
 	if (data){
 	    if (data['imgs']){
 		for (var i=0,l=data['imgs'].length;i<l;i++){
@@ -504,222 +480,70 @@ function changeDescription(index, _id, show, data){
 			ext = '';
 			path = encodeURIComponent(path);
 		    }
-		    _text +=_.template(img_template,{'id':_id,'name':path, 'ext':ext});
+		    _text +=img_template({'id':_id,'name':path, 'ext':ext});
 		}
 	    }
-	    _text += data['comments'];
+	    if (!data['comments'])
+		data['comments'] = no_text;
+	   _text += text_template({text:data['comments']})+'<div style="clear:both;"></div>';
 	    if (data['name']){
 		hidden_container.html(data['name']);
 		_name = hidden_container.text().replace('NEW!', '').replace(/\<font.*\>/g, '');
+		//refactor here!!!!
+		_name = _name.replace('Блок питания', '')
+		    .replace('Блок питания', '')
+		    .replace('Акустическая система', '')
+		    .replace('Процессор', '')
+		    .replace('Материнская плата', '')
+		    .replace('Мат. плата', '')
+		    .replace('Видеокарта', '')
+		    .replace('Жесткий диск', '')
+		    .replace('ОЗУ', '')
+		    .replace('Корпус', '')
+		    .replace('Монитор', '')
+		    .replace('Клавиатура', '')
+		    .replace('Мышь', '')
+		    .replace('Игровая мышь', '')
+		    .replace('Мышь', '');
 	    }
 	}
 	else{
-	    _text = descr.find('.manu').text();
-	    _name = $('#component_title').text();
+	    _text = text_template({text:no_text})+'<div style="clear:both;"></div>';
 	}
 	if (_text == '')
-	    _text = 'к сожалению описание не предоставлено поставщиком';
+	    _text = text_template({text:no_text})+'<div style="clear:both;"></div>';
 	descriptions_cached[_id] = {_text:_text, _name:_name};
     }
+
     if (!show)
 	return;
 
-    var current_title = $('#component_title');
-    var current_component = choices[_id];
-    var new_component = choices[current_title.data('cid')];
-
-    if (new_component && filterByCatalogs([new_component],current_component.catalogs)==0){
-	var ti = current_title.clone();
-	ti.text('init');
-	var pa = current_title.parent();
-	pa.html('');
-	pa.append(ti);
-	current_title = ti;
-    }
-
-    //TODO! ops a very similar! refactor em
-    var op = function(some){
-	var other = current_title.next();
-	var to_remove = [];
-	var guard = 50;
-	while (other.length>0){
-	    if (other.data('cid') == current_title.data('cid'))
-		to_remove.push(other);
-	    other = other.next();
-	    guard -=1;
-	    if (guard==0)break;
-	}
-	_(to_remove).each(function(el){el.remove();});
-
-	if (current_title.position().left>=200){
-	    var first = current_title.parent().children().first();
-	    guard = 50;
-	    while (parseInt(first.css('margin-left'))!=0){
-		first = first.next();
-		guard -=1;
-		if (guard==0)break;
-	    }
-	    var ma = parseInt(first.css('margin-left'));
-	    first.css('margin-left', ma-248);
-	}
-	return current_title.after(some);
-    };
-    var ot = function(some){return current_title.next();};
-    if (new_component && current_component.price-new_component.price>=0){
-	//TODO! ops a very similar! refactor em
-	op = function(some){
-	    var other = current_title.next();
-	    var to_remove = [];
-	    var guard = 50;
-	    while (other.length>0){
-		if (other.data('cid') == current_title.data('cid'))
-		    to_remove.push(other);
-		other = other.next();
-		guard -=1;
-		if (guard==0)break;
-	    }
-	    _(to_remove).each(function(el){el.remove();});
-
-	    if (current_title.position().left>=700){
-		var first = current_title.parent().children().first();
-		guard = 50;
-		while (parseInt(first.css('margin-left'))!=0){
-		    first = first.next();
-		    guard -=1;
-		    if (guard==0)break;
-		}
-		var ma = parseInt(first.css('margin-left'));
-		first.css('margin-left', ma-248);
-	    }
-	    return current_title.before(some);
-	};
-	ot = function(some){return current_title.prev();};
-    }
-    function change(cid, component){
-	if (show)
-	    descrptions.children().hide();
-	descr.find('.manu').html(descriptions_cached[cid]._text)
-	    .prepend(_.template('<div id="indescription_panel"><span>Цена:{{price}}</span><a href="">Установить этот компонент</a></div>', {price:component.price}))
-	    .find('#indescription_panel a')
-	    .click(function(e){
-		       e.preventDefault();
-		       var in_model = filterByCatalogs(model, component.catalogs)[0];
-		       var body = jgetBodyById(in_model._id);
-		       var select = jgetSelect(body);
-		       changeComponent(body, component,
-				       new_model[select.val()]);
-		       installCountButtons(body);
-		       var active;
-		       _($('#component_tabs')
-			 .children()).each(function(_el){
-					       var el = $(_el);
-					       if (el.data('cid')==component._id){
-						   el.attr('class','component_tab active');
-						   if (active){
-						       active.remove();
-						   }
-						   active = el;
-					       }
-					       else{
-						   el.attr('class','component_tab inactive');
-						   el.removeAttr('id');
-					       }
-					   });
-		       active.attr('id', 'component_title');
-		   });
-	descrptions.jScrollPaneRemove();
-	descr.css('opacity', '0.0');
-	descr.show();
-	descr.animate({'opacity':'1.0'}, 300);
-	descrptions.jScrollPane();
-    }
-    var first_time = current_title.text() == 'init';
-    if (!first_time && !($.browser.msie && parseInt($.browser.version)<9)){
-	op(_.template('<div class="component_tab inactive">{{name}}</div>',
-			      {name:current_title.text()}));
-	current_title.click(function(e){
-				var target =$(e.target);
-				target.parent().find('.selected')
-				    .attr('class', 'component_tab inactive');
-				var _id = target.data('cid');
-				change(_id, choices[_id]);
-			    });
-	ot().data('cid',current_title.data('cid'))
-	    .click(function(e){
-		       var target = $(e.target);
-		       target.parent().find('.selected')
-			   .attr('class', 'component_tab inactive');
-		       if (target.attr('class').match('inactive'))
-			   target.attr('class', 'component_tab selected');
-		       var _id = target.data('cid');
-		       change(_id, choices[_id]);
-		   });
-    }
-    current_title.text(descriptions_cached[_id]._name);
-    current_title.data('cid', _id);
-    change(_id, current_component);
-}
-
-//var current_row;
-
-function installBodies(){
-    var init = true;
-    var bodies = jgetBodies();
-    bodies.click(function(e){
-		     if(e.target.tagName != 'TD' && e.target.tagName != 'FONT')
-			 return;
-		     var target = $(e.target);
-		     if (e.target.tagName == 'FONT')
-			 target = target.parent();
-		     var _id = target.attr('id');
-		     for (var i=0,l=bodies.length;i<l;i++){
-			 var _body = $(bodies.get(i));
-			 _body.html(_body.html());
-			 var select_block = jgetSelectBlock(_body);
-			 if (_body.attr('id') == _id){
-			     //current_row = _body.parent().attr('id');
-			     _body.hide();
-			     select_block.show();
-			     if (doNotStress){
-				 doNotStress = false;
-			     }
-			     else{
-				 var select = jgetSelect(_body);
-				 //??? before it was _id,_id. why???
-				 updateDescription(select.val(),_id);
-			     }
-			 }
-			 else{
-			     _body.show();
-			     select_block.hide();
-			 }
-		     }
-		     // this is just to install counter
-		     // after body switch from td to select and back;
-		     if (!init && $('#ramcount').length == 0){
-			 installCounters();
-		     }
-		 });
-    //what a fuck is that? ff caches select values? chosen sucks?
-    for (var j=0,l=bodies.length;j<l;j++){
-	var b = $(bodies.get(j));
-	b.html(b.text());
-	var select = jgetSelect(b);
-	var _id = b.attr('id');
-	select.val(_id);
-	jgetChosenTitle(select).text(b.text());
-	var pin = calculatePin(new_model[b.attr('id')]);
-	if (pin != 8){
-	    jgetPin(b).text(pin);
-	}
-	else{
-	    jgetPin(b).text('');
-	}
-	var te = b.text();
-	b.text(te.substring(0,80));
-    }
-    bodies.first().click();
-    init = false;
+    $('#cdescription').html(descriptions_cached[_id]['_text']);
+    var part = getPart(_id);
+    var titles = $('#titles');
+    if (titles.data('holder')!==part)
+	titles.find('ul').html('');
+    titles.data('holder',part);
+    titles.find('li.active').attr('class','');
+    _(titles.find('li').toArray()).each(function(li){
+					    var $li = $(li);
+					    if ($li.position().left>leftmost_pos){
+						$li.unbind('click');
+						$li.remove();
+					    }
+					});
+    titles.find('ul').prepend(title_template({_id:'d'+_id,name:descriptions_cached[_id]['_name']}));
+    titles.find('li')
+	.first()
+	.find('a')
+	.click(function(e){
+		   e.preventDefault();
+		   titles.find('li.active').attr('class','');
+		   var t = $(e.target);
+		   t.parent().attr('class','active');
+		   $('#cdescription')
+		       .html(descriptions_cached[t.parent().attr('id').replace('d','')]['_text']);
+	       }).data({'_id':_id});
 }
 
 
@@ -750,14 +574,14 @@ var jgetBody = _.memoize(_jgetBody, function(select){return select.attr('id');})
 
 
 function _jgetPrice(body){
-    return body.next();
+    return body.next().next();
 }
 
 var jgetPrice = _.memoize(_jgetPrice, function(body){return body.attr('id');});
 
 
 function _jgetPin(body){
-    return body.next().next();
+    return body.next().next().next();
 }
 
 var jgetPin = _.memoize(_jgetPin, function(body){return body.attr('id');});
@@ -796,7 +620,6 @@ var fastGetOptionForChBe = _.memoize(getOptionForChBe, function(select){return s
 var doNotAsk = false;
 
 function confirmPopup(success, fail){
-
     success();
     // if (doNotAsk){
     //  success();
@@ -814,18 +637,15 @@ function confirmPopup(success, fail){
 
 
 function priceFromText(text_price){
-    //return parseInt(text_price.match("[0-9]+[ ][рin\.]$")[0].replace(' р',''));
     var ma = text_price.match("([0-9]+)[ ][ршт\.]+$");
     var text = ma.pop();
     return parseInt(text);
 }
 
 
-function _jgetChosenTitle(select){
-    return select.next().find('span');
+function jgetChosenTitle(select){
+    return select.find('option[value="'+select.val()+'"]');
 }
-
-var jgetChosenTitle = _.memoize(_jgetChosenTitle, function(select){return select.attr('id');});
 
 
 
@@ -986,6 +806,7 @@ function cheaperBetter(){
 	// do not stress users!
 	doNotStress = true;
 	var body = jgetBody(select);
+
 	var old_component = new_model[select.val()];
 	body.click();
 	var appr_components = getNearestComponent(old_component.price,
@@ -1003,7 +824,9 @@ function cheaperBetter(){
 	if (!hasNoVideo)return;
 
 	var guard = 20;
+
 	while(!changeComponent(body, new_component, old_component, doNotAjax)){
+
 	    if (guard==0)return;
 	    guard-=1;
 	    appr_components = getNearestComponent(new_component.price,
@@ -1086,6 +909,7 @@ function installOptions(){
 	}
     }
     $('#options input').change(substructAdd);
+    $('#service input').change(recalculate);
 }
 
 
@@ -1095,7 +919,8 @@ function installOptions(){
 
 function _getVideoFromMother(){
     var retval,_text;
-    var descr = jgetDescrByIndex(0);
+    //#TODO!!!!!!!!!!!!!!!!!!!!! what da fuck! it is not ready yet. just coming from server!
+    var descr = $('#cdescription');
     _text = descr.text();
     if (descr.text().match('Интегрированная видеокарта[^t^a^k]*tak'))
 	retval = true;
@@ -1206,10 +1031,10 @@ var geRamSlotsFromMother= function(mother_component, component){
 };
 var geVideoSlotsFromMother = function(mother_component, video_component){
     var retval = 1;
-    if (mother_component['sli'] && video_component['sli'])
+    if (mother_component['sli']>0 && video_component['sli']>0)
 	retval = 2;
-    if (mother_component['crossfire'] && video_component['crossfire'])
-	retval = 2;
+    if (mother_component['crossfire']>0 && video_component['crossfire']>0)
+	retval = 2;    
     return retval;
 };
 
@@ -1295,30 +1120,46 @@ function changeComponentCount(body, direction){
 
 function installCountButtons(body){
     var select = jgetSelect(body);
-    body.find('span').unbind('click').remove();
-    if (select.val().match('no'))
-	return;
-    var counters = possibleComponentCount(body,'mock');
-    body.text(jgetOption(select,select.val()).text().substring(0,60));
-    var component = new_model[select.val()];
-    body.append(_.template('<span class="ramcount">{{pcs}} шт.</span> '+
-			   '<span class="incram">+1шт</span><span class="decram">-1шт</span>',
-			   {pcs:counters.new_count}));
-    var clickFactory = function(dir){
-	return function(e){changeComponentCount(body,dir);};
+
+    var btns = body.next().find('button');
+    if (btns.length==0)return;
+    var kls = function(btn){
+	return btn.attr('class').replace(' disabled','');
     };
-    body.find('.incram').click(clickFactory('up'));
-    body.find('.decram').click(clickFactory('down'));
-
-    function shadowCram(target){
-	target.unbind('click');
-	target.css({'cursor':'auto','color':"#444444"});
+    var unbind = function(btn){
+	btn.unbind('click').attr('class',kls(btn)+' disabled');
+    };
+    if (select.val().match('no')){
+	_(btns.toArray()).each(function(btn){
+				   unbind($(btn));
+			       });
+	return;
     }
+    var bind = function(btn,dir){
+	btn.attr('class',kls(btn)).unbind('click').click(function(){changeComponentCount(body,dir);});
+    };
 
-    if (counters.max_count && counters.max_count == counters.new_count)
-	shadowCram(body.find('.incram'));
+    var counters = possibleComponentCount(body,'mock');
+
+    var component = new_model[select.val()];
+
+    var cnt = body.next().find('span.label');
+    cnt.text(counters.new_count+'шт');
+
+    var better = btns.last();
+    if (counters.max_count && counters.max_count == counters.new_count){
+	unbind(better);
+    }
+    else{
+	bind(better, 'up');
+    }
+    var cheaper = btns.first();
+    var cheaper_klass = kls(cheaper);
     if (counters.new_count == 1){
-	shadowCram(body.find('.decram'));
+	unbind(cheaper);
+    }
+    else{
+	bind(cheaper,'down');
     }
 }
 
@@ -1423,7 +1264,7 @@ function shadowCheBe(_delta, body, component){
 					      getCatalogs(component),
 					      _delta,
 					      false);
-    var next = body.next().next().next();
+    var next = body.next().next().next().next().find('button').first();
     var previous = next.next();
     function swap(){
 	var _next = next;
@@ -1439,26 +1280,29 @@ function shadowCheBe(_delta, body, component){
 	var mother_select = jgetSelectByRow($('#' + parts['mother']));
 	hasNoVideo = getVideoFromMother(new_model[mother_select.val()])>0;
     }
+    var klass = next.attr('class').replace(' disabled','');
     if (!next_components[0] || !hasNoVideo){
-	next.css({'opacity':'0.5','cursor':'default'});
-	next.children().css({'cursor':'default'});
+	next.attr('class',klass+' disabled');
 	retval = true;
     }
-    previous.css({'opacity':'1.0','cursor':'pointer'});
-    previous.children().css({'cursor':'pointer'});
+    previous.attr('class',klass);
     return retval;
 }
 
 
 function changeComponent(body, new_component, old_component, nosocket){
+
+
     var new_cats = getCatalogs(new_component);
     var delta = new_component.price-old_component.price;
 
     var change = function(){
 	var select = jgetSelect(body);
+
 	var new_option = jgetOption(select, new_component['_id']);
 	select.val(new_option.val());
-	jgetChosenTitle(select).text(new_option.text());
+
+	//jgetChosenTitle(select).text(new_option.text());
 	// TODO rename nosocket to no description
 	// remove this ifs
 	if (!nosocket)
@@ -1610,8 +1454,10 @@ function GCheaperGBeater(){
     var GBetter = function(e){
 	var direction = 'up';
 	var pins = getSortedPins(direction);
-	if (!changePinnedForced(pins))
+	if (!changePinnedForced(pins)){
 	    changePeriferyComponent(pins);
+	}
+
     };
     $('#gcheaper').click(GCheaper);
     $('#gbetter').click(GBetter);
@@ -1687,19 +1533,9 @@ function to_cartSuccess(data){
 	    var last = data['id'].substring(len-3,len);
 	    $('#modelname').html(first+'<strong>'+last+'</strong>');
 	}
-	if (!added_cached){
-	    added_cached = decodeURI($('#added').html());
-	    $('#added').html('');
-	}
-
-	$('#model_description').html(
-	    _.template(added_cached,
-		       {
-			   computer:data['id']
-		       }));
-	$('#computerlink').click(function(e){e.target.select();});
-	//this is for user come from cart
-	head.ready(function(){showYa('ya_share', 'http://buildpc.ru/computer/'+data['id']);});
+	$('#model_description')
+	    .attr('class',"alert alert-success")
+	    .html('Чтобы купить этот компьютер позвоните нам и назовите его номер.');
 	if (!data['edit'])
 	    getUserNameAndTitle();
 	var cart_el = $('#cart');
@@ -1715,24 +1551,7 @@ function to_cartSuccess(data){
 				       }));
 	    }
 	}
-	var input = $('#email');
-	input.click(function(e){if (input.val()=='введите email')input.val('');});
-	$('#emailbutton').click(function(e){
-				    e.preventDefault();
-				    $.ajax({
-					       url:'/sender',
-					       data: {uuid:uuid, email:input.val()},
-					       success:function(data){
-						   if (data == "ok"){
-						       input.val('получилось!');
-						   }
-						   else{
-						       input.val('не получилось :(');
-						   }
-					       }
-					   });
-				});
-	if ($('#greset').text() == 'Сохранить')
+	if ($('#greset').text().match('Сохранить'))
 	    alert('Получилось!');
     }
 }
@@ -1786,26 +1605,35 @@ function init(){
 	replaced.push(code);
 	delete model[code]['replaced'];
     }
-    $('.pciex').css('left', $('#'+parts['mother']).find('.reset').position().left+110);
+    //$('.pciex').css('left', $('#'+parts['mother']).find('.reset').position().left+110);
     _(model).chain().values().each(function(el){
 					   showVideoOrCross(jgetBodyById(el._id),el);
 				       });
 
     new_model = _.clone(model);
     checkOptions();
+    _(['mother', 'proc','video','ram'])
+	.each(function(name){
+		  var body = jgetBody(jgetSelectByRow($('#' + parts[name])));
+		  var component = new_model[body.attr('id')];
+		  setPriceAndPin(body,component);
+	      });
 
-    $('select').chosen().change(manualChange);
-    installBodies();
+    //$('select').chosen().change(manualChange);
+    //installBodies();
     cheaperBetter();
     reset();
-    var container = $('#descriptions');
-    container.jScrollPane();
+
+    //var container = $('#descriptions');
+    //container.jScrollPane();
+
     installOptions();
 
     installCounters();
 
     GCheaperGBeater();
     switchNoVideo(choices[jgetBodyByIndex(0).attr('id')]);
+
     recalculate();
 
     $('#greset').click(function(){window.location.reload();});
@@ -1817,6 +1645,15 @@ function init(){
     $('#installprice').text(installprice+' р');
     $('#buildprice').text(buildprice+' р');
     $('#dvdprice').text(dvdprice+' р');
+
+
+
+    $('td.component_select span').click(function(e){
+					    var body_id = $(e.target).parent().next().attr('id');
+					    updateDescription(body_id, body_id);
+					});
+
+    $('select').first().attr('id','mother').prev().click();
 
     if (author && $.cookie('pc_user')==author){
 	var was_replaced_t = _.template("Здесь теперь другой компонент, потому что на складе больше нет выбранного вами компонента. {{save}} <a href='' class='show_old' id='show_{{id}}'>Посмотреть старый компонент</a>");
@@ -1832,7 +1669,7 @@ function init(){
 	    var _id = td.attr('id');
 	    if (td.css('display')=='none')
 		td = td.prev();
-	    td.css('border','1px solid red');
+	    td.css('border','1px solid #05C');
 	    guider.createGuider({
 				    attachTo: td,
 				    description: was_replaced_t({'save':save, 'id':model[_id]['old_code']}),
@@ -1842,16 +1679,15 @@ function init(){
 				}).show();
 	    var guider_el = guider._guiderById(_id).elem;
 	    var guider_content =guider_el.find('.guider_content').find('p');
-	    guider_content.before('<div class="closeg"></div>');
+	    guider_content.before('<button class="btn btn-mini closeg" style="float:right"><i class="icon icon-remove-sign"></i> закрыть</button>');
 	    guider_el.find('.closeg').click(clearGuider(guider_el,td));
 	}
 	$('.show_old').click(function(e){
 				 showComponent(e);
 			     });
-	if (!processing){	 
+	if (!processing){
 	    $('#greset')
-		.css({'background-position':'0 -45px','color':'black'})
-		.text('Сохранить')
+		.html('<i class="icon icon-ok-circle icon-white"></i> Сохранить')
 		.unbind('click')
 		.click(function(e){
 			   try{
@@ -1867,10 +1703,10 @@ function init(){
 		       });
 	}
     }
-    if (!uuid){
-	$('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
-	$('#addplease').animate({'opacity':'1.0'},1000);
-    }
+    // if (!uuid){
+    //     $('#model_description').append('<div id="addplease">Чтобы сохранить конфигурацию, просто добавьте ее в корзину. Создавайте столько конфигураций, сколько будет нужно. Они все будут доступны в вашей корзине.</div>');
+    //     $('#addplease').animate({'opacity':'1.0'},1000);
+    // }
     if (document.location.search.match('data')){
 	var le = document.location.search.length;
 	var pairs = document.location.search.substring(1,le).split('&');
@@ -1885,7 +1721,8 @@ function init(){
 	    setCode(co,data[co]);
 	}
     }
-    //_.delay()
+    //refactored
+    $('select').change(componentChanged);
 }
 init();
 
@@ -1906,26 +1743,14 @@ function setCode(catalog,code){
     installCountButtons(body);
 }
 function showVideoOrCross(body, new_component){
-    if (isMother(body)){
-	if (new_component['sli'])
-	    $('#mothersli').show();
-	else
-	    $('#mothersli').hide();
-	if (new_component['crossfire'])
-	    $('#mothercross').show();
-	else
-	    $('#mothercross').hide();
-    }
-    if (isVideo(body)){
-	if (new_component['sli'])
-	    $('#videosli').show();
-	else
-	    $('#videosli').hide();
-	if (new_component['crossfire'])
-	    $('#videocross').show();
-	else
-	    $('#videocross').hide();
-    }
+    if (!(isVideo(body) || isMother(body)))
+	return;
+    var feature = body.parent().children().last();
+    feature.html("");
+    if (new_component['sli']>0)
+	feature.append("<span class='label label-warning'>sli</span>");
+    if (new_component['crossfire']>0)
+	    feature.append("<span class='label label-warning'>crossfire</span>");
 }
 
 // _.delay(function(){

@@ -1,35 +1,8 @@
-<top>
-    <h1>Ноутбуки Asus</h1>
-    <!-- <div>Почитайте <a href="/video" target="blank">как выбирать видеокарту</a></div> -->
-    <div class="computers_top" style="margin-bottom:30px;">
-      <div>Кликайте бренд CPU, чтобы исключить его из списка.</div>
-      <div class="proc_filter intel_active"></div>
-      <div class="proc_filter amd_active"></div>
-      <div style="float:left;margin-left:155px;">
-	<div style="margin-left:55px;margin-top:-20px;margin-bottom:20px;">Ограничение по цене:</div>
-	<div style="float:right;"><span id="maxvideoprice">50000</span> р.</div>
-	<div title="Управление ценой" id="sliderprice" class="dragdealer rounded-cornered" style="width:200px;">
-	  <div class="red-bar handle" >
-	    <div class="dragfiller"></div>
-	  </div>
-	</div>
-	<div style="float:right;margin-right:20px;">0 р.</div>
-	<div style="clear:both;"></div>
-	<div id="video_vendor">Фильтр по модели</div>
-	<table id="video_vendor_list"></table>
-      </div>
-      <div style="clear:both;"></div>
-    </div>
-  </div>
-
-</top>
-<middle>
+<header>
+  <h1>Ноутбуки Asus</h1>      
+</header>
+<div id="content">
   <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models">
-    </div>
-    <div style="clear:both;"></div>
-  </div>
   <script type="text/javascript">
     var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
     '/static/jquery.mousewheel.js',
@@ -37,35 +10,36 @@
     var _next = ['/static/notes.js','/static/guides.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-  <div id="toppopup">
-  </div>
-</middle>
+</div>
+
+
 
 <chip>
+  <div class="row-fluid">
+    <div class="span6">
+      <h2 class="chipname"></h2>
+      <table class="table table-striped table-bordered table-condensed">
+	<tr><td>Монитор</td><td class="note_display_size"></td></tr>
+	<tr><td>Процессор</td><td class="note_proc_vendor"></td></tr>
+	<tr><td>Модель</td><td class="note_proc"></td></tr>
+	<tr><td>Память</td><td class="note_ram"></td></tr>
+	<tr><td>Диск</td><td class="note_hdd"></td></tr>
+	<tr><td>Видео</td><td class="note_video"></td></tr>
+	<tr><td>ОС</td><td class="note_os"></td></tr>
+      </table>
+    </div>
 
-  <div style="float:left;max-width:160px;">
-  <h2 class="chipname"></h2>
-  <table>
-    <tr><td>Монитор</td><td class="note_display_size"></td></tr>
-    <tr><td>Процессор</td><td class="note_proc_vendor"></td></tr>
-    <tr><td>Модель</td><td class="note_proc"></td></tr>
-    <tr><td>Память</td><td class="note_ram"></td></tr>
-    <tr><td>Диск</td><td class="note_hdd"></td></tr>
-    <tr><td>Видео</td><td class="note_video"></td></tr>
-    <tr><td>ОС</td><td class="note_os"></td></tr>
-  </table>
+    <div class="span6 modelicon">
+      <img class="video_image" alt="component_image" src="" style="">
+      <div class="stars"></div>
+    </div>
   </div>
-
-  <div class="modelicon videoicon">
-    <span class="rollover" style="opacity: 0;"></span>
-    <span class="gallery-shadow"></span>
-    <img class="video_image" alt="component_image" src="" style="">
+  <div class="chipVendors">
+    <button class="btn btn-mini">Подробней</button>
+    <span class="label label-info"></span>
+    <a href="" style="line-height:18px;vertical-align:bottom;">На страницу товара</a>
   </div>
-  <div style="clear:both;"></div>
-  <ul class="chipVendors"></ul>
-
 </chip>
-
 
 <vendor_td>
   <td>

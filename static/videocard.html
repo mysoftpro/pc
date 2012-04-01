@@ -1,70 +1,51 @@
-<top>
-  <h1 id="videoheader"></h1>
-  <div class="computers_top" id="video_top">
-
-    <div id="tocart" class="square_button">В корзину</div>
-    <table id="videoprice">
-      <tr><td><div id="videoname"></div></td><td><span id="videoasc" class="asc asca"></span>1 шт</td><td>15200 р.</td></tr>
+<header>
+  <h1>Видеокарта </h1>
+  <h3></h3>
+  <div class="row-fluid" id="video_top">    
+    <table id="videoprice" class="span9 table table-striped table-bordered table-condensed" 
+	   style="margin-top:5px;">
+      <tr><td><div id="videoname"></div></td><td>1 шт</td><td>15200 р.</td></tr>
       <tr><td>Итого</td><td></td><td>15200 р.</td></tr>
     </table>
-    <div style="clear:both;"></div>
-    <div id="video_specs" class="square_button" style="float:left;">Характеристики</div>    
-    <div id="video_comments" class="square_button" style="float:left;background-position: 0 -91px;">Отзывы</div>
-    
-    <div id="cart_to_computer">
-      <div>Установить в компьютер:</div>
-      <ol><li><span class="down"></span><a href="/computer/ping?data=">Пинг</a></li>
-	<li ><a href="/computer/scroll?data=">Скролл</a></li>
-	<li ><a href="/computer/localhost?data=">Локалкост</a></li>
-	<li ><a href="/computer/chart?data=">Чарт</a></li>
-	<li ><a href="/computer/cell?data=">Целл</a></li>
-	<li ><a href="/computer/storage?data=">Сторадж</a></li>
-	<li ><a href="/computer/zoom?data=">Зум</a></li>
-	<li ><a href="/computer/spline?data=">Сплайн</a></li>
-	<li ><a href="/computer/compiler?data=">Компайлер</a></li>
-	<li ><a href="/computer/shade?data=">Шейд</a></li>
-	<li ><a href="/computer/render?data=">Рендер</a></li>
-	<li ><a href="/computer/raytrace?data=">Рейтрейс</a></li>
-      </ol>
-    </div>
-
-
+    <div id="tocart" class="btn btn-primary btn-large span2">В корзину</div>
   </div>
-</top>
-<middle>
-  <script type="text/javascript"></script>
-  <div id="models_container">
-    <div id="models" style="margin-top:30px;">
-      <div id="maparams"></div>
-      <div id="videoimage">
-	<img src="" alt="" class="videofeatures"/>
-	<div class="chipname videofeatures">Эта видеокарта потребляет <span id="videocons">240 Вт</span>.
-	  Это значит, что Ваш блок питания должен выдерживать потребление <span id="videopeak">500 Вт</span>
-	  <div id="videopower"></div>
+</header>
+<div id="content">
+  <div class="row-fluid">
+    <div class="span6">
+      <ul class="nav nav-tabs">
+	<li class="active">
+	  <a href="#specs" data-toggle="tab">Характеристики</a>
+	</li>
+	<li><a href="#comments" data-toggle="tab">Отзывы</a></li>
+      </ul>
+      <div class="tab-content">
+	<div class="tab-pane active" id="specs">
 	</div>
-	<h4>Подходящие блоки питания:</h4>
-	<ul class="chipVendors" id="psu_list">
-	</ul>
-	<div class="chipname videofeatures">Эта видекарта поддерживает технологию <span id="mvideodual">SLI</span>. <br/>Вы можете собрать систему с параллельно работающими видеокартами, купив вторую видеокарту.
-	  <div id="videoparallel"></div>
-	</div>
-	<div>
-	  Ваша материнская плата должна иметь 2 слота Pci Express.
-	  <strong style="color:#B00606">Обратите внимание!</strong> Некоторые системы имеют 2 слота PCI Ex, но они работают с разной скоростью. В таком случае система с более дорогой видеокартой будет быстрее системы с двумя видеокартами.
+	<div class="tab-pane" id="comments">
 	</div>
       </div>
-      <div style="clear:both;"></div>
     </div>
-    <div style="clear:both;"></div>
+    <div id="videoimage" class="span6">
+      <img src="" alt="" class="videofeatures"/>
+      <div class="chipname videofeatures">
+	Эта видеокарта потребляет <span id="videocons">240 Вт</span>.
+	Это значит, что Ваш блок питания должен выдерживать потребление 
+	<span id="videopeak">500 Вт</span>
+	  <div id="videopower"></div>
+	</div>
+	<h4>Подходящие блоки питания:</h4>      
+	<table id="psu_list" class="chipVendors table table-striped table-bordered table-condensed">
+	  
+	</table>
+    </div>
   </div>
-    <script type="text/javascript">
+  <script type="text/javascript"></script>
+  <script type="text/javascript">
     var _top = ['/static/jquery.cookie.min.js','/static/chosen.jquery.js',
     '/static/jquery.mousewheel.js','/static/jScrollPane.js',
     '/static/guider.js','/static/dragdealer.js'];
     var _next = ['/static/videocard.js','/static/guides.js','http://yandex.st/share/share.js','/static/jquery.observehashchange.min.js'];
     scripts['next'] = {'top':_top,'next':{'top':_next}};
   </script>
-
-  <div id="toppopup">
-  </div>
-</middle>
+</div>
