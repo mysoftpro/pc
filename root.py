@@ -211,22 +211,22 @@ class Skin(Template):
         self.selected_skin = None
         cache = globals()['_cached_statics']
         name_to_cache = 'skin.html'
-        opened_file = open(os.path.join(static_dir, 
-                                            name_to_cache))
-        parser = etree.HTMLParser(encoding='utf-8')
-        cache[name_to_cache] = etree.parse(opened_file, parser)
-        self.tree = deepcopy(cache[name_to_cache])
-        opened_file.close()
-
-        # if name_to_cache in cache:
-        #     self.tree = deepcopy(cache[name_to_cache])
-        # else:
-        #     opened_file = open(os.path.join(static_dir, 
+        # opened_file = open(os.path.join(static_dir, 
         #                                     name_to_cache))
-        #     parser = etree.HTMLParser(encoding='utf-8')
-        #     cache[name_to_cache] = etree.parse(opened_file, parser)
-        #     self.tree = deepcopy(cache[name_to_cache])
-        #     opened_file.close()
+        # parser = etree.HTMLParser(encoding='utf-8')
+        # cache[name_to_cache] = etree.parse(opened_file, parser)
+        # self.tree = deepcopy(cache[name_to_cache])
+        # opened_file.close()
+
+        if name_to_cache in cache:
+            self.tree = deepcopy(cache[name_to_cache])
+        else:
+            opened_file = open(os.path.join(static_dir, 
+                                            name_to_cache))
+            parser = etree.HTMLParser(encoding='utf-8')
+            cache[name_to_cache] = etree.parse(opened_file, parser)
+            self.tree = deepcopy(cache[name_to_cache])
+            opened_file.close()
 
 
     skins = {'home':'/static/home.css'}
@@ -348,8 +348,8 @@ class CachedStatic(File):
 
 
     def _gzip(self, _content,_name, _time):
-        # if _name is not None and "js" in _name and "min." not in _name:
-        #     _content = jsmin(_content)
+        if _name is not None and "js" in _name and "min." not in _name:
+            _content = jsmin(_content)
         buff = StringIO()
         f = gzip.GzipFile(_name,'wb',9, buff)
         f.write(_content)
@@ -379,11 +379,11 @@ class CachedStatic(File):
             han = self.hooks[short_name]
             renderrer = han.handler(template, self.skin, request, han.name)
             d = renderrer.render()
-            # def err(some):
-            #     print "______________________________"
-            #     print some
-            #     return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
-            # d.addErrback(err)
+            def err(some):
+                print "______________________________"
+                print some
+                return u"Страница недоступна. Возможно, товара нет в наличии или произошла какая-то ошибка.".encode('utf-8')
+            d.addErrback(err)
 
         else:
             # just an empty snippet
