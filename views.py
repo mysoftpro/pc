@@ -38,10 +38,6 @@ class ModelInCart(object):
 
 
     def setModelLink(self):
-        if not self.model.isPromo:
-            self.icon.set('href','/computer/'+self.model._id)
-        else:
-            self.icon.set('href','/promotion/'+self.model.parent)
 
         link = self.model_div.xpath('//a[@class="modellink"]')[0]
         link.text = self.model._id[0:-3]
@@ -50,12 +46,29 @@ class ModelInCart(object):
         strong.text = self.model._id[-3:]
         link.append(strong)
 
-        if not self.model.isPromo:
-            link.set('href','/computer/%s' % self.model._id)
+        href = ''
+        if self.model.case is not None:
+            if not self.model.isPromo:
+                href = '/computer/%s' % self.model._id
+            else:
+                href= '/promotion/%s' % self.model.parent
         else:
-            link.set('href','/promotion/%s' % self.model.parent)
-
-
+            from pc import models
+            for c in self.model.components:
+                print type(c)
+                if type(c) is models.VideoCard:
+                    href='/videocard/'+quote_plus(c.hid)
+                    break
+                elif type(c) is models.Tablet:
+                    href = '/tablet/'+c.vendor+'_'+c.model
+                    href = href.replace(' ','_')
+                    break
+                elif type(c) is models.Note:
+                    href='/notebook/'+quote_plus(c.getNoteHash().encode('utf-8'))
+                    break
+    
+        self.icon.set('href',href)
+        link.set('href',href)
 
 
     def fillInfo(self):
