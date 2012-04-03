@@ -511,7 +511,10 @@ function changeDescription(_id, show, data){
     if (titles.data('holder')!==part)
 	titles.find('ul').html('');
     titles.data('holder',part);
-    titles.find('li.active').attr('class','');
+    var active_title = titles.find('li.active');
+    if (active_title.attr('id')=='d'+_id)
+	return;
+    active_title.attr('class','');
     _(titles.find('li').toArray()).each(function(li){
 					    var $li = $(li);
 					    if ($li.position().left>leftmost_pos){
@@ -608,18 +611,6 @@ var doNotAsk = false;
 
 function confirmPopup(success, fail){
     success();
-    // if (doNotAsk){
-    //  success();
-    //  return;
-    // }
-    // $('#doChange').unbind('click').click(function(e){
-    //                                       $('#mask').click();
-    //                                       success();
-    //                                   });
-    // $('#doNotChange').unbind('click').click(function(e){
-    //                                          $('#mask').click();
-    //                                   });
-    // makeMask(function(){}, fail)();
 }
 
 
