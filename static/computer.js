@@ -283,23 +283,18 @@ var no_video_li_template = _.template('<li class="active-result result-selected 
 function switchNoVideo(mother_component){
     var has_video = getVideoFromMother(mother_component);
     var video_select = jgetSelectByRow($('#' + parts['video']));
-    var no_video_li_id ='#'+video_select.attr('id')+'_chzn_o_1';
-    var no_video_li = $(no_video_li_id);
-
+    var no_video_option = video_select.find('option').first();
     if (!has_video){
-
 	if (video_select.val().match('no')){
-	    var first_option = $(video_select.find('option')[1]);
-	    video_select.val(first_option.val());
-	    jgetChosenTitle(video_select).text(first_option.text());
+	    var first_option = no_video_option.next();
+	    video_select.val(first_option.val());	
 	    componentChanged({'target':video_select[0],'no_desc':true});
 	}
-	if (no_video_li.length>0)
-	    $(no_video_li_id).remove();
+	no_video_option.attr('disabled','disabled');
+	
     }
-    if (has_video && no_video_li.length==0){
-	$('#'+video_select.attr('id')+'_chzn_o_2')
-	    .before(no_video_li_template({'_id':video_select.attr('id')+'_chzn_o_1'}));
+    if (has_video){
+	no_video_option.removeAttr('disabled');
     }
 }
 

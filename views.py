@@ -1574,6 +1574,7 @@ class Notes(PCView):
         models = set()
         self.normalizeRate(result['rows'])
         i = 0
+        # zzz
         for r in result['rows']:
             note = NoteOb(r['doc'])
             viewlet = deepcopy(self.template.root().find('chip'))

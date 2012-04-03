@@ -374,7 +374,7 @@ def filterSd(res):
 
 def fillNew(global_choices):
     def fill(res):
-        for row in res['rows']:
+        for row in res['rows']:            
             wit_doc = globals()['gChoices_flatten'][row['key']]
             if wit_doc['price']>row['value'][0]:
                 wit_doc['price'] = row['value'][0]
