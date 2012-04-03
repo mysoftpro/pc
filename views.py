@@ -54,8 +54,7 @@ class ModelInCart(object):
                 href= '/promotion/%s' % self.model.parent
         else:
             from pc import models
-            for c in self.model.components:
-                print type(c)
+            for c in self.model.components:                
                 if type(c) is models.VideoCard:
                     href='/videocard/'+quote_plus(c.hid)
                     break
