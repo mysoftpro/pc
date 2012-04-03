@@ -1128,26 +1128,60 @@ class StorePsu(Resource):
 
 
 class Evolve(Resource):
-    def fix(self, res):
-        keys = {}
+    def fix(self, res, wit_new):
+        new_wit = {}
         for r in res['rows']:
-            if r['key'] in keys:
-                keys[r['key']].append((r['id'],r['value']))
-            else:
-                keys[r['key']] = [(r['id'],r['value'])]
-        print "yo"
-        print len(keys)
-        print len(res['rows'])
-        for li in keys.values():
-            if len(li)==1:
+            doc = r['doc']
+            new_wit.update({doc['_id']:doc})
+        for wit_id, new_id in wit_new.items():
+            if not new_id in new_wit:
+                print "what da fucj!!!!!!!!!!"
                 continue
-            to_del = li[-1]
-            used_couch.couch.deleteDoc(to_del[0],to_del[1])
-
+            doc = new_wit[new_id]
+            if not doc.get('map_to_wi', False):
+                print "no map to wi!!!!!!!!!!!!!"
+                doc['map_to_wi'] = wit_id
+                couch.saveDoc(doc)
+            else:
+                if doc['map_to_wi'] != wit_id:
+                    print "wrong map!!!!!!!!!!!!!!!!!!!!!!!!"
+                print "ok"
+    @forceCond(noChoicesYet, fillChoices)
     def render_GET(self, request):
-        d = used_couch.couch.openView(used_couch.designID,'by_date', stale=False)
-        d.addCallback(self.fix)
+        from pc import models
+        wit_new = {}
+        for doc in models.gChoices_flatten.values():
+            if doc.get('map_to_ne', False):
+                wit_new.update({doc['_id']:doc['map_to_ne']})
+        print "++++++++++++++++++++++++++++++"
+        print len(wit_new)
+        d = couch.listDoc(keys=wit_new.values(), include_docs=True)
+        d.addCallback(self.fix, wit_new)
         return "ok"
+        
+    # fix dubbies in used
+    # def fix(self, res):
+    #     keys = {}
+    #     for r in res['rows']:
+    #         if r['key'] in keys:
+    #             keys[r['key']].append((r['id'],r['value']))
+    #         else:
+    #             keys[r['key']] = [(r['id'],r['value'])]
+    #     print "yo"
+    #     print len(keys)
+    #     print len(res['rows'])
+    #     for li in keys.values():
+    #         if len(li)==1:
+    #             continue
+    #         to_del = li[-1]
+    #         used_couch.couch.deleteDoc(to_del[0],to_del[1])
+
+    # def render_GET(self, request):
+    #     d = used_couch.couch.openView(used_couch.designID,'by_date', stale=False)
+    #     d.addCallback(self.fix)
+    #     return "ok"
+
+
     # # merge new by hash -------------------------------------
     # def makeGen(self, keys):
     #     for k,v in keys.items():

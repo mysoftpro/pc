@@ -864,10 +864,10 @@ class Model(dict):
         if self.ours and code not in globals()['gWarning_sent']:
             globals()['gWarning_sent'].append(code)
             text = self.name + ' '+parts_names[name] + ': '+code
-            # send_email('admin@buildpc.ru',
-            #            u'В модели заменен компонент',
-            #            text,
-            #            sender=u'Компьютерный магазин <inbox@buildpc.ru>')
+            send_email('admin@buildpc.ru',
+                       u'В модели заменен компонент',
+                       text,
+                       sender=u'Компьютерный магазин <inbox@buildpc.ru>')
         return next_el
 
     @property

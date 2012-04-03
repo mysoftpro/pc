@@ -437,16 +437,8 @@ function _jgetDescriptions(){
 var jgetDescriptions = _.memoize(_jgetDescriptions, function(){return 0;});
 
 
-// function _jgetDescrByIndex(index){
-//     return $(jgetDescriptions().children().get(index));
-// }
 
-// var jgetDescrByIndex = _.memoize(_jgetDescrByIndex, function(index){return index;});
-
-
-
-
-var img_template = _.template('<div style="float:left;width:20%;"><img src="/image/{{id}}/{{name}}{{ext}}"/></div>');
+var img_template = _.template('<div style="float:left;width:20%;"><img style="width:100%;" src="/image/{{id}}/{{name}}{{ext}}"/></div>');
 var text_template = _.template('<div style="float:left;width:80%;">{{text}}</div>');
 var title_template = _.template('<li class="active" id="{{_id}}"><a href="">{{name}}</a></li>');
 
@@ -969,8 +961,7 @@ function _geRamSlotsFromMother(){
 	max_count = 2;
 
     if (!max_count){
-	// refactor that: 0
-	var descr = jgetDescrByIndex(0);
+	var descr = $('#cdescription').text();
 	_text = descr.text();
 	if (_text.match('4 x DDR3 DIMM'))
 	    max_count = 4;
