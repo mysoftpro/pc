@@ -278,3 +278,18 @@ td.feature{
 .faqtags a{
     margin-left:5px;
 }
+#city{
+    padding-top:9px;color:white;font-size:14px;margin-left:5px;
+}
+#phones{
+    color:white;font-size:10px;
+}
+#phones strong{
+    display:block;
+}
+#phones strong:first-child{
+    margin-top:3px;
+}
+#phones strong:last-child{
+    margin-top:-5px;
+}

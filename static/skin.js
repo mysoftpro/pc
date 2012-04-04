@@ -72,7 +72,7 @@ function CartAndContacts(){
 	    var klass="";
 	    if (document.location.href.match('cart'))
 		klass='class="active"';
-	    $('#main_menu').append(cart_template({klass:klass,link:link,ammo:cart}));
+	    $('#main_menu').find('li').last().prev().before(cart_template({klass:klass,link:link,ammo:cart}));
 	}
     }
     // if (!document.location.href.match('faq'))
