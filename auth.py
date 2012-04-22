@@ -350,7 +350,7 @@ class OAuth(Resource):
 
 
     def getOdnoklassnikiAccessToken(self, f, user_doc, request):
-	""""""
+	""" """
         src = f.read()
 	f.close()
 	answer = simplejson.loads(src)        

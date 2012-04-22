@@ -268,7 +268,8 @@ def getAvitoImage(ob):
     d = defer.Deferred()
     image_request = agent.request('GET', str(image_url),Headers(headers),None)
     image_request.addCallback(lambda response: response.deliverBody(ImageReceiver(d)))
-
+    print "______________________________!!"
+    print str(image_url)
     def toThread(sio):
         d = threads.deferToThread(parseAvitoImage, sio, ob)
         d.addCallback(saveWithPhone)
@@ -396,6 +397,8 @@ def crawl():
             defs.append(d)
             _call = _grab(base_url+url + postfix, d)
             _calls.append(_call)
+            break
+        break
     dl = DeferredList(defs)
     def report(li):
         i = 0

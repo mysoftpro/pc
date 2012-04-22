@@ -13,7 +13,7 @@ from twisted.web import proxy
 from lxml import etree
 from pc.root import CachedStatic, static_dir, HandlerAndName, Computer
 from pc.simple_pages import parts_aliases
-from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
+from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory, BasicCredentialFactory
 from twisted.cred.checkers import FilePasswordDB
 from twisted.cred.portal import IRealm, Portal
 from zope.interface import implements
@@ -1311,7 +1311,7 @@ class Evolve(Resource):
     #         docs.append({'_id':r['key'],'_rev':r['value'],"_deleted": True})
     #     used_couch.couch.bulkDocs(docs)
     # def render_GET(self, request):
-    #     d = used_couch.couch.openView(used_couch.designID,'by_date')
+    #     d = used_couch.couch.openView(used_couch.designID,'by_date', stale=False)
     #     d.addCallback(self.clean)
     #     return "ok"
 

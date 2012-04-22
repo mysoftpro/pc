@@ -47,7 +47,15 @@ function(doc){
 	doc.phone !== '8-952-792-43-97'&&
 	doc.phone !== '89062397671'&&
 	doc.phone !== '89520551180'&&
-	 doc.phone !== '89521148662'
+	 doc.phone !== '89521148662'&&
+	 doc.phone !== '+79212658222'&&
+	 doc.phone !== '+79212658222'&&
+	 doc.phone !== '375562'&&
+	 doc.phone !== '391166'&&
+	 doc.phone !== '577382'&&
+	 doc.phone !== '77-74-56'&&
+	 doc.phone !== '8-911-459-00-33'&&
+	 doc.phone !== '8-952-113-54-28'
        ){
 	emit(doc['phone']);
     }
