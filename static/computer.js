@@ -463,7 +463,7 @@ function changeDescription(_id, show, data){
 		    var ext = '.jpg';
 		    var path = data['imgs'][i];
 		    //new images
-		    if (path.match('jpeg')){
+		    if (path.match('jpeg')|| path.match('png')){
 			ext = '';
 			path = encodeURIComponent(path);
 		    }

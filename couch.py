@@ -5,6 +5,8 @@ import os
 import os.path
 
 def pr(failure):
+    print "fail in suncing"
+    print failure
     pass
     # print failure
 
@@ -86,6 +88,7 @@ def syncViews(designDoc):
 
 def sync():
     d = couch.openDoc(design_id)
+    print "1"
     d.addCallback(syncViews)
     d.addErrback(pr)
     return d
