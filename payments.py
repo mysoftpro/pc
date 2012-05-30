@@ -11,7 +11,7 @@ from pc.mail import send_email
 # http://www.onlinedengi.ru/wmpaycheck.php?project=867&amount=5&nickname=187e61f8&mode_type=60&source=buildpc.ru&order_id=187e70d0
 # mode_type now is 108
 # http://www.onlinedengi.ru/wmpaycheck.php?project=867&amount=5&nickname=2fafbb4c&mode_type=108&source=buildpc.ru&order_id=2fb0465c
-# http://www.onlinedengi.ru/wmpaycheck.php?project=867&amount=5&nickname=2fafbb4c&mode_type=108&source=buildpc.ru&order_id=3cf88928 - good
+# http://www.onlinedengi.ru/wmpaycheck.php?project=867&amount=5&nickname=2fafbb4c&mode_type=108&source=piri-piri.ru&order_id=3cf88928 - good
 class DOValidateUser(Resource):
     def __init__(self):
         self.xml = etree.XML('<result></result>')

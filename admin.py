@@ -1167,9 +1167,8 @@ class Evolve(Resource):
                 keys[r['key']].append((r['id'],r['value']))
             else:
                 keys[r['key']] = [(r['id'],r['value'])]
-        print "yo"
-        print len(keys)
-        print len(res['rows'])
+        
+        print "kokoko"        
         for li in keys.values():
             if len(li)==1:
                 continue
@@ -1360,6 +1359,14 @@ class AddImage(Resource):
         request.finish()
     def addImage(self, image, doc, request):
         name = [k for k in image.keys()][0]
+        # GOOGLE IMAGES
+        goog = 'q=tbn:'
+        if goog in name:
+            new_name = name.split(goog).pop()+'.jpg'
+            image[new_name] = image[name]
+            image.pop(name)
+            name = new_name
+
         if name.endswith('.jpg'):
             name = name.split('.jpg')[0]
         d = couch.addAttachments(doc, image)#image is a dictionary
@@ -1371,11 +1378,19 @@ class AddImage(Resource):
         d.addCallback(lambda _doc:couch.saveDoc(_doc))
         d.addCallback(self.finish, request)
 
+    def pr(fail):
+        print fail
     def goForImage(self, doc, request):
-        from pc.catalog import ImageReceiver
-        d = defer.Deferred()
-        agent = Agent(reactor)
         url = request.args.get('url')[0]
+        d = defer.Deferred()
+        b64 = 'data:image/jpeg;base64,'
+        if b64 in url:
+            from base64 import b64decode
+            d.addCallback(self.addImage, doc, request)
+            d.addErrback(self.pr)
+            return d.callback({'image.jpg':b64decode(url.split(b64).pop())})
+        from pc.catalog import ImageReceiver
+        agent = Agent(reactor)
         image_request = agent.request('GET', str(url),Headers({}),None)
         image_request.addCallback(lambda response: \
                                       response.deliverBody(ImageReceiver(url.split('/')[-1],d)))

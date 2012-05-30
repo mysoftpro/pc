@@ -232,6 +232,7 @@ class Skin(Template):
     skins = {'home':'/static/home.css'}
 
     def prepare(self, request):
+        return
         selected_skin = request.args.get('skin',[None])[0] or\
             request.getCookie('pc_skin')
         # if selected_skin is None: return
